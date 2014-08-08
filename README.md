@@ -15,10 +15,10 @@ The library follows the [Semantic Versioning Convention](http://semver.org/)
  * Support for optional last field!
  * Supports printing to locale specific human readable format (Italian, English, Spanish and Dutch so far...).
  * Parsing and Description process are decoupled: parse once and operate with the result!
- * Pre-defined parsers for
+ * Pre-defined parsers for the following cron definitions:
     * [Unix](http://www.unix.com/man-page/linux/5/crontab/)
     * [Cron4j](http://www.sauronsoftware.it/projects/cron4j/)
-    * [Quartz](http://quartz-scheduler.org/) cron definitions
+    * [Quartz](http://quartz-scheduler.org/)
 
 **Download**
 
