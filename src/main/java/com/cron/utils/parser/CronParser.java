@@ -44,6 +44,7 @@ public class CronParser {
         if (StringUtils.isEmpty(expression)) {
             throw new IllegalArgumentException("Empty expression!");
         }
+        expression = expression.toUpperCase();
         expression = expression.replace("?", "*");
         String[] expressionParts = expression.split(" ");
         if (expressions.containsKey(expressionParts.length)) {

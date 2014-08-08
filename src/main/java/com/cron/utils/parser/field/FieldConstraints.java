@@ -1,6 +1,7 @@
 package com.cron.utils.parser.field;
 
 import com.cron.utils.CronParameter;
+import com.google.common.collect.Maps;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -76,13 +77,18 @@ public class FieldConstraints {
             case HOUR:
                 return new FieldConstraints().setValidationRange(0, 23);
             case DAY_OF_WEEK:
-                Map<Integer, Integer> intMapping = new HashMap<Integer, Integer>();
+                Map<Integer, Integer> intMapping = Maps.newHashMap();
                 intMapping.put(7, 0);
-                return new FieldConstraints().registerIntToIntMapping(intMapping).setValidationRange(0, 6);
+                return new FieldConstraints()
+                        .registerStringToIntMapping(daysOfWeekMapping())
+                        .registerIntToIntMapping(intMapping)
+                        .setValidationRange(0, 6);
             case DAY_OF_MONTH:
                 return new FieldConstraints().setValidationRange(1, 31);
             case MONTH:
-                return new FieldConstraints().setValidationRange(1, 12);
+                return new FieldConstraints()
+                        .registerStringToIntMapping(monthsMapping())
+                        .setValidationRange(1, 12);
             default:
                 return nullConstraints();
         }
@@ -90,5 +96,34 @@ public class FieldConstraints {
 
     public static FieldConstraints nullConstraints() {
         return new FieldConstraints();
+    }
+
+    private static Map<String, Integer> daysOfWeekMapping(){
+        Map<String, Integer> stringMapping = Maps.newHashMap();
+        stringMapping.put("MON",1);
+        stringMapping.put("TUE",2);
+        stringMapping.put("WED",3);
+        stringMapping.put("THU",4);
+        stringMapping.put("FRI",5);
+        stringMapping.put("SAT",6);
+        stringMapping.put("SUN",7);
+        return stringMapping;
+    }
+
+    private static Map<String, Integer> monthsMapping(){
+        Map<String, Integer> stringMapping = Maps.newHashMap();
+        stringMapping.put("JAN",1);
+        stringMapping.put("FEB",2);
+        stringMapping.put("MAR",3);
+        stringMapping.put("APR",4);
+        stringMapping.put("MAY",5);
+        stringMapping.put("JUN",6);
+        stringMapping.put("JUL",7);
+        stringMapping.put("AUG",8);
+        stringMapping.put("SEP",9);
+        stringMapping.put("OCT",10);
+        stringMapping.put("NOV",11);
+        stringMapping.put("DEC",12);
+        return stringMapping;
     }
 }
