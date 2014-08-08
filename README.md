@@ -47,6 +47,8 @@ cron-utils will be soon available in the Maven central repository.
     CronDescriptor descriptor = CronDescriptor.instance(Locale.UK);
 
     //parse some expression and ask descriptor for description
-    descriptor.describe(parser.parse("*/45 * * * * *")); //description will be: "Every 45 seconds"
+    descriptor.describe(parser.parse("*/45 * * * * *"));
+    //description will be: "Every 45 seconds"
 
-    descriptor.describe(parser.parse("0 23 ? * MON-FRI *")); //description will be: "Every minute 23 every day between Monday and Friday"
+    descriptor.describe(parser.parse("0 23 ? * MON-FRI *"));
+    //description will be: "Every minute 23 every day between Monday and Friday"
