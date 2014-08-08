@@ -83,6 +83,30 @@ class TimeDescriptionStrategy extends DescriptionStrategy {
                     }
                 });
 
+        //case: At minute x
+        descriptions.add(
+                new Function<TimeFields, String>() {
+                    @Override
+                    public String apply(TimeFields timeFields) {
+                        if (timeFields.hours instanceof Always &&
+                                timeFields.minutes instanceof On &&
+                                timeFields.seconds instanceof On) {
+                                if (isDefault((On) timeFields.seconds)) {
+                                    return String.format("%s %s %s %s %s", bundle.getString("every"),
+                                            bundle.getString("hour"), bundle.getString("at"),
+                                            bundle.getString("minute"), ((On) timeFields.minutes).getTime());
+                                } else {
+                                    return String.format("%s %s %s %s %s %s %s %s", bundle.getString("every"),
+                                            bundle.getString("hour"), bundle.getString("at"),
+                                            bundle.getString("minute"), ((On) timeFields.minutes).getTime(),
+                                            bundle.getString("and"), bundle.getString("second"),
+                                            ((On) timeFields.seconds).getTime());
+                                }
+                            }
+                        return "";
+                    }
+                });
+
         //case: 11:45
         descriptions.add(
                 new Function<TimeFields, String>() {

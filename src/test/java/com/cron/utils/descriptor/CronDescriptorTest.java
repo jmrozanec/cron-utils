@@ -1,6 +1,9 @@
 package com.cron.utils.descriptor;
 
 import com.cron.utils.CronParameter;
+import com.cron.utils.CronType;
+import com.cron.utils.parser.CronParser;
+import com.cron.utils.parser.CronParserRegistry;
 import com.cron.utils.parser.field.*;
 import com.google.common.collect.Lists;
 import org.junit.Before;
@@ -141,6 +144,27 @@ public class CronDescriptorTest {
         results.add(new CronFieldParseResult(CronParameter.MINUTE, new On(null, "" + minute)));
         results.add(new CronFieldParseResult(CronParameter.DAY_OF_MONTH, new On(null, String.format("%sW", dayOfMonth))));
         assertEquals(String.format("At %s:%s the nearest weekday to the %s of the month", hour, minute, dayOfMonth), descriptor.describe(results));
+    }
+
+    public static void main(String[] args) {
+        CronParser parser = CronParserRegistry.instance().retrieveParser(CronType.QUARTZ);
+
+//create a descriptor for a specific Locale
+        CronDescriptor descriptor = CronDescriptor.instance(Locale.UK);
+
+//parse some expression and ask descriptor for description
+        System.out.println(descriptor.describe(parser.parse("*/45 * * * * *")));;
+//description will be: "every 45 seconds"
+
+        for(CronFieldParseResult res : parser.parse("0 23 ? * * 1-5 *")){
+            System.out.println(res.getField());
+            System.out.println(res.getExpression());
+            System.out.println(res.getExpression().getClass());
+            System.out.println("****");
+        }
+
+        System.out.println(descriptor.describe(parser.parse("0 23 ? * * 1-5 *")));
+//description will be: "Every minute 23 every day between Monday and Friday"
     }
 
 }
