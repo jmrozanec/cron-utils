@@ -64,4 +64,4 @@ Contributions are welcome! You can contribute by
  * bringing suggestions and reporting bugs
  * spreading the word / telling us how you use it!
 
- ->For stats about the project, you can visit our [OpenHUB profile](https://www.openhub.net/p/cron-utils)<-
+ For stats about the project, you can visit our [OpenHUB profile](https://www.openhub.net/p/cron-utils)
