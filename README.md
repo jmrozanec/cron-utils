@@ -3,9 +3,10 @@ cron-utils
 
 [![Build Status](https://travis-ci.org/jmrozanec/cron-utils.png?branch=master)](https://travis-ci.org/jmrozanec/cron-utils)
 
-A Java library for cron parsing and describe parsed expressions in a human readable language
+A Java library to parse a cron and get a human readable description.
 
-License: Apache v 2.0
+License: Apache 2.0
+
 The library follows the [Semantic Versioning Convention](http://semver.org/)
 
 **Features**
@@ -25,8 +26,6 @@ The library follows the [Semantic Versioning Convention](http://semver.org/)
 cron-utils will be soon available in the Maven central repository.
 
 **Usage Examples**
-
-***Quick example***
 
     //define your own parser: arbitrary fields are allowed and last field can be optional
     CronParser parser = ParserDefinitionBuilder.defineParser()
@@ -52,3 +51,13 @@ cron-utils will be soon available in the Maven central repository.
 
     descriptor.describe(parser.parse("0 23 ? * * 1-5 *"));
     //description will be: "every hour at minute 23 every day between Monday and Friday"
+
+**Contribute!**
+
+Contributions are welcome! You can contribute by
+ * adding new features
+ * enhancing existing code: ex.: provide more accurate description cases
+ * testing
+ * enhancing documentation
+ * bringing suggestions and reporting bugs
+ * spreading the word / telling us how you use it!
