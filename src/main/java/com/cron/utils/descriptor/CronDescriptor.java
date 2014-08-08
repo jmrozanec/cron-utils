@@ -22,10 +22,14 @@ import java.util.ResourceBundle;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+/**
+ * Provides human readable description for a given cron
+ */
 public class CronDescriptor {
 
     public static final Locale DEFAULT_LOCALE = Locale.UK;
-    private static final String BUNDLE = "CronParserI18N";
+    private static final String BUNDLE = "CronUtilsI18N";
     private ResourceBundle bundle;
 
     private CronDescriptor(Locale locale) {
@@ -95,10 +99,19 @@ public class CronDescriptor {
                 bundle.getString("year"));
     }
 
+    /**
+     * Creates an instance with UK locale
+     * @return CronDescriptor - never null.
+     */
     public static CronDescriptor instance() {
         return new CronDescriptor();
     }
 
+    /**
+     * Creates and instance with given locale
+     * @param locale - Locale in which descriptions will be given
+     * @return CronDescriptor - never null.
+     */
     public static CronDescriptor instance(Locale locale) {
         return new CronDescriptor(locale);
     }

@@ -2,6 +2,7 @@ package com.cron.utils.descriptor;
 
 import com.cron.utils.parser.field.*;
 import com.google.common.base.Function;
+import org.apache.commons.lang3.Validate;
 
 import java.text.MessageFormat;
 import java.util.List;
@@ -19,6 +20,11 @@ import java.util.ResourceBundle;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+/**
+ * Description strategy to handle cases on how to present
+ * cron information in a human readable format
+ */
 abstract class DescriptionStrategy {
     protected Function<Integer, String> nominalValueFunction;
     protected ResourceBundle bundle;
@@ -32,9 +38,20 @@ abstract class DescriptionStrategy {
         };
     }
 
+    /**
+     * Provide a human readable description;
+     * @return human readable description - String
+     */
     public abstract String describe();
 
+    /**
+     * Given a CronFieldExpression, provide a String with a human readable description.
+     * Will identify CronFieldExpression subclasses and delegate.
+     * @param cronFieldExpression - CronFieldExpression instance - not null
+     * @return human readable description - String
+     */
     protected String describe(CronFieldExpression cronFieldExpression) {
+        Validate.notNull(cronFieldExpression, "CronFieldExpression should not be null!");
         if (cronFieldExpression instanceof Always) {
             return describe((Always) cronFieldExpression);
         }
@@ -53,10 +70,23 @@ abstract class DescriptionStrategy {
         return "";
     }
 
+    /**
+     * Given an int, will return a nominal value. Example:
+     * 1 in weeks context, may mean "Monday",
+     * so nominal value for 1 would be "Monday"
+     * Default will return int as String
+     * @param value - some integer
+     * @return String
+     */
     protected String nominalValue(int value) {
         return nominalValueFunction.apply(value);
     }
 
+    /**
+     * Provide a human readable description for Always instance
+     * @param always - Always
+     * @return human readable description - String
+     */
     protected String describe(Always always) {
         if (always.getEvery().getTime() <= 1) {
             return "";
@@ -64,6 +94,11 @@ abstract class DescriptionStrategy {
         return describe(always.getEvery());
     }
 
+    /**
+     * Provide a human readable description for And instance
+     * @param and - And
+     * @return human readable description - String
+     */
     protected String describe(And and) {
         List<CronFieldExpression> expressions = and.getExpressions();
         StringBuilder builder = new StringBuilder();
@@ -74,6 +109,11 @@ abstract class DescriptionStrategy {
         return builder.toString();
     }
 
+    /**
+     * Provide a human readable description for Between instance
+     * @param between - Between
+     * @return human readable description - String
+     */
     protected String describe(Between between) {
         return new StringBuilder()
                 .append(describe(between.getEvery()))
@@ -81,6 +121,11 @@ abstract class DescriptionStrategy {
                 .append(" ").toString();
     }
 
+    /**
+     * Provide a human readable description for Every instance
+     * @param every - Every
+     * @return human readable description - String
+     */
     protected String describe(Every every) {
         if (every.getTime() > 1) {
             return String.format("%s %s ", bundle.getString("every"), nominalValue(every.getTime())) + "%s";
@@ -88,6 +133,11 @@ abstract class DescriptionStrategy {
         return bundle.getString("every") + " %s ";
     }
 
+    /**
+     * Provide a human readable description for On instance
+     * @param on - On
+     * @return human readable description - String
+     */
     protected String describe(On on) {
         return String.format("%s %s ", bundle.getString("at"), nominalValue(on.getTime())) + "%s";
     }
