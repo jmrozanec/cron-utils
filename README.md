@@ -59,5 +59,6 @@ Contributions are welcome! You can contribute by
  * enhancing existing code: ex.: provide more accurate description cases
  * testing
  * enhancing documentation
+ * providing new locales
  * bringing suggestions and reporting bugs
  * spreading the word / telling us how you use it!
