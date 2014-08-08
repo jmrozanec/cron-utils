@@ -10,8 +10,6 @@ License: Apache 2.0
 
 The project follows the [Semantic Versioning Convention](http://semver.org/)
 
-For more stats about the project, you can visit our [OpenHUB profile](https://www.openhub.net/p/cron-utils)
-
 **Features**
 
  * Supports all cron expression special characters including * / , - ? L W, #.
@@ -65,3 +63,5 @@ Contributions are welcome! You can contribute by
  * providing new locales
  * bringing suggestions and reporting bugs
  * spreading the word / telling us how you use it!
+
+ ->For stats about the project, you can visit our [OpenHUB profile](https://www.openhub.net/p/cron-utils)<-
