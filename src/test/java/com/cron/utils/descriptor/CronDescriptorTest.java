@@ -35,7 +35,7 @@ public class CronDescriptorTest {
         List<CronFieldParseResult> params = Lists.newArrayList();
         params.add(new CronFieldParseResult(CronParameter.HOUR, expression));
         params.add(new CronFieldParseResult(CronParameter.MINUTE, new On(null, "" + time)));
-        assertEquals(String.format("every %s hours At minute %s", time, time), descriptor.describe(params));
+        assertEquals(String.format("every %s hours at minute %s", time, time), descriptor.describe(params));
     }
 
     @Test
@@ -61,7 +61,7 @@ public class CronDescriptorTest {
         results.add(new CronFieldParseResult(CronParameter.HOUR, new On(null, "" + hour)));
         results.add(new CronFieldParseResult(CronParameter.MINUTE, new On(null, "" + minute)));
         results.add(new CronFieldParseResult(CronParameter.DAY_OF_WEEK, expression));
-        assertEquals(String.format("At %s:%s every day between Tuesday and Saturday", hour, minute), descriptor.describe(results));
+        assertEquals(String.format("at %s:%s every day between Tuesday and Saturday", hour, minute), descriptor.describe(results));
     }
 
     @Test
@@ -71,7 +71,7 @@ public class CronDescriptorTest {
         results.add(new CronFieldParseResult(CronParameter.HOUR, new On(null, "" + hour)));
         results.add(new CronFieldParseResult(CronParameter.MINUTE, new Always(null)));
         results.add(new CronFieldParseResult(CronParameter.SECOND, new Always(null)));
-        assertEquals(String.format("At %s:00", hour), descriptor.describe(results));
+        assertEquals(String.format("at %s:00", hour), descriptor.describe(results));
     }
 
     @Test
@@ -82,7 +82,7 @@ public class CronDescriptorTest {
         results.add(new CronFieldParseResult(CronParameter.MINUTE, new Always(null)));
         results.add(new CronFieldParseResult(CronParameter.SECOND, new Always(null)));
         results.add(new CronFieldParseResult(CronParameter.MONTH, new On(null, "" + month)));
-        assertEquals("every second At February month", descriptor.describe(results));
+        assertEquals("every second at February month", descriptor.describe(results));
     }
 
     @Test
@@ -105,7 +105,7 @@ public class CronDescriptorTest {
         results.add(new CronFieldParseResult(CronParameter.HOUR, new On(null, "" + hour)));
         results.add(new CronFieldParseResult(CronParameter.MINUTE, new On(null, "" + minute)));
         results.add(new CronFieldParseResult(CronParameter.DAY_OF_WEEK, new On(null, String.format("%sL", dayOfWeek))));
-        assertEquals(String.format("At %s:%s last Tuesday of every month", hour, minute), descriptor.describe(results));
+        assertEquals(String.format("at %s:%s last Tuesday of every month", hour, minute), descriptor.describe(results));
     }
 
     @Test
@@ -117,7 +117,7 @@ public class CronDescriptorTest {
         results.add(new CronFieldParseResult(CronParameter.HOUR, new On(null, "" + hour)));
         results.add(new CronFieldParseResult(CronParameter.MINUTE, new On(null, "" + minute)));
         results.add(new CronFieldParseResult(CronParameter.DAY_OF_WEEK, new On(null, String.format("%s#%s", dayOfWeek, dayOfWeek))));
-        assertEquals(String.format("At %s:%s Tuesday %s of every month", hour, minute, dayOfWeek), descriptor.describe(results));
+        assertEquals(String.format("at %s:%s Tuesday %s of every month", hour, minute, dayOfWeek), descriptor.describe(results));
     }
 
     @Test
@@ -128,7 +128,7 @@ public class CronDescriptorTest {
         results.add(new CronFieldParseResult(CronParameter.HOUR, new On(null, "" + hour)));
         results.add(new CronFieldParseResult(CronParameter.MINUTE, new On(null, "" + minute)));
         results.add(new CronFieldParseResult(CronParameter.DAY_OF_MONTH, new On(null, "L")));
-        assertEquals(String.format("At %s:%s last day of the month", hour, minute), descriptor.describe(results));
+        assertEquals(String.format("at %s:%s last day of the month", hour, minute), descriptor.describe(results));
     }
 
     @Test
@@ -140,6 +140,6 @@ public class CronDescriptorTest {
         results.add(new CronFieldParseResult(CronParameter.HOUR, new On(null, "" + hour)));
         results.add(new CronFieldParseResult(CronParameter.MINUTE, new On(null, "" + minute)));
         results.add(new CronFieldParseResult(CronParameter.DAY_OF_MONTH, new On(null, String.format("%sW", dayOfMonth))));
-        assertEquals(String.format("At %s:%s the nearest weekday to the %s of the month", hour, minute, dayOfMonth), descriptor.describe(results));
+        assertEquals(String.format("at %s:%s the nearest weekday to the %s of the month", hour, minute, dayOfMonth), descriptor.describe(results));
     }
 }
