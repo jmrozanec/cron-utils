@@ -2,6 +2,7 @@ cron-utils
 ===========
 
 [![Build Status](https://travis-ci.org/jmrozanec/cron-utils.png?branch=master)](https://travis-ci.org/jmrozanec/cron-utils)
+[![Coverage Status](https://coveralls.io/repos/jmrozanec/cron-utils/badge.png?branch=master)](https://coveralls.io/r/jmrozanec/cron-utils?branch=master)
 
 A Java library to parse a cron and get a human readable description.
 
