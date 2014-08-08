@@ -11,10 +11,14 @@ The library follows the [Semantic Versioning Convention](http://semver.org/)
 **Features**
 
  * Supports all cron expression special characters including * / , - ? L W, #.
- * Supports arbitrary cron expressions. Supported fields are: second, minute, hour, day of month, month, day of week, year.
+ * Supports arbitrary cron expressions: you can define your own cron format! Supported fields are: second, minute, hour, day of month, month, day of week, year.
  * Support for optional last field!
  * Supports printing to locale specific human readable format (Italian, English, Spanish and Dutch so far...).
- * Pre-defined parsers for Unix, Cron4j and Quartz cron definitions
+ * Parsing and Description process are decoupled: parse once and operate with the result!
+ * Pre-defined parsers for
+    ** [Unix](http://www.unix.com/man-page/linux/5/crontab/)
+    ** [Cron4j](http://www.sauronsoftware.it/projects/cron4j/)
+    ** [Quartz](http://quartz-scheduler.org/) cron definitions
 
 **Download**
 
