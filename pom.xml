@@ -223,6 +223,16 @@
                 <artifactId>versions-maven-plugin</artifactId>
                 <version>2.1</version>
             </plugin>
+
+            <!--   Get code coverage reports!     -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>cobertura-maven-plugin</artifactId>
+                <version>2.6</version>
+                <configuration>
+                    <format>xml</format>
+                </configuration>
+            </plugin>
 		</plugins>
 
 		<extensions>
@@ -234,21 +244,6 @@
 			</extension>
 		</extensions>
 	</build>
-
-    <reporting>
-        <plugins>
-            <!--   Get code coverage reports!     -->
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>cobertura-maven-plugin</artifactId>
-                <version>2.6</version>
-                <configuration>
-                    <format>xml</format>
-                    <maxmem>256m</maxmem>
-                </configuration>
-            </plugin>
-        </plugins>
-    </reporting>
 
 	<profiles>
 		<profile>
