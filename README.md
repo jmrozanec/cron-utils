@@ -8,7 +8,9 @@ A Java library to parse a cron and get a human readable description.
 
 License: Apache 2.0
 
-The library follows the [Semantic Versioning Convention](http://semver.org/)
+The project follows the [Semantic Versioning Convention](http://semver.org/)
+
+For more stats about the project, you can visit our [OpenHUB profile](https://www.openhub.net/p/cron-utils)
 
 **Features**
 
