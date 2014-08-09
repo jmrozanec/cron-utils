@@ -1,10 +1,10 @@
 cron-utils
 ===========
 
-[![Stories in Backlog](https://badge.waffle.io/jmrozanec/cron-utils.svg?label=ready&title=Backlog)](http://waffle.io/jmrozanec/cron-utils)
+[![Stories in Backlog](https://badge.waffle.io/jmrozanec/cron-utils.svg?label=backlog&title=Backlog)](http://waffle.io/jmrozanec/cron-utils)
 [![Stories in Ready](https://badge.waffle.io/jmrozanec/cron-utils.svg?label=ready&title=Ready)](http://waffle.io/jmrozanec/cron-utils)
-[![Stories in In Progress](https://badge.waffle.io/jmrozanec/cron-utils.svg?label=ready&title=InProgress)](http://waffle.io/jmrozanec/cron-utils)
-[![Stories in Done](https://badge.waffle.io/jmrozanec/cron-utils.svg?label=ready&title=Done)](http://waffle.io/jmrozanec/cron-utils)
+[![Stories in In Progress](https://badge.waffle.io/jmrozanec/cron-utils.svg?label=inprogress&title=InProgress)](http://waffle.io/jmrozanec/cron-utils)
+[![Stories in Done](https://badge.waffle.io/jmrozanec/cron-utils.svg?label=done&title=Done)](http://waffle.io/jmrozanec/cron-utils)
 
 [![Build Status](https://travis-ci.org/jmrozanec/cron-utils.png?branch=master)](https://travis-ci.org/jmrozanec/cron-utils)
 [![Coverage Status](https://coveralls.io/repos/jmrozanec/cron-utils/badge.png)](https://coveralls.io/r/jmrozanec/cron-utils)
