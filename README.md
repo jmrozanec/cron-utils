@@ -52,6 +52,8 @@ cron-utils will be soon available in the Maven central repository.
 
     descriptor.describe(parser.parse("0 23 ? * * 1-5 *"));
     //description will be: "every hour at minute 23 every day between Monday and Friday"
+    //which is the same description we get for the cron below:
+    descriptor.describe(parser.parse("0 23 ? * * MON-FRI *"));
 
 **Contribute!**
 
