@@ -18,17 +18,26 @@ import org.apache.commons.lang3.StringUtils;
  * Parses a field from a cron expression.
  */
 class FieldParser {
-    private final char[] specialCharsMinusStar = new char[]{'/', '-', ','};
+    private final char[] specialCharsMinusStar = new char[]{'/', '-', ','};//universally supported
 
     private FieldConstraints constraints;
 
+    /**
+     * Default constructor.
+     * Default FieldConstraints are initialized.
+     */
     FieldParser() {
         constraints = FieldConstraints.nullConstraints();
     }
 
+    /**
+     * Parse given expression for a single cron field
+     * @param expression - String
+     * @return CronFieldExpression object that with interpretation of given String parameter
+     */
     CronFieldExpression parse(String expression) {
         if (!StringUtils.containsAny(expression, specialCharsMinusStar)) {
-            if ("*".equals(expression)) {
+            if ("*".equals(expression)) {//all crons support asterisk
                 return new Always(constraints);
             } else {
                 return new On(constraints, expression);
@@ -57,7 +66,13 @@ class FieldParser {
         }
     }
 
-
+    /**
+     * Add field constraints for parser.
+     * This enables to check if values are supported as well
+     * as if specified numbers are in expected range
+     * @param constraints - FieldConstraints
+     * @return FieldParser - this instance
+     */
     FieldParser withConstraints(FieldConstraints constraints) {
         this.constraints = constraints;
         return this;
