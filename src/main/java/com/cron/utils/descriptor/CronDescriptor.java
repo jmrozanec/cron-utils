@@ -32,14 +32,26 @@ public class CronDescriptor {
     private static final String BUNDLE = "CronUtilsI18N";
     private ResourceBundle bundle;
 
+    /**
+     * Constructor creating a descriptor for given Locale
+     * @param locale - Locale in which descriptions are given
+     */
     private CronDescriptor(Locale locale) {
         bundle = ResourceBundle.getBundle(BUNDLE, locale);
     }
 
+    /**
+     * Default constructor. Considers Locale.UK as default locale
+     */
     private CronDescriptor() {
         bundle = ResourceBundle.getBundle(BUNDLE, DEFAULT_LOCALE);
     }
 
+    /**
+     * Provide a description of given CronFieldParseResult list
+     * @param fields - CronFieldParseResult list
+     * @return description - String
+     */
     public String describe(List<CronFieldParseResult> fields) {
         Map<CronParameter, CronFieldExpression> expressions = Maps.newHashMap();
         for (CronFieldParseResult result : fields) {
@@ -55,6 +67,11 @@ public class CronDescriptor {
 
     }
 
+    /**
+     * Provide description for hours, minutes and seconds
+     * @param expressions - expressions to describe;
+     * @return description - String
+     */
     private String describeHHmmss(Map<CronParameter, CronFieldExpression> expressions) {
         return DescriptionStrategyFactory.hhMMssInstance(
                 bundle,
@@ -64,6 +81,11 @@ public class CronDescriptor {
         ).describe();
     }
 
+    /**
+     * Provide description for day of month
+     * @param expressions - expressions to describe;
+     * @return description - String
+     */
     private String describeDayOfMonth(Map<CronParameter, CronFieldExpression> expressions) {
         return String.format(
                 DescriptionStrategyFactory.daysOfMonthInstance(
@@ -72,6 +94,11 @@ public class CronDescriptor {
                 ).describe(), bundle.getString("day"));
     }
 
+    /**
+     * Provide description for month
+     * @param expressions - expressions to describe;
+     * @return description - String
+     */
     private String describeMonth(Map<CronParameter, CronFieldExpression> expressions) {
         return String.format(
                 DescriptionStrategyFactory.monthsInstance(
@@ -81,6 +108,11 @@ public class CronDescriptor {
                 bundle.getString("month"));
     }
 
+    /**
+     * Provide description for day of week
+     * @param expressions - expressions to describe;
+     * @return description - String
+     */
     private String describeDayOfWeek(Map<CronParameter, CronFieldExpression> expressions) {
         return String.format(
                 DescriptionStrategyFactory.daysOfWeekInstance(
@@ -90,6 +122,11 @@ public class CronDescriptor {
                 bundle.getString("day"));
     }
 
+    /**
+     * Provide description for a year
+     * @param expressions - expressions to describe;
+     * @return description - String
+     */
     private String describeYear(Map<CronParameter, CronFieldExpression> expressions) {
         return String.format(
                 DescriptionStrategyFactory.plainInstance(
