@@ -37,7 +37,7 @@ public class CronFieldParseResult {
         return new Comparator<CronFieldParseResult>() {
             @Override
             public int compare(CronFieldParseResult o1, CronFieldParseResult o2) {
-                return o1.field.getOrder() - o2.field.getOrder();
+                return o1.getField().getOrder() - o2.getField().getOrder();
             }
         };
     }
