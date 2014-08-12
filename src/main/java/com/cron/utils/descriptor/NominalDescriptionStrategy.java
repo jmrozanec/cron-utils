@@ -21,10 +21,23 @@ import java.util.Set;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+/**
+ * Description strategy where a cron field number can be mapped to a name.
+ * Ex.: days of week or months
+ */
 class NominalDescriptionStrategy extends DescriptionStrategy {
     private CronFieldExpression expression;
     private Set<Function<CronFieldExpression, String>> descriptions;
 
+    /**
+     * Constructor
+     * @param bundle - locale in which description should be given
+     * @param nominalValueFunction - function that maps Integer to String.
+     *                             The function should return "" if does not match criteria,
+     *                             or the description otherwise.
+     * @param expression - CronFieldExpression instance, the expression to be described.
+     */
     public NominalDescriptionStrategy(ResourceBundle bundle, Function<Integer, String> nominalValueFunction, CronFieldExpression expression) {
         super(bundle);
         descriptions = Sets.newHashSet();
@@ -48,6 +61,14 @@ class NominalDescriptionStrategy extends DescriptionStrategy {
         return describe(expression);
     }
 
+    /**
+     * Allows to provide a specific description to handle a CronFieldExpression instance
+     *
+     * @param desc - function that maps CronFieldExpression to String.
+     *             The function should return "" if does not match criteria,
+     *             or the description otherwise.
+     * @return NominalDescriptionStrategy, this instance
+     */
     public NominalDescriptionStrategy addDescription(Function<CronFieldExpression, String> desc) {
         descriptions.add(desc);
         return this;

@@ -3,6 +3,7 @@ package com.cron.utils.descriptor;
 import com.cron.utils.parser.field.*;
 import com.google.common.base.Function;
 import com.google.common.collect.Sets;
+import org.apache.commons.lang3.Validate;
 
 import java.util.ResourceBundle;
 import java.util.Set;
@@ -19,6 +20,10 @@ import java.util.Set;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+/**
+ * Strategy to provide a human readable description to hh:mm:ss variations
+ */
 class TimeDescriptionStrategy extends DescriptionStrategy {
 
     private CronFieldExpression hours;
@@ -27,7 +32,15 @@ class TimeDescriptionStrategy extends DescriptionStrategy {
     private Set<Function<TimeFields, String>> descriptions;
     private int defaultSeconds = 0;
 
-    TimeDescriptionStrategy(ResourceBundle bundle, CronFieldExpression hours, CronFieldExpression minutes, CronFieldExpression seconds) {
+    /**
+     * Constructor
+     * @param bundle - locale considered when creating the description
+     * @param hours - CronFieldExpression for hours. If no instance is provided, an Always instance is created.
+     * @param minutes - CronFieldExpression for minutes. If no instance is provided, an Always instance is created.
+     * @param seconds - CronFieldExpression for seconds. If no instance is provided, an On instance is created.
+     */
+    TimeDescriptionStrategy(ResourceBundle bundle, CronFieldExpression hours, CronFieldExpression minutes,
+                            CronFieldExpression seconds) {
         super(bundle);
         this.hours = ensureInstance(hours, new Always(FieldConstraints.nullConstraints()));
         this.minutes = ensureInstance(minutes, new Always(FieldConstraints.nullConstraints()));
@@ -36,7 +49,14 @@ class TimeDescriptionStrategy extends DescriptionStrategy {
         registerFunctions();
     }
 
+    /**
+     * Give an expression instance, will return it if is not null. Otherwise will return the defaultExpression;
+     * @param expression - CronFieldExpression instance; may be null
+     * @param defaultExpression - CronFieldExpression, never null;
+     * @return
+     */
     private CronFieldExpression ensureInstance(CronFieldExpression expression, CronFieldExpression defaultExpression) {
+        Validate.notNull(defaultExpression, "Default expression must not be null");
         if (expression != null) {
             return expression;
         } else {
@@ -58,6 +78,9 @@ class TimeDescriptionStrategy extends DescriptionStrategy {
                 describe(hours).replaceAll("%s", bundle.getString("hours"));
     }
 
+    /**
+     * Registers functions that map TimeFields to a human readable description.
+     */
     private void registerFunctions() {
         //case: every second
         //case: every minute at x second
@@ -228,6 +251,9 @@ class TimeDescriptionStrategy extends DescriptionStrategy {
                 });
     }
 
+    /**
+     * Contains CronFieldExpression instances for hours, minutes and seconds.
+     */
     class TimeFields {
         public CronFieldExpression seconds;
         public CronFieldExpression minutes;
@@ -240,6 +266,11 @@ class TimeDescriptionStrategy extends DescriptionStrategy {
         }
     }
 
+    /**
+     * Checks if On instance has a default value.
+     * @param on - On instance
+     * @return boolean - true if time value matches a default; false otherwise.
+     */
     private boolean isDefault(On on) {
         return on.getTime() == defaultSeconds;
     }

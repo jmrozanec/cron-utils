@@ -19,6 +19,12 @@ import java.util.ResourceBundle;
 * limitations under the License.
 */
 class DescriptionStrategyFactory {
+    /**
+     * Creates description strategy for days of week
+     * @param bundle - locale
+     * @param expression - CronFieldExpression
+     * @return - DescriptionStrategy instance, never null
+     */
     public static DescriptionStrategy daysOfWeekInstance(final ResourceBundle bundle, final CronFieldExpression expression) {
         final Function<Integer, String> nominal = new Function<Integer, String>() {
             @Override
@@ -49,6 +55,12 @@ class DescriptionStrategyFactory {
         return dow;
     }
 
+    /**
+     * Creates description strategy for days of month
+     * @param bundle - locale
+     * @param expression - CronFieldExpression
+     * @return - DescriptionStrategy instance, never null
+     */
     public static DescriptionStrategy daysOfMonthInstance(final ResourceBundle bundle, final CronFieldExpression expression) {
         NominalDescriptionStrategy dow = new NominalDescriptionStrategy(bundle, null, expression);
 
@@ -72,6 +84,12 @@ class DescriptionStrategyFactory {
         return dow;
     }
 
+    /**
+     * Creates description strategy for months
+     * @param bundle - locale
+     * @param expression - CronFieldExpression
+     * @return - DescriptionStrategy instance, never null
+     */
     public static DescriptionStrategy monthsInstance(final ResourceBundle bundle, final CronFieldExpression expression) {
         return new NominalDescriptionStrategy(
                 bundle,
@@ -85,10 +103,21 @@ class DescriptionStrategyFactory {
         );
     }
 
+    /**
+     * Creates nominal description strategy
+     * @param bundle - locale
+     * @param expression - CronFieldExpression
+     * @return - DescriptionStrategy instance, never null
+     */
     public static DescriptionStrategy plainInstance(ResourceBundle bundle, final CronFieldExpression expression) {
         return new NominalDescriptionStrategy(bundle, null, expression);
     }
 
+    /**
+     * Creates description strategy for hh:mm:ss
+     * @param bundle - locale
+     * @return - DescriptionStrategy instance, never null
+     */
     public static DescriptionStrategy hhMMssInstance(ResourceBundle bundle, final CronFieldExpression hours,
                                                      final CronFieldExpression minutes, final CronFieldExpression seconds) {
         return new TimeDescriptionStrategy(bundle, hours, minutes, seconds);
