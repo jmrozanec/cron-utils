@@ -9,6 +9,8 @@ cron-utils
 [![Build Status](https://travis-ci.org/jmrozanec/cron-utils.png?branch=master)](https://travis-ci.org/jmrozanec/cron-utils)
 [![Coverage Status](https://coveralls.io/repos/jmrozanec/cron-utils/badge.png)](https://coveralls.io/r/jmrozanec/cron-utils)
 
+[![Project stats by OpenHub](https://www.openhub.net/p/cron-utils/widgets/project_thin_badge.gif)](https://www.openhub.net/p/cron-utils/)
+
 A Java library to parse a cron and get a human readable description.
 
 License: Apache 2.0
@@ -71,4 +73,5 @@ Contributions are welcome! You can contribute by
  * bringing suggestions and reporting bugs
  * spreading the word / telling us how you use it!
 
- For stats about the project, you can visit our [OpenHUB profile](https://www.openhub.net/p/cron-utils)
+
+For stats about the project, you can visit our [OpenHUB profile](https://www.openhub.net/p/cron-utils)
