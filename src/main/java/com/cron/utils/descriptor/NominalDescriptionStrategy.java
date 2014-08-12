@@ -1,8 +1,10 @@
 package com.cron.utils.descriptor;
 
+import com.cron.utils.CronFieldName;
 import com.cron.utils.parser.field.Always;
 import com.cron.utils.parser.field.CronFieldExpression;
 import com.cron.utils.parser.field.FieldConstraints;
+import com.cron.utils.parser.field.FieldConstraintsBuilder;
 import com.google.common.base.Function;
 import com.google.common.collect.Sets;
 
@@ -47,7 +49,7 @@ class NominalDescriptionStrategy extends DescriptionStrategy {
         if (expression != null) {
             this.expression = expression;
         } else {
-            this.expression = new Always(FieldConstraints.nullConstraints());
+            this.expression = new Always(FieldConstraintsBuilder.instance().createConstraintsInstance());
         }
     }
 

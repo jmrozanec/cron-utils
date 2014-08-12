@@ -11,12 +11,12 @@ package com.cron.utils;
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-public enum CronParameter {
+public enum CronFieldName {
     SECOND(0), MINUTE(1), HOUR(2), DAY_OF_MONTH(3), MONTH(4), DAY_OF_WEEK(5), YEAR(6);
 
     private int order;
 
-    private CronParameter(int order) {
+    private CronFieldName(int order) {
         this.order = order;
     }
 

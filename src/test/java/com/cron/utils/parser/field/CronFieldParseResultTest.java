@@ -1,6 +1,6 @@
 package com.cron.utils.parser.field;
 
-import com.cron.utils.CronParameter;
+import com.cron.utils.CronFieldName;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -15,19 +15,19 @@ import static org.mockito.Mockito.when;
 public class CronFieldParseResultTest {
 
     private CronFieldParseResult result;
-    private CronParameter cronParameter;
+    private CronFieldName cronFieldName;
     private CronFieldExpression mockCronFieldExpression;
 
     @Before
     public void setUp(){
-        cronParameter = CronParameter.SECOND;
+        cronFieldName = CronFieldName.SECOND;
         mockCronFieldExpression = mock(CronFieldExpression.class);
-        result = new CronFieldParseResult(cronParameter, mockCronFieldExpression);
+        result = new CronFieldParseResult(cronFieldName, mockCronFieldExpression);
     }
 
     @Test
     public void testGetField() throws Exception {
-        assertEquals(cronParameter, result.getField());
+        assertEquals(cronFieldName, result.getField());
     }
 
     @Test
@@ -39,23 +39,23 @@ public class CronFieldParseResultTest {
     public void testCreateFieldComparator() throws Exception {
         Comparator<CronFieldParseResult> comparator = CronFieldParseResult.createFieldComparator();
         CronFieldParseResult mockResult1 = mock(CronFieldParseResult.class);
-        CronParameter cronParameter1 = CronParameter.SECOND;
+        CronFieldName cronFieldName1 = CronFieldName.SECOND;
 
         CronFieldParseResult mockResult2 = mock(CronFieldParseResult.class);
-        CronParameter cronParameter2 = cronParameter1;
+        CronFieldName cronFieldName2 = cronFieldName1;
 
-        when(mockResult1.getField()).thenReturn(cronParameter1);
-        when(mockResult2.getField()).thenReturn(cronParameter2);
+        when(mockResult1.getField()).thenReturn(cronFieldName1);
+        when(mockResult2.getField()).thenReturn(cronFieldName2);
 
-        assertEquals(cronParameter1, cronParameter2);
+        assertEquals(cronFieldName1, cronFieldName2);
         assertEquals(0, comparator.compare(mockResult1, mockResult2));
 
-        cronParameter2 = CronParameter.MINUTE;
+        cronFieldName2 = CronFieldName.MINUTE;
 
-        when(mockResult1.getField()).thenReturn(cronParameter1);
-        when(mockResult2.getField()).thenReturn(cronParameter2);
+        when(mockResult1.getField()).thenReturn(cronFieldName1);
+        when(mockResult2.getField()).thenReturn(cronFieldName2);
 
-        assertNotEquals(cronParameter1, cronParameter2);
+        assertNotEquals(cronFieldName1, cronFieldName2);
         assertTrue(0 != comparator.compare(mockResult1, mockResult2));
     }
 }

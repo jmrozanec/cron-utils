@@ -1,6 +1,6 @@
 package com.cron.utils.descriptor;
 
-import com.cron.utils.CronParameter;
+import com.cron.utils.CronFieldName;
 import com.cron.utils.parser.field.CronFieldExpression;
 import com.cron.utils.parser.field.CronFieldParseResult;
 import com.google.common.collect.Maps;
@@ -53,7 +53,7 @@ public class CronDescriptor {
      * @return description - String
      */
     public String describe(List<CronFieldParseResult> fields) {
-        Map<CronParameter, CronFieldExpression> expressions = Maps.newHashMap();
+        Map<CronFieldName, CronFieldExpression> expressions = Maps.newHashMap();
         for (CronFieldParseResult result : fields) {
             expressions.put(result.getField(), result.getExpression());
         }
@@ -72,12 +72,12 @@ public class CronDescriptor {
      * @param expressions - expressions to describe;
      * @return description - String
      */
-    private String describeHHmmss(Map<CronParameter, CronFieldExpression> expressions) {
+    private String describeHHmmss(Map<CronFieldName, CronFieldExpression> expressions) {
         return DescriptionStrategyFactory.hhMMssInstance(
                 bundle,
-                expressions.get(CronParameter.HOUR),
-                expressions.get(CronParameter.MINUTE),
-                expressions.get(CronParameter.SECOND)
+                expressions.get(CronFieldName.HOUR),
+                expressions.get(CronFieldName.MINUTE),
+                expressions.get(CronFieldName.SECOND)
         ).describe();
     }
 
@@ -86,11 +86,11 @@ public class CronDescriptor {
      * @param expressions - expressions to describe;
      * @return description - String
      */
-    private String describeDayOfMonth(Map<CronParameter, CronFieldExpression> expressions) {
+    private String describeDayOfMonth(Map<CronFieldName, CronFieldExpression> expressions) {
         return String.format(
                 DescriptionStrategyFactory.daysOfMonthInstance(
                         bundle,
-                        expressions.get(CronParameter.DAY_OF_MONTH)
+                        expressions.get(CronFieldName.DAY_OF_MONTH)
                 ).describe(), bundle.getString("day"));
     }
 
@@ -99,11 +99,11 @@ public class CronDescriptor {
      * @param expressions - expressions to describe;
      * @return description - String
      */
-    private String describeMonth(Map<CronParameter, CronFieldExpression> expressions) {
+    private String describeMonth(Map<CronFieldName, CronFieldExpression> expressions) {
         return String.format(
                 DescriptionStrategyFactory.monthsInstance(
                         bundle,
-                        expressions.get(CronParameter.MONTH)
+                        expressions.get(CronFieldName.MONTH)
                 ).describe(),
                 bundle.getString("month"));
     }
@@ -113,11 +113,11 @@ public class CronDescriptor {
      * @param expressions - expressions to describe;
      * @return description - String
      */
-    private String describeDayOfWeek(Map<CronParameter, CronFieldExpression> expressions) {
+    private String describeDayOfWeek(Map<CronFieldName, CronFieldExpression> expressions) {
         return String.format(
                 DescriptionStrategyFactory.daysOfWeekInstance(
                         bundle,
-                        expressions.get(CronParameter.DAY_OF_WEEK)
+                        expressions.get(CronFieldName.DAY_OF_WEEK)
                 ).describe(),
                 bundle.getString("day"));
     }
@@ -127,11 +127,11 @@ public class CronDescriptor {
      * @param expressions - expressions to describe;
      * @return description - String
      */
-    private String describeYear(Map<CronParameter, CronFieldExpression> expressions) {
+    private String describeYear(Map<CronFieldName, CronFieldExpression> expressions) {
         return String.format(
                 DescriptionStrategyFactory.plainInstance(
                         bundle,
-                        expressions.get(CronParameter.YEAR)
+                        expressions.get(CronFieldName.YEAR)
                 ).describe(),
                 bundle.getString("year"));
     }

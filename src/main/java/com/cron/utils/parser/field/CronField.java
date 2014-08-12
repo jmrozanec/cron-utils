@@ -1,6 +1,7 @@
 package com.cron.utils.parser.field;
 
-import com.cron.utils.CronParameter;
+import com.cron.utils.CronFieldName;
+import org.apache.commons.lang3.Validate;
 
 import java.util.Comparator;
 
@@ -17,45 +18,15 @@ import java.util.Comparator;
  * limitations under the License.
  */
 public class CronField {
-    private CronParameter field;
+    private CronFieldName field;
     private FieldParser parser;
 
-    private CronField(CronParameter field) {
-        this.field = field;
-        this.parser =
-                new FieldParser()
-                        .withConstraints(FieldConstraints.forField(field));
+    public CronField(CronFieldName fieldName, FieldConstraints constraints) {
+        this.field = Validate.notNull(fieldName);
+        this.parser = new FieldParser(constraints);
     }
 
-    public static CronField seconds() {
-        return new CronField(CronParameter.SECOND);
-    }
-
-    public static CronField minutes() {
-        return new CronField(CronParameter.MINUTE);
-    }
-
-    public static CronField hours() {
-        return new CronField(CronParameter.HOUR);
-    }
-
-    public static CronField daysOfWeek() {
-        return new CronField(CronParameter.DAY_OF_WEEK);
-    }
-
-    public static CronField daysOfMonth() {
-        return new CronField(CronParameter.DAY_OF_MONTH);
-    }
-
-    public static CronField months() {
-        return new CronField(CronParameter.MONTH);
-    }
-
-    public static CronField years() {
-        return new CronField(CronParameter.YEAR);
-    }
-
-    public CronParameter getField() {
+    public CronFieldName getField() {
         return field;
     }
 

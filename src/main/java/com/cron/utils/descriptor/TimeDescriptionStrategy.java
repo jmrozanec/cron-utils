@@ -1,5 +1,6 @@
 package com.cron.utils.descriptor;
 
+import com.cron.utils.CronFieldName;
 import com.cron.utils.parser.field.*;
 import com.google.common.base.Function;
 import com.google.common.collect.Sets;
@@ -39,12 +40,27 @@ class TimeDescriptionStrategy extends DescriptionStrategy {
      * @param minutes - CronFieldExpression for minutes. If no instance is provided, an Always instance is created.
      * @param seconds - CronFieldExpression for seconds. If no instance is provided, an On instance is created.
      */
-    TimeDescriptionStrategy(ResourceBundle bundle, CronFieldExpression hours, CronFieldExpression minutes,
-                            CronFieldExpression seconds) {
+    TimeDescriptionStrategy(ResourceBundle bundle, CronFieldExpression hours,
+                            CronFieldExpression minutes, CronFieldExpression seconds) {
         super(bundle);
-        this.hours = ensureInstance(hours, new Always(FieldConstraints.nullConstraints()));
-        this.minutes = ensureInstance(minutes, new Always(FieldConstraints.nullConstraints()));
-        this.seconds = ensureInstance(seconds, new On(FieldConstraints.nullConstraints(), "" + defaultSeconds));
+        this.hours = ensureInstance(hours,
+                new Always(
+                        FieldConstraintsBuilder.instance()
+                                .forField(CronFieldName.HOUR).createConstraintsInstance()
+                )
+        );
+        this.minutes = ensureInstance(minutes,
+                new Always(
+                        FieldConstraintsBuilder.instance()
+                                .forField(CronFieldName.MINUTE).createConstraintsInstance()
+                )
+        );
+        this.seconds = ensureInstance(seconds,
+                new On(
+                        FieldConstraintsBuilder.instance()
+                                .forField(CronFieldName.SECOND).createConstraintsInstance(),
+                        "" + defaultSeconds)
+        );
         descriptions = Sets.newHashSet();
         registerFunctions();
     }

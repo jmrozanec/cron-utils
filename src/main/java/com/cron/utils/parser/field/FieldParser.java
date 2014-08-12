@@ -1,6 +1,7 @@
 package com.cron.utils.parser.field;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Validate;
 
 /*
  * Copyright 2014 jmrozanec
@@ -23,11 +24,11 @@ class FieldParser {
     private FieldConstraints constraints;
 
     /**
-     * Default constructor.
-     * Default FieldConstraints are initialized.
+     * Constructor.
+     * @param constraints - FieldConstraints for field.
      */
-    FieldParser() {
-        constraints = FieldConstraints.nullConstraints();
+    FieldParser(FieldConstraints constraints) {
+        this.constraints = Validate.notNull(constraints, "FieldConstraints cannot be null");
     }
 
     /**
@@ -64,17 +65,5 @@ class FieldParser {
                 }
             }
         }
-    }
-
-    /**
-     * Add field constraints for parser.
-     * This enables to check if values are supported as well
-     * as if specified numbers are in expected range
-     * @param constraints - FieldConstraints
-     * @return FieldParser - this instance
-     */
-    FieldParser withConstraints(FieldConstraints constraints) {
-        this.constraints = constraints;
-        return this;
     }
 }

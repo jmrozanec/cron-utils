@@ -29,34 +29,35 @@ public class CronParserRegistry {
 
     private CronParser cron4jParser() {
         return ParserDefinitionBuilder.defineParser()
-                .withMinutes()
-                .withHours()
-                .withDayOfMonth()
-                .withMonth()
-                .withDayOfWeek()
+                .withMinutes().and()
+                .withHours().and()
+                .withDayOfMonth().and()
+                .withMonth().and()
+                .withDayOfWeek().and()
                 .instance();
+
     }
 
     private CronParser unixCrontabParser() {
         return ParserDefinitionBuilder.defineParser()
-                .withMinutes()
-                .withHours()
-                .withDayOfMonth()
-                .withMonth()
-                .withDayOfWeek()
+                .withMinutes().and()
+                .withHours().and()
+                .withDayOfMonth().and()
+                .withMonth().and()
+                .withDayOfWeek().and()
                 .instance();
     }
 
     private CronParser quartzParser() {
         return ParserDefinitionBuilder.defineParser()
-                .withSeconds()
-                .withMinutes()
-                .withHours()
-                .withDayOfMonth()
-                .withMonth()
-                .withDayOfWeek()
-                .withYear()
-                .andLastFieldOptional()
+                .withSeconds().and()
+                .withMinutes().and()
+                .withHours().and()
+                .withDayOfMonth().supportsHash().supportsL().supportsW().and()
+                .withMonth().and()
+                .withDayOfWeek().withIntMapping(7, 0).supportsHash().supportsL().supportsW().and()
+                .withYear().and()
+                .lastFieldOptional()
                 .instance();
     }
 

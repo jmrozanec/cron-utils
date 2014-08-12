@@ -1,6 +1,6 @@
 package com.cron.utils.parser.field;
 
-import com.cron.utils.CronParameter;
+import com.cron.utils.CronFieldName;
 
 import java.util.Comparator;
 
@@ -17,15 +17,15 @@ import java.util.Comparator;
  * limitations under the License.
  */
 public class CronFieldParseResult {
-    private CronParameter field;
+    private CronFieldName field;
     private CronFieldExpression expression;
 
-    public CronFieldParseResult(CronParameter field, CronFieldExpression expression) {
+    public CronFieldParseResult(CronFieldName field, CronFieldExpression expression) {
         this.field = field;
         this.expression = expression;
     }
 
-    public CronParameter getField() {
+    public CronFieldName getField() {
         return field;
     }
 

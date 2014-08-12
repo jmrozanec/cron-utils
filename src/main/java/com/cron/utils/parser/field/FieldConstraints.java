@@ -1,10 +1,6 @@
 package com.cron.utils.parser.field;
 
-import com.cron.utils.CronParameter;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
-
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 
@@ -20,53 +16,50 @@ import java.util.Set;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+/**
+ * Holds information on valid values for a field
+ * and allows to perform mappings and validations.
+ * Example of information for valid field values: int range,
+ * valid special characters, valid nominal values.
+ * Example for mappings: conversions from nominal values to integers
+ * and integer-integer mappings if more than one integer
+ * represents the same concept.
+ */
 public class FieldConstraints {
     private Map<String, Integer> stringMapping;
     private Map<Integer, Integer> intMapping;
+    private Set<SpecialChar> specialChars;
     private int startRange;
     private int endRange;
-    private Set<SpecialChar> specialChars;
 
-    public FieldConstraints() {
-        stringMapping = new HashMap<String, Integer>();
-        intMapping = new HashMap<Integer, Integer>();
-        startRange = 0;//no negatives!
-        endRange = Integer.MAX_VALUE;
-        specialChars = Sets.newHashSet();
-        specialChars.add(SpecialChar.NONE);
+    /**
+     * Constructor
+     * @param stringMapping - mapping of nominal values to integer equivalence
+     * @param intMapping - mapping of integer values to another integer equivalence.
+     *                   Always consider mapping higher integers to lower once.
+     *                   Ex.: if 0 and 7 mean the same, map 7 to 0.
+     * @param specialChars - allowed special chars
+     * @param startRange - lowest possible value
+     * @param endRange - highest possible value
+     */
+    public FieldConstraints(Map<String, Integer> stringMapping,
+                            Map<Integer, Integer> intMapping,
+                            Set<SpecialChar> specialChars,
+                            int startRange, int endRange) {
+        this.stringMapping = Collections.unmodifiableMap(stringMapping);
+        this.intMapping = Collections.unmodifiableMap(intMapping);
+        this.specialChars = Collections.unmodifiableSet(specialChars);
+        this.startRange = startRange;
+        this.endRange = endRange;
     }
 
-    public FieldConstraints registerStringToIntMapping(Map<String, Integer> mapping) {
-        this.stringMapping = mapping;
-        return this;
-    }
-
-    public FieldConstraints registerIntToIntMapping(Map<Integer, Integer> mapping) {
-        this.intMapping = mapping;
-        return this;
-    }
-
-    public FieldConstraints setValidationRange(int start, int end) {
-        this.startRange = start;
-        this.endRange = end;
-        return this;
-    }
-
-    public FieldConstraints supportHash(){
-        specialChars.add(SpecialChar.HASH);
-        return this;
-    }
-
-    public FieldConstraints supportL(){
-        specialChars.add(SpecialChar.L);
-        return this;
-    }
-
-    public FieldConstraints supportW(){
-        specialChars.add(SpecialChar.W);
-        return this;
-    }
-
+    /**
+     * Maps string expression to integer.
+     * If no mapping is found, will try to parse String as Integer
+     * @param exp - expression to be mapped
+     * @return integer value for string expression
+     */
     public int stringToInt(String exp) {
         if (stringMapping.containsKey(exp)) {
             return stringMapping.get(exp);
@@ -75,6 +68,13 @@ public class FieldConstraints {
         }
     }
 
+    /**
+     * Maps integer values to another integer equivalence.
+     * Always consider mapping higher integers to lower once.
+     * Ex.: if 0 and 7 mean the same, map 7 to 0.
+     * @param exp - integer to be mapped
+     * @return Mapping integer. If no mapping int is found, will return exp
+     */
     public int intToInt(Integer exp) {
         if (intMapping.containsKey(exp)) {
             return intMapping.get(exp);
@@ -82,74 +82,26 @@ public class FieldConstraints {
         return exp;
     }
 
+    /**
+     * Validate if given number is >= start range and <= end range
+     * @param number - to be validated
+     * @return - same number being validated if in range,
+     * throws RuntimeException if number out of range
+     */
     public int validateInRange(int number) {
         if (number >= startRange && number <= endRange) {
             return number;
         }
-        throw new RuntimeException("Invalid range");
+        throw new RuntimeException(String.format("Number %s out of range [%s,%s]", number, startRange, endRange));
     }
 
+    /**
+     * Validate if special char is allowed. If not, a RuntimeException will be raised.
+     * @param specialChar - char to be validated
+     */
     public void validateSpecialCharAllowed(SpecialChar specialChar){
         if(!specialChars.contains(specialChar)){
             throw new RuntimeException(String.format("Special char %s not supported!", specialChar));
         }
-    }
-
-    public static FieldConstraints forField(CronParameter field) {
-        switch (field) {
-            case SECOND:
-            case MINUTE:
-                return new FieldConstraints().setValidationRange(0, 59);
-            case HOUR:
-                return new FieldConstraints().setValidationRange(0, 23);
-            case DAY_OF_WEEK:
-                Map<Integer, Integer> intMapping = Maps.newHashMap();
-                intMapping.put(7, 0);
-                return new FieldConstraints()
-                        .registerStringToIntMapping(daysOfWeekMapping())
-                        .registerIntToIntMapping(intMapping)
-                        .setValidationRange(0, 6);
-            case DAY_OF_MONTH:
-                return new FieldConstraints().setValidationRange(1, 31);
-            case MONTH:
-                return new FieldConstraints()
-                        .registerStringToIntMapping(monthsMapping())
-                        .setValidationRange(1, 12);
-            default:
-                return nullConstraints();
-        }
-    }
-
-    public static FieldConstraints nullConstraints() {
-        return new FieldConstraints();
-    }
-
-    private static Map<String, Integer> daysOfWeekMapping(){
-        Map<String, Integer> stringMapping = Maps.newHashMap();
-        stringMapping.put("MON",1);
-        stringMapping.put("TUE",2);
-        stringMapping.put("WED",3);
-        stringMapping.put("THU",4);
-        stringMapping.put("FRI",5);
-        stringMapping.put("SAT",6);
-        stringMapping.put("SUN",7);
-        return stringMapping;
-    }
-
-    private static Map<String, Integer> monthsMapping(){
-        Map<String, Integer> stringMapping = Maps.newHashMap();
-        stringMapping.put("JAN",1);
-        stringMapping.put("FEB",2);
-        stringMapping.put("MAR",3);
-        stringMapping.put("APR",4);
-        stringMapping.put("MAY",5);
-        stringMapping.put("JUN",6);
-        stringMapping.put("JUL",7);
-        stringMapping.put("AUG",8);
-        stringMapping.put("SEP",9);
-        stringMapping.put("OCT",10);
-        stringMapping.put("NOV",11);
-        stringMapping.put("DEC",12);
-        return stringMapping;
     }
 }

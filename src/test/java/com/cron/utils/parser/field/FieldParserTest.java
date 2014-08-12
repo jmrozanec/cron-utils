@@ -10,7 +10,7 @@ public class FieldParserTest {
 
     @Before
     public void setUp() {
-        parser = new FieldParser();
+        parser = new FieldParser(FieldConstraintsBuilder.instance().createConstraintsInstance());
     }
 
     @Test

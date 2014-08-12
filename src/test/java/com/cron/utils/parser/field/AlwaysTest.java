@@ -8,17 +8,24 @@ public class AlwaysTest {
 
     @Test
     public void testGetEveryDefault() throws Exception {
-        assertEquals(1, new Always(FieldConstraints.nullConstraints()).getEvery().getTime());
+        assertEquals(1,
+                new Always(
+                        FieldConstraintsBuilder.instance().createConstraintsInstance()
+                ).getEvery().getTime());
     }
 
     @Test
     public void testGetEveryX() throws Exception {
         int value = 11;
-        assertEquals(value, new Always(FieldConstraints.nullConstraints(), "" + value).getEvery().getTime());
+        assertEquals(value,
+                new Always(
+                        FieldConstraintsBuilder.instance().createConstraintsInstance(),
+                        "" + value
+                ).getEvery().getTime());
     }
 
-    @Test
-    public void testNullConstraints() throws Exception {
+    @Test(expected = NullPointerException.class)
+    public void testNullConstraints() {
         new Always(null);
     }
 }

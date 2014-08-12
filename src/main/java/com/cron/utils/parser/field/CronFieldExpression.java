@@ -1,5 +1,7 @@
 package com.cron.utils.parser.field;
 
+import org.apache.commons.lang3.Validate;
+
 /*
  * Copyright 2014 jmrozanec
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,11 +19,8 @@ public abstract class CronFieldExpression {
     protected FieldConstraints constraints;
 
     public CronFieldExpression(FieldConstraints constraints) {
-        if (constraints != null) {
-            this.constraints = constraints;
-        } else {
-            this.constraints = FieldConstraints.nullConstraints();
-        }
+        Validate.notNull(constraints, "FieldConstraints cannot be null");
+        this.constraints = constraints;
     }
 
     public And and(CronFieldExpression exp) {
