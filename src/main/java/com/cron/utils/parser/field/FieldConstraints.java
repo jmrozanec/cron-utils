@@ -2,9 +2,11 @@ package com.cron.utils.parser.field;
 
 import com.cron.utils.CronParameter;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 /*
  * Copyright 2014 jmrozanec
@@ -23,12 +25,15 @@ public class FieldConstraints {
     private Map<Integer, Integer> intMapping;
     private int startRange;
     private int endRange;
+    private Set<SpecialChar> specialChars;
 
     public FieldConstraints() {
         stringMapping = new HashMap<String, Integer>();
         intMapping = new HashMap<Integer, Integer>();
         startRange = 0;//no negatives!
         endRange = Integer.MAX_VALUE;
+        specialChars = Sets.newHashSet();
+        specialChars.add(SpecialChar.NONE);
     }
 
     public FieldConstraints registerStringToIntMapping(Map<String, Integer> mapping) {
@@ -44,6 +49,21 @@ public class FieldConstraints {
     public FieldConstraints setValidationRange(int start, int end) {
         this.startRange = start;
         this.endRange = end;
+        return this;
+    }
+
+    public FieldConstraints supportHash(){
+        specialChars.add(SpecialChar.HASH);
+        return this;
+    }
+
+    public FieldConstraints supportL(){
+        specialChars.add(SpecialChar.L);
+        return this;
+    }
+
+    public FieldConstraints supportW(){
+        specialChars.add(SpecialChar.W);
         return this;
     }
 
@@ -67,6 +87,12 @@ public class FieldConstraints {
             return number;
         }
         throw new RuntimeException("Invalid range");
+    }
+
+    public void validateSpecialCharAllowed(SpecialChar specialChar){
+        if(!specialChars.contains(specialChar)){
+            throw new RuntimeException(String.format("Special char %s not supported!", specialChar));
+        }
     }
 
     public static FieldConstraints forField(CronParameter field) {

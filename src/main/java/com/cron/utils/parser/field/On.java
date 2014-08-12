@@ -15,12 +15,12 @@ package com.cron.utils.parser.field;
 public class On extends CronFieldExpression {
     private int time;
     private int nth;
-    private SpecialCharEnum specialChar;
+    private SpecialChar specialChar;
 
     public On(FieldConstraints constraints, String exp) {
         super(constraints);
         nth = -1;
-        specialChar = SpecialCharEnum.NONE;
+        specialChar = SpecialChar.NONE;
         time = getConstraints().validateInRange(
                 getConstraints().intToInt(
                         getConstraints().stringToInt(
@@ -38,37 +38,35 @@ public class On extends CronFieldExpression {
         return nth;
     }
 
-    public SpecialCharEnum getSpecialChar() {
+    public SpecialChar getSpecialChar() {
         return specialChar;
     }
 
     private String retrieveSpecialChar(FieldConstraints constraints, String exp) {
+        String expression = exp;
         if (exp.contains("#")) {
-            specialChar = SpecialCharEnum.HASH;
+            specialChar = SpecialChar.HASH;
             String[] array = exp.split("#");
             nth = constraints.validateInRange(constraints.intToInt(constraints.stringToInt(array[1])));
             if (array[0].isEmpty()) {
                 throw new RuntimeException("Time should be specified!");
             }
-            return array[0];
+            return expression = array[0];
         }
         if (exp.contains("L")) {
-            specialChar = SpecialCharEnum.L;
+            specialChar = SpecialChar.L;
             exp = exp.replace("L", "");
             if ("".equals(exp)) {
-                return "0";//to avoid a NumberFormatException
+                expression = "0";//to avoid a NumberFormatException
             } else {
-                return exp;
+                expression = exp;
             }
         }
         if (exp.contains("W")) {
-            specialChar = SpecialCharEnum.W;
-            return exp.replace("W", "");
+            specialChar = SpecialChar.W;
+            expression = exp.replace("W", "");
         }
-        return exp;
-    }
-
-    public enum SpecialCharEnum {
-        L, W, HASH, NONE
+//        constraints.validateSpecialCharAllowed(specialChar);
+        return expression;
     }
 }
