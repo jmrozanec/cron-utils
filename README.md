@@ -19,7 +19,8 @@ The project follows the [Semantic Versioning Convention](http://semver.org/)
 
 **Features**
 
- * Supports all cron expression special characters including * / , - ? L W, #.
+ * Supports all cron expression special characters including * / , - L W, #.
+    * The question mark (?) is currently replaced for an asterisk (*). Enhanced support will be provided in a future.
  * Supports arbitrary cron expressions: you can define your own cron format! Supported fields are: second, minute, hour, day of month, month, day of week, year.
  * Support for optional last field!
  * Supports printing to locale specific human readable format (Italian, English, Spanish and Dutch so far...).
@@ -36,16 +37,19 @@ cron-utils will be soon available in the Maven central repository.
 **Usage Examples**
 
     //define your own parser: arbitrary fields are allowed and last field can be optional
-    CronParser parser = ParserDefinitionBuilder.defineParser()
-                    .withSeconds()
-                    .withMinutes()
-                    .withHours()
-                    .withDayOfMonth()
-                    .withMonth()
-                    .withDayOfWeek()
-                    .withYear()
-                    .andLastFieldOptional()
-                    .instance();
+    CronParser parser =
+        ParserDefinitionBuilder.defineParser()
+            .withSeconds().and()
+            .withMinutes().and()
+            .withHours().and()
+            .withDayOfMonth()
+                .supportsHash().supportsL().supportsW().and()
+            .withMonth().and()
+            .withDayOfWeek()
+                .withIntMapping(7, 0).supportsHash().supportsL().supportsW().and()
+            .withYear().and()
+            .lastFieldOptional()
+            .instance();
 
     //or get a predefined instance
     parser = CronParserRegistry.instance().retrieveParser(QUARTZ);
