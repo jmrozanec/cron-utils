@@ -61,6 +61,8 @@
 		<commonsLang.version>3.3.2</commonsLang.version>
 		<jodatime.version>2.3</jodatime.version>
 		<junit.version>4.11</junit.version>
+        <mockito.version>1.9.5</mockito.version>
+        <powermock.version>1.5.5</powermock.version>
 
 		<github.global.server>github</github.global.server>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -111,10 +113,21 @@
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
-            <version>1.9.5</version>
+            <version>${mockito.version}</version>
             <scope>test</scope>
         </dependency>
-
+        <dependency>
+            <groupId>org.powermock</groupId>
+            <artifactId>powermock-module-junit4</artifactId>
+            <version>${powermock.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.powermock</groupId>
+            <artifactId>powermock-api-mockito</artifactId>
+            <version>${powermock.version}</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
 	<build>
