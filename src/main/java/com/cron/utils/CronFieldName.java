@@ -11,15 +11,28 @@ package com.cron.utils;
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
+
+/**
+ * Enumerates cron field names
+ */
 public enum CronFieldName {
     SECOND(0), MINUTE(1), HOUR(2), DAY_OF_MONTH(3), MONTH(4), DAY_OF_WEEK(5), YEAR(6);
 
     private int order;
 
+    /**
+     * Constructor
+     * @param order - specified order between cron fields.
+     *              Used to be able to compare fields and sort them
+     */
     private CronFieldName(int order) {
         this.order = order;
     }
 
+    /**
+     * Returns the order number that corresponds to the field
+     * @return order number - int
+     */
     public int getOrder() {
         return order;
     }

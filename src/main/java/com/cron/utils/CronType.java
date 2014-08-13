@@ -12,6 +12,10 @@ package com.cron.utils;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+/**
+ * Enumerates names of cron implementations
+ */
 public enum CronType {
     CRON4J, QUARTZ, UNIX;
 }
