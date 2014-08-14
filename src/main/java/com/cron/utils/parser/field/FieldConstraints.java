@@ -1,5 +1,7 @@
 package com.cron.utils.parser.field;
 
+import org.apache.commons.lang3.Validate;
+
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
@@ -47,9 +49,9 @@ public class FieldConstraints {
                             Map<Integer, Integer> intMapping,
                             Set<SpecialChar> specialChars,
                             int startRange, int endRange) {
-        this.stringMapping = Collections.unmodifiableMap(stringMapping);
-        this.intMapping = Collections.unmodifiableMap(intMapping);
-        this.specialChars = Collections.unmodifiableSet(specialChars);
+        this.stringMapping = Collections.unmodifiableMap(Validate.notNull(stringMapping, "String mapping must not be null"));
+        this.intMapping = Collections.unmodifiableMap(Validate.notNull(intMapping, "Integer mapping must not be null"));
+        this.specialChars = Collections.unmodifiableSet(Validate.notNull(specialChars, "Special (non-standard) chars set must not be null"));
         this.startRange = startRange;
         this.endRange = endRange;
     }
