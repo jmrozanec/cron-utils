@@ -5,6 +5,8 @@ import com.cron.utils.parser.CronParser;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
@@ -23,16 +25,17 @@ import static org.mockito.Mockito.when;
 public class CronFieldTest {
 
     private CronFieldName testFieldName;
+    @Mock
     private FieldParser mockParser;
+    @Mock
     private CronFieldExpression mockParseResponse;
 
     private CronField cronField;
 
     @Before
     public void setUp() throws Exception {
+        MockitoAnnotations.initMocks(this);
         testFieldName = CronFieldName.SECOND;
-        mockParser = mock(FieldParser.class);
-        mockParseResponse = mock(CronFieldExpression.class);
 
         when(mockParser.parse(anyString())).thenReturn(mockParseResponse);
         PowerMockito.whenNew(FieldParser.class)

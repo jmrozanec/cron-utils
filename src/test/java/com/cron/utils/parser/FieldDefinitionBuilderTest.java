@@ -8,6 +8,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
@@ -21,17 +23,18 @@ import static org.mockito.Mockito.when;
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({FieldConstraintsBuilder.class, FieldDefinitionBuilder.class})
 public class FieldDefinitionBuilderTest {
-    private ParserDefinitionBuilder mockParserBuilder;
     private CronFieldName testFieldName;
+    @Mock
+    private ParserDefinitionBuilder mockParserBuilder;
+    @Mock
     private FieldConstraintsBuilder mockConstraintsBuilder;
 
     private FieldDefinitionBuilder fieldDefinitionBuilder;
 
     @Before
     public void setUp() throws Exception {
-        mockParserBuilder = mock(ParserDefinitionBuilder.class);
+        MockitoAnnotations.initMocks(this);
         testFieldName = CronFieldName.SECOND;
-        mockConstraintsBuilder = mock(FieldConstraintsBuilder.class);
 
         when(mockConstraintsBuilder.forField(any(CronFieldName.class))).thenReturn(mockConstraintsBuilder);
         PowerMockito.mockStatic(FieldConstraintsBuilder.class);

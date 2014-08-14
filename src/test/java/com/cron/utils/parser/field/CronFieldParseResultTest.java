@@ -3,12 +3,12 @@ package com.cron.utils.parser.field;
 import com.cron.utils.CronFieldName;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 import java.util.Comparator;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -16,12 +16,13 @@ public class CronFieldParseResultTest {
 
     private CronFieldParseResult result;
     private CronFieldName cronFieldName;
+    @Mock
     private CronFieldExpression mockCronFieldExpression;
 
     @Before
     public void setUp(){
+        MockitoAnnotations.initMocks(this);
         cronFieldName = CronFieldName.SECOND;
-        mockCronFieldExpression = mock(CronFieldExpression.class);
         result = new CronFieldParseResult(cronFieldName, mockCronFieldExpression);
     }
 
