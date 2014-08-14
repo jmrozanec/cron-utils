@@ -4,7 +4,6 @@ import com.cron.utils.CronFieldName;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -16,8 +15,8 @@ public class FieldConstraintsBuilder {
     private Set<SpecialChar> specialChars;
 
     private FieldConstraintsBuilder() {
-        stringMapping = new HashMap<String, Integer>();
-        intMapping = new HashMap<Integer, Integer>();
+        stringMapping = Maps.newHashMap();
+        intMapping = Maps.newHashMap();
         startRange = 0;//no negatives!
         endRange = Integer.MAX_VALUE;
         specialChars = Sets.newHashSet();

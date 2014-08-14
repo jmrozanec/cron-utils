@@ -62,4 +62,14 @@ public class FieldDefinitionBuilderTest {
         assertEquals(testFieldName, argument.getValue().getField());
         verify(mockConstraintsBuilder).createConstraintsInstance();
     }
+
+    @Test(expected = NullPointerException.class)
+    public void testConstructorNullParserBuilder() {
+        new FieldDefinitionBuilder(null, testFieldName);
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void testConstructorNullTestFieldName() {
+        new FieldDefinitionBuilder(mockParserBuilder, null);
+    }
 }
