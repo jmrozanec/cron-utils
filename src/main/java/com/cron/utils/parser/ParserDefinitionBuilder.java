@@ -2,7 +2,6 @@ package com.cron.utils.parser;
 
 import com.cron.utils.CronFieldName;
 import com.cron.utils.parser.field.CronField;
-import com.cron.utils.parser.field.FieldConstraintsBuilder;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -33,32 +32,32 @@ public class ParserDefinitionBuilder {
         return new ParserDefinitionBuilder();
     }
 
-    public FieldBuilderNotAllowSpecialChars withSeconds() {
-        return new FieldBuilderNotAllowSpecialChars(this, CronFieldName.SECOND);
+    public FieldDefinitionBuilder withSeconds() {
+        return new FieldDefinitionBuilder(this, CronFieldName.SECOND);
     }
 
-    public FieldBuilderNotAllowSpecialChars withMinutes() {
-        return new FieldBuilderNotAllowSpecialChars(this, CronFieldName.MINUTE);
+    public FieldDefinitionBuilder withMinutes() {
+        return new FieldDefinitionBuilder(this, CronFieldName.MINUTE);
     }
 
-    public FieldBuilderNotAllowSpecialChars withHours() {
-        return new FieldBuilderNotAllowSpecialChars(this, CronFieldName.HOUR);
+    public FieldDefinitionBuilder withHours() {
+        return new FieldDefinitionBuilder(this, CronFieldName.HOUR);
     }
 
-    public FieldBuilderAllowSpecialChars withDayOfMonth() {
-        return new FieldBuilderAllowSpecialChars(this, CronFieldName.DAY_OF_MONTH);
+    public FieldSpecialCharsDefinitionBuilder withDayOfMonth() {
+        return new FieldSpecialCharsDefinitionBuilder(this, CronFieldName.DAY_OF_MONTH);
     }
 
-    public FieldBuilderNotAllowSpecialChars withMonth() {
-        return new FieldBuilderNotAllowSpecialChars(this, CronFieldName.MONTH);
+    public FieldDefinitionBuilder withMonth() {
+        return new FieldDefinitionBuilder(this, CronFieldName.MONTH);
     }
 
-    public FieldBuilderAllowSpecialChars withDayOfWeek() {
-        return new FieldBuilderAllowSpecialChars(this, CronFieldName.DAY_OF_WEEK);
+    public FieldSpecialCharsDefinitionBuilder withDayOfWeek() {
+        return new FieldSpecialCharsDefinitionBuilder(this, CronFieldName.DAY_OF_WEEK);
     }
 
-    public FieldBuilderNotAllowSpecialChars withYear() {
-        return new FieldBuilderNotAllowSpecialChars(this, CronFieldName.YEAR);
+    public FieldDefinitionBuilder withYear() {
+        return new FieldDefinitionBuilder(this, CronFieldName.YEAR);
     }
 
     public ParserDefinitionBuilder lastFieldOptional() {
@@ -66,71 +65,11 @@ public class ParserDefinitionBuilder {
         return this;
     }
 
-    private void register(CronField cronField) {
+    void register(CronField cronField) {
         fields.put(cronField.getField(), cronField);
     }
 
     public CronParser instance() {
         return new CronParser(new HashSet<CronField>(fields.values()), lastFieldOptional);
     }
-
-    class FieldBuilderNotAllowSpecialChars {
-        private ParserDefinitionBuilder parserBuilder;
-        private CronFieldName fieldName;
-        private FieldConstraintsBuilder constraints;
-
-        public FieldBuilderNotAllowSpecialChars(ParserDefinitionBuilder parserBuilder, CronFieldName fieldName){
-            this.parserBuilder = parserBuilder;
-            this.fieldName = fieldName;
-            this.constraints = FieldConstraintsBuilder.instance().forField(fieldName);
-        }
-
-        public FieldBuilderNotAllowSpecialChars withIntMapping(int source, int dest){
-            constraints.withIntValueMapping(source, dest);
-            return this;
-        }
-
-        public ParserDefinitionBuilder and(){
-            parserBuilder.register(new CronField(fieldName, constraints.createConstraintsInstance()));
-            return parserBuilder;
-        }
-    }
-
-    class FieldBuilderAllowSpecialChars {
-        private ParserDefinitionBuilder parserBuilder;
-        private CronFieldName fieldName;
-        private FieldConstraintsBuilder constraints;
-
-        public FieldBuilderAllowSpecialChars(ParserDefinitionBuilder parserBuilder, CronFieldName fieldName){
-            this.parserBuilder = parserBuilder;
-            this.fieldName = fieldName;
-            this.constraints = FieldConstraintsBuilder.instance().forField(fieldName);
-        }
-
-        public FieldBuilderAllowSpecialChars withIntMapping(int source, int dest){
-            constraints.withIntValueMapping(source, dest);
-            return this;
-        }
-
-        public FieldBuilderAllowSpecialChars supportsHash(){
-            constraints.addHashSupport();
-            return this;
-        }
-
-        public FieldBuilderAllowSpecialChars supportsL(){
-            constraints.addLSupport();
-            return this;
-        }
-
-        public FieldBuilderAllowSpecialChars supportsW(){
-            constraints.addWSupport();
-            return this;
-        }
-
-        public ParserDefinitionBuilder and(){
-            parserBuilder.register(new CronField(fieldName, constraints.createConstraintsInstance()));
-            return parserBuilder;
-        }
-    }
-
 }
