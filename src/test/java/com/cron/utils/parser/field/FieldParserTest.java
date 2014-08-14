@@ -59,4 +59,9 @@ public class FieldParserTest {
         assertEquals(to, between.getTo());
         assertEquals(every, between.getEvery().getTime());
     }
+
+    @Test(expected = NullPointerException.class)
+    public void testCostructorNullConstraints() throws Exception {
+        new FieldParser(null);
+    }
 }

@@ -57,4 +57,14 @@ public class CronFieldTest {
         assertEquals(testFieldName, result.getField());
         verify(mockParser).parse(cron);
     }
+
+    @Test(expected = NullPointerException.class)
+    public void testConstructorNameNull() throws Exception {
+        new CronField(null, mock(FieldConstraints.class));
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void testConstructorConstraintsNull() throws Exception {
+        new CronField(testFieldName, null);
+    }
 }

@@ -2,9 +2,7 @@ package com.cron.utils.parser.field;
 
 import com.cron.utils.CronFieldName;
 import org.apache.commons.lang3.Validate;
-import org.joda.time.DateTime;
 
-import javax.print.attribute.standard.DateTimeAtCompleted;
 import java.util.Comparator;
 
 /*
@@ -34,8 +32,8 @@ public class CronField {
      *                    If null, a NullPointerException will be raised.
      */
     public CronField(CronFieldName fieldName, FieldConstraints constraints) {
-        this.field = Validate.notNull(fieldName);
-        this.parser = new FieldParser(constraints);
+        this.field = Validate.notNull(fieldName, "CronFieldName must not be null");
+        this.parser = new FieldParser(Validate.notNull(constraints, "FieldConstraints must not be null"));
     }
 
     /**
