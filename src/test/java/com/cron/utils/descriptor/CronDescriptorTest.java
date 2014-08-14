@@ -19,7 +19,12 @@ public class CronDescriptorTest {
     @Before
     public void setUp() throws Exception {
         descriptor = CronDescriptor.instance(Locale.UK);
-        nullFieldConstraints = FieldConstraintsBuilder.instance().createConstraintsInstance();
+        nullFieldConstraints =
+                FieldConstraintsBuilder.instance()
+                        .addHashSupport()
+                        .addLSupport()
+                        .addWSupport()
+                        .createConstraintsInstance();
     }
 
     @Test

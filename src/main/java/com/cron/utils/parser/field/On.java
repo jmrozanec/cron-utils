@@ -66,7 +66,7 @@ public class On extends CronFieldExpression {
             specialChar = SpecialChar.W;
             expression = exp.replace("W", "");
         }
-//        constraints.validateSpecialCharAllowed(specialChar);
+        constraints.validateSpecialCharAllowed(specialChar);
         return expression;
     }
 }
