@@ -1,7 +1,7 @@
 package com.cron.utils.parser;
 
 import com.cron.utils.CronFieldName;
-import com.cron.utils.parser.field.CronParserField;
+import com.cron.utils.model.FieldDefinition;
 import com.cron.utils.parser.field.FieldConstraintsBuilder;
 import org.apache.commons.lang3.Validate;
 
@@ -9,7 +9,7 @@ import org.apache.commons.lang3.Validate;
  * Provides means to define cron field definitions
  */
 class FieldDefinitionBuilder {
-    protected ParserDefinitionBuilder parserBuilder;
+    protected CronDefinitionBuilder parserBuilder;
     protected final CronFieldName fieldName;
     protected FieldConstraintsBuilder constraints;
 
@@ -20,7 +20,7 @@ class FieldDefinitionBuilder {
      * @param fieldName - CronFieldName instance -
      *                  if null, a NullPointerException will be raised
      */
-    public FieldDefinitionBuilder(ParserDefinitionBuilder parserBuilder, CronFieldName fieldName){
+    public FieldDefinitionBuilder(CronDefinitionBuilder parserBuilder, CronFieldName fieldName){
         this.parserBuilder = Validate.notNull(parserBuilder, "ParserBuilder must not be null");
         this.fieldName = Validate.notNull(fieldName, "CronFieldName must not be null");
         this.constraints = FieldConstraintsBuilder.instance().forField(fieldName);
@@ -42,8 +42,8 @@ class FieldDefinitionBuilder {
      * Registers CronField in ParserDefinitionBuilder and returns its instance
      * @return ParserDefinitionBuilder instance obtained from constructor
      */
-    public ParserDefinitionBuilder and(){
-        parserBuilder.register(new CronParserField(fieldName, constraints.createConstraintsInstance()));
+    public CronDefinitionBuilder and(){
+        parserBuilder.register(new FieldDefinition(fieldName, constraints.createConstraintsInstance()));
         return parserBuilder;
     }
 }

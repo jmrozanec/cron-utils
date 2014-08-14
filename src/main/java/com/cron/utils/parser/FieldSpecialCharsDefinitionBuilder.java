@@ -12,7 +12,7 @@ class FieldSpecialCharsDefinitionBuilder extends FieldDefinitionBuilder {
      * @param parserBuilder - ParserDefinitionBuilder
      * @param fieldName - CronFieldName
      */
-    public FieldSpecialCharsDefinitionBuilder(ParserDefinitionBuilder parserBuilder, CronFieldName fieldName){
+    public FieldSpecialCharsDefinitionBuilder(CronDefinitionBuilder parserBuilder, CronFieldName fieldName){
         super(parserBuilder, fieldName);
     }
 

@@ -37,9 +37,9 @@ cron-utils will be soon available in the Maven central repository.
 
 **Usage Examples**
 
-    //define your own parser: arbitrary fields are allowed and last field can be optional
-    CronParser parser =
-        ParserDefinitionBuilder.defineParser()
+    //define your own cron: arbitrary fields are allowed and last field can be optional
+    CronDefinition cronDefinition =
+        CronDefinitionBuilder.define()
             .withSeconds().and()
             .withMinutes().and()
             .withHours().and()
@@ -53,7 +53,10 @@ cron-utils will be soon available in the Maven central repository.
             .instance();
 
     //or get a predefined instance
-    parser = CronParserRegistry.instance().retrieveParser(QUARTZ);
+    cronDefinition = CronDefinitionRegistry.instance().retrieve(QUARTZ);
+
+    //create a parser based on provided definition
+    CronParser parser = new CronParser(cronDefinition);
 
     //create a descriptor for a specific Locale
     CronDescriptor descriptor = CronDescriptor.instance(Locale.UK);

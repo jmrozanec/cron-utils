@@ -6,26 +6,26 @@ import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-public class CronParserRegistryTest {
+public class CronDefinitionRegistryTest {
 
     @Test
     public void testRetrieveParserUnix() throws Exception {
-        assertNotNull(CronParserRegistry.instance().retrieveParser(CronType.UNIX));
+        assertNotNull(CronDefinitionRegistry.instance().retrieve(CronType.UNIX));
     }
 
     @Test
     public void testRetrieveParserQuartz() throws Exception {
-        assertNotNull(CronParserRegistry.instance().retrieveParser(CronType.QUARTZ));
+        assertNotNull(CronDefinitionRegistry.instance().retrieve(CronType.QUARTZ));
     }
 
     @Test
     public void testRetrieveParserCron4j() throws Exception {
-        assertNotNull(CronParserRegistry.instance().retrieveParser(CronType.CRON4J));
+        assertNotNull(CronDefinitionRegistry.instance().retrieve(CronType.CRON4J));
     }
 
     @Test
     public void testInstance() throws Exception {
-        assertNotNull(CronParserRegistry.instance());
-        assertEquals(CronParserRegistry.class, CronParserRegistry.instance().getClass());
+        assertNotNull(CronDefinitionRegistry.instance());
+        assertEquals(CronDefinitionRegistry.class, CronDefinitionRegistry.instance().getClass());
     }
 }

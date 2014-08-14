@@ -1,8 +1,9 @@
 package com.cron.utils.parser;
 
 import com.cron.utils.CronType;
+import com.cron.utils.model.CronDefinition;
+import com.google.common.collect.Maps;
 
-import java.util.HashMap;
 import java.util.Map;
 
 /*
@@ -17,18 +18,18 @@ import java.util.Map;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-public class CronParserRegistry {
-    private Map<CronType, CronParser> registry;
+public class CronDefinitionRegistry {
+    private Map<CronType, CronDefinition> registry;
 
-    private CronParserRegistry() {
-        registry = new HashMap<CronType, CronParser>();
-        register(CronType.CRON4J, cron4jParser());
-        register(CronType.QUARTZ, quartzParser());
-        register(CronType.UNIX, unixCrontabParser());
+    private CronDefinitionRegistry() {
+        registry = Maps.newHashMap();
+        register(CronType.CRON4J, cron4j());
+        register(CronType.QUARTZ, quartz());
+        register(CronType.UNIX, unixCrontab());
     }
 
-    private CronParser cron4jParser() {
-        return ParserDefinitionBuilder.defineParser()
+    private CronDefinition cron4j() {
+        return CronDefinitionBuilder.defineCron()
                 .withMinutes().and()
                 .withHours().and()
                 .withDayOfMonth().and()
@@ -38,8 +39,8 @@ public class CronParserRegistry {
 
     }
 
-    private CronParser unixCrontabParser() {
-        return ParserDefinitionBuilder.defineParser()
+    private CronDefinition unixCrontab() {
+        return CronDefinitionBuilder.defineCron()
                 .withMinutes().and()
                 .withHours().and()
                 .withDayOfMonth().and()
@@ -48,8 +49,8 @@ public class CronParserRegistry {
                 .instance();
     }
 
-    private CronParser quartzParser() {
-        return ParserDefinitionBuilder.defineParser()
+    private CronDefinition quartz() {
+        return CronDefinitionBuilder.defineCron()
                 .withSeconds().and()
                 .withMinutes().and()
                 .withHours().and()
@@ -61,16 +62,16 @@ public class CronParserRegistry {
                 .instance();
     }
 
-    public CronParserRegistry register(CronType cronType, CronParser parser) {
-        registry.put(cronType, parser);
+    public CronDefinitionRegistry register(CronType cronType, CronDefinition definition) {
+        registry.put(cronType, definition);
         return this;
     }
 
-    public CronParser retrieveParser(CronType cronType) {
+    public CronDefinition retrieve(CronType cronType) {
         return registry.get(cronType);
     }
 
-    public static CronParserRegistry instance() {
-        return new CronParserRegistry();
+    public static CronDefinitionRegistry instance() {
+        return new CronDefinitionRegistry();
     }
 }

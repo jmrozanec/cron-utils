@@ -1,7 +1,7 @@
 package com.cron.utils.parser;
 
 import com.cron.utils.CronFieldName;
-import com.cron.utils.parser.field.CronParserField;
+import com.cron.utils.model.FieldDefinition;
 import com.cron.utils.parser.field.FieldConstraints;
 import com.cron.utils.parser.field.FieldConstraintsBuilder;
 import org.junit.Before;
@@ -16,16 +16,14 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({FieldConstraintsBuilder.class, FieldDefinitionBuilder.class})
 public class FieldDefinitionBuilderTest {
     private CronFieldName testFieldName;
     @Mock
-    private ParserDefinitionBuilder mockParserBuilder;
+    private CronDefinitionBuilder mockParserBuilder;
     @Mock
     private FieldConstraintsBuilder mockConstraintsBuilder;
 
@@ -57,12 +55,12 @@ public class FieldDefinitionBuilderTest {
     public void testAnd() throws Exception {
         FieldConstraints constraints = mock(FieldConstraints.class);
         when(mockConstraintsBuilder.createConstraintsInstance()).thenReturn(constraints);
-        ArgumentCaptor<CronParserField> argument = ArgumentCaptor.forClass(CronParserField.class);
+        ArgumentCaptor<FieldDefinition> argument = ArgumentCaptor.forClass(FieldDefinition.class);
 
         fieldDefinitionBuilder.and();
 
         verify(mockParserBuilder).register(argument.capture());
-        assertEquals(testFieldName, argument.getValue().getField());
+        assertEquals(testFieldName, argument.getValue().getFieldName());
         verify(mockConstraintsBuilder).createConstraintsInstance();
     }
 

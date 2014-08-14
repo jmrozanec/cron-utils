@@ -1,7 +1,11 @@
 package com.cron.utils.parser;
 
+import com.cron.utils.model.Cron;
+import com.cron.utils.model.CronDefinition;
+import com.cron.utils.model.FieldDefinition;
 import com.cron.utils.parser.field.CronField;
 import com.cron.utils.parser.field.CronParserField;
+import com.google.common.collect.Maps;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
@@ -21,18 +25,20 @@ import java.util.*;
 public class CronParser {
     private Map<Integer, List<CronParserField>> expressions;
 
-    public CronParser(Set<CronParserField> fieldsSet, boolean lastFieldOptional) {
-        expressions = new HashMap<Integer, List<CronParserField>>();
-        buildPossibleExpressions(fieldsSet, lastFieldOptional);
+    public CronParser(CronDefinition definition) {
+        expressions = Maps.newHashMap();
+        buildPossibleExpressions(definition);
     }
 
-    private void buildPossibleExpressions(Set<CronParserField> fieldsSet, boolean lastFieldOptional) {
+    private void buildPossibleExpressions(CronDefinition cronDefinition) {
         List<CronParserField> expression = new ArrayList<CronParserField>();
-        expression.addAll(fieldsSet);
+        for(FieldDefinition fieldDefinition : cronDefinition.getFieldDefinitions()){
+            expression.add(new CronParserField(fieldDefinition.getFieldName(), fieldDefinition.getConstraints()));
+        }
         Collections.sort(expression, CronParserField.createFieldTypeComparator());
         expressions.put(expression.size(), expression);
 
-        if (lastFieldOptional) {
+        if (cronDefinition.isLastFieldOptional()) {
             List<CronParserField> shortExpression = new ArrayList<CronParserField>();
             shortExpression.addAll(expression);
             shortExpression.remove(shortExpression.size() - 1);
@@ -40,7 +46,7 @@ public class CronParser {
         }
     }
 
-    public List<CronField> parse(String expression) {
+    public Cron parse(String expression) {
         if (StringUtils.isEmpty(expression)) {
             throw new IllegalArgumentException("Empty expression!");
         }
@@ -53,7 +59,7 @@ public class CronParser {
             for (int j = 0; j < fields.size(); j++) {
                 results.add(fields.get(j).parse(expressionParts[j]));
             }
-            return results;
+            return new Cron(results);
         } else {
             throw new IllegalArgumentException("Expressions size do not match registered options!");
         }

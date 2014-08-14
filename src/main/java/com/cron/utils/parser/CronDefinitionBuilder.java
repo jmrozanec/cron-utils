@@ -1,10 +1,11 @@
 package com.cron.utils.parser;
 
 import com.cron.utils.CronFieldName;
-import com.cron.utils.parser.field.CronParserField;
+import com.cron.utils.model.CronDefinition;
+import com.cron.utils.model.FieldDefinition;
 import com.google.common.collect.Maps;
 
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.Map;
 
 /*
@@ -23,15 +24,15 @@ import java.util.Map;
 /**
  * Builder that allows to define and create CronParser instances
  */
-public class ParserDefinitionBuilder {
-    private Map<CronFieldName, CronParserField> fields;
+public class CronDefinitionBuilder {
+    private Map<CronFieldName, FieldDefinition> fields;
     private boolean lastFieldOptional;
 
     /**
      * Constructor.
      * lastFieldOptional is defined false.
      */
-    private ParserDefinitionBuilder() {
+    private CronDefinitionBuilder() {
         fields = Maps.newHashMap();
         lastFieldOptional = false;
     }
@@ -40,8 +41,8 @@ public class ParserDefinitionBuilder {
      * Creates a builder instance
      * @return new ParserDefinitionBuilder instance
      */
-    public static ParserDefinitionBuilder defineParser() {
-        return new ParserDefinitionBuilder();
+    public static CronDefinitionBuilder defineCron() {
+        return new CronDefinitionBuilder();
     }
 
     /**
@@ -104,24 +105,24 @@ public class ParserDefinitionBuilder {
      * Sets lastFieldOptional value to true
      * @return this ParserDefinitionBuilder instance
      */
-    public ParserDefinitionBuilder lastFieldOptional() {
+    public CronDefinitionBuilder lastFieldOptional() {
         lastFieldOptional = true;
         return this;
     }
 
     /**
-     * Registers a certain CronField definition
-     * @param cronParserField - CronField instance, never null
+     * Registers a certain FieldDefinition
+     * @param definition - FieldDefinition  instance, never null
      */
-    void register(CronParserField cronParserField) {
-        fields.put(cronParserField.getField(), cronParserField);
+    void register(FieldDefinition definition) {
+        fields.put(definition.getFieldName(), definition);
     }
 
     /**
      * Creates a new CronParser instance with provided field definitions
      * @return returns CronParser instance, never null
      */
-    public CronParser instance() {
-        return new CronParser(new HashSet<CronParserField>(fields.values()), lastFieldOptional);
+    public CronDefinition instance() {
+        return new CronDefinition(new ArrayList<FieldDefinition>(this.fields.values()), lastFieldOptional);
     }
 }
