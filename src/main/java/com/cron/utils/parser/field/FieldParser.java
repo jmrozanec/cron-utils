@@ -36,7 +36,7 @@ class FieldParser {
      * @param expression - String
      * @return CronFieldExpression object that with interpretation of given String parameter
      */
-    CronFieldExpression parse(String expression) {
+    FieldExpression parse(String expression) {
         if (!StringUtils.containsAny(expression, specialCharsMinusStar)) {
             if ("*".equals(expression)) {//all crons support asterisk
                 return new Always(constraints);

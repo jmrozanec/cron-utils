@@ -15,7 +15,7 @@ package com.cron.utils.parser.field;
 /**
  * Represents every x time on a cron field.
  */
-public class Every extends CronFieldExpression {
+public class Every extends FieldExpression {
     private int time;
 
     public Every(FieldConstraints constraints, String time) {

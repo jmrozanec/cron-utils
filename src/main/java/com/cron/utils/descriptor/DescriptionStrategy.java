@@ -47,25 +47,25 @@ abstract class DescriptionStrategy {
     /**
      * Given a CronFieldExpression, provide a String with a human readable description.
      * Will identify CronFieldExpression subclasses and delegate.
-     * @param cronFieldExpression - CronFieldExpression instance - not null
+     * @param fieldExpression - CronFieldExpression instance - not null
      * @return human readable description - String
      */
-    protected String describe(CronFieldExpression cronFieldExpression) {
-        Validate.notNull(cronFieldExpression, "CronFieldExpression should not be null!");
-        if (cronFieldExpression instanceof Always) {
-            return describe((Always) cronFieldExpression);
+    protected String describe(FieldExpression fieldExpression) {
+        Validate.notNull(fieldExpression, "CronFieldExpression should not be null!");
+        if (fieldExpression instanceof Always) {
+            return describe((Always) fieldExpression);
         }
-        if (cronFieldExpression instanceof And) {
-            return describe((And) cronFieldExpression);
+        if (fieldExpression instanceof And) {
+            return describe((And) fieldExpression);
         }
-        if (cronFieldExpression instanceof Between) {
-            return describe((Between) cronFieldExpression);
+        if (fieldExpression instanceof Between) {
+            return describe((Between) fieldExpression);
         }
-        if (cronFieldExpression instanceof Every) {
-            return describe((Every) cronFieldExpression);
+        if (fieldExpression instanceof Every) {
+            return describe((Every) fieldExpression);
         }
-        if (cronFieldExpression instanceof On) {
-            return describe((On) cronFieldExpression);
+        if (fieldExpression instanceof On) {
+            return describe((On) fieldExpression);
         }
         return "";
     }
@@ -100,7 +100,7 @@ abstract class DescriptionStrategy {
      * @return human readable description - String
      */
     protected String describe(And and) {
-        List<CronFieldExpression> expressions = and.getExpressions();
+        List<FieldExpression> expressions = and.getExpressions();
         StringBuilder builder = new StringBuilder();
         builder.append(describe(expressions.get(0)));
         for (int j = 1; j < expressions.size(); j++) {

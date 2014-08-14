@@ -1,8 +1,8 @@
 package com.cron.utils.descriptor;
 
 import com.cron.utils.CronFieldName;
-import com.cron.utils.parser.field.CronFieldExpression;
-import com.cron.utils.parser.field.CronFieldParseResult;
+import com.cron.utils.parser.field.CronField;
+import com.cron.utils.parser.field.FieldExpression;
 import com.google.common.collect.Maps;
 
 import java.util.List;
@@ -52,9 +52,9 @@ public class CronDescriptor {
      * @param fields - CronFieldParseResult list
      * @return description - String
      */
-    public String describe(List<CronFieldParseResult> fields) {
-        Map<CronFieldName, CronFieldExpression> expressions = Maps.newHashMap();
-        for (CronFieldParseResult result : fields) {
+    public String describe(List<CronField> fields) {
+        Map<CronFieldName, FieldExpression> expressions = Maps.newHashMap();
+        for (CronField result : fields) {
             expressions.put(result.getField(), result.getExpression());
         }
         return
@@ -72,7 +72,7 @@ public class CronDescriptor {
      * @param expressions - expressions to describe;
      * @return description - String
      */
-    private String describeHHmmss(Map<CronFieldName, CronFieldExpression> expressions) {
+    private String describeHHmmss(Map<CronFieldName, FieldExpression> expressions) {
         return DescriptionStrategyFactory.hhMMssInstance(
                 bundle,
                 expressions.get(CronFieldName.HOUR),
@@ -86,7 +86,7 @@ public class CronDescriptor {
      * @param expressions - expressions to describe;
      * @return description - String
      */
-    private String describeDayOfMonth(Map<CronFieldName, CronFieldExpression> expressions) {
+    private String describeDayOfMonth(Map<CronFieldName, FieldExpression> expressions) {
         return String.format(
                 DescriptionStrategyFactory.daysOfMonthInstance(
                         bundle,
@@ -99,7 +99,7 @@ public class CronDescriptor {
      * @param expressions - expressions to describe;
      * @return description - String
      */
-    private String describeMonth(Map<CronFieldName, CronFieldExpression> expressions) {
+    private String describeMonth(Map<CronFieldName, FieldExpression> expressions) {
         return String.format(
                 DescriptionStrategyFactory.monthsInstance(
                         bundle,
@@ -113,7 +113,7 @@ public class CronDescriptor {
      * @param expressions - expressions to describe;
      * @return description - String
      */
-    private String describeDayOfWeek(Map<CronFieldName, CronFieldExpression> expressions) {
+    private String describeDayOfWeek(Map<CronFieldName, FieldExpression> expressions) {
         return String.format(
                 DescriptionStrategyFactory.daysOfWeekInstance(
                         bundle,
@@ -127,7 +127,7 @@ public class CronDescriptor {
      * @param expressions - expressions to describe;
      * @return description - String
      */
-    private String describeYear(Map<CronFieldName, CronFieldExpression> expressions) {
+    private String describeYear(Map<CronFieldName, FieldExpression> expressions) {
         return String.format(
                 DescriptionStrategyFactory.plainInstance(
                         bundle,

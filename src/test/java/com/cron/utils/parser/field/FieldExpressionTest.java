@@ -9,25 +9,25 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 
-public class CronFieldExpressionTest {
-    private TestCronFieldExpression testCronFieldExpression;
+public class FieldExpressionTest {
+    private TestFieldExpression testCronFieldExpression;
     @Mock
     private FieldConstraints mockFieldConstraints;
 
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        this.testCronFieldExpression = new TestCronFieldExpression(mockFieldConstraints);
+        this.testCronFieldExpression = new TestFieldExpression(mockFieldConstraints);
     }
 
     @Test(expected = NullPointerException.class)
     public void testConstructorNullConstraints() throws Exception {
-        new TestCronFieldExpression(null);
+        new TestFieldExpression(null);
     }
 
     @Test
     public void testAnd() throws Exception {
-        CronFieldExpression mockExpression = mock(CronFieldExpression.class);
+        FieldExpression mockExpression = mock(FieldExpression.class);
         And and = testCronFieldExpression.and(mockExpression);
         assertTrue(and.getExpressions().contains(mockExpression));
         assertTrue(and.getExpressions().contains(testCronFieldExpression));
@@ -38,9 +38,9 @@ public class CronFieldExpressionTest {
         assertEquals(mockFieldConstraints, testCronFieldExpression.getConstraints());
     }
 
-    class TestCronFieldExpression extends CronFieldExpression {
+    class TestFieldExpression extends FieldExpression {
 
-        public TestCronFieldExpression(FieldConstraints constraints) {
+        public TestFieldExpression(FieldConstraints constraints) {
             super(constraints);
         }
     }

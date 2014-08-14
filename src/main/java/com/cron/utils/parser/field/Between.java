@@ -15,7 +15,7 @@ package com.cron.utils.parser.field;
 /**
  * Represents a range in a cron expression.
  */
-public class Between extends CronFieldExpression {
+public class Between extends FieldExpression {
     private int from;
     private int to;
     private Every every;

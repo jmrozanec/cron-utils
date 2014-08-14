@@ -14,16 +14,16 @@ import org.apache.commons.lang3.Validate;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-public abstract class CronFieldExpression {
+public abstract class FieldExpression {
 
     protected FieldConstraints constraints;
 
-    public CronFieldExpression(FieldConstraints constraints) {
+    public FieldExpression(FieldConstraints constraints) {
         Validate.notNull(constraints, "FieldConstraints cannot be null");
         this.constraints = constraints;
     }
 
-    public And and(CronFieldExpression exp) {
+    public And and(FieldExpression exp) {
         return new And().and(this).and(exp);
     }
 

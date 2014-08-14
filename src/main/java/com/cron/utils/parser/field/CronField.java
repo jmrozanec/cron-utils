@@ -1,7 +1,6 @@
 package com.cron.utils.parser.field;
 
 import com.cron.utils.CronFieldName;
-import org.apache.commons.lang3.Validate;
 
 import java.util.Comparator;
 
@@ -17,48 +16,24 @@ import java.util.Comparator;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-/**
- * Represents a cron field.
- */
 public class CronField {
     private CronFieldName field;
-    private FieldParser parser;
+    private FieldExpression expression;
 
-    /**
-     * Constructor
-     * @param fieldName - CronFieldName instance
-     * @param constraints - FieldConstraints instance, not null.
-     *                    If null, a NullPointerException will be raised.
-     */
-    public CronField(CronFieldName fieldName, FieldConstraints constraints) {
-        this.field = Validate.notNull(fieldName, "CronFieldName must not be null");
-        this.parser = new FieldParser(Validate.notNull(constraints, "FieldConstraints must not be null"));
+    public CronField(CronFieldName field, FieldExpression expression) {
+        this.field = field;
+        this.expression = expression;
     }
 
-    /**
-     * Returns field name
-     * @return CronFieldName, never null
-     */
     public CronFieldName getField() {
         return field;
     }
 
-    /**
-     * Parses a String cron expression
-     * @param expression - cron expression
-     * @return parse result as CronFieldParseResult instance - never null.
-     * May throw a RuntimeException if cron expression is bad.
-     */
-    public CronFieldParseResult parse(String expression) {
-        return new CronFieldParseResult(field, parser.parse(expression));
+    public FieldExpression getExpression() {
+        return expression;
     }
 
-    /**
-     * Create a Comparator that compares CronField instances using CronFieldName value.
-     * @return Comparator<CronField> instance, never null.
-     */
-    public static Comparator<CronField> createFieldTypeComparator() {
+    public static Comparator<CronField> createFieldComparator() {
         return new Comparator<CronField>() {
             @Override
             public int compare(CronField o1, CronField o2) {

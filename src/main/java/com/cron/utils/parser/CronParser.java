@@ -1,7 +1,7 @@
 package com.cron.utils.parser;
 
 import com.cron.utils.parser.field.CronField;
-import com.cron.utils.parser.field.CronFieldParseResult;
+import com.cron.utils.parser.field.CronParserField;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
@@ -19,28 +19,28 @@ import java.util.*;
  * limitations under the License.
  */
 public class CronParser {
-    private Map<Integer, List<CronField>> expressions;
+    private Map<Integer, List<CronParserField>> expressions;
 
-    public CronParser(Set<CronField> fieldsSet, boolean lastFieldOptional) {
-        expressions = new HashMap<Integer, List<CronField>>();
+    public CronParser(Set<CronParserField> fieldsSet, boolean lastFieldOptional) {
+        expressions = new HashMap<Integer, List<CronParserField>>();
         buildPossibleExpressions(fieldsSet, lastFieldOptional);
     }
 
-    private void buildPossibleExpressions(Set<CronField> fieldsSet, boolean lastFieldOptional) {
-        List<CronField> expression = new ArrayList<CronField>();
+    private void buildPossibleExpressions(Set<CronParserField> fieldsSet, boolean lastFieldOptional) {
+        List<CronParserField> expression = new ArrayList<CronParserField>();
         expression.addAll(fieldsSet);
-        Collections.sort(expression, CronField.createFieldTypeComparator());
+        Collections.sort(expression, CronParserField.createFieldTypeComparator());
         expressions.put(expression.size(), expression);
 
         if (lastFieldOptional) {
-            List<CronField> shortExpression = new ArrayList<CronField>();
+            List<CronParserField> shortExpression = new ArrayList<CronParserField>();
             shortExpression.addAll(expression);
             shortExpression.remove(shortExpression.size() - 1);
             expressions.put(shortExpression.size(), shortExpression);
         }
     }
 
-    public List<CronFieldParseResult> parse(String expression) {
+    public List<CronField> parse(String expression) {
         if (StringUtils.isEmpty(expression)) {
             throw new IllegalArgumentException("Empty expression!");
         }
@@ -48,8 +48,8 @@ public class CronParser {
         expression = expression.replace("?", "*");
         String[] expressionParts = expression.split(" ");
         if (expressions.containsKey(expressionParts.length)) {
-            List<CronFieldParseResult> results = new ArrayList<CronFieldParseResult>();
-            List<CronField> fields = expressions.get(expressionParts.length);
+            List<CronField> results = new ArrayList<CronField>();
+            List<CronParserField> fields = expressions.get(expressionParts.length);
             for (int j = 0; j < fields.size(); j++) {
                 results.add(fields.get(j).parse(expressionParts[j]));
             }

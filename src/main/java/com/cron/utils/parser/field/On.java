@@ -12,7 +12,7 @@ package com.cron.utils.parser.field;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-public class On extends CronFieldExpression {
+public class On extends FieldExpression {
     private int time;
     private int nth;
     private SpecialChar specialChar;

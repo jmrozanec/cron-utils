@@ -1,7 +1,7 @@
 package com.cron.utils.parser;
 
 import com.cron.utils.CronFieldName;
-import com.cron.utils.parser.field.CronField;
+import com.cron.utils.parser.field.CronParserField;
 import com.cron.utils.parser.field.FieldConstraintsBuilder;
 import org.apache.commons.lang3.Validate;
 
@@ -43,7 +43,7 @@ class FieldDefinitionBuilder {
      * @return ParserDefinitionBuilder instance obtained from constructor
      */
     public ParserDefinitionBuilder and(){
-        parserBuilder.register(new CronField(fieldName, constraints.createConstraintsInstance()));
+        parserBuilder.register(new CronParserField(fieldName, constraints.createConstraintsInstance()));
         return parserBuilder;
     }
 }

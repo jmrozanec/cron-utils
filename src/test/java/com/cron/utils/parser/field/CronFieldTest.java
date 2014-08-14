@@ -1,70 +1,62 @@
 package com.cron.utils.parser.field;
 
 import com.cron.utils.CronFieldName;
-import com.cron.utils.parser.CronParser;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 
-import java.util.UUID;
+import java.util.Comparator;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({CronField.class, CronParser.class})
 public class CronFieldTest {
 
-    private CronFieldName testFieldName;
+    private CronField result;
+    private CronFieldName cronFieldName;
     @Mock
-    private FieldParser mockParser;
-    @Mock
-    private CronFieldExpression mockParseResponse;
-
-    private CronField cronField;
+    private FieldExpression mockFieldExpression;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp(){
         MockitoAnnotations.initMocks(this);
-        testFieldName = CronFieldName.SECOND;
-
-        when(mockParser.parse(anyString())).thenReturn(mockParseResponse);
-        PowerMockito.whenNew(FieldParser.class)
-                .withArguments(any(FieldConstraints.class)).thenReturn(mockParser);
-
-        cronField = new CronField(testFieldName, mock(FieldConstraints.class));
+        cronFieldName = CronFieldName.SECOND;
+        result = new CronField(cronFieldName, mockFieldExpression);
     }
 
     @Test
     public void testGetField() throws Exception {
-        assertEquals(testFieldName, cronField.getField());
+        assertEquals(cronFieldName, result.getField());
     }
 
     @Test
-    public void testParse() throws Exception {
-        String cron = UUID.randomUUID().toString();
-        CronFieldParseResult result = cronField.parse(cron);
-        assertEquals(mockParseResponse, result.getExpression());
-        assertEquals(testFieldName, result.getField());
-        verify(mockParser).parse(cron);
+    public void testGetExpression() throws Exception {
+        assertEquals(mockFieldExpression, result.getExpression());
     }
 
-    @Test(expected = NullPointerException.class)
-    public void testConstructorNameNull() throws Exception {
-        new CronField(null, mock(FieldConstraints.class));
-    }
+    @Test
+    public void testCreateFieldComparator() throws Exception {
+        Comparator<CronField> comparator = CronField.createFieldComparator();
+        CronField mockResult1 = mock(CronField.class);
+        CronFieldName cronFieldName1 = CronFieldName.SECOND;
 
-    @Test(expected = NullPointerException.class)
-    public void testConstructorConstraintsNull() throws Exception {
-        new CronField(testFieldName, null);
+        CronField mockResult2 = mock(CronField.class);
+        CronFieldName cronFieldName2 = cronFieldName1;
+
+        when(mockResult1.getField()).thenReturn(cronFieldName1);
+        when(mockResult2.getField()).thenReturn(cronFieldName2);
+
+        assertEquals(cronFieldName1, cronFieldName2);
+        assertEquals(0, comparator.compare(mockResult1, mockResult2));
+
+        cronFieldName2 = CronFieldName.MINUTE;
+
+        when(mockResult1.getField()).thenReturn(cronFieldName1);
+        when(mockResult2.getField()).thenReturn(cronFieldName2);
+
+        assertNotEquals(cronFieldName1, cronFieldName2);
+        assertTrue(0 != comparator.compare(mockResult1, mockResult2));
     }
 }

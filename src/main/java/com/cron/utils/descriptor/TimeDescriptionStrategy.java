@@ -27,9 +27,9 @@ import java.util.Set;
  */
 class TimeDescriptionStrategy extends DescriptionStrategy {
 
-    private CronFieldExpression hours;
-    private CronFieldExpression minutes;
-    private CronFieldExpression seconds;
+    private FieldExpression hours;
+    private FieldExpression minutes;
+    private FieldExpression seconds;
     private Set<Function<TimeFields, String>> descriptions;
     private int defaultSeconds = 0;
 
@@ -40,8 +40,8 @@ class TimeDescriptionStrategy extends DescriptionStrategy {
      * @param minutes - CronFieldExpression for minutes. If no instance is provided, an Always instance is created.
      * @param seconds - CronFieldExpression for seconds. If no instance is provided, an On instance is created.
      */
-    TimeDescriptionStrategy(ResourceBundle bundle, CronFieldExpression hours,
-                            CronFieldExpression minutes, CronFieldExpression seconds) {
+    TimeDescriptionStrategy(ResourceBundle bundle, FieldExpression hours,
+                            FieldExpression minutes, FieldExpression seconds) {
         super(bundle);
         this.hours = ensureInstance(hours,
                 new Always(
@@ -71,7 +71,7 @@ class TimeDescriptionStrategy extends DescriptionStrategy {
      * @param defaultExpression - CronFieldExpression, never null;
      * @return
      */
-    private CronFieldExpression ensureInstance(CronFieldExpression expression, CronFieldExpression defaultExpression) {
+    private FieldExpression ensureInstance(FieldExpression expression, FieldExpression defaultExpression) {
         Validate.notNull(defaultExpression, "Default expression must not be null");
         if (expression != null) {
             return expression;
@@ -271,11 +271,11 @@ class TimeDescriptionStrategy extends DescriptionStrategy {
      * Contains CronFieldExpression instances for hours, minutes and seconds.
      */
     class TimeFields {
-        public CronFieldExpression seconds;
-        public CronFieldExpression minutes;
-        public CronFieldExpression hours;
+        public FieldExpression seconds;
+        public FieldExpression minutes;
+        public FieldExpression hours;
 
-        public TimeFields(CronFieldExpression hours, CronFieldExpression minutes, CronFieldExpression seconds) {
+        public TimeFields(FieldExpression hours, FieldExpression minutes, FieldExpression seconds) {
             this.hours = hours;
             this.minutes = minutes;
             this.seconds = seconds;

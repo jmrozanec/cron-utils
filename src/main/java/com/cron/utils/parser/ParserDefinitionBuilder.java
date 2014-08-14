@@ -1,7 +1,7 @@
 package com.cron.utils.parser;
 
 import com.cron.utils.CronFieldName;
-import com.cron.utils.parser.field.CronField;
+import com.cron.utils.parser.field.CronParserField;
 import com.google.common.collect.Maps;
 
 import java.util.HashSet;
@@ -24,7 +24,7 @@ import java.util.Map;
  * Builder that allows to define and create CronParser instances
  */
 public class ParserDefinitionBuilder {
-    private Map<CronFieldName, CronField> fields;
+    private Map<CronFieldName, CronParserField> fields;
     private boolean lastFieldOptional;
 
     /**
@@ -111,10 +111,10 @@ public class ParserDefinitionBuilder {
 
     /**
      * Registers a certain CronField definition
-     * @param cronField - CronField instance, never null
+     * @param cronParserField - CronField instance, never null
      */
-    void register(CronField cronField) {
-        fields.put(cronField.getField(), cronField);
+    void register(CronParserField cronParserField) {
+        fields.put(cronParserField.getField(), cronParserField);
     }
 
     /**
@@ -122,6 +122,6 @@ public class ParserDefinitionBuilder {
      * @return returns CronParser instance, never null
      */
     public CronParser instance() {
-        return new CronParser(new HashSet<CronField>(fields.values()), lastFieldOptional);
+        return new CronParser(new HashSet<CronParserField>(fields.values()), lastFieldOptional);
     }
 }

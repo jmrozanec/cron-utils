@@ -1,7 +1,7 @@
 package com.cron.utils.parser;
 
 import com.cron.utils.CronFieldName;
-import com.cron.utils.parser.field.CronField;
+import com.cron.utils.parser.field.CronParserField;
 import com.cron.utils.parser.field.FieldConstraints;
 import com.cron.utils.parser.field.FieldConstraintsBuilder;
 import org.junit.Before;
@@ -57,7 +57,7 @@ public class FieldDefinitionBuilderTest {
     public void testAnd() throws Exception {
         FieldConstraints constraints = mock(FieldConstraints.class);
         when(mockConstraintsBuilder.createConstraintsInstance()).thenReturn(constraints);
-        ArgumentCaptor<CronField> argument = ArgumentCaptor.forClass(CronField.class);
+        ArgumentCaptor<CronParserField> argument = ArgumentCaptor.forClass(CronParserField.class);
 
         fieldDefinitionBuilder.and();
 

@@ -1,6 +1,6 @@
 package com.cron.utils.descriptor;
 
-import com.cron.utils.parser.field.CronFieldExpression;
+import com.cron.utils.parser.field.FieldExpression;
 import com.cron.utils.parser.field.On;
 import com.google.common.base.Function;
 import org.joda.time.DateTime;
@@ -25,7 +25,7 @@ class DescriptionStrategyFactory {
      * @param expression - CronFieldExpression
      * @return - DescriptionStrategy instance, never null
      */
-    public static DescriptionStrategy daysOfWeekInstance(final ResourceBundle bundle, final CronFieldExpression expression) {
+    public static DescriptionStrategy daysOfWeekInstance(final ResourceBundle bundle, final FieldExpression expression) {
         final Function<Integer, String> nominal = new Function<Integer, String>() {
             @Override
             public String apply(Integer integer) {
@@ -35,11 +35,11 @@ class DescriptionStrategyFactory {
 
         NominalDescriptionStrategy dow = new NominalDescriptionStrategy(bundle, nominal, expression);
 
-        dow.addDescription(new Function<CronFieldExpression, String>() {
+        dow.addDescription(new Function<FieldExpression, String>() {
             @Override
-            public String apply(CronFieldExpression cronFieldExpression) {
-                if (cronFieldExpression instanceof On) {
-                    On on = (On) cronFieldExpression;
+            public String apply(FieldExpression fieldExpression) {
+                if (fieldExpression instanceof On) {
+                    On on = (On) fieldExpression;
                     switch (on.getSpecialChar()) {
                         case HASH:
                             return String.format("%s %s %s ", nominal.apply(on.getTime()), on.getNth(), bundle.getString("of_every_month"));
@@ -61,14 +61,14 @@ class DescriptionStrategyFactory {
      * @param expression - CronFieldExpression
      * @return - DescriptionStrategy instance, never null
      */
-    public static DescriptionStrategy daysOfMonthInstance(final ResourceBundle bundle, final CronFieldExpression expression) {
+    public static DescriptionStrategy daysOfMonthInstance(final ResourceBundle bundle, final FieldExpression expression) {
         NominalDescriptionStrategy dow = new NominalDescriptionStrategy(bundle, null, expression);
 
-        dow.addDescription(new Function<CronFieldExpression, String>() {
+        dow.addDescription(new Function<FieldExpression, String>() {
             @Override
-            public String apply(CronFieldExpression cronFieldExpression) {
-                if (cronFieldExpression instanceof On) {
-                    On on = (On) cronFieldExpression;
+            public String apply(FieldExpression fieldExpression) {
+                if (fieldExpression instanceof On) {
+                    On on = (On) fieldExpression;
                     switch (on.getSpecialChar()) {
                         case W:
                             return String.format("%s %s %s ", bundle.getString("the_nearest_weekday_to_the"), on.getTime(), bundle.getString("of_the_month"));
@@ -90,7 +90,7 @@ class DescriptionStrategyFactory {
      * @param expression - CronFieldExpression
      * @return - DescriptionStrategy instance, never null
      */
-    public static DescriptionStrategy monthsInstance(final ResourceBundle bundle, final CronFieldExpression expression) {
+    public static DescriptionStrategy monthsInstance(final ResourceBundle bundle, final FieldExpression expression) {
         return new NominalDescriptionStrategy(
                 bundle,
                 new Function<Integer, String>() {
@@ -109,7 +109,7 @@ class DescriptionStrategyFactory {
      * @param expression - CronFieldExpression
      * @return - DescriptionStrategy instance, never null
      */
-    public static DescriptionStrategy plainInstance(ResourceBundle bundle, final CronFieldExpression expression) {
+    public static DescriptionStrategy plainInstance(ResourceBundle bundle, final FieldExpression expression) {
         return new NominalDescriptionStrategy(bundle, null, expression);
     }
 
@@ -118,8 +118,8 @@ class DescriptionStrategyFactory {
      * @param bundle - locale
      * @return - DescriptionStrategy instance, never null
      */
-    public static DescriptionStrategy hhMMssInstance(ResourceBundle bundle, final CronFieldExpression hours,
-                                                     final CronFieldExpression minutes, final CronFieldExpression seconds) {
+    public static DescriptionStrategy hhMMssInstance(ResourceBundle bundle, final FieldExpression hours,
+                                                     final FieldExpression minutes, final FieldExpression seconds) {
         return new TimeDescriptionStrategy(bundle, hours, minutes, seconds);
     }
 }

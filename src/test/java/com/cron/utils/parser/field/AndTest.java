@@ -9,14 +9,14 @@ import static org.mockito.Mockito.mock;
 public class AndTest {
 
     private And and;
-    private CronFieldExpression expression1;
-    private CronFieldExpression expression2;
+    private FieldExpression expression1;
+    private FieldExpression expression2;
 
     @Before
     public void setUp() throws Exception {
         and = new And();
-        expression1 = mock(CronFieldExpression.class);
-        expression2 = mock(CronFieldExpression.class);
+        expression1 = mock(FieldExpression.class);
+        expression2 = mock(FieldExpression.class);
     }
 
     @Test

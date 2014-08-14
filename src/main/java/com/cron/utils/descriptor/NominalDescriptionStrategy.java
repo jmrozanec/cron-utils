@@ -1,9 +1,7 @@
 package com.cron.utils.descriptor;
 
-import com.cron.utils.CronFieldName;
 import com.cron.utils.parser.field.Always;
-import com.cron.utils.parser.field.CronFieldExpression;
-import com.cron.utils.parser.field.FieldConstraints;
+import com.cron.utils.parser.field.FieldExpression;
 import com.cron.utils.parser.field.FieldConstraintsBuilder;
 import com.google.common.base.Function;
 import com.google.common.collect.Sets;
@@ -29,8 +27,8 @@ import java.util.Set;
  * Ex.: days of week or months
  */
 class NominalDescriptionStrategy extends DescriptionStrategy {
-    private CronFieldExpression expression;
-    private Set<Function<CronFieldExpression, String>> descriptions;
+    private FieldExpression expression;
+    private Set<Function<FieldExpression, String>> descriptions;
 
     /**
      * Constructor
@@ -40,7 +38,7 @@ class NominalDescriptionStrategy extends DescriptionStrategy {
      *                             or the description otherwise.
      * @param expression - CronFieldExpression instance, the expression to be described.
      */
-    public NominalDescriptionStrategy(ResourceBundle bundle, Function<Integer, String> nominalValueFunction, CronFieldExpression expression) {
+    public NominalDescriptionStrategy(ResourceBundle bundle, Function<Integer, String> nominalValueFunction, FieldExpression expression) {
         super(bundle);
         descriptions = Sets.newHashSet();
         if (nominalValueFunction != null) {
@@ -55,7 +53,7 @@ class NominalDescriptionStrategy extends DescriptionStrategy {
 
     @Override
     public String describe() {
-        for (Function<CronFieldExpression, String> function : descriptions) {
+        for (Function<FieldExpression, String> function : descriptions) {
             if (!"".equals(function.apply(expression))) {
                 return function.apply(expression);
             }
@@ -71,7 +69,7 @@ class NominalDescriptionStrategy extends DescriptionStrategy {
      *             or the description otherwise.
      * @return NominalDescriptionStrategy, this instance
      */
-    public NominalDescriptionStrategy addDescription(Function<CronFieldExpression, String> desc) {
+    public NominalDescriptionStrategy addDescription(Function<FieldExpression, String> desc) {
         descriptions.add(desc);
         return this;
     }

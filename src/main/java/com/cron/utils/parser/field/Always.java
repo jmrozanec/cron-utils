@@ -15,7 +15,7 @@ package com.cron.utils.parser.field;
 /**
  * Represents a star (*) value on cron expression field
  */
-public class Always extends CronFieldExpression {
+public class Always extends FieldExpression {
     private Every every;
 
     public Always(FieldConstraints constraints) {

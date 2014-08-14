@@ -19,22 +19,22 @@ import java.util.List;
 /**
  * Represents a conjunction of cron expressions for a field.
  */
-public class And extends CronFieldExpression {
+public class And extends FieldExpression {
 
-    private List<CronFieldExpression> expressions;
+    private List<FieldExpression> expressions;
 
     public And() {
         super(FieldConstraintsBuilder.instance().createConstraintsInstance());
-        expressions = new ArrayList<CronFieldExpression>();
+        expressions = new ArrayList<FieldExpression>();
     }
 
     @Override
-    public And and(CronFieldExpression exp) {
+    public And and(FieldExpression exp) {
         expressions.add(exp);
         return this;
     }
 
-    public List<CronFieldExpression> getExpressions() {
+    public List<FieldExpression> getExpressions() {
         return Collections.unmodifiableList(expressions);
     }
 }
