@@ -244,6 +244,7 @@
                 <version>2.6</version>
                 <configuration>
                     <format>xml</format>
+		    <format>html</format>
                 </configuration>
             </plugin>
 		</plugins>
