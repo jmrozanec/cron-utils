@@ -20,13 +20,14 @@ The project follows the [Semantic Versioning Convention](http://semver.org/)
 
 **Features**
 
- * Supports all cron expression special characters including * / , - L W, #.
-    * The question mark (?) is currently replaced for an asterisk (*). Enhanced support will be provided in a future.
  * Supports arbitrary cron expressions: you can define your own cron format! Supported fields are: second, minute, hour, day of month, month, day of week, year.
  * Support for optional last field!
- * Supports printing to locale specific human readable format (Italian, English, Spanish and Dutch so far...).
+ * Supports all cron special characters: * / , -
+    * Non-standard characters L W, # are supported as well!
+    * Question mark (?) is currently replaced for an asterisk (*). Enhanced support will be provided in a future.
+ * Supports printing to locale specific human readable format (English, Italian, Spanish and Dutch so far...).
  * Parsing and Description process are decoupled: parse once and operate with the result!
- * Pre-defined parsers for the following cron definitions:
+ * Pre-defined definitions for the following cron libraries are provided:
     * [Unix](http://www.unix.com/man-page/linux/5/crontab/)
     * [Cron4j](http://www.sauronsoftware.it/projects/cron4j/)
     * [Quartz](http://quartz-scheduler.org/)
@@ -65,10 +66,20 @@ cron-utils will be soon available in the Maven central repository.
     descriptor.describe(parser.parse("*/45 * * * * *"));
     //description will be: "every 45 seconds"
 
-    descriptor.describe(parser.parse("0 23 ? * * 1-5 *"));
+    Cron quartzCron = parser.parse("0 23 ? * * 1-5 *")
+    descriptor.describe(cron);
     //description will be: "every hour at minute 23 every day between Monday and Friday"
     //which is the same description we get for the cron below:
     descriptor.describe(parser.parse("0 23 ? * * MON-FRI *"));
+
+    //Migration between cron libraries is easy!
+    //Turn cron expressions into another format by using CronMapper:
+    CronMapper cronMapper =
+            new CronMapper(
+                    cronDefinition,
+                    CronDefinitionRegistry.instance().retrieve(CRON4J)
+            );
+    Cron cron4jCron = cronMapper.map(cron);
 
 **Contribute!**
 
@@ -77,7 +88,7 @@ Contributions are welcome! You can contribute by
  * enhancing existing code: ex.: provide more accurate description cases
  * testing
  * enhancing documentation
- * providing properties files for new locales
+ * providing translations to support new locales
  * bringing suggestions and reporting bugs
  * spreading the word / telling us how you use it!
 
