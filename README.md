@@ -40,6 +40,8 @@ cron-utils will be soon available in the Maven central repository.
 
 **Usage Examples**
 
+***Build cron definitions***
+
     //define your own cron: arbitrary fields are allowed and last field can be optional
     CronDefinition cronDefinition =
         CronDefinitionBuilder.define()
@@ -50,7 +52,8 @@ cron-utils will be soon available in the Maven central repository.
                 .supportsHash().supportsL().supportsW().and()
             .withMonth().and()
             .withDayOfWeek()
-                .withIntMapping(7, 0).supportsHash().supportsL().supportsW().and()
+                .withIntMapping(7, 0) //we support non-standard non-zero-based numbers!
+                .supportsHash().supportsL().supportsW().and()
             .withYear().and()
             .lastFieldOptional()
             .instance();
@@ -58,8 +61,12 @@ cron-utils will be soon available in the Maven central repository.
     //or get a predefined instance
     cronDefinition = CronDefinitionRegistry.instance().retrieve(QUARTZ);
 
+***Parse***
+
     //create a parser based on provided definition
     CronParser parser = new CronParser(cronDefinition);
+
+***Describe***
 
     //create a descriptor for a specific Locale
     CronDescriptor descriptor = CronDescriptor.instance(Locale.UK);
@@ -74,6 +81,8 @@ cron-utils will be soon available in the Maven central repository.
     //which is the same description we get for the cron below:
     descriptor.describe(parser.parse("0 23 ? * * MON-FRI *"));
 
+***Migrate***
+
     //Migration between cron libraries is easy!
     //Turn cron expressions into another format by using CronMapper:
     CronMapper cronMapper =
@@ -83,10 +92,14 @@ cron-utils will be soon available in the Maven central repository.
             );
     Cron cron4jCron = cronMapper.map(cron);
 
+***Validate***
+
     //Validate a string expression is matches a cron definition:
     CronValidator quartzValidator = new CronValidator(cronDefinition);
+
     //getting a boolean result:
     quartzValidator.isValid("0 23 ? * * MON-FRI *");
+
     //or returning same string if valid and raising an exception if invalid
     quartzValidator.validate("0 23 ? * * MON-FRI *");
 
