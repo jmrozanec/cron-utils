@@ -26,7 +26,7 @@ public class Cron {
 
     public Cron(List<CronField> fields){
         this.fields = Maps.newHashMap();
-        Validate.notNull(fields);
+        Validate.notNull(fields, "CronFields cannot be null");
         for(CronField field : fields){
             this.fields.put(field.getField(), field);
         }
