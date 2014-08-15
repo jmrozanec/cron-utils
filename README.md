@@ -64,6 +64,7 @@ cron-utils will be soon available in the Maven central repository.
 
     //create a parser based on provided definition
     CronParser parser = new CronParser(cronDefinition);
+    Cron quartzCron = parser.parse("0 23 ? * * 1-5 *");
 
 ***Describe***
 
@@ -71,11 +72,10 @@ cron-utils will be soon available in the Maven central repository.
     CronDescriptor descriptor = CronDescriptor.instance(Locale.UK);
 
     //parse some expression and ask descriptor for description
-    descriptor.describe(parser.parse("*/45 * * * * *"));
+    String description = descriptor.describe(parser.parse("*/45 * * * * *"));
     //description will be: "every 45 seconds"
 
-    Cron quartzCron = parser.parse("0 23 ? * * 1-5 *")
-    descriptor.describe(cron);
+    description = descriptor.describe(quartzCron);
     //description will be: "every hour at minute 23 every day between Monday and Friday"
     //which is the same description we get for the cron below:
     descriptor.describe(parser.parse("0 23 ? * * MON-FRI *"));
@@ -89,11 +89,11 @@ cron-utils will be soon available in the Maven central repository.
                     cronDefinition,
                     CronDefinitionRegistry.instance().retrieve(CRON4J)
             );
-    Cron cron4jCron = cronMapper.map(cron);
+    Cron cron4jCron = cronMapper.map(quartzCron);
 
 ***Validate***
 
-    //Validate a string expression is matches a cron definition:
+    //Validate if a string expression matches a cron definition:
     CronValidator quartzValidator = new CronValidator(cronDefinition);
 
     //getting a boolean result:
