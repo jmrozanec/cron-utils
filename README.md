@@ -1,5 +1,6 @@
 cron-utils
 ===========
+A Java library to parse, describe, migrate and validate crons.
 
 [![Stories in Backlog](https://badge.waffle.io/jmrozanec/cron-utils.svg?label=backlog&title=Backlog)](http://waffle.io/jmrozanec/cron-utils)
 [![Stories in Ready](https://badge.waffle.io/jmrozanec/cron-utils.svg?label=ready&title=Ready)](http://waffle.io/jmrozanec/cron-utils)
@@ -12,11 +13,9 @@ cron-utils
 
 [![Project stats by OpenHub](https://www.openhub.net/p/cron-utils/widgets/project_thin_badge.gif)](https://www.openhub.net/p/cron-utils/)
 
-A Java library to parse a cron and get a human readable description.
+The project follows the [Semantic Versioning Convention](http://semver.org/)
 
 License: Apache 2.0
-
-The project follows the [Semantic Versioning Convention](http://semver.org/)
 
 **Features**
 
@@ -102,6 +101,7 @@ cron-utils will be soon available in the Maven central repository.
 
     //or returning same string if valid and raising an exception if invalid
     quartzValidator.validate("0 23 ? * * MON-FRI *");
+
 
 
 **Contribute!**
