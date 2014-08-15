@@ -20,13 +20,15 @@ The project follows the [Semantic Versioning Convention](http://semver.org/)
 
 **Features**
 
- * Supports arbitrary cron expressions: you can define your own cron format! Supported fields are: second, minute, hour, day of month, month, day of week, year.
- * Support for optional last field!
+ * Create arbitrary cron expressions: you can define your own cron format! Supported fields are: second, minute, hour, day of month, month, day of week, year.
+ * You can flag last field as optional!
  * Supports all cron special characters: * / , -
     * Non-standard characters L W, # are supported as well!
     * Question mark (?) is currently replaced for an asterisk (*). Enhanced support will be provided in a future.
- * Supports printing to locale specific human readable format (English, Italian, Spanish and Dutch so far...).
- * Parsing and Description process are decoupled: parse once and operate with the result!
+ * Print to locale specific human readable format (English, Italian, Spanish and Dutch so far...).
+ * Parse and Description process are decoupled: parse once and operate with the result!
+ * Validate if cron string expressions matches a cron definition using CronValidator
+ * Convert crons between different cron definitions: if you need to migrate expressions, CronMapper may help you!
  * Pre-defined definitions for the following cron libraries are provided:
     * [Unix](http://www.unix.com/man-page/linux/5/crontab/)
     * [Cron4j](http://www.sauronsoftware.it/projects/cron4j/)
@@ -80,6 +82,14 @@ cron-utils will be soon available in the Maven central repository.
                     CronDefinitionRegistry.instance().retrieve(CRON4J)
             );
     Cron cron4jCron = cronMapper.map(cron);
+
+    //Validate a string expression is matches a cron definition:
+    CronValidator quartzValidator = new CronValidator(cronDefinition);
+    //getting a boolean result:
+    quartzValidator.isValid("0 23 ? * * MON-FRI *");
+    //or returning same string if valid and raising an exception if invalid
+    quartzValidator.validate("0 23 ? * * MON-FRI *");
+
 
 **Contribute!**
 
