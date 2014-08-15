@@ -27,7 +27,7 @@ The project follows the [Semantic Versioning Convention](http://semver.org/)
     * Question mark (?) is currently replaced for an asterisk (*). Enhanced support will be provided in a future.
  * Print to locale specific human readable format (English, Italian, Spanish and Dutch so far...).
  * Parse and Description process are decoupled: parse once and operate with the result!
- * Validate if cron string expressions matches a cron definition using CronValidator
+ * Validate if cron string expressions match a cron definition using CronValidator
  * Convert crons between different cron definitions: if you need to migrate expressions, CronMapper may help you!
  * Pre-defined definitions for the following cron libraries are provided:
     * [Unix](http://www.unix.com/man-page/linux/5/crontab/)

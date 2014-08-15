@@ -54,7 +54,7 @@ public class CronDescriptor {
      */
     public String describe(Cron cron) {
         Validate.notNull(cron, "Cron must not be null");
-        Map<CronFieldName, CronField> expressions = cron.retrieveFieldAsMap();
+        Map<CronFieldName, CronField> expressions = cron.retrieveFieldsAsMap();
         return
                 new StringBuilder().append(describeHHmmss(expressions)).append(" ")
                         .append(describeDayOfMonth(expressions)).append(" ")

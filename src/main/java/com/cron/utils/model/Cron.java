@@ -36,7 +36,7 @@ public class Cron {
         return fields.get(name);
     }
 
-    public Map<CronFieldName, CronField> retrieveFieldAsMap(){
+    public Map<CronFieldName, CronField> retrieveFieldsAsMap(){
         return Collections.unmodifiableMap(fields);
     }
 }

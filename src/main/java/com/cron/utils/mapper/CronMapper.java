@@ -8,6 +8,7 @@ import com.cron.utils.parser.field.*;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import org.apache.commons.lang3.Validate;
 
 import java.util.List;
 import java.util.Map;
@@ -26,12 +27,28 @@ import java.util.Map;
 public class CronMapper {
     private Map<CronFieldName, Function<CronField, CronField>> mappings;
 
+    /**
+     * Constructor
+     * @param from - source CronDefinition;
+     *             if null a NullPointerException will be raised
+     * @param to - target CronDefinition;
+     *             if null a NullPointerException will be raised
+     */
     public CronMapper(CronDefinition from, CronDefinition to){
+        Validate.notNull(from, "Source CronDefinition must not be null");
+        Validate.notNull(to, "Destination CronDefinition must not be null");
         mappings = Maps.newHashMap();
         buildMappings(from, to);
     }
 
+    /**
+     * Maps given cron to target cron definition
+     * @param cron - Instance to be mapped;
+     *             if null a NullPointerException will be raised
+     * @return new Cron instance, never null;
+     */
     public Cron map(Cron cron) {
+        Validate.notNull(cron, "Cron must not be null");
         List<CronField> fields = Lists.newArrayList();
         for(CronFieldName name : CronFieldName.values()){
             if(mappings.containsKey(name)){
@@ -41,6 +58,11 @@ public class CronMapper {
         return new Cron(fields);
     }
 
+    /**
+     * Builds functions that map the fields from source CronDefinition to target
+     * @param from - source CronDefinition
+     * @param to - target CronDefinition
+     */
     private void buildMappings(CronDefinition from, CronDefinition to){
         Map<CronFieldName, FieldDefinition> sourceFieldDefinitions = Maps.newHashMap();
         Map<CronFieldName, FieldDefinition> destFieldDefinitions = Maps.newHashMap();
