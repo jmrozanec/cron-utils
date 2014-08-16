@@ -98,6 +98,10 @@ public class CronMapper {
         }
     }
 
+    /**
+     * Creates a Function that returns same field
+     * @return Function<CronField, CronField> instance, never null
+     */
     private Function<CronField, CronField> returnSameExpression(){
         return new Function<CronField, CronField>() {
             @Override
@@ -107,6 +111,11 @@ public class CronMapper {
         };
     }
 
+    /**
+     * Creates a Function that returns a On instance with zero value
+     * @param name - Cron field name
+     * @return new Function<CronField, CronField> instance, never null
+     */
     private Function<CronField, CronField> returnOnZeroExpression(final CronFieldName name){
         return new Function<CronField, CronField>() {
             @Override
@@ -116,6 +125,11 @@ public class CronMapper {
         };
     }
 
+    /**
+     * Creates a Function that returns an Always instance
+     * @param name  - Cron field name
+     * @return new Function<CronField, CronField> instance, never null
+     */
     private Function<CronField, CronField> returnAlwaysExpression(final CronFieldName name){
         return new Function<CronField, CronField>() {
             @Override

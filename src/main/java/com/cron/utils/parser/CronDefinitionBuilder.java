@@ -22,7 +22,7 @@ import java.util.Map;
  */
 
 /**
- * Builder that allows to define and create CronParser instances
+ * Builder that allows to define and create CronDefinition instances
  */
 public class CronDefinitionBuilder {
     private Map<CronFieldName, FieldDefinition> fields;
@@ -39,7 +39,7 @@ public class CronDefinitionBuilder {
 
     /**
      * Creates a builder instance
-     * @return new ParserDefinitionBuilder instance
+     * @return new CronDefinitionBuilder instance
      */
     public static CronDefinitionBuilder defineCron() {
         return new CronDefinitionBuilder();
@@ -103,7 +103,7 @@ public class CronDefinitionBuilder {
 
     /**
      * Sets lastFieldOptional value to true
-     * @return this ParserDefinitionBuilder instance
+     * @return this CronDefinitionBuilder instance
      */
     public CronDefinitionBuilder lastFieldOptional() {
         lastFieldOptional = true;
@@ -119,8 +119,8 @@ public class CronDefinitionBuilder {
     }
 
     /**
-     * Creates a new CronParser instance with provided field definitions
-     * @return returns CronParser instance, never null
+     * Creates a new CronDefinition instance with provided field definitions
+     * @return returns CronDefinition instance, never null
      */
     public CronDefinition instance() {
         return new CronDefinition(new ArrayList<FieldDefinition>(this.fields.values()), lastFieldOptional);
