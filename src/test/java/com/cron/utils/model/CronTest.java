@@ -38,8 +38,13 @@ public class CronTest {
     }
 
     @Test
-    public void testRetrieve() throws Exception {
+    public void testRetrieveNonNullParameter() throws Exception {
         assertEquals(mockField, cron.retrieve(testName));
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void testRetrieveNullParameter() throws Exception {
+        cron.retrieve(null);
     }
 
     @Test
