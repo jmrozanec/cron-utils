@@ -22,6 +22,11 @@ public class Always extends FieldExpression {
         this(constraints, null);
     }
 
+    @Override
+    public String asString() {
+        return String.format("*%s", every.asString());
+    }
+
     public Always(FieldConstraints constraints, String every) {
         super(constraints);
         if (every != null) {

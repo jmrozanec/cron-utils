@@ -34,6 +34,15 @@ public class And extends FieldExpression {
         return this;
     }
 
+    @Override
+    public String asString() {
+        StringBuilder builder = new StringBuilder();
+        for(int j=0; j<expressions.size(); j++){
+            builder.append(expressions.get(j).asString()).append(",");
+        }
+        return builder.toString();
+    }
+
     public List<FieldExpression> getExpressions() {
         return Collections.unmodifiableList(expressions);
     }

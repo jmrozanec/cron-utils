@@ -30,4 +30,6 @@ public abstract class FieldExpression {
     protected FieldConstraints getConstraints() {
         return constraints;
     }
+
+    public abstract String asString();
 }

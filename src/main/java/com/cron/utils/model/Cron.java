@@ -5,6 +5,7 @@ import com.cron.utils.parser.field.CronField;
 import com.google.common.collect.Maps;
 import org.apache.commons.lang3.Validate;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -27,6 +28,7 @@ import java.util.Map;
  */
 public class Cron {
     private Map<CronFieldName, CronField> fields;
+    private String asString;
 
     public Cron(List<CronField> fields){
         this.fields = Maps.newHashMap();
@@ -43,8 +45,7 @@ public class Cron {
      * @return CronField that corresponds to given CronFieldName
      */
     public CronField retrieve(CronFieldName name){
-        Validate.notNull(name, "CronFieldName must not be null");
-        return fields.get(name);
+        return fields.get(Validate.notNull(name, "CronFieldName must not be null"));
     }
 
     /**
@@ -53,5 +54,18 @@ public class Cron {
      */
     public Map<CronFieldName, CronField> retrieveFieldsAsMap(){
         return Collections.unmodifiableMap(fields);
+    }
+
+    public String asString(){
+        if(asString == null){
+            ArrayList<CronField> fields = new ArrayList<CronField>(this.fields.values());
+            Collections.sort(fields, CronField.createFieldComparator());
+            StringBuilder builder = new StringBuilder();
+            for(int j =0; j<fields.size(); j++){
+                builder.append(String.format("%s ", fields.get(j).getExpression().asString()));
+            }
+            asString = builder.toString();
+        }
+        return asString;
     }
 }

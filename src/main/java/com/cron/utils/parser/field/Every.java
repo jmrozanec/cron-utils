@@ -29,4 +29,12 @@ public class Every extends FieldExpression {
     public int getTime() {
         return time;
     }
+
+    @Override
+    public String asString() {
+        if(time==1){
+            return "";
+        }
+        return String.format("/%s", getTime());
+    }
 }

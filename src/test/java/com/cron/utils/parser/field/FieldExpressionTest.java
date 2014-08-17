@@ -43,5 +43,10 @@ public class FieldExpressionTest {
         public TestFieldExpression(FieldConstraints constraints) {
             super(constraints);
         }
+
+        @Override
+        public String asString() {
+            return null;
+        }
     }
 }

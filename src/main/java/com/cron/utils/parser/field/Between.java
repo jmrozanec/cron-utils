@@ -52,4 +52,9 @@ public class Between extends FieldExpression {
             throw new RuntimeException("Every x time cannot exceed range length");
         }
     }
+
+    @Override
+    public String asString() {
+        return String.format("%s-%s%s", from, to, every.asString());
+    }
 }

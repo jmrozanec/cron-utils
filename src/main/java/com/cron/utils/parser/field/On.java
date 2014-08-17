@@ -69,4 +69,16 @@ public class On extends FieldExpression {
         constraints.validateSpecialCharAllowed(specialChar);
         return expression;
     }
+
+    @Override
+    public String asString() {
+        switch (specialChar){
+            case NONE:
+                return ""+getTime();
+            case HASH:
+                return String.format("%s#%s", getTime(), getNth());
+            default:
+                return specialChar.toString();
+        }
+    }
 }

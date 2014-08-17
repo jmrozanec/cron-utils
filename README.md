@@ -90,6 +90,8 @@ cron-utils will be soon available in the Maven central repository.
                     CronDefinitionRegistry.instance().retrieve(CRON4J)
             );
     Cron cron4jCron = cronMapper.map(quartzCron);
+    //and to get a String representation of it, we can use
+    cron4jCron.asString();//will return: 23 * * * 1-5
 
 ***Validate***
 
