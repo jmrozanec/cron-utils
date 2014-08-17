@@ -21,6 +21,10 @@ import java.util.Map;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+/**
+ * Represents a cron expression
+ */
 public class Cron {
     private Map<CronFieldName, CronField> fields;
 
@@ -32,10 +36,21 @@ public class Cron {
         }
     }
 
+    /**
+     * Retrieve value for cron field
+     * @param name - cron field name.
+     *             If null, a NullPointerException will be raised.
+     * @return CronField that corresponds to given CronFieldName
+     */
     public CronField retrieve(CronFieldName name){
+        Validate.notNull(name, "CronFieldName must not be null");
         return fields.get(name);
     }
 
+    /**
+     * Retrieve all cron field values as map
+     * @return unmodifiable Map<CronFieldName, CronField> values, never null
+     */
     public Map<CronFieldName, CronField> retrieveFieldsAsMap(){
         return Collections.unmodifiableMap(fields);
     }
