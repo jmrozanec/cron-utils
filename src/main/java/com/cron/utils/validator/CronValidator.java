@@ -2,6 +2,7 @@ package com.cron.utils.validator;
 
 import com.cron.utils.model.CronDefinition;
 import com.cron.utils.parser.CronParser;
+import org.apache.commons.lang3.Validate;
 
 /*
  * Copyright 2014 jmrozanec
@@ -15,25 +16,48 @@ import com.cron.utils.parser.CronParser;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+/**
+ * Validates if a cron expression conforms to the corresponding definition.
+ */
 public class CronValidator {
 
     private CronParser parser;
 
+    /**
+     * Constructor
+     * @param definition - CronDefinition instance
+     */
     public CronValidator(CronDefinition definition){
-        this.parser = new CronParser(definition);
+        this.parser = new CronParser(Validate.notNull(definition, "CronDefinition must not be null"));
     }
 
+    /**
+     * Validates cron expression
+     * @param expression - string with cron expression
+     * @return boolean - true if valid, false otherwise
+     */
     public boolean isValid(String expression){
         try{
-            parser.parse(expression);
+            validate(expression);
         }catch (RuntimeException re){
             return false;
         }
         return true;
     }
 
+    /**
+     * Validates cron expression
+     * @param expression - string with cron expression
+     * @return string with same cron expression as parameter
+     * will raise a RuntimeException if the expression is invalid
+     */
     public String validate(String expression){
-        parser.parse(expression);
-        return expression;
+        try{
+            parser.parse(expression);
+            return expression;
+        }catch (RuntimeException re){
+            throw new RuntimeException(String.format("Invalid cron expression: %s", expression), re);
+        }
     }
 }
