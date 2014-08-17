@@ -14,7 +14,12 @@ public class OnTest {
     public void setUp() {
         time = 5;
         nth = 3;
-        nullFieldConstraints = FieldConstraintsBuilder.instance().createConstraintsInstance();
+        nullFieldConstraints =
+                FieldConstraintsBuilder.instance()
+                        .addHashSupport()
+                        .addLSupport()
+                        .addWSupport()
+                        .createConstraintsInstance();
     }
 
     @Test
@@ -30,5 +35,29 @@ public class OnTest {
     @Test(expected = RuntimeException.class)
     public void testOnlyNthFails() throws Exception {
         new On(nullFieldConstraints, String.format("#%s", nth));
+    }
+
+    @Test
+    public void testAsStringJustNumber(){
+        String expression = "3";
+        assertEquals(expression, new On(nullFieldConstraints, expression).asString());
+    }
+
+    @Test
+    public void testAsStringSpecialCharW(){
+        String expression = "1W";
+        assertEquals(expression, new On(nullFieldConstraints, expression).asString());
+    }
+
+    @Test
+    public void testAsStringSpecialCharL(){
+        String expression = "L";
+        assertEquals(expression, new On(nullFieldConstraints, expression).asString());
+    }
+
+    @Test
+    public void testAsStringWithNth(){
+        String expression = "3#4";
+        assertEquals(expression, new On(nullFieldConstraints, expression).asString());
     }
 }

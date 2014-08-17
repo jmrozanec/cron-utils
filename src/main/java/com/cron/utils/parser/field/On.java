@@ -51,7 +51,7 @@ public class On extends FieldExpression {
             if (array[0].isEmpty()) {
                 throw new RuntimeException("Time should be specified!");
             }
-            return expression = array[0];
+            expression = array[0];
         }
         if (exp.contains("L")) {
             specialChar = SpecialChar.L;
@@ -77,6 +77,8 @@ public class On extends FieldExpression {
                 return ""+getTime();
             case HASH:
                 return String.format("%s#%s", getTime(), getNth());
+            case W:
+                return String.format("%sW", getTime());
             default:
                 return specialChar.toString();
         }
