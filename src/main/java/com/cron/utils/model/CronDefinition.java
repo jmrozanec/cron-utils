@@ -20,12 +20,24 @@ import java.util.Set;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+/**
+ * Defines fields and conditions over each field for a cron
+ */
 public class CronDefinition {
     private Map<CronFieldName, FieldDefinition> fieldDefinitions;
     private boolean lastFieldOptional;
 
+    /**
+     * Constructor
+     * @param fieldDefinitions - list with field definitions. Must not be null or empty.
+     *                         Throws a NullPointerException if a null values is received
+     *                         Throws an IllegalArgumentException if an empty list is received
+     * @param lastFieldOptional - boolean, value stating if last field is optional
+     */
     public CronDefinition(List<FieldDefinition> fieldDefinitions, boolean lastFieldOptional){
         Validate.notNull(fieldDefinitions, "Field definitions must not be null");
+        Validate.notEmpty(fieldDefinitions, "Field definitions must not be empty");
         this.fieldDefinitions = Maps.newHashMap();
         for(FieldDefinition field : fieldDefinitions){
             this.fieldDefinitions.put(field.getFieldName(), field);
@@ -33,10 +45,18 @@ public class CronDefinition {
         this.lastFieldOptional = lastFieldOptional;
     }
 
+    /**
+     * If last field of a cron expression is optional
+     * @return true if has an optional field, false otherwise.
+     */
     public boolean isLastFieldOptional() {
         return lastFieldOptional;
     }
 
+    /**
+     * Returns field definitions for this cron
+     * @return Set<FieldDefinition> instance, never null.
+     */
     public Set<FieldDefinition> getFieldDefinitions(){
         return new HashSet<FieldDefinition>(fieldDefinitions.values());
     }

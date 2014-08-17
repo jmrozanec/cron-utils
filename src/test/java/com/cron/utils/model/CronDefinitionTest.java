@@ -1,18 +1,21 @@
 package com.cron.utils.model;
 
+import com.cron.utils.CronFieldName;
 import com.google.common.collect.Lists;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.when;
 
 public class CronDefinitionTest {
     private boolean lastFieldOptional;
+    private CronFieldName testFieldName;
     @Mock
     private FieldDefinition mockFieldDefinition;
 
@@ -20,9 +23,14 @@ public class CronDefinitionTest {
 
     @Before
     public void setUp(){
-        lastFieldOptional = true;
+        MockitoAnnotations.initMocks(this);
+        when(mockFieldDefinition.getFieldName()).thenReturn(testFieldName);
+
         List<FieldDefinition> fields = Lists.newArrayList();
         fields.add(mockFieldDefinition);
+        lastFieldOptional = true;
+        testFieldName = CronFieldName.SECOND;
+
         cronDefinition = new CronDefinition(fields, lastFieldOptional);
     }
 
@@ -30,6 +38,11 @@ public class CronDefinitionTest {
     @Test(expected = NullPointerException.class)
     public void testConstructorNullFieldsParameter() throws Exception {
         new CronDefinition(null, lastFieldOptional);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testConstructorEmptyFieldsParameter() throws Exception {
+        new CronDefinition(new ArrayList<FieldDefinition>(), lastFieldOptional);
     }
 
     @Test
