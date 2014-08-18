@@ -18,23 +18,46 @@ import java.util.Comparator;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+/**
+ * Represents a definition of allowed values for a cron field.
+ */
 public class FieldDefinition {
     private CronFieldName fieldName;
     private FieldConstraints constraints;
 
+    /**
+     * Constructor
+     * @param fieldName - CronFieldName; name of the field
+     *                  if null, a NullPointerException will be raised.
+     * @param constraints - FieldConstraints, constraints;
+     *                    if null, a NullPointerException will be raised.
+     */
     public FieldDefinition(CronFieldName fieldName, FieldConstraints constraints){
         this.fieldName = Validate.notNull(fieldName, "CronFieldName must not be null");
         this.constraints = Validate.notNull(constraints, "FieldConstraints must not be null");
     }
 
+    /**
+     * Retrieve field name
+     * @return CronFieldName instance, never null;
+     */
     public CronFieldName getFieldName() {
         return fieldName;
     }
 
+    /**
+     * Get field constraints
+     * @return FieldConstraints instance, never null;
+     */
     public FieldConstraints getConstraints() {
         return constraints;
     }
 
+    /**
+     * Creates a field definition comparator. Will compare by CronFieldName order value;
+     * @return Comparator<FieldDefinition> instance, never null;
+     */
     public static Comparator<FieldDefinition> createFieldDefinitionComparator() {
         return new Comparator<FieldDefinition>() {
             @Override
