@@ -5,6 +5,7 @@ import com.cron.utils.model.Cron;
 import com.cron.utils.model.CronDefinition;
 import com.cron.utils.model.FieldDefinition;
 import com.cron.utils.parser.field.*;
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -102,7 +103,8 @@ public class CronMapper {
      * Creates a Function that returns same field
      * @return Function<CronField, CronField> instance, never null
      */
-    private Function<CronField, CronField> returnSameExpression(){
+    @VisibleForTesting
+    static Function<CronField, CronField> returnSameExpression(){
         return new Function<CronField, CronField>() {
             @Override
             public CronField apply(CronField field) {
@@ -116,7 +118,8 @@ public class CronMapper {
      * @param name - Cron field name
      * @return new Function<CronField, CronField> instance, never null
      */
-    private Function<CronField, CronField> returnOnZeroExpression(final CronFieldName name){
+    @VisibleForTesting
+    static Function<CronField, CronField> returnOnZeroExpression(final CronFieldName name){
         return new Function<CronField, CronField>() {
             @Override
             public CronField apply(CronField field) {
@@ -130,7 +133,8 @@ public class CronMapper {
      * @param name  - Cron field name
      * @return new Function<CronField, CronField> instance, never null
      */
-    private Function<CronField, CronField> returnAlwaysExpression(final CronFieldName name){
+    @VisibleForTesting
+    static Function<CronField, CronField> returnAlwaysExpression(final CronFieldName name){
         return new Function<CronField, CronField>() {
             @Override
             public CronField apply(CronField field) {
