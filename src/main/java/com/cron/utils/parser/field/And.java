@@ -37,8 +37,11 @@ public class And extends FieldExpression {
     @Override
     public String asString() {
         StringBuilder builder = new StringBuilder();
-        for(int j=0; j<expressions.size(); j++){
-            builder.append(expressions.get(j).asString()).append(",");
+        for(int j=0; j< expressions.size(); j++){
+            builder.append(expressions.get(j).asString());
+            if(j < expressions.size() -1){
+                builder.append(",");
+            }
         }
         return builder.toString();
     }
