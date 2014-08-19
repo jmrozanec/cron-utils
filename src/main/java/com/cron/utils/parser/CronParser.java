@@ -7,6 +7,7 @@ import com.cron.utils.parser.field.CronField;
 import com.cron.utils.parser.field.CronParserField;
 import com.google.common.collect.Maps;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Validate;
 
 import java.util.*;
 
@@ -22,14 +23,28 @@ import java.util.*;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+/**
+ * Parser for cron expressions
+ */
 public class CronParser {
     private Map<Integer, List<CronParserField>> expressions;
 
+    /**
+     * Constructor
+     * @param definition - definition of cron expressions to be parsed
+     *                   if null, a NullPointerException will be raised.
+     */
     public CronParser(CronDefinition definition) {
         expressions = Maps.newHashMap();
-        buildPossibleExpressions(definition);
+        buildPossibleExpressions(Validate.notNull(definition, "CronDefinition must not be null"));
     }
 
+    /**
+     * Build possible cron expressions from definitions.
+     * One is built for sure. A second one may be build if last field is optional.
+     * @param cronDefinition
+     */
     private void buildPossibleExpressions(CronDefinition cronDefinition) {
         List<CronParserField> expression = new ArrayList<CronParserField>();
         for(FieldDefinition fieldDefinition : cronDefinition.getFieldDefinitions()){
@@ -46,7 +61,13 @@ public class CronParser {
         }
     }
 
+    /**
+     * Parse string with cron expression
+     * @param expression - cron expression, never null
+     * @return Cron instance, corresponding to cron expression received
+     */
     public Cron parse(String expression) {
+        Validate.notNull(expression, "Expression must not be null");
         if (StringUtils.isEmpty(expression)) {
             throw new IllegalArgumentException("Empty expression!");
         }
