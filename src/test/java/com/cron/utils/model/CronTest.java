@@ -2,6 +2,7 @@ package com.cron.utils.model;
 
 import com.cron.utils.CronFieldName;
 import com.cron.utils.parser.field.CronField;
+import com.cron.utils.parser.field.FieldExpression;
 import com.google.common.collect.Lists;
 import org.junit.Before;
 import org.junit.Test;
@@ -13,6 +14,7 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public class CronTest {
@@ -53,5 +55,14 @@ public class CronTest {
         assertEquals(1, cron.retrieveFieldsAsMap().size());
         assertTrue(cron.retrieveFieldsAsMap().containsKey(testName));
         assertEquals(mockField, cron.retrieveFieldsAsMap().get(testName));
+    }
+
+    @Test
+    public void testAsString() throws Exception {
+        String expressionString = "somestring";
+        FieldExpression mockFieldExpression = mock(FieldExpression.class);
+        when(mockField.getExpression()).thenReturn(mockFieldExpression);
+        when(mockFieldExpression.asString()).thenReturn(expressionString);
+        assertEquals(expressionString, cron.asString());
     }
 }

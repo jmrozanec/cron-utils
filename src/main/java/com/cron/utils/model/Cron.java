@@ -64,7 +64,7 @@ public class Cron {
             for(int j =0; j<fields.size(); j++){
                 builder.append(String.format("%s ", fields.get(j).getExpression().asString()));
             }
-            asString = builder.toString();
+            asString = builder.toString().trim();
         }
         return asString;
     }
