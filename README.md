@@ -109,6 +109,7 @@ cron-utils will be soon available in the Maven central repository.
 **Contribute!**
 
 Contributions are welcome! You can contribute by
+ * starring this repo!
  * adding new features
  * enhancing existing code: ex.: provide more accurate description cases
  * testing
