@@ -2,6 +2,7 @@ package com.cron.utils.descriptor;
 
 import com.cron.utils.parser.field.*;
 import com.google.common.base.Function;
+import com.google.common.collect.Lists;
 import org.apache.commons.lang3.Validate;
 
 import java.text.MessageFormat;
@@ -50,22 +51,33 @@ abstract class DescriptionStrategy {
      * @param fieldExpression - CronFieldExpression instance - not null
      * @return human readable description - String
      */
-    protected String describe(FieldExpression fieldExpression) {
+    protected String describe(FieldExpression fieldExpression){
+        return describe(fieldExpression, false);
+    }
+
+    /**
+     * Given a CronFieldExpression, provide a String with a human readable description.
+     * Will identify CronFieldExpression subclasses and delegate.
+     * @param fieldExpression - CronFieldExpression instance - not null
+     * @param and - boolean expression that indicates if description should fit an "and" context
+     * @return human readable description - String
+     */
+    protected String describe(FieldExpression fieldExpression, boolean and) {
         Validate.notNull(fieldExpression, "CronFieldExpression should not be null!");
         if (fieldExpression instanceof Always) {
-            return describe((Always) fieldExpression);
+            return describe((Always)fieldExpression, and);
         }
         if (fieldExpression instanceof And) {
             return describe((And) fieldExpression);
         }
         if (fieldExpression instanceof Between) {
-            return describe((Between) fieldExpression);
+            return describe((Between) fieldExpression, and);
         }
         if (fieldExpression instanceof Every) {
-            return describe((Every) fieldExpression);
+            return describe((Every) fieldExpression, and);
         }
         if (fieldExpression instanceof On) {
-            return describe((On) fieldExpression);
+            return describe((On) fieldExpression, and);
         }
         return "";
     }
@@ -87,11 +99,11 @@ abstract class DescriptionStrategy {
      * @param always - Always
      * @return human readable description - String
      */
-    protected String describe(Always always) {
+    protected String describe(Always always, boolean and) {
         if (always.getEvery().getTime() <= 1) {
             return "";
         }
-        return describe(always.getEvery());
+        return describe(always.getEvery(), and);
     }
 
     /**
@@ -100,13 +112,37 @@ abstract class DescriptionStrategy {
      * @return human readable description - String
      */
     protected String describe(And and) {
-        List<FieldExpression> expressions = and.getExpressions();
-        StringBuilder builder = new StringBuilder();
-        builder.append(describe(expressions.get(0)));
-        for (int j = 1; j < expressions.size(); j++) {
-            builder.append(String.format(" %s %s ", bundle.getString("and"), describe(expressions.get(j))));
+        List<FieldExpression> expressions = Lists.newArrayList();
+        List<FieldExpression> onExpressions = Lists.newArrayList();
+        for(FieldExpression fieldExpression : and.getExpressions()){
+            if(fieldExpression instanceof On){
+                onExpressions.add(fieldExpression);
+            } else {
+                expressions.add(fieldExpression);
+            }
         }
+        StringBuilder builder = new StringBuilder();
+        if(!onExpressions.isEmpty()) {
+            builder.append(bundle.getString("at"));
+            createAndDescription(builder, onExpressions).append(" %s");
+        }
+        if(!expressions.isEmpty()){
+            createAndDescription(builder, expressions).append(" %s");
+        }
+
         return builder.toString();
+    }
+
+    private StringBuilder createAndDescription(StringBuilder builder, List<FieldExpression> expressions){
+        if((expressions.size() - 2) >= 0){
+            for (int j = 0; j < expressions.size() - 2; j++) {
+                builder.append(String.format(" %s, ", describe(expressions.get(j), true)));
+            }
+            builder.append(String.format(" %s ", describe(expressions.get(expressions.size() - 2), true)));
+        }
+        builder.append(String.format(" %s ", bundle.getString("and")));
+        builder.append(describe(expressions.get(expressions.size()-1), true));
+        return builder;
     }
 
     /**
@@ -114,10 +150,16 @@ abstract class DescriptionStrategy {
      * @param between - Between
      * @return human readable description - String
      */
-    protected String describe(Between between) {
+    protected String describe(Between between, boolean and) {
         return new StringBuilder()
-                .append(describe(between.getEvery()))
-                .append(MessageFormat.format(bundle.getString("between_x_and_y"), nominalValue(between.getFrom()), nominalValue(between.getTo())))
+                .append(describe(between.getEvery(), and))
+                .append(
+                        MessageFormat.format(
+                                bundle.getString("between_x_and_y"),
+                                nominalValue(between.getFrom()),
+                                nominalValue(between.getTo())
+                        )
+                )
                 .append(" ").toString();
     }
 
@@ -126,11 +168,14 @@ abstract class DescriptionStrategy {
      * @param every - Every
      * @return human readable description - String
      */
-    protected String describe(Every every) {
+    protected String describe(Every every, boolean and) {
+        String description;
         if (every.getTime() > 1) {
-            return String.format("%s %s ", bundle.getString("every"), nominalValue(every.getTime())) + "%s";
+            description = String.format("%s %s ", bundle.getString("every"), nominalValue(every.getTime()));
+        } else {
+            description = bundle.getString("every");
         }
-        return bundle.getString("every") + " %s ";
+        return description + " %s ";
     }
 
     /**
@@ -138,7 +183,10 @@ abstract class DescriptionStrategy {
      * @param on - On
      * @return human readable description - String
      */
-    protected String describe(On on) {
+    protected String describe(On on, boolean and) {
+        if(and){
+             return nominalValue(on.getTime());
+        }
         return String.format("%s %s ", bundle.getString("at"), nominalValue(on.getTime())) + "%s";
     }
 }
