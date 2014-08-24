@@ -1,7 +1,7 @@
 package com.cron.utils.descriptor;
 
-import com.cron.utils.parser.field.FieldExpression;
-import com.cron.utils.parser.field.On;
+import com.cron.utils.model.field.FieldExpression;
+import com.cron.utils.model.field.On;
 import com.google.common.base.Function;
 import org.joda.time.DateTime;
 

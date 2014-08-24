@@ -1,8 +1,10 @@
 package com.cron.utils.descriptor;
 
-import com.cron.utils.CronFieldName;
+import com.cron.utils.model.field.CronFieldName;
 import com.cron.utils.model.Cron;
-import com.cron.utils.parser.field.*;
+import com.cron.utils.model.field.*;
+import com.cron.utils.model.field.constraint.FieldConstraints;
+import com.cron.utils.model.field.constraint.FieldConstraintsBuilder;
 import com.google.common.collect.Lists;
 import org.junit.Before;
 import org.junit.Test;

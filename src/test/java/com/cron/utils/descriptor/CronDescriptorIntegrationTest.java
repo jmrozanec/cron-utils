@@ -1,10 +1,8 @@
 package com.cron.utils.descriptor;
 
-import com.cron.utils.CronType;
-import com.cron.utils.parser.CronDefinitionRegistry;
+import com.cron.utils.model.CronType;
+import com.cron.utils.model.definition.CronDefinitionRegistry;
 import com.cron.utils.parser.CronParser;
-import com.cron.utils.parser.field.FieldConstraints;
-import com.cron.utils.parser.field.FieldConstraintsBuilder;
 import org.junit.Before;
 import org.junit.Test;
 

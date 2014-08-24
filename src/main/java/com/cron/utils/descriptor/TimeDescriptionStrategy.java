@@ -1,7 +1,8 @@
 package com.cron.utils.descriptor;
 
-import com.cron.utils.CronFieldName;
-import com.cron.utils.parser.field.*;
+import com.cron.utils.model.field.CronFieldName;
+import com.cron.utils.model.field.*;
+import com.cron.utils.model.field.constraint.FieldConstraintsBuilder;
 import com.google.common.base.Function;
 import com.google.common.collect.Sets;
 import org.apache.commons.lang3.Validate;

@@ -1,6 +1,8 @@
 package com.cron.utils.parser.field;
 
-import com.cron.utils.CronFieldName;
+import com.cron.utils.model.field.CronFieldName;
+import com.cron.utils.model.field.CronField;
+import com.cron.utils.model.field.constraint.FieldConstraints;
 import org.apache.commons.lang3.Validate;
 
 import java.util.Comparator;

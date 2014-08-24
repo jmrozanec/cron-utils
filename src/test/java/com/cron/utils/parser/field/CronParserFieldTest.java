@@ -1,6 +1,9 @@
 package com.cron.utils.parser.field;
 
-import com.cron.utils.CronFieldName;
+import com.cron.utils.model.field.CronFieldName;
+import com.cron.utils.model.field.CronField;
+import com.cron.utils.model.field.constraint.FieldConstraints;
+import com.cron.utils.model.field.FieldExpression;
 import com.cron.utils.parser.CronParser;
 import org.junit.Before;
 import org.junit.Test;

@@ -1,10 +1,13 @@
 package com.cron.utils.mapper;
 
-import com.cron.utils.CronFieldName;
+import com.cron.utils.model.field.CronFieldName;
 import com.cron.utils.model.Cron;
-import com.cron.utils.model.CronDefinition;
-import com.cron.utils.model.FieldDefinition;
-import com.cron.utils.parser.field.*;
+import com.cron.utils.model.definition.CronDefinition;
+import com.cron.utils.model.field.definition.FieldDefinition;
+import com.cron.utils.model.field.Always;
+import com.cron.utils.model.field.CronField;
+import com.cron.utils.model.field.constraint.FieldConstraintsBuilder;
+import com.cron.utils.model.field.On;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;

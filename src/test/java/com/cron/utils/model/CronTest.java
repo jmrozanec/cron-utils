@@ -1,8 +1,8 @@
 package com.cron.utils.model;
 
-import com.cron.utils.CronFieldName;
-import com.cron.utils.parser.field.CronField;
-import com.cron.utils.parser.field.FieldExpression;
+import com.cron.utils.model.field.CronFieldName;
+import com.cron.utils.model.field.CronField;
+import com.cron.utils.model.field.FieldExpression;
 import com.google.common.collect.Lists;
 import org.junit.Before;
 import org.junit.Test;

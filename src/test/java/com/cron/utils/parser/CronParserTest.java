@@ -1,7 +1,7 @@
 package com.cron.utils.parser;
 
-import com.cron.utils.model.CronDefinition;
-import com.cron.utils.model.FieldDefinition;
+import com.cron.utils.model.definition.CronDefinition;
+import com.cron.utils.model.field.definition.FieldDefinition;
 import com.google.common.collect.Sets;
 import org.junit.Before;
 import org.junit.Test;

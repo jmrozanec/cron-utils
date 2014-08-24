@@ -1,9 +1,9 @@
 package com.cron.utils.parser;
 
 import com.cron.utils.model.Cron;
-import com.cron.utils.model.CronDefinition;
-import com.cron.utils.model.FieldDefinition;
-import com.cron.utils.parser.field.CronField;
+import com.cron.utils.model.definition.CronDefinition;
+import com.cron.utils.model.field.definition.FieldDefinition;
+import com.cron.utils.model.field.CronField;
 import com.cron.utils.parser.field.CronParserField;
 import com.google.common.collect.Maps;
 import org.apache.commons.lang3.StringUtils;

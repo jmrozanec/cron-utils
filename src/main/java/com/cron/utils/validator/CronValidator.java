@@ -1,6 +1,6 @@
 package com.cron.utils.validator;
 
-import com.cron.utils.model.CronDefinition;
+import com.cron.utils.model.definition.CronDefinition;
 import com.cron.utils.parser.CronParser;
 import org.apache.commons.lang3.Validate;
 

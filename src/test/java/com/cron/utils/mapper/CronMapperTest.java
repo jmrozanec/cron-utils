@@ -1,11 +1,10 @@
 package com.cron.utils.mapper;
 
-import com.cron.utils.CronFieldName;
-import com.cron.utils.model.CronDefinition;
-import com.cron.utils.parser.field.Always;
-import com.cron.utils.parser.field.CronField;
-import com.cron.utils.parser.field.FieldExpression;
-import com.cron.utils.parser.field.On;
+import com.cron.utils.model.field.CronFieldName;
+import com.cron.utils.model.definition.CronDefinition;
+import com.cron.utils.model.field.Always;
+import com.cron.utils.model.field.CronField;
+import com.cron.utils.model.field.On;
 import com.google.common.base.Function;
 import org.junit.Before;
 import org.junit.Test;
@@ -14,7 +13,6 @@ import org.mockito.MockitoAnnotations;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 public class CronMapperTest {
     private CronFieldName testCronFieldName;

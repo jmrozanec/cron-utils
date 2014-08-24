@@ -1,8 +1,7 @@
 package com.cron.utils.mapper;
 
-import com.cron.utils.CronType;
-import com.cron.utils.model.Cron;
-import com.cron.utils.parser.CronDefinitionRegistry;
+import com.cron.utils.model.CronType;
+import com.cron.utils.model.definition.CronDefinitionRegistry;
 import com.cron.utils.parser.CronParser;
 import org.junit.Test;
 

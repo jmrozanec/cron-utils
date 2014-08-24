@@ -1,7 +1,7 @@
 package com.cron.utils.model;
 
-import com.cron.utils.CronFieldName;
-import com.cron.utils.parser.field.CronField;
+import com.cron.utils.model.field.CronFieldName;
+import com.cron.utils.model.field.CronField;
 import com.google.common.collect.Maps;
 import org.apache.commons.lang3.Validate;
 

@@ -1,8 +1,8 @@
 package com.cron.utils.validator;
 
-import com.cron.utils.CronType;
-import com.cron.utils.model.CronDefinition;
-import com.cron.utils.parser.CronDefinitionRegistry;
+import com.cron.utils.model.CronType;
+import com.cron.utils.model.definition.CronDefinition;
+import com.cron.utils.model.definition.CronDefinitionRegistry;
 import org.junit.Before;
 import org.junit.Test;
 

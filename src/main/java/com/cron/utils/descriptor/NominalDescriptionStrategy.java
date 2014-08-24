@@ -1,8 +1,8 @@
 package com.cron.utils.descriptor;
 
-import com.cron.utils.parser.field.Always;
-import com.cron.utils.parser.field.FieldExpression;
-import com.cron.utils.parser.field.FieldConstraintsBuilder;
+import com.cron.utils.model.field.Always;
+import com.cron.utils.model.field.FieldExpression;
+import com.cron.utils.model.field.constraint.FieldConstraintsBuilder;
 import com.google.common.base.Function;
 import com.google.common.collect.Sets;
 
