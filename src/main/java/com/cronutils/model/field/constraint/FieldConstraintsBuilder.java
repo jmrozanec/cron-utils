@@ -20,6 +20,10 @@ import java.util.Set;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+/**
+ * FieldConstraints builder.
+ */
 public class FieldConstraintsBuilder {
     private Map<String, Integer> stringMapping;
     private Map<Integer, Integer> intMapping;
@@ -27,6 +31,9 @@ public class FieldConstraintsBuilder {
     private int endRange;
     private Set<SpecialChar> specialChars;
 
+    /**
+     * Constructor
+     */
     private FieldConstraintsBuilder() {
         stringMapping = Maps.newHashMap();
         intMapping = Maps.newHashMap();
@@ -36,6 +43,11 @@ public class FieldConstraintsBuilder {
         specialChars.add(SpecialChar.NONE);
     }
 
+    /**
+     * Creates range constraints according to CronFieldName parameter
+     * @param field - CronFieldName
+     * @return FieldConstraintsBuilder instance
+     */
     public FieldConstraintsBuilder forField(CronFieldName field) {
         switch (field) {
             case SECOND:
