@@ -2,10 +2,9 @@ cron-utils
 ===========
 A Java library to parse, describe, migrate and validate crons.
 
-[![Stories in Backlog](https://badge.waffle.io/jmrozanec/cron-utils.svg?label=backlog&title=Backlog)](http://waffle.io/jmrozanec/cron-utils)
-[![Stories in Ready](https://badge.waffle.io/jmrozanec/cron-utils.svg?label=ready&title=Ready)](http://waffle.io/jmrozanec/cron-utils)
-[![Stories in In Progress](https://badge.waffle.io/jmrozanec/cron-utils.svg?label=inprogress&title=InProgress)](http://waffle.io/jmrozanec/cron-utils)
-[![Stories in Done](https://badge.waffle.io/jmrozanec/cron-utils.svg?label=done&title=Done)](http://waffle.io/jmrozanec/cron-utils)
+The project follows the [Semantic Versioning Convention](http://semver.org/)
+
+License: Apache 2.0
 
 [![Build Status](https://travis-ci.org/jmrozanec/cron-utils.png?branch=master)](https://travis-ci.org/jmrozanec/cron-utils)
 [![Coverage Status](https://coveralls.io/repos/jmrozanec/cron-utils/badge.png)](https://coveralls.io/r/jmrozanec/cron-utils)
@@ -13,9 +12,16 @@ A Java library to parse, describe, migrate and validate crons.
 
 [![Project stats by OpenHub](https://www.openhub.net/p/cron-utils/widgets/project_thin_badge.gif)](https://www.openhub.net/p/cron-utils/)
 
-The project follows the [Semantic Versioning Convention](http://semver.org/)
+**Download**
 
-License: Apache 2.0
+cron-utils is available on Maven central repository.
+
+    <dependency>
+        <groupId>com.cronutils</groupId>
+        <artifactId>cron-utils</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+    </dependency>
+
 
 **Features**
 
@@ -32,16 +38,6 @@ License: Apache 2.0
     * [Unix](http://www.unix.com/man-page/linux/5/crontab/)
     * [Cron4j](http://www.sauronsoftware.it/projects/cron4j/)
     * [Quartz](http://quartz-scheduler.org/)
-
-**Download**
-
-cron-utils is available on Maven central repository.
-
-    <dependency>
-    	<groupId>com.cronutils</groupId>
-    	<artifactId>cron-utils</artifactId>
-    	<version>1.0.0-SNAPSHOT</version>
-    </dependency>
 
 
 **Usage Examples**
