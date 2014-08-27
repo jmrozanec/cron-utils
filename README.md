@@ -35,7 +35,14 @@ License: Apache 2.0
 
 **Download**
 
-cron-utils will be soon available in the Maven central repository.
+cron-utils is available on Maven central repository.
+
+    <dependency>
+    	<groupId>com.cronutils</groupId>
+    	<artifactId>cron-utils</artifactId>
+    	<version>1.0.0-SNAPSHOT</version>
+    </dependency>
+
 
 **Usage Examples**
 
