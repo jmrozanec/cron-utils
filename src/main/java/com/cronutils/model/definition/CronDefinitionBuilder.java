@@ -1,5 +1,6 @@
 package com.cronutils.model.definition;
 
+import com.cronutils.model.CronType;
 import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.field.definition.FieldDefinition;
 import com.cronutils.model.field.definition.FieldDefinitionBuilder;
@@ -125,5 +126,52 @@ public class CronDefinitionBuilder {
      */
     public CronDefinition instance() {
         return new CronDefinition(new ArrayList<FieldDefinition>(this.fields.values()), lastFieldOptional);
+    }
+
+    private static CronDefinition cron4j() {
+        return CronDefinitionBuilder.defineCron()
+                .withMinutes().and()
+                .withHours().and()
+                .withDayOfMonth().and()
+                .withMonth().and()
+                .withDayOfWeek().and()
+                .instance();
+
+    }
+
+    private static CronDefinition quartz() {
+        return CronDefinitionBuilder.defineCron()
+                .withSeconds().and()
+                .withMinutes().and()
+                .withHours().and()
+                .withDayOfMonth().supportsHash().supportsL().supportsW().and()
+                .withMonth().and()
+                .withDayOfWeek().withIntMapping(7, 0).supportsHash().supportsL().supportsW().and()
+                .withYear().and()
+                .lastFieldOptional()
+                .instance();
+    }
+
+    private static CronDefinition unixCrontab() {
+        return CronDefinitionBuilder.defineCron()
+                .withMinutes().and()
+                .withHours().and()
+                .withDayOfMonth().and()
+                .withMonth().and()
+                .withDayOfWeek().and()
+                .instance();
+    }
+
+    public static CronDefinition instanceDefinitionFor(CronType cronType){
+        switch (cronType){
+            case CRON4J:
+                return cron4j();
+            case QUARTZ:
+                return quartz();
+            case UNIX:
+                return unixCrontab();
+            default:
+                throw new RuntimeException(String.format("No cron definition found for %s", cronType));
+        }
     }
 }

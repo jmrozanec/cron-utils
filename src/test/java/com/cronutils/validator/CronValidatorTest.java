@@ -2,6 +2,7 @@ package com.cronutils.validator;
 
 import com.cronutils.model.CronType;
 import com.cronutils.model.definition.CronDefinition;
+import com.cronutils.model.definition.CronDefinitionBuilder;
 import com.cronutils.model.definition.CronDefinitionRegistry;
 import org.junit.Before;
 import org.junit.Test;
@@ -20,7 +21,7 @@ public class CronValidatorTest {
 
     @Before
     public void setUp() throws Exception {
-        testCronDefinition = CronDefinitionRegistry.instance().retrieve(CronType.CRON4J);
+        testCronDefinition = CronDefinitionBuilder.instanceDefinitionFor(CronType.CRON4J);
         cronValidator = new CronValidator(testCronDefinition);
     }
 

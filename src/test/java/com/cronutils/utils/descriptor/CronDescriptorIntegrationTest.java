@@ -2,6 +2,7 @@ package com.cronutils.utils.descriptor;
 
 import com.cronutils.descriptor.CronDescriptor;
 import com.cronutils.model.CronType;
+import com.cronutils.model.definition.CronDefinitionBuilder;
 import com.cronutils.model.definition.CronDefinitionRegistry;
 import com.cronutils.parser.CronParser;
 import org.junit.Before;
@@ -19,7 +20,7 @@ public class CronDescriptorIntegrationTest {
     @Before
     public void setUp() throws Exception {
         descriptor = CronDescriptor.instance(Locale.UK);
-        parser = new CronParser(CronDefinitionRegistry.instance().retrieve(CronType.QUARTZ));
+        parser = new CronParser(CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ));
     }
 
     @Test

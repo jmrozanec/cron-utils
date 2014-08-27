@@ -1,6 +1,7 @@
 package com.cronutils.mapper;
 
 import com.cronutils.model.CronType;
+import com.cronutils.model.definition.CronDefinitionBuilder;
 import com.cronutils.model.definition.CronDefinitionRegistry;
 import com.cronutils.parser.CronParser;
 import org.junit.Test;
@@ -52,22 +53,22 @@ public class CronMapperIntegrationTest {
     }
 
     private CronParser cron4jParser(){
-        return new CronParser(CronDefinitionRegistry.instance().retrieve(CronType.CRON4J));
+        return new CronParser(CronDefinitionBuilder.instanceDefinitionFor(CronType.CRON4J));
     }
 
     private CronParser quartzParser(){
-        return new CronParser(CronDefinitionRegistry.instance().retrieve(CronType.QUARTZ));
+        return new CronParser(CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ));
     }
 
     private CronMapper createFromCron4jToQuartz(){
         return new CronMapper(
-                CronDefinitionRegistry.instance().retrieve(CronType.CRON4J),
-                CronDefinitionRegistry.instance().retrieve(CronType.QUARTZ));
+                CronDefinitionBuilder.instanceDefinitionFor(CronType.CRON4J),
+                CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ));
     }
 
     private CronMapper createFromQuartzToCron4j(){
         return new CronMapper(
-                CronDefinitionRegistry.instance().retrieve(CronType.QUARTZ),
-                CronDefinitionRegistry.instance().retrieve(CronType.CRON4J));
+                CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ),
+                CronDefinitionBuilder.instanceDefinitionFor(CronType.CRON4J));
     }
 }

@@ -58,7 +58,7 @@ cron-utils will be soon available in the Maven central repository.
             .instance();
 
     //or get a predefined instance
-    cronDefinition = CronDefinitionRegistry.instance().retrieve(QUARTZ);
+    cronDefinition = CronDefinitionBuilder.instanceDefinitionFor(QUARTZ);
 
 ***Parse***
 
@@ -87,7 +87,7 @@ cron-utils will be soon available in the Maven central repository.
     CronMapper cronMapper =
             new CronMapper(
                     cronDefinition,
-                    CronDefinitionRegistry.instance().retrieve(CRON4J)
+                    CronDefinitionBuilder.instanceDefinitionFor(CRON4J)
             );
     Cron cron4jCron = cronMapper.map(quartzCron);
     //and to get a String representation of it, we can use
