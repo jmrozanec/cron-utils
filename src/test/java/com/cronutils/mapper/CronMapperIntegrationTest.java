@@ -2,7 +2,6 @@ package com.cronutils.mapper;
 
 import com.cronutils.model.CronType;
 import com.cronutils.model.definition.CronDefinitionBuilder;
-import com.cronutils.model.definition.CronDefinitionRegistry;
 import com.cronutils.parser.CronParser;
 import org.junit.Test;
 

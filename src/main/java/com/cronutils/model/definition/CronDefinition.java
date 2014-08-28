@@ -39,6 +39,9 @@ public class CronDefinition {
     public CronDefinition(List<FieldDefinition> fieldDefinitions, boolean lastFieldOptional){
         Validate.notNull(fieldDefinitions, "Field definitions must not be null");
         Validate.notEmpty(fieldDefinitions, "Field definitions must not be empty");
+        if(lastFieldOptional){
+            Validate.isTrue(fieldDefinitions.size() > 1, "If last field is optional, field definition must hold at least two fields");
+        }
         this.fieldDefinitions = Maps.newHashMap();
         for(FieldDefinition field : fieldDefinitions){
             this.fieldDefinitions.put(field.getFieldName(), field);
