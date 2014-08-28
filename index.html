@@ -34,14 +34,23 @@
         <h1>
 <a name="cron-utils" class="anchor" href="#cron-utils"><span class="octicon octicon-link"></span></a>cron-utils</h1>
 
-<p>A Java library to parse,validate, migrate and get human readable descriptions for crons.</p>
+<p>A Java library to parse, validate, migrate crons as well as get human readable descriptions for them. The project follows the <a href="http://semver.org/">Semantic Versioning Convention</a> and uses Apache 2.0 license</p>
 
 <p><a href="https://travis-ci.org/jmrozanec/cron-utils"><img src="https://travis-ci.org/jmrozanec/cron-utils.png?branch=master" alt="Build Status"></a>
 <a href="https://coveralls.io/r/jmrozanec/cron-utils"><img src="https://coveralls.io/repos/jmrozanec/cron-utils/badge.png" alt="Coverage Status"></a></p>
 
-<p>The project follows the <a href="http://semver.org/">Semantic Versioning Convention</a></p>
+<p><a href="https://www.openhub.net/p/cron-utils/"><img src="https://www.openhub.net/p/cron-utils/widgets/project_thin_badge.gif" alt="Project stats by OpenHub"></a></p>
 
-<p>License: Apache 2.0</p>
+<p><strong>Download</strong></p>
+
+<p>cron-utils is available on Maven central repository.</p>
+
+<pre><code>&lt;dependency&gt;
+    &lt;groupId&gt;com.cronutils&lt;/groupId&gt;
+    &lt;artifactId&gt;cron-utils&lt;/artifactId&gt;
+    &lt;version&gt;1.0.0&lt;/version&gt;
+&lt;/dependency&gt;
+</code></pre>
 
 <p><strong>Features</strong></p>
 
@@ -51,11 +60,11 @@
 <li>Supports all cron special characters: * / , -
 
 <ul>
-<li>Non-standard characters L W, # are supported as well!</li>
+<li>Non-standard characters L, W, # are supported as well!</li>
 <li>Question mark (?) is currently replaced for an asterisk (*). Enhanced support will be provided in a future.</li>
 </ul>
 </li>
-<li>Print to locale specific human readable format (English, Italian, Spanish and Dutch so far...).</li>
+<li>Print to locale specific human readable format (English, Dutch, French, Italian, Portuguese and Spanish so far...).</li>
 <li>Parse and Description process are decoupled: parse once and operate with the result!</li>
 <li>Validate if cron string expressions match a cron definition using CronValidator</li>
 <li>Convert crons between different cron definitions: if you need to migrate expressions, CronMapper may help you!</li>
@@ -67,11 +76,7 @@
 <li><a href="http://quartz-scheduler.org/">Quartz</a></li>
 </ul>
 </li>
-</ul><p><strong>Download</strong></p>
-
-<p>cron-utils will be soon available in the Maven central repository.</p>
-
-<p><strong>Quick example</strong></p>
+</ul><p><strong>Quick example</strong></p>
 
 <pre><code>//get a predefined instance
 CronDefinition cronDefinition = 
