@@ -14,7 +14,7 @@ cron-utils is available on Maven central repository.
     <dependency>
         <groupId>com.cronutils</groupId>
         <artifactId>cron-utils</artifactId>
-        <version>1.0.0-SNAPSHOT</version>
+        <version>1.0.0</version>
     </dependency>
 
 
@@ -23,7 +23,7 @@ cron-utils is available on Maven central repository.
  * Create arbitrary cron expressions: you can define your own cron format! Supported fields are: second, minute, hour, day of month, month, day of week, year.
  * You can flag last field as optional!
  * Supports all cron special characters: * / , -
-    * Non-standard characters L W, # are supported as well!
+    * Non-standard characters L, W, # are supported as well!
     * Question mark (?) is currently replaced for an asterisk (*). Enhanced support will be provided in a future.
  * Print to locale specific human readable format (English, Dutch, French, Italian, Portuguese and Spanish so far...).
  * Parse and Description process are decoupled: parse once and operate with the result!
