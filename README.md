@@ -1,6 +1,6 @@
 cron-utils
 ===========
-A Java library to parse, describe, migrate and validate crons. The project follows the [Semantic Versioning Convention](http://semver.org/) and uses Apache 2.0 license
+A Java library to parse, validate, migrate crons as well as get human readable descriptions for them. The project follows the [Semantic Versioning Convention](http://semver.org/) and uses Apache 2.0 license
 
 [![Build Status](https://travis-ci.org/jmrozanec/cron-utils.png?branch=master)](https://travis-ci.org/jmrozanec/cron-utils)
 [![Coverage Status](https://coveralls.io/repos/jmrozanec/cron-utils/badge.png)](https://coveralls.io/r/jmrozanec/cron-utils)
