@@ -25,7 +25,7 @@ cron-utils is available on Maven central repository.
  * Supports all cron special characters: * / , -
     * Non-standard characters L W, # are supported as well!
     * Question mark (?) is currently replaced for an asterisk (*). Enhanced support will be provided in a future.
- * Print to locale specific human readable format (English, Italian, Spanish and Dutch so far...).
+ * Print to locale specific human readable format (English, Dutch, French, Italian, Portuguese and Spanish so far...).
  * Parse and Description process are decoupled: parse once and operate with the result!
  * Validate if cron string expressions match a cron definition using CronValidator
  * Convert crons between different cron definitions: if you need to migrate expressions, CronMapper may help you!
