@@ -128,6 +128,10 @@ public class CronDefinitionBuilder {
         return new CronDefinition(new ArrayList<FieldDefinition>(this.fields.values()), lastFieldOptional);
     }
 
+    /**
+     * Creates CronDefinition instance matching cron4j specification;
+     * @return CronDefinition instance, never null;
+     */
     private static CronDefinition cron4j() {
         return CronDefinitionBuilder.defineCron()
                 .withMinutes().and()
@@ -139,6 +143,10 @@ public class CronDefinitionBuilder {
 
     }
 
+    /**
+     * Creates CronDefinition instance matching quartz specification;
+     * @return CronDefinition instance, never null;
+     */
     private static CronDefinition quartz() {
         return CronDefinitionBuilder.defineCron()
                 .withSeconds().and()
@@ -152,6 +160,10 @@ public class CronDefinitionBuilder {
                 .instance();
     }
 
+    /**
+     * Creates CronDefinition instance matching unix crontab specification;
+     * @return CronDefinition instance, never null;
+     */
     private static CronDefinition unixCrontab() {
         return CronDefinitionBuilder.defineCron()
                 .withMinutes().and()
@@ -162,6 +174,11 @@ public class CronDefinitionBuilder {
                 .instance();
     }
 
+    /**
+     * Creates CronDefinition instance matching cronType specification;
+     * @param cronType - some cron type. If null, a RuntimeException will be raised.
+     * @return CronDefinition instance if definition is found; a RuntimeException otherwise.
+     */
     public static CronDefinition instanceDefinitionFor(CronType cronType){
         switch (cronType){
             case CRON4J:
