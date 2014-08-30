@@ -75,30 +75,57 @@ public class FieldConstraintsBuilder {
         }
     }
 
+    /**
+     * Adds hash support
+     * @return same FieldConstraintsBuilder instance
+     */
     public FieldConstraintsBuilder addHashSupport() {
         specialChars.add(SpecialChar.HASH);
         return this;
     }
 
+    /**
+     * Adds L support
+     * @return same FieldConstraintsBuilder instance
+     */
     public FieldConstraintsBuilder addLSupport() {
         specialChars.add(SpecialChar.L);
         return this;
     }
 
+    /**
+     * Adds W support
+     * @return same FieldConstraintsBuilder instance
+     */
     public FieldConstraintsBuilder addWSupport() {
         specialChars.add(SpecialChar.W);
         return this;
     }
 
+    /**
+     * Adds integer to integer mapping. Source should be greater than destination;
+     * @param source - some int
+     * @param dest - some int
+     * @return same FieldConstraintsBuilder instance
+     */
     public FieldConstraintsBuilder withIntValueMapping(int source, int dest){
         intMapping.put(source, dest);
         return this;
     }
 
+    /**
+     * Creates FieldConstraints instance based on previously built parameters
+     * @return new FieldConstraints instance
+     */
     public FieldConstraints createConstraintsInstance(){
         return new FieldConstraints(stringMapping, intMapping, specialChars, startRange, endRange);
     }
 
+    /**
+     * Creates days of week mapping
+     * @return Map<String, Integer> where strings are weekday names in EEE format,
+     * and integers correspond to their 1-7 mappings
+     */
     private static Map<String, Integer> daysOfWeekMapping() {
         Map<String, Integer> stringMapping = Maps.newHashMap();
         stringMapping.put("MON", 1);
@@ -111,6 +138,11 @@ public class FieldConstraintsBuilder {
         return stringMapping;
     }
 
+    /**
+     * Creates months mapping
+     * @return Map<String, Integer> where strings month names in EEE format,
+     * and integers correspond to their 1-12 mappings
+     */
     private static Map<String, Integer> monthsMapping() {
         Map<String, Integer> stringMapping = Maps.newHashMap();
         stringMapping.put("JAN", 1);
@@ -128,6 +160,10 @@ public class FieldConstraintsBuilder {
         return stringMapping;
     }
 
+    /**
+     * Creates a FieldConstraintsBuilder instance;
+     * @return new FieldConstraintsBuilder instance
+     */
     public static FieldConstraintsBuilder instance(){
         return new FieldConstraintsBuilder();
     }
