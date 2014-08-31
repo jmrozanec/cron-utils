@@ -133,6 +133,12 @@ abstract class DescriptionStrategy {
         return builder.toString();
     }
 
+    /**
+     * Creates human readable description for And element
+     * @param builder - StringBuilder instance to which description will be appended
+     * @param expressions - field expressions
+     * @return same StringBuilder instance as parameter
+     */
     private StringBuilder createAndDescription(StringBuilder builder, List<FieldExpression> expressions){
         if((expressions.size() - 2) >= 0){
             for (int j = 0; j < expressions.size() - 2; j++) {
