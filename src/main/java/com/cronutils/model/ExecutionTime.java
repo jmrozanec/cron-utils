@@ -11,8 +11,9 @@ import java.util.List;
 import java.util.Map;
 
 //Approach 1: [Discarded] brute force, iterate over all possible future dates until finding first matching cron.
-//Approach 1: [...] precalculate possible values for each field and take nearest ones
-//Approach 2: [...] nearestValue(FieldExpression, int timeValue): return plus -> method to retrieve value for field an sum
+//Approach 2: [...] precalculate possible values for each field and take nearest ones
+//Approach 3: [...] nearestValue(FieldExpression, int timeValue): return plus -> method to retrieve value for field an sum
+//Aproach 4: similar to previous one, but holding data that would contain possible values in structure and set them to date
 class ExecutionTime {
 
     private Map<CronFieldName, List<Integer>> executionTimes;
