@@ -16,10 +16,7 @@ import java.util.Map;
 //Aproach 4: similar to previous one, but holding data that would contain possible values in structure and set them to date
 class ExecutionTime {
 
-    private Map<CronFieldName, List<Integer>> executionTimes;
-
     private ExecutionTime(Map<CronFieldName, CronField> fields){
-        this.executionTimes = Collections.unmodifiableMap(fieldsToExecutionTimes(fields));
     }
 
     public static ExecutionTime forCron(Cron cron){
@@ -114,4 +111,10 @@ class ExecutionTime {
         }
         return executionTimes;
     }
+
+    private static class CronTimes{
+        private List<Integer> seconds;
+        private List<Integer> minutes;
+    }
+
 }
