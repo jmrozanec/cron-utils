@@ -113,8 +113,15 @@ class ExecutionTime {
     }
 
     private static class CronTimes{
+        //universal
         private List<Integer> seconds;
         private List<Integer> minutes;
+        private List<Integer> hours;
+        private List<Integer> months;
+        private List<Integer> years;
+        //specific to year and/or month. Should be evaluated after universal values are set.
+        private List<Integer> daysOfMonth;
+        private List<Integer> daysOfWeek;
     }
 
 }
