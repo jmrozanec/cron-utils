@@ -64,8 +64,7 @@ class ExecutionTime {
         seconds.add(nextValue(this.seconds, date.getSecondOfDay()));
         minutes.add(nextValue(this.minutes, date.getMinuteOfDay()));
         hours.add(nextValue(this.hours, date.getHourOfDay()));
-        mutableDateTime.setSecondOfDay();
-        mutableDateTime.setMinuteOfDay(nextValue(minutes, date.getMinuteOfDay()));
+        return date;
     }
 
 //    public DateTime beforeDate(DateTime date){
