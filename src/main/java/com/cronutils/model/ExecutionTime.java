@@ -2,11 +2,9 @@ package com.cronutils.model;
 
 import com.cronutils.model.field.*;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import org.joda.time.DateTime;
 
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -15,8 +13,15 @@ import java.util.Map;
 //Approach 3: [...] nearestValue(FieldExpression, int timeValue): return plus -> method to retrieve value for field an sum
 //Aproach 4: similar to previous one, but holding data that would contain possible values in structure and set them to date
 class ExecutionTime {
+    private CronTimes cronTimes;
 
     private ExecutionTime(Map<CronFieldName, CronField> fields){
+        cronTimes.setSeconds(
+                fromFieldToTimeValues(
+                        fields.get(CronFieldName.SECOND).getExpression(),
+                        getMaxForCronField(CronFieldName.SECOND)
+                )
+        );
     }
 
     public static ExecutionTime forCron(Cron cron){
@@ -95,24 +100,7 @@ class ExecutionTime {
         }
     }
 
-    private Map<CronFieldName, List<Integer>> fieldsToExecutionTimes(Map<CronFieldName, CronField> fields){
-        Map<CronFieldName, List<Integer>> executionTimes = Maps.newHashMap();
-        Iterator<Map.Entry<CronFieldName, CronField>> iterator =
-                fields.entrySet().iterator();
-        while(iterator.hasNext()){
-            Map.Entry<CronFieldName, CronField> entry = iterator.next();
-            executionTimes.put(
-                    entry.getKey(),
-                    fromFieldToTimeValues(
-                            entry.getValue().getExpression(),
-                            getMaxForCronField(entry.getKey())
-                    )
-            );
-        }
-        return executionTimes;
-    }
-
-    private static class CronTimes{
+    private static class CronTimes {
         //universal
         private List<Integer> seconds;
         private List<Integer> minutes;
@@ -122,6 +110,36 @@ class ExecutionTime {
         //specific to year and/or month. Should be evaluated after universal values are set.
         private List<Integer> daysOfMonth;
         private List<Integer> daysOfWeek;
+
+        private CronTimes() {}
+
+        public void setSeconds(List<Integer> seconds) {
+            this.seconds = seconds;
+        }
+
+        public void setMinutes(List<Integer> minutes) {
+            this.minutes = minutes;
+        }
+
+        public void setHours(List<Integer> hours) {
+            this.hours = hours;
+        }
+
+        public void setMonths(List<Integer> months) {
+            this.months = months;
+        }
+
+        public void setYears(List<Integer> years) {
+            this.years = years;
+        }
+
+        public void setDaysOfMonth(List<Integer> daysOfMonth) {
+            this.daysOfMonth = daysOfMonth;
+        }
+
+        public void setDaysOfWeek(List<Integer> daysOfWeek) {
+            this.daysOfWeek = daysOfWeek;
+        }
     }
 
 }
