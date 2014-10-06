@@ -2,6 +2,7 @@ package com.cronutils.model;
 
 import com.cronutils.model.field.*;
 import com.cronutils.model.field.constraint.FieldConstraintsBuilder;
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
@@ -33,7 +34,8 @@ class ExecutionTime {
     private List<Integer> daysOfMonth;
     private List<Integer> daysOfWeek;
 
-    private ExecutionTime(Map<CronFieldName, CronField> fields){
+    @VisibleForTesting
+    ExecutionTime(Map<CronFieldName, CronField> fields){
         fields = new HashMap<CronFieldName, CronField>(fields);
         if(fields.get(CronFieldName.SECOND)==null){
             fields.put(CronFieldName.SECOND,
@@ -175,8 +177,8 @@ class ExecutionTime {
 //    public DateTime beforeDate(DateTime date){
 //    }
 
-
-    private int nextValue(List<Integer> values, int reference){
+    @VisibleForTesting
+    int nextValue(List<Integer> values, int reference){
         //TODO improve using binary search
         for(Integer value : values){
             if(value > reference){
@@ -186,7 +188,8 @@ class ExecutionTime {
         return values.get(0);
     }
 
-    private List<Integer> fromFieldToTimeValues(FieldExpression fieldExpression, int max){
+    @VisibleForTesting
+    List<Integer> fromFieldToTimeValues(FieldExpression fieldExpression, int max){
         List<Integer> values = Lists.newArrayList();
         if(fieldExpression == null){
             values.add(0);
@@ -208,7 +211,8 @@ class ExecutionTime {
         return values;
     }
 
-    private List<Integer> fromFieldToTimeValues(And fieldExpression, int max){
+    @VisibleForTesting
+    List<Integer> fromFieldToTimeValues(And fieldExpression, int max){
         List<Integer> values = Lists.newArrayList();
         for(FieldExpression expression : fieldExpression.getExpressions()){
             values.addAll(fromFieldToTimeValues(expression, max));
@@ -216,7 +220,8 @@ class ExecutionTime {
         return values;
     }
 
-    private List<Integer> fromFieldToTimeValues(Between fieldExpression, int max){
+    @VisibleForTesting
+    List<Integer> fromFieldToTimeValues(Between fieldExpression, int max){
         List<Integer> values = Lists.newArrayList();
         int every = fieldExpression.getEvery().getTime();
         for(int j = fieldExpression.getFrom(); j < fieldExpression.getTo() + 1; j+=every){
@@ -225,13 +230,15 @@ class ExecutionTime {
         return values;
     }
 
-    private List<Integer> fromFieldToTimeValues(On fieldExpression, int max){
+    @VisibleForTesting
+    List<Integer> fromFieldToTimeValues(On fieldExpression, int max){
         List<Integer> values = Lists.newArrayList();
         values.add(fieldExpression.getTime());
         return values;
     }
 
-    private List<Integer> fromFieldToTimeValues(Always fieldExpression, int max){
+    @VisibleForTesting
+    List<Integer> fromFieldToTimeValues(Always fieldExpression, int max){
         List<Integer> values = Lists.newArrayList();
         int every = fieldExpression.getEvery().getTime();
         for(int j = 1; j <= max; j+=every){
@@ -240,16 +247,19 @@ class ExecutionTime {
         return values;
     }
 
-    private int getMaxForCronField(CronFieldName cronFieldName){
+    @VisibleForTesting
+    int getMaxForCronField(CronFieldName cronFieldName){
         switch (cronFieldName){
             case YEAR:
-                return DateTime.now().getYear() + 1;
+                return DateTime.now().getYear() + 1;//TODO should be contextual to the date they ask for
             case MONTH:
                 return 12;
             case DAY_OF_MONTH:
                 return 31;
             case DAY_OF_WEEK:
                 return 7;
+            case HOUR:
+                return 24;
             default:
                 return 60;
         }
