@@ -1,20 +1,15 @@
 package com.cronutils.model;
 
 import com.cronutils.model.field.*;
+import com.cronutils.model.field.constraint.FieldConstraintsBuilder;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import org.joda.time.DateTime;
-import org.joda.time.MutableDateTime;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
-//Approach 1: [Discarded] brute force, iterate over all possible future dates until finding first matching cron.
-//Approach 2: [...] precalculate possible values for each field and take nearest ones
-//Approach 3: [...] nearestValue(FieldExpression, int timeValue): return plus -> method to retrieve value for field an sum
-//Aproach 4: similar to previous one, but holding data that would contain possible values in structure and set them to date
 class ExecutionTime {
     private List<Integer> seconds;
     private List<Integer> minutes;
@@ -26,6 +21,31 @@ class ExecutionTime {
     private List<Integer> daysOfWeek;
 
     private ExecutionTime(Map<CronFieldName, CronField> fields){
+        fields = new HashMap<CronFieldName, CronField>(fields);
+        if(fields.get(CronFieldName.SECOND)==null){
+            fields.put(CronFieldName.SECOND,
+                    new CronField(
+                            CronFieldName.SECOND,
+                            new On(
+                                    FieldConstraintsBuilder.instance()
+                                            .forField(CronFieldName.SECOND)
+                                            .createConstraintsInstance(), "0")
+                    )
+            );
+        }
+        if(fields.get(CronFieldName.YEAR)==null){
+            fields.put(CronFieldName.YEAR,
+                    new CronField(
+                            CronFieldName.YEAR,
+                            new On(
+                                    FieldConstraintsBuilder.instance()
+                                            .forField(CronFieldName.YEAR)
+                                            .createConstraintsInstance(),
+                                    ""+DateTime.now().getYear()
+                            )
+                    )
+            );
+        }
         seconds = fromFieldToTimeValues(
                         fields.get(CronFieldName.SECOND).getExpression(),
                         getMaxForCronField(CronFieldName.SECOND)
@@ -46,6 +66,10 @@ class ExecutionTime {
                         fields.get(CronFieldName.DAY_OF_MONTH).getExpression(),
                         getMaxForCronField(CronFieldName.DAY_OF_MONTH)
         );
+        months = fromFieldToTimeValues(
+                fields.get(CronFieldName.MONTH).getExpression(),
+                getMaxForCronField(CronFieldName.MONTH)
+        );
         years = fromFieldToTimeValues(
                         fields.get(CronFieldName.YEAR).getExpression(),
                         getMaxForCronField(CronFieldName.YEAR)
@@ -57,20 +81,90 @@ class ExecutionTime {
     }
 
     public DateTime afterDate(DateTime date){
-        MutableDateTime mutableDateTime = date.toMutableDateTime();
         Set<Integer> seconds = Sets.newHashSet();
         Set<Integer> minutes = Sets.newHashSet();
         Set<Integer> hours = Sets.newHashSet();
-        seconds.add(nextValue(this.seconds, date.getSecondOfDay()));
-        minutes.add(nextValue(this.minutes, date.getMinuteOfDay()));
+        seconds.add(nextValue(this.seconds, date.getSecondOfMinute()));
+        seconds.add(this.seconds.get(0));
+        if(this.seconds.contains(date.getSecondOfMinute())){
+            seconds.add(date.getSecondOfMinute());
+        }
+
+        minutes.add(nextValue(this.minutes, date.getMinuteOfHour()));
+        minutes.add(this.minutes.get(0));
+        if(this.minutes.contains(date.getMinuteOfHour())){
+            minutes.add(date.getMinuteOfHour());
+        }
+
         hours.add(nextValue(this.hours, date.getHourOfDay()));
-        return date;
+        hours.add(this.hours.get(0));
+        if(this.hours.contains(date.getHourOfDay())){
+            hours.add(date.getHourOfDay());
+        }
+
+        long reference = Long.parseLong(
+                String.format("%04d%02d%02d%02d%02d%02d",
+                        date.getYear(), date.getMonthOfYear(), date.getDayOfMonth(),
+                        date.getHourOfDay(), date.getMinuteOfHour(), date.getSecondOfMinute()
+                )
+        );
+
+        DateTime nearestDate = null;
+        long leastDistance = -1;
+        for(int year : years){
+            for(int month: months){
+                List<Integer> days = Lists.newArrayList();
+                final int maxDayMonth = new DateTime(year, month, 1, 12, 0, 0).dayOfMonth().getMaximumValue();
+                days.addAll(Collections2.filter(daysOfMonth, new Predicate<Integer>() {
+                    @Override
+                    public boolean apply(Integer integer) {
+                        return integer <= maxDayMonth;
+                    }
+                }));
+                DateTime daysDay = new DateTime(year, month, 1, 0, 0);
+                for(int j=0; j < maxDayMonth; j++){
+                    if(daysOfWeek.contains(daysDay.getDayOfWeek()-1)){
+                        days.add(daysDay.getDayOfMonth());
+                        daysDay = daysDay.plusDays(1);
+                    }
+                }
+                Collections.sort(days);
+                List<Integer> daysSubset = Lists.newArrayList();
+                daysSubset.add(nextValue(days, date.getDayOfMonth()));
+                daysSubset.add(date.getDayOfMonth());
+                daysSubset.add(days.get(0));
+                for(int day: daysSubset){
+                    for(int hour : hours){
+                        for(int minute : minutes){
+                            for(int second : seconds){
+                                long dist = Long.parseLong(
+                                        String.format("%04d%02d%02d%02d%02d%02d",
+                                                year, month, day, hour, minute, second
+                                        )
+                                );
+                                long diff = dist-reference;
+                                if(leastDistance==-1){
+                                    leastDistance = diff;
+                                }
+                                if(diff < leastDistance){
+                                    nearestDate = new DateTime(year, month, day, hour, minute, second);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return nearestDate;
     }
 
 //    public DateTime beforeDate(DateTime date){
 //    }
 
+
     private int nextValue(List<Integer> values, int reference){
+        //TODO improve using binary search
         for(Integer value : values){
             if(value > reference){
                 return value;
@@ -81,6 +175,10 @@ class ExecutionTime {
 
     private List<Integer> fromFieldToTimeValues(FieldExpression fieldExpression, int max){
         List<Integer> values = Lists.newArrayList();
+        if(fieldExpression == null){
+            values.add(0);
+            return values;
+        }
         if(fieldExpression instanceof And){
             values = fromFieldToTimeValues((And)fieldExpression, max);
         }
@@ -132,7 +230,7 @@ class ExecutionTime {
     private int getMaxForCronField(CronFieldName cronFieldName){
         switch (cronFieldName){
             case YEAR:
-                return DateTime.now().getYear() + 60;
+                return DateTime.now().getYear() + 1;
             case MONTH:
                 return 12;
             case DAY_OF_MONTH:
