@@ -11,6 +11,8 @@ import org.joda.time.DateTime;
 
 import java.util.*;
 
+import static com.cronutils.model.ExecutionTime.Position.*;
+
 /*
  * Copyright 2014 jmrozanec
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -35,9 +37,9 @@ class ExecutionTime {
     private List<Integer> daysOfWeek;
 
     @VisibleForTesting
-    ExecutionTime(Map<CronFieldName, CronField> fields){
+    ExecutionTime(Map<CronFieldName, CronField> fields) {
         fields = new HashMap<CronFieldName, CronField>(fields);
-        if(fields.get(CronFieldName.SECOND)==null){
+        if (fields.get(CronFieldName.SECOND) == null) {
             fields.put(CronFieldName.SECOND,
                     new CronField(
                             CronFieldName.SECOND,
@@ -48,7 +50,7 @@ class ExecutionTime {
                     )
             );
         }
-        if(fields.get(CronFieldName.YEAR)==null){
+        if (fields.get(CronFieldName.YEAR) == null) {
             fields.put(CronFieldName.YEAR,
                     new CronField(
                             CronFieldName.YEAR,
@@ -56,64 +58,64 @@ class ExecutionTime {
                                     FieldConstraintsBuilder.instance()
                                             .forField(CronFieldName.YEAR)
                                             .createConstraintsInstance(),
-                                    ""+DateTime.now().getYear()
+                                    "" + DateTime.now().getYear()
                             )
                     )
             );
         }
         seconds = fromFieldToTimeValues(
-                        fields.get(CronFieldName.SECOND).getExpression(),
-                        getMaxForCronField(CronFieldName.SECOND)
+                fields.get(CronFieldName.SECOND).getExpression(),
+                getMaxForCronField(CronFieldName.SECOND)
         );
         minutes = fromFieldToTimeValues(
-                        fields.get(CronFieldName.MINUTE).getExpression(),
-                        getMaxForCronField(CronFieldName.MINUTE)
+                fields.get(CronFieldName.MINUTE).getExpression(),
+                getMaxForCronField(CronFieldName.MINUTE)
         );
         hours = fromFieldToTimeValues(
-                        fields.get(CronFieldName.HOUR).getExpression(),
-                        getMaxForCronField(CronFieldName.HOUR)
+                fields.get(CronFieldName.HOUR).getExpression(),
+                getMaxForCronField(CronFieldName.HOUR)
         );
         daysOfWeek = fromFieldToTimeValues(
-                        fields.get(CronFieldName.DAY_OF_WEEK).getExpression(),
-                        getMaxForCronField(CronFieldName.DAY_OF_WEEK)
+                fields.get(CronFieldName.DAY_OF_WEEK).getExpression(),
+                getMaxForCronField(CronFieldName.DAY_OF_WEEK)
         );
         daysOfMonth = fromFieldToTimeValues(
-                        fields.get(CronFieldName.DAY_OF_MONTH).getExpression(),
-                        getMaxForCronField(CronFieldName.DAY_OF_MONTH)
+                fields.get(CronFieldName.DAY_OF_MONTH).getExpression(),
+                getMaxForCronField(CronFieldName.DAY_OF_MONTH)
         );
         months = fromFieldToTimeValues(
                 fields.get(CronFieldName.MONTH).getExpression(),
                 getMaxForCronField(CronFieldName.MONTH)
         );
         years = fromFieldToTimeValues(
-                        fields.get(CronFieldName.YEAR).getExpression(),
-                        getMaxForCronField(CronFieldName.YEAR)
+                fields.get(CronFieldName.YEAR).getExpression(),
+                getMaxForCronField(CronFieldName.YEAR)
         );
     }
 
-    public static ExecutionTime forCron(Cron cron){
+    public static ExecutionTime forCron(Cron cron) {
         return new ExecutionTime(cron.retrieveFieldsAsMap());
     }
 
-    public DateTime afterDate(DateTime date){
+    public DateTime afterDate(DateTime date) {
         Set<Integer> seconds = Sets.newHashSet();
         Set<Integer> minutes = Sets.newHashSet();
         Set<Integer> hours = Sets.newHashSet();
-        seconds.add(nextValue(this.seconds, date.getSecondOfMinute()));
+        seconds.add(binarySearch(this.seconds, date.getSecondOfMinute(), NEXT));
         seconds.add(this.seconds.get(0));
-        if(this.seconds.contains(date.getSecondOfMinute())){
+        if (this.seconds.contains(date.getSecondOfMinute())) {
             seconds.add(date.getSecondOfMinute());
         }
 
-        minutes.add(nextValue(this.minutes, date.getMinuteOfHour()));
+        minutes.add(binarySearch(this.minutes, date.getMinuteOfHour(), NEXT));
         minutes.add(this.minutes.get(0));
-        if(this.minutes.contains(date.getMinuteOfHour())){
+        if (this.minutes.contains(date.getMinuteOfHour())) {
             minutes.add(date.getMinuteOfHour());
         }
 
-        hours.add(nextValue(this.hours, date.getHourOfDay()));
+        hours.add(binarySearch(this.hours, date.getHourOfDay(), NEXT));
         hours.add(this.hours.get(0));
-        if(this.hours.contains(date.getHourOfDay())){
+        if (this.hours.contains(date.getHourOfDay())) {
             hours.add(date.getHourOfDay());
         }
 
@@ -126,8 +128,8 @@ class ExecutionTime {
 
         DateTime nearestDate = null;
         long leastDistance = -1;
-        for(int year : years){
-            for(int month: months){
+        for (int year : years) {
+            for (int month : months) {
                 List<Integer> days = Lists.newArrayList();
                 final int maxDayMonth = new DateTime(year, month, 1, 12, 0, 0).dayOfMonth().getMaximumValue();
                 days.addAll(Collections2.filter(daysOfMonth, new Predicate<Integer>() {
@@ -137,31 +139,31 @@ class ExecutionTime {
                     }
                 }));
                 DateTime daysDay = new DateTime(year, month, 1, 0, 0);
-                for(int j=0; j < maxDayMonth; j++){
-                    if(daysOfWeek.contains(daysDay.getDayOfWeek()-1)){
+                for (int j = 0; j < maxDayMonth; j++) {
+                    if (daysOfWeek.contains(daysDay.getDayOfWeek() - 1)) {
                         days.add(daysDay.getDayOfMonth());
                         daysDay = daysDay.plusDays(1);
                     }
                 }
                 Collections.sort(days);
                 List<Integer> daysSubset = Lists.newArrayList();
-                daysSubset.add(nextValue(days, date.getDayOfMonth()));
+                daysSubset.add(binarySearch(days, date.getDayOfMonth(), NEXT));
                 daysSubset.add(date.getDayOfMonth());
                 daysSubset.add(days.get(0));
-                for(int day: daysSubset){
-                    for(int hour : hours){
-                        for(int minute : minutes){
-                            for(int second : seconds){
+                for (int day : daysSubset) {
+                    for (int hour : hours) {
+                        for (int minute : minutes) {
+                            for (int second : seconds) {
                                 long dist = Long.parseLong(
                                         String.format("%04d%02d%02d%02d%02d%02d",
                                                 year, month, day, hour, minute, second
                                         )
                                 );
-                                long diff = dist-reference;
-                                if(leastDistance==-1){
+                                long diff = dist - reference;
+                                if (leastDistance == -1) {
                                     leastDistance = diff;
                                 }
-                                if(diff < leastDistance){
+                                if (diff < leastDistance && diff > 0) {
                                     nearestDate = new DateTime(year, month, day, hour, minute, second);
                                 }
                             }
@@ -174,82 +176,70 @@ class ExecutionTime {
         return nearestDate;
     }
 
-//    public DateTime beforeDate(DateTime date){
-//    }
+    //public DateTime beforeDate(DateTime date){}
 
     @VisibleForTesting
-    int nextValue(List<Integer> values, int reference){
-        //TODO improve using binary search
-        for(Integer value : values){
-            if(value > reference){
-                return value;
-            }
-        }
-        return values.get(0);
-    }
-
-    @VisibleForTesting
-    List<Integer> fromFieldToTimeValues(FieldExpression fieldExpression, int max){
+    List<Integer> fromFieldToTimeValues(FieldExpression fieldExpression, int max) {
         List<Integer> values = Lists.newArrayList();
-        if(fieldExpression == null){
+        if (fieldExpression == null) {
             values.add(0);
             return values;
         }
-        if(fieldExpression instanceof And){
-            values = fromFieldToTimeValues((And)fieldExpression, max);
+        if (fieldExpression instanceof And) {
+            values = fromFieldToTimeValues((And) fieldExpression, max);
         }
-        if(fieldExpression instanceof Between){
-            values = fromFieldToTimeValues((Between)fieldExpression, max);
+        if (fieldExpression instanceof Between) {
+            values = fromFieldToTimeValues((Between) fieldExpression, max);
         }
-        if(fieldExpression instanceof On){
-            values = fromFieldToTimeValues((On)fieldExpression, max);
+        if (fieldExpression instanceof On) {
+            values = fromFieldToTimeValues((On) fieldExpression, max);
         }
-        if(fieldExpression instanceof Always){
-            values = fromFieldToTimeValues((Always)fieldExpression, max);
+        if (fieldExpression instanceof Always) {
+            values = fromFieldToTimeValues((Always) fieldExpression, max);
         }
         Collections.sort(values);
         return values;
     }
 
     @VisibleForTesting
-    List<Integer> fromFieldToTimeValues(And fieldExpression, int max){
+    List<Integer> fromFieldToTimeValues(And fieldExpression, int max) {
         List<Integer> values = Lists.newArrayList();
-        for(FieldExpression expression : fieldExpression.getExpressions()){
+        for (FieldExpression expression : fieldExpression.getExpressions()) {
             values.addAll(fromFieldToTimeValues(expression, max));
         }
         return values;
     }
 
     @VisibleForTesting
-    List<Integer> fromFieldToTimeValues(Between fieldExpression, int max){
+    List<Integer> fromFieldToTimeValues(Between fieldExpression, int max) {
         List<Integer> values = Lists.newArrayList();
         int every = fieldExpression.getEvery().getTime();
-        for(int j = fieldExpression.getFrom(); j < fieldExpression.getTo() + 1; j+=every){
+        for (int j = fieldExpression.getFrom(); j < fieldExpression.getTo() + 1; j += every) {
             values.add(j);
         }
         return values;
     }
 
     @VisibleForTesting
-    List<Integer> fromFieldToTimeValues(On fieldExpression, int max){
+    List<Integer> fromFieldToTimeValues(On fieldExpression, int max) {
         List<Integer> values = Lists.newArrayList();
         values.add(fieldExpression.getTime());
         return values;
     }
 
     @VisibleForTesting
-    List<Integer> fromFieldToTimeValues(Always fieldExpression, int max){
+    List<Integer> fromFieldToTimeValues(Always fieldExpression, int max) {
         List<Integer> values = Lists.newArrayList();
         int every = fieldExpression.getEvery().getTime();
-        for(int j = 1; j <= max; j+=every){
+        for (int j = 1; j <= max; j += every) {
             values.add(j);
         }
         return values;
     }
 
     @VisibleForTesting
-    int getMaxForCronField(CronFieldName cronFieldName){
-        switch (cronFieldName){
+    int getMaxForCronField(CronFieldName cronFieldName) {
+        switch (cronFieldName) {
             case YEAR:
                 return DateTime.now().getYear() + 1;//TODO should be contextual to the date they ask for
             case MONTH:
@@ -263,5 +253,41 @@ class ExecutionTime {
             default:
                 return 60;
         }
+    }
+
+    private int binarySearch(List<Integer> array, int key, Position desiredValue) {
+        int lowerbound = 0;
+        int upperbound = array.size();
+        int position;
+        position = (lowerbound + upperbound) / 2;
+
+        while ((array.get(position) != key) && (lowerbound <= upperbound)) {
+            if (array.get(position) > key) {
+                upperbound = position - 1;
+            } else {
+                lowerbound = position + 1;
+            }
+            position = (lowerbound + upperbound) / 2;
+        }
+        if (lowerbound <= upperbound) {
+            switch (desiredValue) {
+                case NEXT:
+                    return array.get(position + 1);
+                case PREVIOUS:
+                    return array.get(position - 1);
+            }
+        } else {
+            switch (desiredValue) {
+                case PREVIOUS:
+                    return array.get(upperbound);
+                case NEXT:
+                    return array.get(lowerbound);
+            }
+        }
+        return 0;
+    }
+
+    enum Position {
+        NEXT, PREVIOUS
     }
 }
