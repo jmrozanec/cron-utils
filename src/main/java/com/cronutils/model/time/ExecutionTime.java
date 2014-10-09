@@ -1,5 +1,6 @@
-package com.cronutils.model;
+package com.cronutils.model.time;
 
+import com.cronutils.model.Cron;
 import com.cronutils.model.field.*;
 import com.cronutils.model.field.constraint.FieldConstraintsBuilder;
 import com.google.common.annotations.VisibleForTesting;
@@ -8,10 +9,12 @@ import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import org.joda.time.DateTime;
+import org.joda.time.Duration;
+import org.joda.time.Interval;
 
 import java.util.*;
 
-import static com.cronutils.model.ExecutionTime.Position.*;
+import static com.cronutils.model.time.ExecutionTime.Position.*;
 
 /*
  * Copyright 2014 jmrozanec
@@ -26,6 +29,9 @@ import static com.cronutils.model.ExecutionTime.Position.*;
  * limitations under the License.
  */
 
+/**
+ * Calculates execution time given a cron pattern
+ */
 class ExecutionTime {
     private List<Integer> seconds;
     private List<Integer> minutes;
@@ -36,6 +42,10 @@ class ExecutionTime {
     private List<Integer> daysOfMonth;
     private List<Integer> daysOfWeek;
 
+    /**
+     * Constructor
+     * @param fields - Map<CronFieldName, CronField> with cron fields;
+     */
     @VisibleForTesting
     ExecutionTime(Map<CronFieldName, CronField> fields) {
         fields = new HashMap<CronFieldName, CronField>(fields);
@@ -93,11 +103,16 @@ class ExecutionTime {
         );
     }
 
+    /**
+     * Creates execution time for given Cron
+     * @param cron - Cron instance
+     * @return ExecutionTime instance
+     */
     public static ExecutionTime forCron(Cron cron) {
         return new ExecutionTime(cron.retrieveFieldsAsMap());
     }
 
-    public DateTime afterDate(DateTime date) {
+    public DateTime executionAfterDate(DateTime date) {
         Set<Integer> seconds = Sets.newHashSet();
         Set<Integer> minutes = Sets.newHashSet();
         Set<Integer> hours = Sets.newHashSet();
@@ -174,6 +189,10 @@ class ExecutionTime {
         }
 
         return nearestDate;
+    }
+
+    public Duration timeToExecutionAfterDate(DateTime date){
+        return new Interval(date, executionAfterDate(date)).toDuration();
     }
 
     //public DateTime beforeDate(DateTime date){}
