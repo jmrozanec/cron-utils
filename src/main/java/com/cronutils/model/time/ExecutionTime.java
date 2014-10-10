@@ -112,90 +112,47 @@ class ExecutionTime {
         return new ExecutionTime(cron.retrieveFieldsAsMap());
     }
 
-    public DateTime executionAfterDate(DateTime date) {
-        Set<Integer> seconds = Sets.newHashSet();
-        Set<Integer> minutes = Sets.newHashSet();
-        Set<Integer> hours = Sets.newHashSet();
-        seconds.add(binarySearch(this.seconds, date.getSecondOfMinute(), NEXT));
-        seconds.add(this.seconds.get(0));
-        if (this.seconds.contains(date.getSecondOfMinute())) {
-            seconds.add(date.getSecondOfMinute());
-        }
-
-        minutes.add(binarySearch(this.minutes, date.getMinuteOfHour(), NEXT));
-        minutes.add(this.minutes.get(0));
-        if (this.minutes.contains(date.getMinuteOfHour())) {
-            minutes.add(date.getMinuteOfHour());
-        }
-
-        hours.add(binarySearch(this.hours, date.getHourOfDay(), NEXT));
-        hours.add(this.hours.get(0));
-        if (this.hours.contains(date.getHourOfDay())) {
-            hours.add(date.getHourOfDay());
-        }
-
-        long reference = Long.parseLong(
-                String.format("%04d%02d%02d%02d%02d%02d",
-                        date.getYear(), date.getMonthOfYear(), date.getDayOfMonth(),
-                        date.getHourOfDay(), date.getMinuteOfHour(), date.getSecondOfMinute()
-                )
-        );
-
-        DateTime nearestDate = null;
-        long leastDistance = -1;
-        for (int year : years) {
-            for (int month : months) {
-                List<Integer> days = Lists.newArrayList();
-                final int maxDayMonth = new DateTime(year, month, 1, 12, 0, 0).dayOfMonth().getMaximumValue();
-                days.addAll(Collections2.filter(daysOfMonth, new Predicate<Integer>() {
+    public DateTime nextExecution(DateTime date) {
+        return nearestDateTime(date, NEXT,
+                new Predicate<Boolean>(){
                     @Override
-                    public boolean apply(Integer integer) {
-                        return integer <= maxDayMonth;
+                    public boolean apply(Boolean value) {
+                        return true;
                     }
-                }));
-                DateTime daysDay = new DateTime(year, month, 1, 0, 0);
-                for (int j = 0; j < maxDayMonth; j++) {
-                    if (daysOfWeek.contains(daysDay.getDayOfWeek() - 1)) {
-                        days.add(daysDay.getDayOfMonth());
-                        daysDay = daysDay.plusDays(1);
-                    }
-                }
-                Collections.sort(days);
-                List<Integer> daysSubset = Lists.newArrayList();
-                daysSubset.add(binarySearch(days, date.getDayOfMonth(), NEXT));
-                daysSubset.add(date.getDayOfMonth());
-                daysSubset.add(days.get(0));
-                for (int day : daysSubset) {
-                    for (int hour : hours) {
-                        for (int minute : minutes) {
-                            for (int second : seconds) {
-                                long dist = Long.parseLong(
-                                        String.format("%04d%02d%02d%02d%02d%02d",
-                                                year, month, day, hour, minute, second
-                                        )
-                                );
-                                long diff = dist - reference;
-                                if (leastDistance == -1) {
-                                    leastDistance = diff;
-                                }
-                                if (diff < leastDistance && diff > 0) {
-                                    nearestDate = new DateTime(year, month, day, hour, minute, second);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        return nearestDate;
+                },
+                new Predicate<Long>(){
+                   @Override
+                   public boolean apply(Long value) {
+                       return value > 0;
+                   }
+               }
+        );
     }
 
-    public Duration timeToExecutionAfterDate(DateTime date){
-        return new Interval(date, executionAfterDate(date)).toDuration();
+    public Duration timeToNextExecution(DateTime date){
+        return new Interval(date, nextExecution(date)).toDuration();
     }
 
-    //public DateTime beforeDate(DateTime date){}
+    public DateTime lastExecution(DateTime date){
+        return nearestDateTime(date, PREVIOUS,
+                new Predicate<Boolean>(){
+                    @Override
+                    public boolean apply(Boolean value) {
+                        return false;
+                    }
+                },
+                new Predicate<Long>(){
+                    @Override
+                    public boolean apply(Long value) {
+                        return value < 0;
+                    }
+                }
+        );
+    }
+
+    public Duration timeFromLastExecution(DateTime date){
+        return new Interval(date, lastExecution(date)).toDuration();
+    }
 
     @VisibleForTesting
     List<Integer> fromFieldToTimeValues(FieldExpression fieldExpression, int max) {
@@ -308,5 +265,85 @@ class ExecutionTime {
 
     enum Position {
         NEXT, PREVIOUS
+    }
+
+    private DateTime nearestDateTime(DateTime date, Position position,
+                                     Predicate<Boolean> leastDistancePredicate,
+                                     Predicate<Long> diffZeroPredicate){
+        Set<Integer> seconds = Sets.newHashSet();
+        Set<Integer> minutes = Sets.newHashSet();
+        Set<Integer> hours = Sets.newHashSet();
+        seconds.add(binarySearch(this.seconds, date.getSecondOfMinute(), position));
+        seconds.add(this.seconds.get(0));
+        if (this.seconds.contains(date.getSecondOfMinute())) {
+            seconds.add(date.getSecondOfMinute());
+        }
+
+        minutes.add(binarySearch(this.minutes, date.getMinuteOfHour(), position));
+        minutes.add(this.minutes.get(0));
+        if (this.minutes.contains(date.getMinuteOfHour())) {
+            minutes.add(date.getMinuteOfHour());
+        }
+
+        hours.add(binarySearch(this.hours, date.getHourOfDay(), position));
+        hours.add(this.hours.get(0));
+        if (this.hours.contains(date.getHourOfDay())) {
+            hours.add(date.getHourOfDay());
+        }
+
+        long reference = Long.parseLong(
+                String.format("%04d%02d%02d%02d%02d%02d",
+                        date.getYear(), date.getMonthOfYear(), date.getDayOfMonth(),
+                        date.getHourOfDay(), date.getMinuteOfHour(), date.getSecondOfMinute()
+                )
+        );
+
+        DateTime nearestDate = null;
+        long leastDistance = -1;
+        for (int year : years) {
+            for (int month : months) {
+                List<Integer> days = Lists.newArrayList();
+                final int maxDayMonth = new DateTime(year, month, 1, 12, 0, 0).dayOfMonth().getMaximumValue();
+                days.addAll(Collections2.filter(daysOfMonth, new Predicate<Integer>() {
+                    @Override
+                    public boolean apply(Integer integer) {
+                        return integer <= maxDayMonth;
+                    }
+                }));
+                DateTime daysDay = new DateTime(year, month, 1, 0, 0);
+                for (int j = 0; j < maxDayMonth; j++) {
+                    if (daysOfWeek.contains(daysDay.getDayOfWeek() - 1)) {
+                        days.add(daysDay.getDayOfMonth());
+                        daysDay = daysDay.plusDays(1);
+                    }
+                }
+                Collections.sort(days);
+                List<Integer> daysSubset = Lists.newArrayList();
+                daysSubset.add(binarySearch(days, date.getDayOfMonth(), position));
+                daysSubset.add(date.getDayOfMonth());
+                daysSubset.add(days.get(0));
+                for (int day : daysSubset) {
+                    for (int hour : hours) {
+                        for (int minute : minutes) {
+                            for (int second : seconds) {
+                                long dist = Long.parseLong(
+                                        String.format("%04d%02d%02d%02d%02d%02d",
+                                                year, month, day, hour, minute, second
+                                        )
+                                );
+                                long diff = dist - reference;
+                                if (leastDistance == -1) {
+                                    leastDistance = diff;
+                                }
+                                if (leastDistancePredicate.apply(diff < leastDistance) && diffZeroPredicate.apply(diff)) {
+                                    nearestDate = new DateTime(year, month, day, hour, minute, second);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return nearestDate;
     }
 }
