@@ -8,6 +8,7 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import org.apache.commons.lang3.Validate;
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
 import org.joda.time.Interval;
@@ -112,7 +113,13 @@ class ExecutionTime {
         return new ExecutionTime(cron.retrieveFieldsAsMap());
     }
 
+    /**
+     * Provide nearest time for next execution.
+     * @param date - jodatime DateTime instance. If null, a NullPointerException will be raised.
+     * @return DateTime instance, never null. Next execution time.
+     */
     public DateTime nextExecution(DateTime date) {
+        Validate.notNull(date);
         return nearestDateTime(date, NEXT,
                 new Predicate<Boolean>(){
                     @Override
