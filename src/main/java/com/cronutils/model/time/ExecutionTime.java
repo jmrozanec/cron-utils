@@ -177,6 +177,13 @@ class ExecutionTime {
         return new Interval(date, lastExecution(date)).toDuration();
     }
 
+    /**
+     * Parses field expressions and generates a list of all matching values considering max
+     * as upper bound to match the criteria.
+     * @param fieldExpression - FieldExpression instance. If null, a zero is issued.
+     * @param max - max accepted value.
+     * @return List<Integer> - list of matching integers
+     */
     @VisibleForTesting
     List<Integer> fromFieldToTimeValues(FieldExpression fieldExpression, int max) {
         List<Integer> values = Lists.newArrayList();
@@ -200,6 +207,12 @@ class ExecutionTime {
         return values;
     }
 
+    /**
+     * Generates a list of all matching values considering max
+     * @param fieldExpression - And instance. If null, a NullPointerException will be raised.
+     * @param max - max accepted value.
+     * @return List<Integer> - list of matching integers
+     */
     @VisibleForTesting
     List<Integer> fromFieldToTimeValues(And fieldExpression, int max) {
         List<Integer> values = Lists.newArrayList();
@@ -209,6 +222,12 @@ class ExecutionTime {
         return values;
     }
 
+    /**
+     * Generates a list of all matching values considering max
+     * @param fieldExpression
+     * @param max
+     * @return
+     */
     @VisibleForTesting
     List<Integer> fromFieldToTimeValues(Between fieldExpression, int max) {
         List<Integer> values = Lists.newArrayList();
@@ -219,6 +238,12 @@ class ExecutionTime {
         return values;
     }
 
+    /**
+     * Generates a list of all matching values considering max
+     * @param fieldExpression
+     * @param max
+     * @return
+     */
     @VisibleForTesting
     List<Integer> fromFieldToTimeValues(On fieldExpression, int max) {
         List<Integer> values = Lists.newArrayList();
@@ -226,6 +251,12 @@ class ExecutionTime {
         return values;
     }
 
+    /**
+     * Generates a list of all matching values considering max
+     * @param fieldExpression
+     * @param max
+     * @return
+     */
     @VisibleForTesting
     List<Integer> fromFieldToTimeValues(Always fieldExpression, int max) {
         List<Integer> values = Lists.newArrayList();
@@ -236,6 +267,11 @@ class ExecutionTime {
         return values;
     }
 
+    /**
+     *
+     * @param cronFieldName
+     * @return
+     */
     @VisibleForTesting
     int getMaxForCronField(CronFieldName cronFieldName) {
         switch (cronFieldName) {
