@@ -114,7 +114,7 @@ class ExecutionTime {
     }
 
     /**
-     * Provide nearest time for next execution.
+     * Provide nearest date for next execution.
      * @param date - jodatime DateTime instance. If null, a NullPointerException will be raised.
      * @return DateTime instance, never null. Next execution time.
      */
@@ -136,11 +136,22 @@ class ExecutionTime {
         );
     }
 
+    /**
+     * Provide nearest time for next execution.
+     * @param date - jodatime DateTime instance. If null, a NullPointerException will be raised.
+     * @return jodatime Duration instance, never null. Time to next execution.
+     */
     public Duration timeToNextExecution(DateTime date){
         return new Interval(date, nextExecution(date)).toDuration();
     }
 
+    /**
+     * Provide nearest date for last execution.
+     * @param date - jodatime DateTime instance. If null, a NullPointerException will be raised.
+     * @return DateTime instance, never null. Last execution time.
+     */
     public DateTime lastExecution(DateTime date){
+        Validate.notNull(date);
         return nearestDateTime(date, PREVIOUS,
                 new Predicate<Boolean>(){
                     @Override
@@ -157,6 +168,11 @@ class ExecutionTime {
         );
     }
 
+    /**
+     * Provide nearest time from last execution.
+     * @param date - jodatime DateTime instance. If null, a NullPointerException will be raised.
+     * @return jodatime Duration instance, never null. Time from last execution.
+     */
     public Duration timeFromLastExecution(DateTime date){
         return new Interval(date, lastExecution(date)).toDuration();
     }
