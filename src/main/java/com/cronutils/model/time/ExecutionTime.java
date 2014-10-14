@@ -215,6 +215,7 @@ class ExecutionTime {
      */
     @VisibleForTesting
     List<Integer> fromFieldToTimeValues(And fieldExpression, int max) {
+        Validate.notNull(fieldExpression);
         List<Integer> values = Lists.newArrayList();
         for (FieldExpression expression : fieldExpression.getExpressions()) {
             values.addAll(fromFieldToTimeValues(expression, max));
@@ -224,12 +225,13 @@ class ExecutionTime {
 
     /**
      * Generates a list of all matching values considering max
-     * @param fieldExpression
-     * @param max
-     * @return
+     * @param fieldExpression - Between instance. If null, a NullPointerException will be raised.
+     * @param max - max accepted value.
+     * @return List<Integer> - list of matching integers
      */
     @VisibleForTesting
     List<Integer> fromFieldToTimeValues(Between fieldExpression, int max) {
+        Validate.notNull(fieldExpression);
         List<Integer> values = Lists.newArrayList();
         int every = fieldExpression.getEvery().getTime();
         for (int j = fieldExpression.getFrom(); j < fieldExpression.getTo() + 1; j += every) {
@@ -240,12 +242,13 @@ class ExecutionTime {
 
     /**
      * Generates a list of all matching values considering max
-     * @param fieldExpression
-     * @param max
-     * @return
+     * @param fieldExpression - On instance. If null, a NullPointerException will be raised.
+     * @param max - max accepted value.
+     * @return List<Integer> - list of matching integers
      */
     @VisibleForTesting
     List<Integer> fromFieldToTimeValues(On fieldExpression, int max) {
+        Validate.notNull(fieldExpression);
         List<Integer> values = Lists.newArrayList();
         values.add(fieldExpression.getTime());
         return values;
@@ -253,12 +256,13 @@ class ExecutionTime {
 
     /**
      * Generates a list of all matching values considering max
-     * @param fieldExpression
-     * @param max
-     * @return
+     * @param fieldExpression - Always instance. If null, a NullPointerException will be raised.
+     * @param max - max accepted value.
+     * @return List<Integer> - list of matching integers
      */
     @VisibleForTesting
     List<Integer> fromFieldToTimeValues(Always fieldExpression, int max) {
+        Validate.notNull(fieldExpression);
         List<Integer> values = Lists.newArrayList();
         int every = fieldExpression.getEvery().getTime();
         for (int j = 1; j <= max; j += every) {
@@ -268,9 +272,9 @@ class ExecutionTime {
     }
 
     /**
-     *
-     * @param cronFieldName
-     * @return
+     * Returns max value for given cron field name;
+     * @param cronFieldName - CronFieldName
+     * @return int - max value
      */
     @VisibleForTesting
     int getMaxForCronField(CronFieldName cronFieldName) {
