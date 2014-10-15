@@ -294,14 +294,22 @@ class ExecutionTime {
         }
     }
 
-    private int binarySearch(List<Integer> array, int key, Position desiredValue) {
+    /**
+     * Implements binary search looking for closest value to the given one
+     * based on desired value (previous or next)
+     * @param list - list of values
+     * @param key - reference parameter
+     * @param desiredValue - desired value: next or previous to key
+     * @return desired value int
+     */
+    private int binarySearch(List<Integer> list, int key, Position desiredValue) {
         int lowerbound = 0;
-        int upperbound = array.size();
+        int upperbound = list.size();
         int position;
         position = (lowerbound + upperbound) / 2;
 
-        while ((array.get(position) != key) && (lowerbound <= upperbound)) {
-            if (array.get(position) > key) {
+        while ((list.get(position) != key) && (lowerbound <= upperbound)) {
+            if (list.get(position) > key) {
                 upperbound = position - 1;
             } else {
                 lowerbound = position + 1;
@@ -311,16 +319,16 @@ class ExecutionTime {
         if (lowerbound <= upperbound) {
             switch (desiredValue) {
                 case NEXT:
-                    return array.get(position + 1);
+                    return list.get(position + 1);
                 case PREVIOUS:
-                    return array.get(position - 1);
+                    return list.get(position - 1);
             }
         } else {
             switch (desiredValue) {
                 case PREVIOUS:
-                    return array.get(upperbound);
+                    return list.get(upperbound);
                 case NEXT:
-                    return array.get(lowerbound);
+                    return list.get(lowerbound);
             }
         }
         return 0;
@@ -330,6 +338,14 @@ class ExecutionTime {
         NEXT, PREVIOUS
     }
 
+    /**
+     * Calculates nearest date.
+     * @param date
+     * @param position
+     * @param leastDistancePredicate
+     * @param diffZeroPredicate
+     * @return
+     */
     private DateTime nearestDateTime(DateTime date, Position position,
                                      Predicate<Boolean> leastDistancePredicate,
                                      Predicate<Long> diffZeroPredicate){
