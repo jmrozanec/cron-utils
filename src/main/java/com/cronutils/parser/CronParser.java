@@ -82,7 +82,7 @@ public class CronParser {
             }
             return new Cron(results);
         } else {
-            throw new IllegalArgumentException("Expressions size do not match registered options!");
+            throw new IllegalArgumentException(String.format("Cron expression contains %s parts but we expect one of %s", expressionParts.length, expressions.keySet()));
         }
     }
 }
