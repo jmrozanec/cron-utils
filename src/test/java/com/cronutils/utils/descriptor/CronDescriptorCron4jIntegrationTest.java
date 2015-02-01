@@ -39,4 +39,14 @@ public class CronDescriptorCron4jIntegrationTest {
         assertEquals("every 5 minutes", descriptor.describe(parser.parse("0/5 * * * ?")));
     }
 
+    @Test
+    public void testAtElevenThirty(){
+        assertEquals("at 11:30", descriptor.describe(parser.parse("30 11 * * *")));
+    }
+
+    @Test
+    public void testAtTwentyThreeFromMondayThroughFriday(){
+        assertEquals("at 23:00 every day between Monday and Friday", descriptor.describe(parser.parse("0 23 ? * MON-FRI")));
+        assertEquals("at 23:00 every day between Monday and Friday", descriptor.describe(parser.parse("0 23 * * 1-5")));
+    }
 }
