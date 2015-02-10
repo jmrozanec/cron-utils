@@ -56,13 +56,13 @@ public class CronDescriptor {
         Validate.notNull(cron, "Cron must not be null");
         Map<CronFieldName, CronField> expressions = cron.retrieveFieldsAsMap();
         return
-                new StringBuilder().append(describeHHmmss(expressions)).append(" ")
+                new StringBuilder()
+                        .append(describeHHmmss(expressions)).append(" ")
                         .append(describeDayOfMonth(expressions)).append(" ")
                         .append(describeMonth(expressions)).append(" ")
                         .append(describeDayOfWeek(expressions)).append(" ")
                         .append(describeYear(expressions))
                         .toString().replaceAll("\\s+", " ").trim();
-
     }
 
     /**

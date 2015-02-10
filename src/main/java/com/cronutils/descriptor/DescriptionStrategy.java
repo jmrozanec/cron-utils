@@ -124,10 +124,10 @@ abstract class DescriptionStrategy {
         StringBuilder builder = new StringBuilder();
         if(!onExpressions.isEmpty()) {
             builder.append(bundle.getString("at"));
-            createAndDescription(builder, onExpressions).append(" %s");
+            createAndDescription(builder, onExpressions).append(" %p");
         }
         if(!expressions.isEmpty()){
-            createAndDescription(builder, expressions).append(" %s");
+            createAndDescription(builder, expressions);
         }
 
         return builder.toString();
@@ -177,11 +177,11 @@ abstract class DescriptionStrategy {
     protected String describe(Every every, boolean and) {
         String description;
         if (every.getTime() > 1) {
-            description = String.format("%s %s ", bundle.getString("every"), nominalValue(every.getTime()));
+            description = String.format("%s %s ", bundle.getString("every"), nominalValue(every.getTime())) + " %p ";
         } else {
-            description = bundle.getString("every");
+            description = bundle.getString("every")+" %s ";
         }
-        return description + " %s ";
+        return description;
     }
 
     /**
