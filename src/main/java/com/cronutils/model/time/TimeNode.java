@@ -20,19 +20,12 @@ import java.util.List;
  * limitations under the License.
  */
 class TimeNode {
-    protected List<TimeNode> childs;
     protected List<Integer> values;
 
     public TimeNode(List<Integer> values){
         Validate.notEmpty(values, "Values must not be empty");
-        childs = Lists.newArrayList();
         this.values = values;
         Collections.sort(this.values);
-    }
-
-    public TimeNode addChild(TimeNode timeNode){
-        childs.add(timeNode);
-        return this;
     }
 
     public NearestValue getNextValue(int reference, int shifts){
