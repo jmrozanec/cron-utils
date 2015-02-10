@@ -16,15 +16,35 @@ import java.util.List;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+/**
+ * Provides a strategy to generate values.
+ * Strategy is valid for 0+ numbers
+ */
 public abstract class FieldValueGenerator {
-    protected static int NO_VALUE = -1;
+    protected static int NO_VALUE = Integer.MIN_VALUE;
     protected FieldExpression expression;
 
     public FieldValueGenerator(FieldExpression expression){
-        this.expression = Validate.notNull(expression);
+        Validate.notNull(expression);
+        Validate.isTrue(matchesFieldExpressionClass(expression), "FieldExpression does not match required class");
+        this.expression = expression;
     }
 
+    /**
+     * Generates next valid value from reference
+     * @param reference - reference value
+     * @return generated value - Integer
+     * @throws NoSuchValueException - if there is no next value
+     */
     public abstract int generateNextValue(int reference) throws NoSuchValueException;
+
+    /**
+     * Generates previous valid value from reference
+     * @param reference - reference value
+     * @return generated value - Integer
+     * @throws NoSuchValueException - if there is no previous value
+     */
     public abstract int generatePreviousValue(int reference) throws NoSuchValueException;
     protected abstract List<Integer> generateCandidatesNotIncludingIntervalExtremes(int start, int end);
     public abstract boolean isMatch(int value);
@@ -39,4 +59,6 @@ public abstract class FieldValueGenerator {
         }
         return candidates;
     }
+
+    protected abstract boolean matchesFieldExpressionClass(FieldExpression fieldExpression);
 }

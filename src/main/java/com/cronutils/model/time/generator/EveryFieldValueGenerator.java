@@ -63,4 +63,9 @@ class EveryFieldValueGenerator extends FieldValueGenerator {
         Every every = (Every)expression;
         return (value % every.getTime())==0;
     }
+
+    @Override
+    protected boolean matchesFieldExpressionClass(FieldExpression fieldExpression) {
+        return fieldExpression instanceof Every;
+    }
 }

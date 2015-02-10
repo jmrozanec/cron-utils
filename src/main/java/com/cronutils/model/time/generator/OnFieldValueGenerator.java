@@ -54,4 +54,9 @@ class OnFieldValueGenerator extends FieldValueGenerator {
     public boolean isMatch(int value) {
         return ((On) expression).getTime()==value;
     }
+
+    @Override
+    protected boolean matchesFieldExpressionClass(FieldExpression fieldExpression) {
+        return fieldExpression instanceof On;
+    }
 }

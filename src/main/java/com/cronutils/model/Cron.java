@@ -1,7 +1,7 @@
 package com.cronutils.model;
 
-import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.field.CronField;
+import com.cronutils.model.field.CronFieldName;
 import com.google.common.collect.Maps;
 import org.apache.commons.lang3.Validate;
 

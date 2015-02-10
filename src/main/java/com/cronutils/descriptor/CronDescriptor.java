@@ -1,8 +1,8 @@
 package com.cronutils.descriptor;
 
-import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.Cron;
 import com.cronutils.model.field.CronField;
+import com.cronutils.model.field.CronFieldName;
 import org.apache.commons.lang3.Validate;
 
 import java.util.Locale;

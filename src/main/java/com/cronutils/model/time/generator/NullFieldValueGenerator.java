@@ -40,4 +40,9 @@ class NullFieldValueGenerator extends FieldValueGenerator {
     public boolean isMatch(int value) {
         return false;
     }
+
+    @Override
+    protected boolean matchesFieldExpressionClass(FieldExpression fieldExpression) {
+        return true;
+    }
 }

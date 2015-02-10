@@ -1,13 +1,13 @@
 package com.cronutils.mapper;
 
-import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.Cron;
 import com.cronutils.model.definition.CronDefinition;
-import com.cronutils.model.field.definition.FieldDefinition;
 import com.cronutils.model.field.Always;
 import com.cronutils.model.field.CronField;
-import com.cronutils.model.field.constraint.FieldConstraintsBuilder;
+import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.field.On;
+import com.cronutils.model.field.constraint.FieldConstraintsBuilder;
+import com.cronutils.model.field.definition.FieldDefinition;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;

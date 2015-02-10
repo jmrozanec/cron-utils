@@ -1,9 +1,9 @@
 package com.cronutils.parser.field;
 
-import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.field.CronField;
-import com.cronutils.model.field.constraint.FieldConstraints;
+import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.field.FieldExpression;
+import com.cronutils.model.field.constraint.FieldConstraints;
 import com.cronutils.parser.CronParser;
 import org.junit.Before;
 import org.junit.Test;
@@ -19,9 +19,7 @@ import java.util.UUID;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({CronParserField.class, CronParser.class})

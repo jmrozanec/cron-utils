@@ -28,7 +28,8 @@ class AndFieldValueGenerator extends FieldValueGenerator {
 
     @Override
     public int generateNextValue(final int reference) throws NoSuchValueException {
-        return computeCandidates(
+        List<Integer> candidates =
+                computeCandidates(
                         new Function<FieldValueGenerator, Integer>() {
                             @Override
                             public Integer apply(FieldValueGenerator fieldValueGenerator) {
@@ -39,7 +40,12 @@ class AndFieldValueGenerator extends FieldValueGenerator {
                                 }
                             }
                         }
-                ).get(0);
+                );
+        if(candidates.isEmpty()){
+            throw new NoSuchValueException();
+        } else {
+            return candidates.get(0);
+        }
     }
 
     @Override
@@ -57,7 +63,11 @@ class AndFieldValueGenerator extends FieldValueGenerator {
                             }
                         }
                 );
-        return candidates.get(candidates.size() - 1);
+        if(candidates.isEmpty()){
+            throw new NoSuchValueException();
+        } else {
+            return candidates.get(candidates.size() - 1);
+        }
     }
 
     @Override
@@ -83,6 +93,11 @@ class AndFieldValueGenerator extends FieldValueGenerator {
         return match;
     }
 
+    @Override
+    protected boolean matchesFieldExpressionClass(FieldExpression fieldExpression) {
+        return fieldExpression instanceof And;
+    }
+
     private List<Integer> computeCandidates(Function<FieldValueGenerator, Integer> function){
         And and = (And) expression;
         List<Integer> candidates = Lists.newArrayList();
@@ -93,7 +108,7 @@ class AndFieldValueGenerator extends FieldValueGenerator {
                 Collections2.filter(candidates, new Predicate<Integer>() {
                     @Override
                     public boolean apply(Integer integer) {
-                        return integer>0;
+                        return integer>=0;
                     }
                 })
         );

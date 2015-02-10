@@ -1,7 +1,7 @@
 package com.cronutils.model.field.definition;
 
-import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.definition.CronDefinitionBuilder;
+import com.cronutils.model.field.CronFieldName;
 
 /*
  * Copyright 2014 jmrozanec

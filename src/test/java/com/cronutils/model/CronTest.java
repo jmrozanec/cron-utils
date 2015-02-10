@@ -1,7 +1,7 @@
 package com.cronutils.model;
 
-import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.field.CronField;
+import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.field.FieldExpression;
 import com.google.common.collect.Lists;
 import org.junit.Before;
@@ -11,9 +11,7 @@ import org.mockito.MockitoAnnotations;
 
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 

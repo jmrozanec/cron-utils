@@ -1,7 +1,7 @@
 package com.cronutils.parser.field;
 
-import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.field.CronField;
+import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.field.constraint.FieldConstraints;
 import org.apache.commons.lang3.Validate;
 

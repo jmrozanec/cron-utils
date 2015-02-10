@@ -2,6 +2,7 @@ package com.cronutils.model.time.generator;
 
 import com.cronutils.model.field.CronField;
 import com.cronutils.model.field.CronFieldName;
+import com.cronutils.model.field.FieldExpression;
 import com.cronutils.model.field.On;
 import com.google.common.collect.Lists;
 import org.apache.commons.lang3.Validate;
@@ -26,7 +27,7 @@ class OnDayOfMonthValueGenerator extends FieldValueGenerator {
     private int month;
     public OnDayOfMonthValueGenerator(CronField cronField, int year, int month) {
         super(cronField.getExpression());
-        Validate.isTrue(CronFieldName.DAY_OF_MONTH.equals(cronField.getField()));
+        Validate.isTrue(CronFieldName.DAY_OF_MONTH.equals(cronField.getField()), "CronField does not belong to day of month");
         this.year = year;
         this.month = month;
     }
@@ -74,6 +75,11 @@ class OnDayOfMonthValueGenerator extends FieldValueGenerator {
         return false;
     }
 
+    @Override
+    protected boolean matchesFieldExpressionClass(FieldExpression fieldExpression) {
+        return fieldExpression instanceof On;
+    }
+
     private int generateValue(On on, int year, int month) throws NoSuchValueException {
         switch (on.getSpecialChar()){
             case L:
@@ -92,9 +98,9 @@ class OnDayOfMonthValueGenerator extends FieldValueGenerator {
                     }
                 }
                 break;
+            case NONE:
+                return on.getTime();
         }
-        throw new NoSuchElementException ();//TODO replace for declared expression
+        throw new NoSuchElementException ();
     }
-
-
 }

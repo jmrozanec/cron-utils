@@ -2,7 +2,6 @@ package com.cronutils.parser;
 
 import com.cronutils.model.definition.CronDefinition;
 import com.cronutils.model.field.CronFieldName;
-import com.cronutils.model.field.constraint.FieldConstraints;
 import com.cronutils.model.field.constraint.FieldConstraintsBuilder;
 import com.cronutils.model.field.definition.FieldDefinition;
 import com.google.common.collect.Sets;

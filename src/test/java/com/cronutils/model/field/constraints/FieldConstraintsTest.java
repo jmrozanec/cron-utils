@@ -1,7 +1,7 @@
 package com.cronutils.model.field.constraints;
 
-import com.cronutils.model.field.constraint.FieldConstraints;
 import com.cronutils.model.field.SpecialChar;
+import com.cronutils.model.field.constraint.FieldConstraints;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import org.junit.Before;
@@ -10,9 +10,7 @@ import org.junit.Test;
 import java.util.Map;
 import java.util.Set;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.*;
 
 public class FieldConstraintsTest {
 

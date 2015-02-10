@@ -28,8 +28,8 @@ class BetweenFieldValueGenerator extends FieldValueGenerator {
         Between between = (Between)expression;
         int candidate = new EveryFieldValueGenerator(between.getEvery()).generateNextValue(reference);
 
-        if(candidate < between.getFrom() || candidate > between.getTo()){
-            return between.getFrom();
+        if(candidate > between.getTo()){
+            throw new NoSuchValueException();
         }
         return candidate;
     }
@@ -39,8 +39,8 @@ class BetweenFieldValueGenerator extends FieldValueGenerator {
         Between between = (Between)expression;
         int candidate = new EveryFieldValueGenerator(between.getEvery()).generatePreviousValue(reference);
 
-        if(candidate < between.getFrom() || candidate > between.getTo()){
-            return between.getTo();
+        if(candidate < between.getFrom()){
+            throw new NoSuchValueException();
         }
         return candidate;
     }
@@ -75,5 +75,10 @@ class BetweenFieldValueGenerator extends FieldValueGenerator {
             return new EveryFieldValueGenerator(between.getEvery()).isMatch(value);
         }
         return false;
+    }
+
+    @Override
+    protected boolean matchesFieldExpressionClass(FieldExpression fieldExpression) {
+        return fieldExpression instanceof Between;
     }
 }

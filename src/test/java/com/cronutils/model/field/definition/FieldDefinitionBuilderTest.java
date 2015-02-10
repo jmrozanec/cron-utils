@@ -1,7 +1,7 @@
 package com.cronutils.model.field.definition;
 
-import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.definition.CronDefinitionBuilder;
+import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.field.constraint.FieldConstraints;
 import com.cronutils.model.field.constraint.FieldConstraintsBuilder;
 import org.junit.Before;

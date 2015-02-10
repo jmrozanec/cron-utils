@@ -1,6 +1,5 @@
 package com.cronutils.descriptor;
 
-import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.field.*;
 import com.cronutils.model.field.constraint.FieldConstraintsBuilder;
 import com.google.common.base.Function;

@@ -1,5 +1,6 @@
 package com.cronutils.model.time.generator;
 
+import com.cronutils.model.field.Always;
 import com.cronutils.model.field.FieldExpression;
 import com.google.common.collect.Lists;
 
@@ -23,12 +24,14 @@ class AlwaysFieldValueGenerator extends FieldValueGenerator {
 
     @Override
     public int generateNextValue(int reference) throws NoSuchValueException{
-        return new EveryFieldValueGenerator(expression).generateNextValue(reference);
+        Always always = (Always)expression;
+        return new EveryFieldValueGenerator(always.getEvery()).generateNextValue(reference);
     }
 
     @Override
     public int generatePreviousValue(int reference) throws NoSuchValueException {
-        return new EveryFieldValueGenerator(expression).generatePreviousValue(reference);
+        Always always = (Always)expression;
+        return new EveryFieldValueGenerator(always.getEvery()).generatePreviousValue(reference);
     }
 
     @Override
@@ -43,5 +46,10 @@ class AlwaysFieldValueGenerator extends FieldValueGenerator {
     @Override
     public boolean isMatch(int value) {
         return true;
+    }
+
+    @Override
+    protected boolean matchesFieldExpressionClass(FieldExpression fieldExpression) {
+        return fieldExpression instanceof Always;
     }
 }
