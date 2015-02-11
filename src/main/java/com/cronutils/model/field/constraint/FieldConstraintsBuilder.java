@@ -114,6 +114,18 @@ public class FieldConstraintsBuilder {
     }
 
     /**
+     * Allows to set a range of valid values for field.
+     * @param startRange - start range value
+     * @param endRange - end range value
+     * @return same FieldConstraintsBuilder instance
+     */
+    public FieldConstraintsBuilder withValidRange(int startRange, int endRange){
+        this.startRange = startRange;
+        this.endRange = endRange;
+        return this;
+    }
+
+    /**
      * Creates FieldConstraints instance based on previously built parameters
      * @return new FieldConstraints instance
      */

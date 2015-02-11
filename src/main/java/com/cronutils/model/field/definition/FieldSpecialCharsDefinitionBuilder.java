@@ -63,7 +63,18 @@ public class FieldSpecialCharsDefinitionBuilder extends FieldDefinitionBuilder {
      * @return this FieldSpecialCharsDefinitionBuilder instance
      */
     public FieldSpecialCharsDefinitionBuilder withIntMapping(int source, int dest){
-        constraints.withIntValueMapping(source, dest);
+        super.withIntMapping(source, dest);
+        return this;
+    }
+
+    /**
+     * Allows to set a range of valid values for field.
+     * @param startRange - start range value
+     * @param endRange - end range value
+     * @return same FieldSpecialCharsDefinitionBuilder instance
+     */
+    public FieldSpecialCharsDefinitionBuilder withValidRange(int startRange, int endRange){
+        super.withValidRange(startRange, endRange);
         return this;
     }
 }

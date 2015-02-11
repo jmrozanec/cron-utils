@@ -51,6 +51,17 @@ public class FieldDefinitionBuilder {
     }
 
     /**
+     * Allows to set a range of valid values for field.
+     * @param startRange - start range value
+     * @param endRange - end range value
+     * @return same FieldDefinitionBuilder instance
+     */
+    public FieldDefinitionBuilder withValidRange(int startRange, int endRange){
+        constraints.withValidRange(startRange, endRange);
+        return this;
+    }
+
+    /**
      * Registers CronField in ParserDefinitionBuilder and returns its instance
      * @return ParserDefinitionBuilder instance obtained from constructor
      */

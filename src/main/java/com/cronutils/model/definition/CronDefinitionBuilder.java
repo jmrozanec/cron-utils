@@ -2,6 +2,7 @@ package com.cronutils.model.definition;
 
 import com.cronutils.model.CronType;
 import com.cronutils.model.field.CronFieldName;
+import com.cronutils.model.field.definition.FieldDayOfWeekDefinitionBuilder;
 import com.cronutils.model.field.definition.FieldDefinition;
 import com.cronutils.model.field.definition.FieldDefinitionBuilder;
 import com.cronutils.model.field.definition.FieldSpecialCharsDefinitionBuilder;
@@ -91,8 +92,8 @@ public class CronDefinitionBuilder {
      * Adds definition for day of week field
      * @return new FieldSpecialCharsDefinitionBuilder instance
      */
-    public FieldSpecialCharsDefinitionBuilder withDayOfWeek() {
-        return new FieldSpecialCharsDefinitionBuilder(this, CronFieldName.DAY_OF_WEEK);
+    public FieldDayOfWeekDefinitionBuilder withDayOfWeek() {
+        return new FieldDayOfWeekDefinitionBuilder(this, CronFieldName.DAY_OF_WEEK);
     }
 
     /**
@@ -138,7 +139,7 @@ public class CronDefinitionBuilder {
                 .withHours().and()
                 .withDayOfMonth().and()
                 .withMonth().and()
-                .withDayOfWeek().and()
+                .withDayOfWeek().withValidRange(0,6).withMondayDoWValue(1).and()
                 .instance();
 
     }
@@ -154,8 +155,8 @@ public class CronDefinitionBuilder {
                 .withHours().and()
                 .withDayOfMonth().supportsHash().supportsL().supportsW().and()
                 .withMonth().and()
-                .withDayOfWeek().withIntMapping(7, 0).supportsHash().supportsL().supportsW().and()
-                .withYear().and()
+                .withDayOfWeek().withValidRange(1,7).withMondayDoWValue(2).supportsHash().supportsL().supportsW().and()
+                .withYear().withValidRange(1970, 2099).and()
                 .lastFieldOptional()
                 .instance();
     }
@@ -170,7 +171,7 @@ public class CronDefinitionBuilder {
                 .withHours().and()
                 .withDayOfMonth().and()
                 .withMonth().and()
-                .withDayOfWeek().and()
+                .withDayOfWeek().withValidRange(0,7).withMondayDoWValue(1).withIntMapping(7,0).and()
                 .instance();
     }
 
