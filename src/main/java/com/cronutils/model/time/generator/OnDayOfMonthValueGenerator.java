@@ -98,9 +98,7 @@ class OnDayOfMonthValueGenerator extends FieldValueGenerator {
                     }
                 }
                 break;
-            case NONE:
-                return on.getTime();
         }
-        throw new NoSuchElementException ();
+        throw new NoSuchValueException();
     }
 }

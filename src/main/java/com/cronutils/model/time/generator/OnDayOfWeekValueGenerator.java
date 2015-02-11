@@ -84,8 +84,6 @@ class OnDayOfWeekValueGenerator extends FieldValueGenerator {
                 return generateHashValues(on, year, month);
             case L:
                 return generateLValues(on, year, month);
-            case NONE:
-                return on.getTime();
         }
         throw new NoSuchValueException();
     }
@@ -105,6 +103,9 @@ class OnDayOfWeekValueGenerator extends FieldValueGenerator {
     }
 
     private int generateLValues(On on, int year, int month) throws NoSuchValueException {
+        //quartz: 1 is sunday, 7 is saturday
+        //crontab: 0-7, 0 and 7 are sunday
+        //jodatime: 1 is monday, 7 is sunday
         int lastDoM = new DateTime(year, month, 1, 1, 1).dayOfMonth().getMaximumValue();
         DateTime lastDoMDateTime = new DateTime(year, month, lastDoM, 1, 1);
         int dowForLastDoM = lastDoMDateTime.getDayOfWeek();//1-7

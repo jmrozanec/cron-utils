@@ -6,15 +6,13 @@ import com.cronutils.model.field.FieldExpression;
 import com.cronutils.model.field.On;
 import com.cronutils.model.field.constraint.FieldConstraints;
 import com.cronutils.model.field.constraint.FieldConstraintsBuilder;
+import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.List;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
+
 /*
  * Copyright 2015 jmrozanec
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -27,25 +25,17 @@ import static org.mockito.Mockito.mock;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-public class OnDayOfMonthValueGeneratorTest {
-    private OnDayOfMonthValueGenerator fieldValueGenerator;
+public class OnDayOfWeekValueGeneratorTest {
+
+    private OnDayOfWeekValueGenerator fieldValueGenerator;
+
     private int year = 2015;
     private int month = 2;
 
     @Before
     public void setUp(){
         FieldConstraints constraints = FieldConstraintsBuilder.instance().createConstraintsInstance();
-        fieldValueGenerator = new OnDayOfMonthValueGenerator(new CronField(CronFieldName.DAY_OF_MONTH, new On(constraints, "3")), year, month);
-    }
-
-    @Test(expected = NoSuchValueException.class)
-    public void testGenerateNextValue() throws Exception {
-        fieldValueGenerator.generateNextValue(randomNumber());
-    }
-
-    @Test(expected = NoSuchValueException.class)
-    public void testGeneratePreviousValue() throws Exception {
-        fieldValueGenerator.generatePreviousValue(randomNumber());
+        fieldValueGenerator = new OnDayOfWeekValueGenerator(new CronField(CronFieldName.DAY_OF_WEEK, new On(constraints, "3")), year, month);
     }
 
     @Test
@@ -55,11 +45,7 @@ public class OnDayOfMonthValueGeneratorTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testConstructorNotMatchesOn() throws Exception {
-        new OnDayOfMonthValueGenerator(new CronField(CronFieldName.YEAR, mock(FieldExpression.class)), year, month);
-    }
-
-    private int randomNumber(){
-        return (int)(10*Math.random());
+    public void testConstructorNotMatchesOnDayOfWeekValueGenerator() throws Exception {
+        new OnDayOfWeekValueGenerator(new CronField(CronFieldName.YEAR, mock(FieldExpression.class)), year, month);
     }
 }
