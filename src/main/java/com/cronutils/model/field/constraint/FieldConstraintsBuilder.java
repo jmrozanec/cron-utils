@@ -103,6 +103,15 @@ public class FieldConstraintsBuilder {
     }
 
     /**
+     * Adds LW support
+     * @return same FieldConstraintsBuilder instance
+     */
+    public FieldConstraintsBuilder addLWSupport() {
+        specialChars.add(SpecialChar.LW);
+        return this;
+    }
+
+    /**
      * Adds integer to integer mapping. Source should be greater than destination;
      * @param source - some int
      * @param dest - some int

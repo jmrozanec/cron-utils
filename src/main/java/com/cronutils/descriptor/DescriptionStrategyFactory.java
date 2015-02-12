@@ -74,6 +74,8 @@ class DescriptionStrategyFactory {
                             return String.format("%s %s %s ", bundle.getString("the_nearest_weekday_to_the"), on.getTime(), bundle.getString("of_the_month"));
                         case L:
                             return bundle.getString("last_day_of_month");
+                        case LW:
+                            return bundle.getString("last_weekday_of_month");
                         default:
                             return "";
                     }

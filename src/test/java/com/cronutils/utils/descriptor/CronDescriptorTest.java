@@ -144,7 +144,7 @@ public class CronDescriptorTest {
         results.add(new CronField(CronFieldName.HOUR, new On(nullFieldConstraints, "" + hour)));
         results.add(new CronField(CronFieldName.MINUTE, new On(nullFieldConstraints, "" + minute)));
         results.add(new CronField(CronFieldName.DAY_OF_MONTH, new On(nullFieldConstraints, "L")));
-        assertEquals(String.format("at %s:%s last day of the month", hour, minute), descriptor.describe(new Cron(mockDefinition, results)));
+        assertEquals(String.format("at %s:%s last day of month", hour, minute), descriptor.describe(new Cron(mockDefinition, results)));
     }
 
     @Test

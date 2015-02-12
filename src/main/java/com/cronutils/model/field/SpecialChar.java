@@ -16,5 +16,5 @@ package com.cronutils.model.field;
  * Enumerates non-standard cron special chars.
  */
 public enum SpecialChar {
-    L, W, HASH, NONE
+    LW, L, W, HASH, NONE
 }

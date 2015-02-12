@@ -97,6 +97,16 @@ class OnDayOfMonthValueGenerator extends FieldValueGenerator {
                     }
                 }
                 break;
+            case LW:
+                DateTime lastDayOfMonth =
+                        new DateTime(year, month, new DateTime(year, month, 1, 1, 1)
+                                .dayOfMonth().getMaximumValue(), 1, 1);
+                int dow = lastDayOfMonth.getDayOfWeek();
+                int diff = dow - 5;
+                if(diff > 0){
+                    return lastDayOfMonth.minusDays(diff).dayOfMonth().get();
+                }
+                return lastDayOfMonth.dayOfMonth().get();
         }
         throw new NoSuchValueException();
     }

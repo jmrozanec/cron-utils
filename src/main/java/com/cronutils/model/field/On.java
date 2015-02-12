@@ -55,6 +55,15 @@ public class On extends FieldExpression {
             }
             expression = array[0];
         }
+        if (exp.contains("LW")) {
+            specialChar = SpecialChar.LW;
+            exp = exp.replace("LW", "");
+            if ("".equals(exp)) {
+                expression = "0";//to avoid a NumberFormatException
+            } else {
+                expression = exp;
+            }
+        }
         if (exp.contains("L")) {
             specialChar = SpecialChar.L;
             exp = exp.replace("L", "");
