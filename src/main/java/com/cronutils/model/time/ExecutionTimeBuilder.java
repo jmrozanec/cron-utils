@@ -46,7 +46,7 @@ class ExecutionTimeBuilder {
                                                 .forField(CronFieldName.SECOND)
                                                 .createConstraintsInstance(), "0")
                         )
-                ).generateCandidates(1,60));
+                ).generateCandidates(0,59));
         yearsValueGenerator = FieldValueGeneratorFactory.forCronField(
                 new CronField(
                         CronFieldName.YEAR,
@@ -61,19 +61,19 @@ class ExecutionTimeBuilder {
 
     ExecutionTimeBuilder forSecondsMatching(CronField cronField){
         validate(CronFieldName.SECOND, cronField);
-        seconds = new TimeNode(FieldValueGeneratorFactory.forCronField(cronField).generateCandidates(1,60));
+        seconds = new TimeNode(FieldValueGeneratorFactory.forCronField(cronField).generateCandidates(0,59));
         return this;
     }
 
     ExecutionTimeBuilder forMinutesMatching(CronField cronField){
         validate(CronFieldName.MINUTE, cronField);
-        minutes = new TimeNode(FieldValueGeneratorFactory.forCronField(cronField).generateCandidates(1,60));
+        minutes = new TimeNode(FieldValueGeneratorFactory.forCronField(cronField).generateCandidates(0,59));
         return this;
     }
 
     ExecutionTimeBuilder forHoursMatching(CronField cronField){
         validate(CronFieldName.HOUR, cronField);
-        hours = new TimeNode(FieldValueGeneratorFactory.forCronField(cronField).generateCandidates(1,60));
+        hours = new TimeNode(FieldValueGeneratorFactory.forCronField(cronField).generateCandidates(0,59));
         return this;
     }
 

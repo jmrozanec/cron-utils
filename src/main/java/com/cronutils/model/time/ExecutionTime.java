@@ -35,7 +35,7 @@ import java.util.Map;
 /**
  * Calculates execution time given a cron pattern
  */
-class ExecutionTime {
+public class ExecutionTime {
     private CronDefinition cronDefinition;
     private FieldValueGenerator yearsValueGenerator;
     private CronField daysOfWeekCronField;
@@ -50,13 +50,14 @@ class ExecutionTime {
     ExecutionTime(CronDefinition cronDefinition, FieldValueGenerator yearsValueGenerator, CronField daysOfWeekCronField,
                   CronField daysOfMonthCronField, TimeNode months, TimeNode hours,
                   TimeNode minutes, TimeNode seconds) {
-        this.yearsValueGenerator = yearsValueGenerator;
-        this.daysOfWeekCronField = daysOfWeekCronField;
-        this.daysOfMonthCronField = daysOfMonthCronField;
-        this.months = months;
-        this.hours = hours;
-        this.minutes = minutes;
-        this.seconds = seconds;
+        this.cronDefinition = Validate.notNull(cronDefinition);
+        this.yearsValueGenerator = Validate.notNull(yearsValueGenerator);
+        this.daysOfWeekCronField = Validate.notNull(daysOfWeekCronField);
+        this.daysOfMonthCronField = Validate.notNull(daysOfMonthCronField);
+        this.months = Validate.notNull(months);
+        this.hours = Validate.notNull(hours);
+        this.minutes = Validate.notNull(minutes);
+        this.seconds = Validate.notNull(seconds);
     }
 
     /**
@@ -109,6 +110,7 @@ class ExecutionTime {
         //if current month is contained, we calculate days and try
         if(months.getValues().contains(date.getMonthOfYear())){
             monthsValue = new NearestValue(date.getMonthOfYear(), 0);
+            month = monthsValue.getValue();
             day = date.getDayOfMonth();
         } else {
             //if current month is not contained, get the nearest match,
@@ -193,6 +195,7 @@ class ExecutionTime {
         //if current month is contained, we calculate days and try
         if(months.getValues().contains(date.getMonthOfYear())){
             monthsValue = new NearestValue(date.getMonthOfYear(), 0);
+            month = monthsValue.getValue();
             day = date.getDayOfMonth();
         } else {
             //if current month is not contained, get the nearest match,
@@ -250,7 +253,7 @@ class ExecutionTime {
      * @return jodatime Duration instance, never null. Time from last execution.
      */
     public Duration timeFromLastExecution(DateTime date){
-        return new Interval(date, lastExecution(date)).toDuration();
+        return new Interval(lastExecution(date), date).toDuration();
     }
 
     private List<Integer> generateDayCandidates(int year, int month, WeekDay mondayDoWValue){

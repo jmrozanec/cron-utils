@@ -6,6 +6,8 @@ import org.apache.commons.lang3.Validate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
+
 /*
  * Copyright 2015 jmrozanec
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -49,8 +51,16 @@ class TimeNode {
         });
     }
 
-    //we return same reference value if matches or next one if does not match.
-    //then we start applying shifts. This way we ensure same value is returned if no shift is requested
+    /**
+     * We return same reference value if matches or next one if does not match.
+     * Then we start applying shifts.
+     * This way we ensure same value is returned if no shift is requested.
+     * @param reference - reference value
+     * @param shiftsToApply - shifts to apply
+     * @param indexTransform - function to apply transformation on reference value.
+     *                       Used to increment / decrement index count.
+     * @return NearestValue instance, never null. Holds information on nearest value and shifts performed.
+     */
     private NearestValue getNearestValues(int reference, int shiftsToApply, Function<Integer, Integer> indexTransform){
         List<Integer> values = new ArrayList<Integer>(this.values);
         int index=0;
@@ -64,24 +74,26 @@ class TimeNode {
         }else{
             index = values.indexOf(reference);
         }
-        int shift = 0;
-        int value = 0;
+        AtomicInteger shift = new AtomicInteger(0);
+        int value = reference;
         for(int j=0;j<shiftsToApply;j++){
             value = getValueFromList(values, indexTransform.apply(index), shift);
-            index = values.indexOf(reference);
+            index = values.indexOf(value);
         }
-        return new NearestValue(value, shift);
+        return new NearestValue(value, shift.get());
     }
 
-    private int getValueFromList(List<Integer>values, int index, int shift){
+    private int getValueFromList(List<Integer>values, int index, AtomicInteger shift){
         Validate.notEmpty(values, "List must not be empty");
         if(index<0){
             index=index+values.size();
-            return getValueFromList(values, index, shift+1);
+            shift.incrementAndGet();
+            return getValueFromList(values, index, shift);
         }
         if(index>=values.size()){
             index=index-values.size();
-            return getValueFromList(values, index, shift+1);
+            shift.incrementAndGet();
+            return getValueFromList(values, index, shift);
         }
         return values.get(index);
     }
