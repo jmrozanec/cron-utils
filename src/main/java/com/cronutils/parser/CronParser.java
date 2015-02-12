@@ -31,22 +31,24 @@ import java.util.Map;
  * Parser for cron expressions
  */
 public class CronParser {
+    private CronDefinition cronDefinition;
     private Map<Integer, List<CronParserField>> expressions;
 
     /**
      * Constructor
-     * @param definition - definition of cron expressions to be parsed
+     * @param cronDefinition - cronDefinition of cron expressions to be parsed
      *                   if null, a NullPointerException will be raised.
      */
-    public CronParser(CronDefinition definition) {
+    public CronParser(CronDefinition cronDefinition) {
         expressions = Maps.newHashMap();
-        buildPossibleExpressions(Validate.notNull(definition, "CronDefinition must not be null"));
+        this.cronDefinition = Validate.notNull(cronDefinition, "CronDefinition must not be null");
+        buildPossibleExpressions(cronDefinition);
     }
 
     /**
      * Build possible cron expressions from definitions.
      * One is built for sure. A second one may be build if last field is optional.
-     * @param cronDefinition
+     * @param cronDefinition - cron definition instance
      */
     private void buildPossibleExpressions(CronDefinition cronDefinition) {
         List<CronParserField> expression = new ArrayList<CronParserField>();
@@ -83,7 +85,7 @@ public class CronParser {
             for (int j = 0; j < fields.size(); j++) {
                 results.add(fields.get(j).parse(expressionParts[j]));
             }
-            return new Cron(results);
+            return new Cron(cronDefinition, results);
         } else {
             throw new IllegalArgumentException(String.format("Cron expression contains %s parts but we expect one of %s", expressionParts.length, expressions.keySet()));
         }

@@ -1,8 +1,11 @@
 package com.cronutils.model.time;
 
+import com.cronutils.mapper.WeekDay;
 import com.cronutils.model.Cron;
+import com.cronutils.model.definition.CronDefinition;
 import com.cronutils.model.field.CronField;
 import com.cronutils.model.field.CronFieldName;
+import com.cronutils.model.field.definition.DayOfWeekFieldDefinition;
 import com.cronutils.model.time.generator.FieldValueGenerator;
 import com.cronutils.model.time.generator.FieldValueGeneratorFactory;
 import com.cronutils.model.time.generator.NoSuchValueException;
@@ -33,6 +36,7 @@ import java.util.Map;
  * Calculates execution time given a cron pattern
  */
 class ExecutionTime {
+    private CronDefinition cronDefinition;
     private FieldValueGenerator yearsValueGenerator;
     private CronField daysOfWeekCronField;
     private CronField daysOfMonthCronField;
@@ -43,7 +47,7 @@ class ExecutionTime {
     private TimeNode seconds;
 
     @VisibleForTesting
-    ExecutionTime(FieldValueGenerator yearsValueGenerator, CronField daysOfWeekCronField,
+    ExecutionTime(CronDefinition cronDefinition, FieldValueGenerator yearsValueGenerator, CronField daysOfWeekCronField,
                   CronField daysOfMonthCronField, TimeNode months, TimeNode hours,
                   TimeNode minutes, TimeNode seconds) {
         this.yearsValueGenerator = yearsValueGenerator;
@@ -62,7 +66,7 @@ class ExecutionTime {
      */
     public static ExecutionTime forCron(Cron cron) {
         Map<CronFieldName, CronField> fields = cron.retrieveFieldsAsMap();
-        ExecutionTimeBuilder executionTimeBuilder = new ExecutionTimeBuilder();
+        ExecutionTimeBuilder executionTimeBuilder = new ExecutionTimeBuilder(cron.getCronDefinition());
         if(fields.containsKey(CronFieldName.SECOND)){
             executionTimeBuilder
                     .forSecondsMatching(fields.get(CronFieldName.SECOND));
@@ -113,13 +117,29 @@ class ExecutionTime {
             month = monthsValue.getValue();
             day = 1;
         }
-        TimeNode days = new TimeNode(generateDayCandidates(date.getYear(), month));
+        TimeNode days =
+                new TimeNode(
+                        generateDayCandidates(
+                                date.getYear(), month,
+                                ((DayOfWeekFieldDefinition)
+                                        cronDefinition.getFieldDefinition(CronFieldName.DAY_OF_WEEK)
+                                ).getMondayDoWValue()
+                        )
+                );
         //we evaluate days and apply hour shifts
         NearestValue daysValue = days.getNextValue(day, hoursValue.getShifts());
         //if days requires a new shift, we need to recalculate months and pick first day
         monthsValue = months.getNextValue(month, daysValue.getShifts());
         if(daysValue.getShifts()>0){
-            days = new TimeNode(generateDayCandidates(date.getYear(), monthsValue.getValue()));
+            days =
+                    new TimeNode(
+                            generateDayCandidates(
+                                    date.getYear(), monthsValue.getValue(),
+                                    ((DayOfWeekFieldDefinition)
+                                            cronDefinition.getFieldDefinition(CronFieldName.DAY_OF_WEEK)
+                                    ).getMondayDoWValue()
+                            )
+                    );
             //we ask for day candidates and pick the first one. We know candidates are sorted
             daysValue = new NearestValue(days.getValues().get(0), 0);
         }
@@ -181,13 +201,29 @@ class ExecutionTime {
             month = monthsValue.getValue();
             day = new DateTime(date.getYear(), month, 1, 1, 1).dayOfMonth().withMaximumValue().getDayOfMonth();
         }
-        TimeNode days = new TimeNode(generateDayCandidates(date.getYear(), month));
+        TimeNode days =
+                new TimeNode(
+                        generateDayCandidates(
+                                date.getYear(), month,
+                                ((DayOfWeekFieldDefinition)
+                                        cronDefinition.getFieldDefinition(CronFieldName.DAY_OF_WEEK)
+                                ).getMondayDoWValue()
+                        )
+                );
         //we evaluate days and apply hour shifts
         NearestValue daysValue = days.getPreviousValue(day, hoursValue.getShifts());
         //if days requires a new shift, we need to recalculate months and pick last day
         monthsValue = months.getPreviousValue(month, daysValue.getShifts());
         if(daysValue.getShifts()>0){
-            days = new TimeNode(generateDayCandidates(date.getYear(), monthsValue.getValue()));
+            days =
+                    new TimeNode(
+                            generateDayCandidates(
+                                    date.getYear(), monthsValue.getValue(),
+                                    ((DayOfWeekFieldDefinition)
+                                            cronDefinition.getFieldDefinition(CronFieldName.DAY_OF_WEEK)
+                                    ).getMondayDoWValue()
+                            )
+                    );
             //we ask for day candidates and pick the last one. We know candidates are sorted
             List<Integer>dayCandidates = days.getValues();
             daysValue = new NearestValue(dayCandidates.get(dayCandidates.size()-1), 0);
@@ -217,11 +253,11 @@ class ExecutionTime {
         return new Interval(date, lastExecution(date)).toDuration();
     }
 
-    private List<Integer> generateDayCandidates(int year, int month){
+    private List<Integer> generateDayCandidates(int year, int month, WeekDay mondayDoWValue){
         DateTime date = new DateTime(year, month, 1,1,1);
         List<Integer> candidates = Lists.newArrayList();
-        candidates.addAll(FieldValueGeneratorFactory.forCronField(daysOfMonthCronField, year, month).generateCandidates(1, date.dayOfMonth().getMaximumValue()));
-        candidates.addAll(FieldValueGeneratorFactory.forCronField(daysOfWeekCronField, year, month).generateCandidates(1, date.dayOfMonth().getMaximumValue()));
+        candidates.addAll(FieldValueGeneratorFactory.createDayOfMonthValueGeneratorInstance(daysOfMonthCronField, year, month).generateCandidates(1, date.dayOfMonth().getMaximumValue()));
+        candidates.addAll(FieldValueGeneratorFactory.createDayOfWeekValueGeneratorInstance(daysOfWeekCronField, year, month, mondayDoWValue).generateCandidates(1, date.dayOfMonth().getMaximumValue()));
         return candidates;
     }
 

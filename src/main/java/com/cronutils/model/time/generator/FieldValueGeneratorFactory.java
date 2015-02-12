@@ -1,5 +1,6 @@
 package com.cronutils.model.time.generator;
 
+import com.cronutils.mapper.WeekDay;
 import com.cronutils.model.field.*;
 /*
  * Copyright 2015 jmrozanec
@@ -45,19 +46,26 @@ public class FieldValueGeneratorFactory {
         return new NullFieldValueGenerator(cronField.getExpression());
     }
 
-    public static FieldValueGenerator forCronField(CronField cronField, int year, int month){
+    public static FieldValueGenerator createDayOfMonthValueGeneratorInstance(CronField cronField, int year, int month){
         FieldExpression fieldExpression = cronField.getExpression();
         if(fieldExpression instanceof On){
             On on = (On) fieldExpression;
-            if(!SpecialChar.NONE.equals(on.getSpecialChar())) {
-                switch (cronField.getField()){
-                    case DAY_OF_MONTH:
-                        return new OnDayOfMonthValueGenerator(cronField, year, month);
-                    case DAY_OF_WEEK:
-                        return new OnDayOfWeekValueGenerator(cronField, year, month);
-                }
+            if(!SpecialChar.NONE.equals(on.getSpecialChar())){
+                return new OnDayOfMonthValueGenerator(cronField, year, month);
             }
         }
         return forCronField(cronField);
     }
+
+    public static FieldValueGenerator createDayOfWeekValueGeneratorInstance(CronField cronField, int year, int month, WeekDay mondayDoWValue){
+        FieldExpression fieldExpression = cronField.getExpression();
+        if(fieldExpression instanceof On){
+            On on = (On) fieldExpression;
+            if(!SpecialChar.NONE.equals(on.getSpecialChar())){
+                return new OnDayOfWeekValueGenerator(cronField, year, month, mondayDoWValue);
+            }
+        }
+        return forCronField(cronField);
+    }
+
 }

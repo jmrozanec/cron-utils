@@ -1,5 +1,6 @@
 package com.cronutils.model.field.definition;
 
+import com.cronutils.mapper.WeekDay;
 import com.cronutils.model.definition.CronDefinitionBuilder;
 import com.cronutils.model.field.CronFieldName;
 import org.apache.commons.lang3.Validate;
@@ -32,7 +33,8 @@ public class FieldDayOfWeekDefinitionBuilder extends FieldSpecialCharsDefinition
      * @return ParserDefinitionBuilder instance obtained from constructor
      */
     public CronDefinitionBuilder and(){
-        cronDefinitionBuilder.register(new DayOfWeekFieldDefinition(fieldName, constraints.createConstraintsInstance(), mondayDoWValue));
+        boolean zeroInRange = constraints.createConstraintsInstance().isInRange(0);
+        cronDefinitionBuilder.register(new DayOfWeekFieldDefinition(fieldName, constraints.createConstraintsInstance(), new WeekDay(mondayDoWValue, zeroInRange)));
         return cronDefinitionBuilder;
     }
 

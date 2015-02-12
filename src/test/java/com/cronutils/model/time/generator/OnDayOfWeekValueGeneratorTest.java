@@ -1,5 +1,6 @@
 package com.cronutils.model.time.generator;
 
+import com.cronutils.mapper.WeekDay;
 import com.cronutils.model.field.CronField;
 import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.field.FieldExpression;
@@ -28,14 +29,15 @@ import static org.mockito.Mockito.mock;
 public class OnDayOfWeekValueGeneratorTest {
 
     private OnDayOfWeekValueGenerator fieldValueGenerator;
-
+    private WeekDay mondayDoWValue;
     private int year = 2015;
     private int month = 2;
 
     @Before
     public void setUp(){
         FieldConstraints constraints = FieldConstraintsBuilder.instance().createConstraintsInstance();
-        fieldValueGenerator = new OnDayOfWeekValueGenerator(new CronField(CronFieldName.DAY_OF_WEEK, new On(constraints, "3")), year, month);
+        mondayDoWValue = new WeekDay(1, false);
+        fieldValueGenerator = new OnDayOfWeekValueGenerator(new CronField(CronFieldName.DAY_OF_WEEK, new On(constraints, "3")), year, month, mondayDoWValue);
     }
 
     @Test
@@ -46,6 +48,6 @@ public class OnDayOfWeekValueGeneratorTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void testConstructorNotMatchesOnDayOfWeekValueGenerator() throws Exception {
-        new OnDayOfWeekValueGenerator(new CronField(CronFieldName.YEAR, mock(FieldExpression.class)), year, month);
+        new OnDayOfWeekValueGenerator(new CronField(CronFieldName.YEAR, mock(FieldExpression.class)), year, month, mondayDoWValue);
     }
 }

@@ -1,5 +1,6 @@
 package com.cronutils.model;
 
+import com.cronutils.model.definition.CronDefinition;
 import com.cronutils.model.field.CronField;
 import com.cronutils.model.field.CronFieldName;
 import com.google.common.collect.Maps;
@@ -27,12 +28,14 @@ import java.util.Map;
  * Represents a cron expression
  */
 public class Cron {
+    private CronDefinition cronDefinition;
     private Map<CronFieldName, CronField> fields;
     private String asString;
 
-    public Cron(List<CronField> fields){
-        this.fields = Maps.newHashMap();
+    public Cron(CronDefinition cronDefinition, List<CronField> fields){
+        this.cronDefinition = Validate.notNull(cronDefinition, "CronDefinition must not be null");
         Validate.notNull(fields, "CronFields cannot be null");
+        this.fields = Maps.newHashMap();
         for(CronField field : fields){
             this.fields.put(field.getField(), field);
         }
@@ -67,5 +70,9 @@ public class Cron {
             asString = builder.toString().trim();
         }
         return asString;
+    }
+
+    public CronDefinition getCronDefinition() {
+        return cronDefinition;
     }
 }

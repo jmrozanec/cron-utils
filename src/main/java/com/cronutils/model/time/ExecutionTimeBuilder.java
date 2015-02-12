@@ -1,5 +1,6 @@
 package com.cronutils.model.time;
 
+import com.cronutils.model.definition.CronDefinition;
 import com.cronutils.model.field.Always;
 import com.cronutils.model.field.CronField;
 import com.cronutils.model.field.CronFieldName;
@@ -24,6 +25,7 @@ import org.apache.commons.lang3.Validate;
  * Builds required components to get previous/next execution to certain reference date
  */
 class ExecutionTimeBuilder {
+    private CronDefinition cronDefinition;
     private FieldValueGenerator yearsValueGenerator;
     private CronField daysOfWeekCronField;
     private CronField daysOfMonthCronField;
@@ -33,7 +35,8 @@ class ExecutionTimeBuilder {
     private TimeNode minutes;
     private TimeNode seconds;
 
-    ExecutionTimeBuilder(){
+    ExecutionTimeBuilder(CronDefinition cronDefinition){
+        this.cronDefinition = cronDefinition;
         seconds = new TimeNode(
                 FieldValueGeneratorFactory.forCronField(
                         new CronField(
@@ -99,7 +102,7 @@ class ExecutionTimeBuilder {
     }
 
     ExecutionTime build(){
-        return new ExecutionTime(
+        return new ExecutionTime(cronDefinition,
                 yearsValueGenerator, daysOfWeekCronField, daysOfMonthCronField,
                 months, hours, minutes, seconds
         );

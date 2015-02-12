@@ -92,10 +92,22 @@ public class FieldConstraints {
      * throws RuntimeException if number out of range
      */
     public int validateInRange(int number) {
-        if (number >= startRange && number <= endRange) {
+        if(isInRange(number)){
             return number;
         }
         throw new RuntimeException(String.format("Number %s out of range [%s,%s]", number, startRange, endRange));
+    }
+
+    /**
+     * Check if given number is >= start range and <= end range
+     * @param number - to be validated
+     * @return - true if in range; false otherwise
+     */
+    public boolean isInRange(int number) {
+        if (number >= startRange && number <= endRange) {
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -103,8 +115,16 @@ public class FieldConstraints {
      * @param specialChar - char to be validated
      */
     public void validateSpecialCharAllowed(SpecialChar specialChar){
-        if(!specialChars.contains(specialChar)){
+        if(!isSpecialCharAllowed(specialChar)){
             throw new RuntimeException(String.format("Special char %s not supported!", specialChar));
         }
+    }
+
+    /**
+     * Check if special char is allowed.
+     * @param specialChar - char to be validated
+     */
+    public boolean isSpecialCharAllowed(SpecialChar specialChar){
+        return specialChars.contains(specialChar);
     }
 }

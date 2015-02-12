@@ -30,6 +30,7 @@ import java.util.Map;
  */
 public class CronMapper {
     private Map<CronFieldName, Function<CronField, CronField>> mappings;
+    private CronDefinition to;
 
     /**
      * Constructor
@@ -40,7 +41,7 @@ public class CronMapper {
      */
     public CronMapper(CronDefinition from, CronDefinition to){
         Validate.notNull(from, "Source CronDefinition must not be null");
-        Validate.notNull(to, "Destination CronDefinition must not be null");
+        this.to = Validate.notNull(to, "Destination CronDefinition must not be null");
         mappings = Maps.newHashMap();
         buildMappings(from, to);
     }
@@ -59,7 +60,7 @@ public class CronMapper {
                 fields.add(mappings.get(name).apply(cron.retrieve(name)));
             }
         }
-        return new Cron(fields);
+        return new Cron(to, fields);
     }
 
     /**

@@ -1,5 +1,6 @@
 package com.cronutils.model;
 
+import com.cronutils.model.definition.CronDefinition;
 import com.cronutils.model.field.CronField;
 import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.field.FieldExpression;
@@ -19,6 +20,7 @@ public class CronTest {
 
     private Cron cron;
     private CronFieldName testName;
+    private List<CronField> fields;
     @Mock
     private CronField mockField;
 
@@ -27,14 +29,19 @@ public class CronTest {
         MockitoAnnotations.initMocks(this);
         testName = CronFieldName.SECOND;
         when(mockField.getField()).thenReturn(testName);
-        List<CronField> fields = Lists.newArrayList();
+        fields = Lists.newArrayList();
         fields.add(mockField);
-        cron = new Cron(fields);
+        cron = new Cron(mock(CronDefinition.class), fields);
     }
 
     @Test(expected = NullPointerException.class)
     public void testConstructorNullFieldsParameter() throws Exception {
-        new Cron(null);
+        new Cron(mock(CronDefinition.class),null);
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void testConstructorNullDefinitionParameter() throws Exception {
+        new Cron(null, fields);
     }
 
     @Test

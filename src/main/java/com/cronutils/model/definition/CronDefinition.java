@@ -64,4 +64,12 @@ public class CronDefinition {
     public Set<FieldDefinition> getFieldDefinitions(){
         return new HashSet<FieldDefinition>(fieldDefinitions.values());
     }
+
+    /**
+     * Returns field definition for field name of this cron
+     * @return FieldDefinition instance
+     */
+    public FieldDefinition getFieldDefinition(CronFieldName cronFieldName){
+        return fieldDefinitions.get(cronFieldName);
+    }
 }

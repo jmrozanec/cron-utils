@@ -1,5 +1,7 @@
 package com.cronutils.model.time.generator;
 
+import com.cronutils.mapper.ConstantsMapper;
+import com.cronutils.mapper.WeekDay;
 import com.cronutils.model.field.CronField;
 import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.field.FieldExpression;
@@ -24,11 +26,13 @@ import java.util.List;
 class OnDayOfWeekValueGenerator extends FieldValueGenerator {
     private int year;
     private int month;
-    public OnDayOfWeekValueGenerator(CronField cronField, int year, int month) {
+    private WeekDay mondayDoWValue;
+    public OnDayOfWeekValueGenerator(CronField cronField, int year, int month, WeekDay mondayDoWValue) {
         super(cronField.getExpression());
         Validate.isTrue(CronFieldName.DAY_OF_WEEK.equals(cronField.getField()), "CronField does not belong to day of week");
         this.year = year;
         this.month = month;
+        this.mondayDoWValue = mondayDoWValue;
     }
 
     @Override
@@ -90,35 +94,37 @@ class OnDayOfWeekValueGenerator extends FieldValueGenerator {
 
     private int generateHashValues(On on, int year, int month){
         int dowForFirstDoM = new DateTime(year, month, 1, 1, 1).getDayOfWeek();//1-7
-        int requiredDoW = on.getTime();//0-6
+        int requiredDoW = ConstantsMapper.weekDayMapping(mondayDoWValue, ConstantsMapper.JODATIME_WEEK_DAY, on.getTime());//to normalize to joda-time value
         int requiredNth = on.getNth();
         int baseDay = 1;//day 1 from given month
-        if((requiredDoW + 1) < dowForFirstDoM){
-            baseDay += (dowForFirstDoM - (requiredDoW + 1));
-        }else{
-            baseDay += (requiredDoW - dowForFirstDoM);
+        int diff = dowForFirstDoM - requiredDoW;
+        if(diff == 0){
+            //base day remains the same
         }
-
-        return (requiredNth - 1) * 7 + baseDay;
+        if(diff < 0){
+            baseDay = baseDay+Math.abs(diff);
+        }
+        if(diff>0){
+            baseDay = baseDay+7-diff;
+        }
+        return (requiredNth-1) * 7 + baseDay;
     }
 
     private int generateLValues(On on, int year, int month) throws NoSuchValueException {
-        //quartz: 1 is sunday, 7 is saturday
-        //crontab: 0-7, 0 and 7 are sunday
-        //jodatime: 1 is monday, 7 is sunday
         int lastDoM = new DateTime(year, month, 1, 1, 1).dayOfMonth().getMaximumValue();
         DateTime lastDoMDateTime = new DateTime(year, month, lastDoM, 1, 1);
         int dowForLastDoM = lastDoMDateTime.getDayOfWeek();//1-7
-        int requiredDoW = on.getTime()+1;//(0-6)+1 to normalize to joda-time value
+        int requiredDoW = ConstantsMapper.weekDayMapping(mondayDoWValue, ConstantsMapper.JODATIME_WEEK_DAY, on.getTime());//to normalize to joda-time value
         int dowDiff = dowForLastDoM - requiredDoW;
+
         if(dowDiff==0){
-            return lastDoMDateTime.dayOfMonth().get();//TODO we have the date. check reference!
+            return lastDoMDateTime.dayOfMonth().get();
         }
         if(dowDiff<0){
-            return lastDoMDateTime.minusDays((requiredDoW+(7-dowForLastDoM))).dayOfMonth().get();//TODO we have the date. check reference!
+            return lastDoMDateTime.minusDays(dowForLastDoM+(7-requiredDoW)).dayOfMonth().get();
         }
         if(dowDiff>0){
-            return lastDoMDateTime.minusDays(dowDiff).dayOfMonth().get();//TODO we have the date. check reference!
+            return lastDoMDateTime.minusDays(dowDiff).dayOfMonth().get();
         }
         throw new NoSuchValueException();
     }
