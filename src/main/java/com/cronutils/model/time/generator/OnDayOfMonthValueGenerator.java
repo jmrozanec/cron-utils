@@ -9,7 +9,6 @@ import org.apache.commons.lang3.Validate;
 import org.joda.time.DateTime;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 /*
  * Copyright 2015 jmrozanec
  * Licensed under the Apache License, Version 2.0 (the "License");

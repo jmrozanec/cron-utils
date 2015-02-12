@@ -3,7 +3,6 @@ package com.cronutils.model.field.definition;
 import com.cronutils.mapper.WeekDay;
 import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.field.constraint.FieldConstraints;
-import org.apache.commons.lang3.Validate;
 
 public class DayOfWeekFieldDefinition extends FieldDefinition {
     private WeekDay mondayDoWValue;

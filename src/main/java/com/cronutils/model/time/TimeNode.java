@@ -1,7 +1,6 @@
 package com.cronutils.model.time;
 
 import com.google.common.base.Function;
-import com.google.common.collect.Lists;
 import org.apache.commons.lang3.Validate;
 
 import java.util.ArrayList;

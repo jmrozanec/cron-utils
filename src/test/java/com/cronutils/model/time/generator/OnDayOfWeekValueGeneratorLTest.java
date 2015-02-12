@@ -12,9 +12,7 @@ import org.junit.Test;
 
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class OnDayOfWeekValueGeneratorLTest {
     FieldConstraints constraints = FieldConstraintsBuilder.instance().addLSupport().createConstraintsInstance();
@@ -107,21 +105,21 @@ public class OnDayOfWeekValueGeneratorLTest {
     public void testIsMatchLastDayDoWGreaterThanRequestedDoW() throws Exception {
         fieldValueGenerator = createFieldValueGeneratorInstanceLastDayDoWGreaterThanRequestedDoW();
         assertTrue(fieldValueGenerator.isMatch(lastDayDoWGreaterThanRequestedDoW_Day));
-        assertFalse(fieldValueGenerator.isMatch(lastDayDoWGreaterThanRequestedDoW_Day+1));
+        assertFalse(fieldValueGenerator.isMatch(lastDayDoWGreaterThanRequestedDoW_Day + 1));
     }
 
     @Test
     public void testIsMatchLastDayDoWLessThanRequestedDoW() throws Exception {
         fieldValueGenerator = createFieldValueGeneratorInstanceLastDayDoWLessThanRequestedDoW();
         assertTrue(fieldValueGenerator.isMatch(lastDayDoWLessThanRequestedDoW_Day));
-        assertFalse(fieldValueGenerator.isMatch(lastDayDoWLessThanRequestedDoW_Day+1));
+        assertFalse(fieldValueGenerator.isMatch(lastDayDoWLessThanRequestedDoW_Day + 1));
     }
 
     @Test
     public void testIsMatchLastDayDoWEqualToRequestedDoW() throws Exception {
         fieldValueGenerator = createFieldValueGeneratorInstanceLastDayDoWEqualToRequestedDoW();
         assertTrue(fieldValueGenerator.isMatch(lastDayDoWEqualToRequestedDoW_Day));
-        assertFalse(fieldValueGenerator.isMatch(lastDayDoWEqualToRequestedDoW_Day+1));
+        assertFalse(fieldValueGenerator.isMatch(lastDayDoWEqualToRequestedDoW_Day + 1));
     }
 
     private OnDayOfWeekValueGenerator createFieldValueGeneratorInstanceLastDayDoWGreaterThanRequestedDoW() {
