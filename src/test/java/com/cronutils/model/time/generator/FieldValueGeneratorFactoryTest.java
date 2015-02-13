@@ -106,7 +106,7 @@ public class FieldValueGeneratorFactoryTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testCreateDayOfWeekValueGeneratorInstanceBADCronFieldName() throws Exception {
+    public void testCreateDayOfWeekValueGeneratorInstanceBadCronFieldName() throws Exception {
         when(mockCronField.getField()).thenReturn(CronFieldName.YEAR);
         when(mockCronField.getExpression()).thenReturn(mock(On.class));
         fieldValueGeneratorFactory.createDayOfWeekValueGeneratorInstance(mockCronField, 2015, 1, new WeekDay(1, false));

@@ -23,9 +23,9 @@ cron-utils is available on Maven central repository.
  * Create arbitrary cron expressions: you can define your own cron format! Supported fields are: second, minute, hour, day of month, month, day of week, year.
  * You can flag last field as optional!
  * Supports all cron special characters: * / , -
-    * Non-standard characters L, W, # are supported as well!
+    * Non-standard characters L, W, LW and # are supported as well!
     * Question mark (?) is currently replaced for an asterisk (*). Enhanced support will be provided in a future.
- * Print to locale specific human readable format (English, Dutch, French, Italian, Portuguese and Spanish so far...).
+ * Print to locale specific human readable format (English and Spanish are fully supported. Dutch, French, Italian and Portuguese have basic support).
  * Parse and Description process are decoupled: parse once and operate with the result!
  * Validate if cron string expressions match a cron definition using CronValidator
  * Convert crons between different cron definitions: if you need to migrate expressions, CronMapper may help you!
@@ -33,7 +33,7 @@ cron-utils is available on Maven central repository.
     * [Unix](http://www.unix.com/man-page/linux/5/crontab/)
     * [Cron4j](http://www.sauronsoftware.it/projects/cron4j/)
     * [Quartz](http://quartz-scheduler.org/)
-
+ * Obtain last/next execution time as well as time from last execution/time to next execution.
 
 **Usage Examples**
 
@@ -102,7 +102,21 @@ cron-utils is available on Maven central repository.
     //or returning same string if valid and raising an exception if invalid
     quartzValidator.validate("0 23 ? * * MON-FRI *");
 
+***Calculate time from/to execution***
 
+    //Get date for last execution
+    DateTime now = DateTime.now();
+    ExecutionTime executionTime = ExecutionTime.forCron(parser.parse("* * * * * * *"));
+    DateTime lastExecution = executionTime.lastExecution(now));
+
+    //Get date for next execution
+    DateTime nextExecution = executionTime.timeToNextExecution(now));
+
+    //Time from last execution
+    Duration timeFromLastExecution = executionTime.timeFromLastExecution(now);
+
+    //Time to next execution
+    Duration timeToNextExecution = executionTime.timeToNextExecution(now);
 
 **Contribute!**
 
