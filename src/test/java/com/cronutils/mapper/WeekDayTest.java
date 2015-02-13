@@ -6,13 +6,13 @@ import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 
 public class WeekDayTest {
-    private WeekDay weekDay;
+    private WeekDay source;
     private int mondayDoWValue = 1;
     private boolean firstDayIsZero = false;
 
     @Before
     public void setUp(){
-        this.weekDay = new WeekDay(mondayDoWValue, firstDayIsZero);
+        this.source = new WeekDay(mondayDoWValue, firstDayIsZero);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -22,39 +22,32 @@ public class WeekDayTest {
 
     @Test
     public void testGetMondayDoWValue() throws Exception {
-        assertEquals(mondayDoWValue, weekDay.getMondayDoWValue());
+        assertEquals(mondayDoWValue, source.getMondayDoWValue());
     }
 
     @Test
     public void testMapIntervalWithZeroNotStartingMonday() throws Exception {
-        WeekDay toBeConverted = new WeekDay(1, true);
-        assertEquals(7, weekDay.map(toBeConverted, 0));
+        WeekDay target = new WeekDay(1, true);
+        assertEquals(0, source.mapTo(7, target));
     }
 
     @Test
     public void testMapIntervalWithZeroStartingMonday() throws Exception {
-        WeekDay toBeConverted = new WeekDay(0, true);
-        assertEquals(1, weekDay.map(toBeConverted, 0));
+        WeekDay target = new WeekDay(0, true);
+        assertEquals(0, source.mapTo(1, target));
     }
 
     @Test
     public void testMapIntervalWithoutZeroStartingMonday() throws Exception {
         int value = 7;
-        WeekDay toBeConverted = new WeekDay(1, false);
-        assertEquals(value, weekDay.map(toBeConverted, value));
+        WeekDay target = new WeekDay(1, false);
+        assertEquals(value, source.mapTo(value, target));
     }
 
     @Test
     public void testMapIntervalWithoutZeroStartingSunday() throws Exception {
         int value = 7;
-        WeekDay toBeConverted = new WeekDay(2, false);
-        assertEquals(value-1, weekDay.map(toBeConverted, value));
-    }
-
-    @Test
-    public void testQuartzToJodatime() throws Exception {
-        WeekDay quartz = ConstantsMapper.QUARTZ_WEEK_DAY;
-        WeekDay jodatime = ConstantsMapper.JODATIME_WEEK_DAY;
-        assertEquals(7, jodatime.map(quartz, 1));
+        WeekDay target = new WeekDay(2, false);
+        assertEquals(1, source.mapTo(value, target));
     }
 }

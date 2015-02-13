@@ -34,6 +34,7 @@ cron-utils is available on Maven central repository.
     * [Cron4j](http://www.sauronsoftware.it/projects/cron4j/)
     * [Quartz](http://quartz-scheduler.org/)
  * Obtain last/next execution time as well as time from last execution/time to next execution.
+ * Need to map constants between different cron/time libraries? Use ConstantsMapper.
 
 **Usage Examples**
 
@@ -118,11 +119,21 @@ cron-utils is available on Maven central repository.
     //Time to next execution
     Duration timeToNextExecution = executionTime.timeToNextExecution(now);
 
+***Map constants between libraries***
+
+    //Map day of week value from Quartz to JodaTime
+    int jodatimeDayOfWeek =
+                            ConstantsMapper.weekDayMapping(
+                                        ConstantsMapper.QUARTZ_WEEK_DAY,
+                                        ConstantsMapper.JODATIME_WEEK_DAY
+                                    );
+
+
 **Contribute!**
 
 Contributions are welcome! You can contribute by
  * starring this repo!
- * adding new features
+ * requesting or adding new features. Check our [roadmap](https://github.com/jmrozanec/cron-utils/wiki/Roadmap)!
  * enhancing existing code: ex.: provide more accurate description cases
  * testing
  * enhancing documentation

@@ -1,9 +1,9 @@
 package com.cronutils.mapper;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Function;
 import org.apache.commons.lang3.Validate;
 
-//as a convention we consider MONDAY index to compare weekday conventions and perform conversions
 /*
  * Copyright 2015 jmrozanec
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,33 +19,70 @@ import org.apache.commons.lang3.Validate;
 @VisibleForTesting
 public class WeekDay {
     private int mondayDoWValue;
-    private boolean firstDayIsZero;
+    private boolean firstDayZero;
 
-    public WeekDay(int mondayDoWValue, boolean firstDayIsZero){
+    public WeekDay(int mondayDoWValue, boolean firstDayZero){
         Validate.isTrue(mondayDoWValue>=0, "Monday Day of Week value must be greater or equal to zero");
         this.mondayDoWValue = mondayDoWValue;
-        this.firstDayIsZero = firstDayIsZero;
+        this.firstDayZero = firstDayZero;
     }
 
     public int getMondayDoWValue() {
         return mondayDoWValue;
     }
 
+    public boolean isFirstDayZero(){
+        return firstDayZero;
+    }
+
     /**
      * Maps given WeekDay to representation hold by this instance.
-     * @param weekDay - referred weekDay
-     * @param dayOfWeek - day of week to be mapped
+     * @param targetWeekDayDefinition - referred weekDay
+     * @param dayOfWeek - day of week to be mapped.
+     *                  Value corresponds to this instance mapping.
      * @return - int result
      */
-    public int map(WeekDay weekDay, int dayOfWeek){
-        int result = mondayDoWValue - weekDay.getMondayDoWValue() + dayOfWeek;
-        if(result==0){
-            if(firstDayIsZero){
-                result = 0;
-            }else{
-                result=7;
-            }
+    public int mapTo(int dayOfWeek, WeekDay targetWeekDayDefinition){
+        if(firstDayZero && targetWeekDayDefinition.isFirstDayZero()){
+            return bothSameStartOfRange(0, 6, this, targetWeekDayDefinition).apply(dayOfWeek);
         }
-        return result;
+        if(!firstDayZero && !targetWeekDayDefinition.isFirstDayZero()){
+            return bothSameStartOfRange(1, 7, this, targetWeekDayDefinition).apply(dayOfWeek);
+        }
+        //start range is different for each case. We need to normalize ranges
+        if(targetWeekDayDefinition.isFirstDayZero()){
+            //my range is 1-7. I normalize ranges, get the "zero" mapping and turn result into original scale
+            return mapTo(dayOfWeek, new WeekDay(targetWeekDayDefinition.getMondayDoWValue()+1, false)) - 1;
+        }else{
+            //my range is 0-6. I normalize ranges, get the "one" mapping and turn result into original scale
+            return mapTo(dayOfWeek, new WeekDay(targetWeekDayDefinition.getMondayDoWValue()-1, true)) + 1;
+        }
+    }
+
+    private Function<Integer, Integer> bothSameStartOfRange(final int startRange, final int endRange, final WeekDay source, final WeekDay target){
+        return new Function<Integer, Integer>() {
+            @Override
+            public Integer apply(Integer integer) {
+                int diff = target.getMondayDoWValue() - source.getMondayDoWValue();
+                int result = integer;
+                if(diff == 0){
+                    return integer;
+                }
+                if(diff < 0){
+                    result = integer + diff;
+                    int distanceToStartRange = startRange - result;
+                    if(result < startRange){
+                        result = endRange + 1 - distanceToStartRange;
+                    }
+                }
+                if(diff > 0){
+                    result = integer + diff;
+                    if(result > endRange){
+                        result -= endRange;
+                    }
+                }
+                return result;
+            }
+        };
     }
 }
