@@ -119,15 +119,6 @@ cron-utils is available on Maven central repository.
     //Time to next execution
     Duration timeToNextExecution = executionTime.timeToNextExecution(now);
 
-***Map constants between libraries***
-
-    //Map day of week value from Quartz to JodaTime
-    int jodatimeDayOfWeek =
-            ConstantsMapper.weekDayMapping(
-                    ConstantsMapper.QUARTZ_WEEK_DAY,
-                    ConstantsMapper.JODATIME_WEEK_DAY
-            );
-
 ***Date and time formatting for humans!***
 
     //You no longer need to remember "YYYY-MM-dd KK a" patterns.
@@ -137,6 +128,15 @@ cron-utils is available on Maven central repository.
                     .createPatternFor("Thursday, June 9, 2011");
     String formattedDateTime = formatter.print(lastExecution);
     //formattedDateTime will be lastExecution in "dayOfWeek, Month day, Year" format
+
+***Map constants between libraries***
+
+    //Map day of week value from Quartz to JodaTime
+    int jodatimeDayOfWeek =
+            ConstantsMapper.weekDayMapping(
+                    ConstantsMapper.QUARTZ_WEEK_DAY,
+                    ConstantsMapper.JODATIME_WEEK_DAY
+            );
 
 
 **Contribute!**
