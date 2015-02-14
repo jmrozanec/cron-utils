@@ -132,8 +132,11 @@ cron-utils is available on Maven central repository.
 
     //You no longer need to remember "YYYY-MM-dd KK a" patterns.
     DateTimeFormatter formatter =
-            DateTimeFormatBuilder.usingLocale(Locale.US).createPatternFor("Thursday, June 9, 2011");
-    String formattedDateTime = formatter.print(lastExecution);//returns lastExecution in "dayOfWeek, Month day, Year" format
+            DateTimeFormatBuilder
+                    .usingLocale(Locale.US)
+                    .createPatternFor("Thursday, June 9, 2011");
+    String formattedDateTime = formatter.print(lastExecution);
+    //formattedDateTime will be lastExecution in "dayOfWeek, Month day, Year" format
 
 
 **Contribute!**
