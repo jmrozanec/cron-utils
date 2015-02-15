@@ -59,7 +59,7 @@ public class CronDefinition {
 
     /**
      * Returns field definitions for this cron
-     * @return Set<FieldDefinition> instance, never null.
+     * @return Set of FieldDefinition instances, never null.
      */
     public Set<FieldDefinition> getFieldDefinitions(){
         return new HashSet<FieldDefinition>(fieldDefinitions.values());
@@ -67,6 +67,7 @@ public class CronDefinition {
 
     /**
      * Returns field definition for field name of this cron
+     * @param cronFieldName cron field name
      * @return FieldDefinition instance
      */
     public FieldDefinition getFieldDefinition(CronFieldName cronFieldName){

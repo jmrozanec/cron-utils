@@ -21,7 +21,7 @@ public class ConstantsMapper {
      * @param source - source
      * @param target - target weekday definition
      * @param weekday - value in source range.
-     * @return
+     * @return int - mapped value
      */
     public static int weekDayMapping(WeekDay source, WeekDay target, int weekday){
         return source.mapTo(weekday, target);

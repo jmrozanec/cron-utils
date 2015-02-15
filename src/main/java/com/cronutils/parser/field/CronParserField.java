@@ -70,7 +70,7 @@ public class CronParserField {
 
     /**
      * Create a Comparator that compares CronField instances using CronFieldName value.
-     * @return Comparator<CronField> instance, never null.
+     * @return Comparator for CronField instance, never null.
      */
     public static Comparator<CronParserField> createFieldTypeComparator() {
         return new Comparator<CronParserField>() {

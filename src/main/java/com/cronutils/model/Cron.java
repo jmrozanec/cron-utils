@@ -53,7 +53,7 @@ public class Cron {
 
     /**
      * Retrieve all cron field values as map
-     * @return unmodifiable Map<CronFieldName, CronField> values, never null
+     * @return unmodifiable Map with key CronFieldName and values CronField, never null
      */
     public Map<CronFieldName, CronField> retrieveFieldsAsMap(){
         return Collections.unmodifiableMap(fields);

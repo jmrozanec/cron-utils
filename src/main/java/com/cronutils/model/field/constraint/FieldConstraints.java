@@ -86,7 +86,7 @@ public class FieldConstraints {
     }
 
     /**
-     * Validate if given number is >= start range and <= end range
+     * Validate if given number is greater or equal to start range and less or equal to end range
      * @param number - to be validated
      * @return - same number being validated if in range,
      * throws RuntimeException if number out of range
@@ -99,7 +99,7 @@ public class FieldConstraints {
     }
 
     /**
-     * Check if given number is >= start range and <= end range
+     * Check if given number is greater or equal to start range and minor or equal to end range
      * @param number - to be validated
      * @return - true if in range; false otherwise
      */
@@ -123,6 +123,7 @@ public class FieldConstraints {
     /**
      * Check if special char is allowed.
      * @param specialChar - char to be validated
+     * @return true if given special char is allowed, false otherwise
      */
     public boolean isSpecialCharAllowed(SpecialChar specialChar){
         return specialChars.contains(specialChar);

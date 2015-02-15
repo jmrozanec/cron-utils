@@ -56,7 +56,7 @@ public class FieldDefinition {
 
     /**
      * Creates a field definition comparator. Will compare by CronFieldName order value;
-     * @return Comparator<FieldDefinition> instance, never null;
+     * @return Comparator for FieldDefinition instance, never null;
      */
     public static Comparator<FieldDefinition> createFieldDefinitionComparator() {
         return new Comparator<FieldDefinition>() {
