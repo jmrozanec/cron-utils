@@ -140,10 +140,10 @@ cron-utils is available on Maven central repository.
             );
 
 
-**Contribute!**
+**Contribute & Support!**
 
 Contributions are welcome! You can contribute by
- * starring this repo!
+ * star and/or Flattr this repo!
  * requesting or adding new features. Check our [roadmap](https://github.com/jmrozanec/cron-utils/wiki/Roadmap)!
  * enhancing existing code: ex.: provide more accurate description cases
  * testing
@@ -154,3 +154,5 @@ Contributions are welcome! You can contribute by
 
 
 Check [our page](http://cronutils.com)! For stats about the project, you can visit our [OpenHUB profile](https://www.openhub.net/p/cron-utils).
+Support us by donating once or by subscription through Flattr: 
+[![Flattr this!](https://api.flattr.com/button/flattr-badge-large.png)](https://flattr.com/submit/auto?user_id=jmrozanec&url=https://github.com/jmrozanec/cron-utils)
