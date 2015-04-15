@@ -54,4 +54,27 @@ public class CronParserTest {
 
         parser.parse("* *");
     }
+
+
+    /**
+     * Corresponds to issue#11
+     * https://github.com/jmrozanec/cron-utils/issues/11
+     * Reported case:
+     * when parsing: "* *[triple space here]* * ?"
+     * we receive: NumberFormatException with message For input string: ""
+     * Expected: ignore multiple spaces, and parse the expression.
+     */
+    @Test
+    public void testMultipleSpacesDoNotHurtParsingExpression() throws Exception {
+        Set<FieldDefinition> set = Sets.newHashSet();
+        set.add(new FieldDefinition(CronFieldName.MINUTE, FieldConstraintsBuilder.instance().createConstraintsInstance()));
+        set.add(new FieldDefinition(CronFieldName.HOUR, FieldConstraintsBuilder.instance().createConstraintsInstance()));
+        set.add(new FieldDefinition(CronFieldName.DAY_OF_MONTH, FieldConstraintsBuilder.instance().createConstraintsInstance()));
+        set.add(new FieldDefinition(CronFieldName.MONTH, FieldConstraintsBuilder.instance().createConstraintsInstance()));
+        set.add(new FieldDefinition(CronFieldName.DAY_OF_WEEK, FieldConstraintsBuilder.instance().createConstraintsInstance()));
+        when(definition.getFieldDefinitions()).thenReturn(set);
+        parser = new CronParser(definition);
+
+        parser.parse("* *   * * ?");//
+    }
 }

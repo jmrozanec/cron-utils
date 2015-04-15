@@ -73,6 +73,7 @@ public class CronParser {
      */
     public Cron parse(String expression) {
         Validate.notNull(expression, "Expression must not be null");
+        expression = expression.replaceAll("\\s+", " ").trim();
         if (StringUtils.isEmpty(expression)) {
             throw new IllegalArgumentException("Empty expression!");
         }
