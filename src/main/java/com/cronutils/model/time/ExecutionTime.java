@@ -11,13 +11,16 @@ import com.cronutils.model.time.generator.FieldValueGeneratorFactory;
 import com.cronutils.model.time.generator.NoSuchValueException;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import org.apache.commons.lang3.Validate;
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
 import org.joda.time.Interval;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /*
  * Copyright 2014 jmrozanec
@@ -114,10 +117,17 @@ public class ExecutionTime {
             day = date.getDayOfMonth();
         } else {
             //if current month is not contained, get the nearest match,
-            // and reset reference day to 1, since first day match in month will be ok
+            // and
+            // reset reference day to 1, since first day match in month will be ok
+            // reset hours value to required one and remove amount of shifts, since we just changed month and shifted some days
             monthsValue = months.getNextValue(date.getMonthOfYear(), 0);
             month = monthsValue.getValue();
             day = 1;
+            int daysShift = date.dayOfMonth().getMaximumValue()-date.getDayOfMonth();
+            if(hoursValue.getShifts()>0){
+                int shifts = hoursValue.getShifts()-daysShift;
+                hoursValue = new NearestValue(hoursValue.getValue(), shifts<=0?0:shifts);
+            }
         }
         TimeNode days =
                 new TimeNode(
@@ -258,10 +268,12 @@ public class ExecutionTime {
 
     private List<Integer> generateDayCandidates(int year, int month, WeekDay mondayDoWValue){
         DateTime date = new DateTime(year, month, 1,1,1);
-        List<Integer> candidates = Lists.newArrayList();
+        Set<Integer> candidates = Sets.newHashSet();
         candidates.addAll(FieldValueGeneratorFactory.createDayOfMonthValueGeneratorInstance(daysOfMonthCronField, year, month).generateCandidates(1, date.dayOfMonth().getMaximumValue()));
         candidates.addAll(FieldValueGeneratorFactory.createDayOfWeekValueGeneratorInstance(daysOfWeekCronField, year, month, mondayDoWValue).generateCandidates(1, date.dayOfMonth().getMaximumValue()));
-        return candidates;
+        List<Integer> candidatesList = Lists.newArrayList(candidates);
+        Collections.sort(candidatesList);
+        return candidatesList;
     }
 
     private List<Integer> generateYearCandidates(int referenceYear){

@@ -75,7 +75,7 @@ class TimeNode {
             index = values.indexOf(reference);
         }
         AtomicInteger shift = new AtomicInteger(0);
-        int value = reference;
+        int value = values.get(index);
         for(int j=0;j<shiftsToApply;j++){
             value = getValueFromList(values, indexTransform.apply(index), shift);
             index = values.indexOf(value);

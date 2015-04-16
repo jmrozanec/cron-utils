@@ -1,12 +1,16 @@
 package com.cronutils.model.time;
 
+import com.cronutils.descriptor.CronDescriptor;
 import com.cronutils.model.CronType;
+import com.cronutils.model.definition.CronDefinition;
 import com.cronutils.model.definition.CronDefinitionBuilder;
 import com.cronutils.parser.CronParser;
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.util.Locale;
 
 import static org.junit.Assert.*;
 /*
@@ -65,6 +69,28 @@ public class ExecutionTimeIntegrationTest {
         DateTime expected = truncateToSeconds(now.minusSeconds(1));
         ExecutionTime executionTime = ExecutionTime.forCron(quartzCronParser.parse(EVERY_SECOND));
         assertEquals(new Interval(expected, now).toDuration(), executionTime.timeFromLastExecution(now));
+    }
+
+    /**
+     * Test for issue #9
+     * https://github.com/jmrozanec/cron-utils/issues/9
+     * Reported case: If you write a cron expression that contains a month or day of week, nextExection() ignores it.
+     * Expected: should not ignore month or day of week field
+     */
+    @Test
+    public void testDoesNotIgnoreMonthOrDayOfWeek(){
+        CronDefinition cronDefinition = CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ);
+        CronParser cronParser = new CronParser(cronDefinition);
+        //seconds, minutes, hours, dayOfMonth, month, dayOfWeek
+        ExecutionTime executionTime = ExecutionTime.forCron(cronParser.parse("0 11 11 11 11 ?"));
+        DateTime now = new DateTime(2015, 4, 15, 0, 0, 0);
+        DateTime whenToExecuteNext = executionTime.nextExecution(now);
+        assertEquals(2015, whenToExecuteNext.getYear());
+        assertEquals(11, whenToExecuteNext.getMonthOfYear());
+        assertEquals(1, whenToExecuteNext.getDayOfMonth());
+        assertEquals(11, whenToExecuteNext.getHourOfDay());
+        assertEquals(11, whenToExecuteNext.getMinuteOfHour());
+        assertEquals(0, whenToExecuteNext.getSecondOfMinute());
     }
 
     private DateTime truncateToSeconds(DateTime dateTime){
