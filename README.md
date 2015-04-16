@@ -10,12 +10,12 @@ A Java library to parse, validate, migrate crons as well as get human readable d
 
 **Download**
 
-cron-utils is available on Maven central repository.
+cron-utils is available on [Maven central](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22com.cronutils%22) repository.
 
     <dependency>
         <groupId>com.cronutils</groupId>
         <artifactId>cron-utils</artifactId>
-        <version>1.1.0</version>
+        <version>1.1.1</version>
     </dependency>
 
 
