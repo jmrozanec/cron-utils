@@ -70,6 +70,7 @@ public class CronParser {
      * Parse string with cron expression
      * @param expression - cron expression, never null
      * @return Cron instance, corresponding to cron expression received
+     * @throws java.lang.IllegalArgumentException if expression does not match cron definition
      */
     public Cron parse(String expression) {
         Validate.notNull(expression, "Expression must not be null");
