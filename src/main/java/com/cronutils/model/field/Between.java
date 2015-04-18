@@ -29,6 +29,9 @@ public class Between extends FieldExpression {
 
     public Between(FieldConstraints constraints, String from, String to, String every) {
         super(constraints);
+        constraints.validateAllCharsValid(from);
+        constraints.validateAllCharsValid(to);
+        constraints.validateAllCharsValid(every);
         this.from = getConstraints().validateInRange(getConstraints().intToInt(getConstraints().stringToInt(from)));
         this.to = getConstraints().validateInRange(getConstraints().intToInt(getConstraints().stringToInt(to)));
         this.every = new Every(getConstraints(), every);
@@ -49,10 +52,10 @@ public class Between extends FieldExpression {
 
     private void validate() {
         if (from >= to) {
-            throw new RuntimeException("Bad range defined! Defined range should satisfy from <= to, but was [%s, %s]");
+            throw new IllegalArgumentException("Bad range defined! Defined range should satisfy from <= to, but was [%s, %s]");
         }
         if (every.getTime() > (to - from)) {
-            throw new RuntimeException("Every x time cannot exceed range length");
+            throw new IllegalArgumentException("Every x time cannot exceed range length");
         }
     }
 

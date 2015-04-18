@@ -2,12 +2,8 @@ package com.cronutils.model.time.generator;
 
 import com.cronutils.mapper.WeekDay;
 import com.cronutils.model.field.*;
-import com.google.common.collect.Lists;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;

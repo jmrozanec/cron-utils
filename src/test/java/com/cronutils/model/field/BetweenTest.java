@@ -42,12 +42,12 @@ public class BetweenTest {
         assertEquals(to, new Between(nullFieldConstraints, "" + from, "" + to).getTo());
     }
 
-    @Test(expected = RuntimeException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void testFromGreaterThanTo() throws Exception {
         new Between(nullFieldConstraints, "" + to, "" + from);
     }
 
-    @Test(expected = RuntimeException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void testFromEqualThanTo() throws Exception {
         new Between(nullFieldConstraints, "" + from, "" + from);
     }
@@ -62,7 +62,7 @@ public class BetweenTest {
         assertEquals(every, new Between(nullFieldConstraints, "" + from, "" + to, "" + every).getEvery().getTime());
     }
 
-    @Test(expected = RuntimeException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void testGetEveryXBiggerThanRange() throws Exception {
         assertEquals(1, new Between(nullFieldConstraints, "" + from, "" + to, "" + 2 * to).getEvery().getTime());
     }

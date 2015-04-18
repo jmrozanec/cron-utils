@@ -26,6 +26,7 @@ public class Every extends FieldExpression {
         if (time == null) {
             time = "1";
         }
+        constraints.validateAllCharsValid(time);
         this.time = getConstraints().stringToInt(time);
     }
 

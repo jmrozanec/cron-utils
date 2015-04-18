@@ -73,4 +73,28 @@ public class OnTest {
         String expression = "3#4";
         assertEquals(expression, new On(nullFieldConstraints, expression).asString());
     }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testJustNumberInvalidChar(){
+        String expression = "$";
+        assertEquals(expression, new On(nullFieldConstraints, expression).asString());
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testAsStringSpecialCharWInvalidChar(){
+        String expression = "$W";
+        assertEquals(expression, new On(nullFieldConstraints, expression).asString());
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testAsStringWithNthInvalidCharFirstTerm(){
+        String expression = "$#4";
+        assertEquals(expression, new On(nullFieldConstraints, expression).asString());
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testAsStringWithNthInvalidCharSecondTerm(){
+        String expression = "3#$";
+        assertEquals(expression, new On(nullFieldConstraints, expression).asString());
+    }
 }

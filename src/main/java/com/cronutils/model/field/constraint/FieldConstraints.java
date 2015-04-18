@@ -1,11 +1,14 @@
 package com.cronutils.model.field.constraint;
 
 import com.cronutils.model.field.SpecialChar;
+import com.google.common.collect.Sets;
 import org.apache.commons.lang3.Validate;
 
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /*
  * Copyright 2014 jmrozanec
@@ -35,6 +38,9 @@ public class FieldConstraints {
     private Set<SpecialChar> specialChars;
     private int startRange;
     private int endRange;
+    private Pattern numsAndCharsPattern;
+    private Pattern stringToIntKeysPattern;
+    private Pattern lwPattern;
 
     /**
      * Constructor
@@ -55,6 +61,9 @@ public class FieldConstraints {
         this.specialChars = Collections.unmodifiableSet(Validate.notNull(specialChars, "Special (non-standard) chars set must not be null"));
         this.startRange = startRange;
         this.endRange = endRange;
+        this.lwPattern = buildLWPattern(this.specialChars);
+        this.stringToIntKeysPattern = buildStringToIntPattern(stringMapping.keySet());
+        this.numsAndCharsPattern = Pattern.compile("[#\\?/\\*0-9]");
     }
 
     /**
@@ -67,7 +76,11 @@ public class FieldConstraints {
         if (stringMapping.containsKey(exp)) {
             return stringMapping.get(exp);
         } else {
-            return Integer.parseInt(exp);
+            try{
+                return Integer.parseInt(exp);
+            }catch (NumberFormatException e){
+                throw new IllegalArgumentException(e);
+            }
         }
     }
 
@@ -89,13 +102,13 @@ public class FieldConstraints {
      * Validate if given number is greater or equal to start range and less or equal to end range
      * @param number - to be validated
      * @return - same number being validated if in range,
-     * throws RuntimeException if number out of range
+     * throws IllegalArgumentException if number out of range
      */
     public int validateInRange(int number) {
         if(isInRange(number)){
             return number;
         }
-        throw new RuntimeException(String.format("Number %s out of range [%s,%s]", number, startRange, endRange));
+        throw new IllegalArgumentException(String.format("Number %s out of range [%s,%s]", number, startRange, endRange));
     }
 
     /**
@@ -111,12 +124,12 @@ public class FieldConstraints {
     }
 
     /**
-     * Validate if special char is allowed. If not, a RuntimeException will be raised.
+     * Validate if special char is allowed. If not, a IllegalArgumentException will be raised.
      * @param specialChar - char to be validated
      */
     public void validateSpecialCharAllowed(SpecialChar specialChar){
         if(!isSpecialCharAllowed(specialChar)){
-            throw new RuntimeException(String.format("Special char %s not supported!", specialChar));
+            throw new IllegalArgumentException(String.format("Special char %s not supported!", specialChar));
         }
     }
 
@@ -127,5 +140,52 @@ public class FieldConstraints {
      */
     public boolean isSpecialCharAllowed(SpecialChar specialChar){
         return specialChars.contains(specialChar);
+    }
+
+    public boolean areAllCharsValid(String exp){
+        return removeValidChars(exp).isEmpty();
+    }
+
+    public void validateAllCharsValid(String exp){
+        String invalidChars = removeValidChars(exp);
+        if(!invalidChars.isEmpty()){
+            throw new IllegalArgumentException(String.format("Invalid chars in expression! Expression: %s Invalid chars: %s", exp, invalidChars));
+        }
+    }
+
+    String removeValidChars(String exp){
+        Matcher numsAndCharsMatcher = numsAndCharsPattern.matcher(exp);
+        Matcher stringToIntKeysMatcher = stringToIntKeysPattern.matcher(numsAndCharsMatcher.replaceAll(""));
+        Matcher specialWordsMatcher = lwPattern.matcher(stringToIntKeysMatcher.replaceAll(""));
+        return specialWordsMatcher.replaceAll("").replaceAll("\\s+", "");
+    }
+
+    Pattern buildLWPattern(Set<SpecialChar> specialChars){
+        Set<String> scs = Sets.newHashSet();
+        for(SpecialChar sc : new SpecialChar[]{SpecialChar.L, SpecialChar.LW, SpecialChar.W}){
+            if(specialChars.contains(sc)){
+                scs.add(sc.name());
+            }
+        }
+        return buildWordsPattern(scs);
+    }
+
+    Pattern buildStringToIntPattern(Set<String> strings){
+        return buildWordsPattern(strings);
+    }
+
+    Pattern buildWordsPattern(Set<String> words){
+        StringBuilder builder = new StringBuilder("\\b(");
+        boolean first = true;
+        for(String word : words){
+            if(!first){
+                    builder.append("|");
+                }else{
+                    first=false;
+                }
+                builder.append(word);
+            }
+        builder.append(")\\b");
+        return Pattern.compile(builder.toString());
     }
 }

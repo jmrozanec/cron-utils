@@ -2,7 +2,6 @@ package com.cronutils.mapper;
 
 import org.junit.Test;
 
-import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
 /*
  * Copyright 2015 jmrozanec

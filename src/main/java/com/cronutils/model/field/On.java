@@ -21,6 +21,7 @@ public class On extends FieldExpression {
 
     public On(FieldConstraints constraints, String exp) {
         super(constraints);
+        constraints.validateAllCharsValid(exp);
         nth = -1;
         specialChar = SpecialChar.NONE;
         time = getConstraints().validateInRange(

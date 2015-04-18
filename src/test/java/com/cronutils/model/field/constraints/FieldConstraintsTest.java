@@ -58,7 +58,7 @@ public class FieldConstraintsTest {
         new FieldConstraints(stringMapping, intMapping, null, startRange, endRange);
     }
 
-    @Test(expected = NumberFormatException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void testStringToIntFailsNoStringMappingAndStringNotInt() throws Exception {
         String monString = "MON";
 
@@ -98,12 +98,12 @@ public class FieldConstraintsTest {
         assertEquals(endRange, fieldConstraints.validateInRange(endRange));
     }
 
-    @Test(expected = RuntimeException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void testValidateInRangeOutThrowsExceptionUpperBound() throws Exception {
         fieldConstraints.validateInRange(endRange + 1);
     }
 
-    @Test(expected = RuntimeException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void testValidateInRangeOutThrowsExceptionLowerBound() throws Exception {
         fieldConstraints.validateInRange(startRange - 1);
     }
@@ -115,7 +115,7 @@ public class FieldConstraintsTest {
         fieldConstraints.validateSpecialCharAllowed(specialChar);
     }
 
-    @Test(expected = RuntimeException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void testValidateSpecialCharAllowedDoesNotContainChar() throws Exception {
         SpecialChar specialChar = SpecialChar.HASH;
         assertFalse(specialCharSet.contains(specialChar));

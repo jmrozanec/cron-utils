@@ -1,6 +1,5 @@
 package com.cronutils.model.time;
 
-import com.cronutils.descriptor.CronDescriptor;
 import com.cronutils.model.CronType;
 import com.cronutils.model.definition.CronDefinition;
 import com.cronutils.model.definition.CronDefinitionBuilder;
@@ -10,9 +9,7 @@ import org.joda.time.Interval;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.Locale;
-
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 /*
  * Copyright 2015 jmrozanec
  * Licensed under the Apache License, Version 2.0 (the "License");
