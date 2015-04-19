@@ -1,5 +1,9 @@
 language: java
 
+branches:
+  except:
+    - travis
+
 jdk:
   - oraclejdk8
   - oraclejdk7
