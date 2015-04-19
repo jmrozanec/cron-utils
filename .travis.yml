@@ -12,7 +12,7 @@ jdk:
 
 before_install: "git clone -b travis `git config --get remote.origin.url` target/travis"
 
-script: "mvn deploy --settings target/travis/settings.xml -Dsettings.security=target/travis/security-settings.xml"
+script: "mvn deploy --settings target/travis/settings.xml -Dsettings.security=target/travis/settings-security.xml"
 
 after_success:
-  - mvn clean cobertura:cobertura coveralls:cobertura
+  - mvn cobertura:cobertura coveralls:cobertura
