@@ -1,8 +1,8 @@
 language: java
 
 branches:
-  except:
-    - travis
+  only:
+    - master
 
 jdk:
   - oraclejdk8
