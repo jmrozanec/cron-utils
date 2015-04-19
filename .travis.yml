@@ -10,7 +10,7 @@ jdk:
   - openjdk7
   - openjdk6
 
-before_install: "git clone -b travis `git config --get https://github.com/jmrozanec/cron-utils.git` target/travis"
+before_install: "git clone -b travis `git config --get remote.origin.url` target/travis"
 
 script: "mvn deploy --settings target/travis/settings.xml -Dsettings.security=target/travis/security-settings.xml"
 
