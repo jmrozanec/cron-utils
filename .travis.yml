@@ -10,5 +10,9 @@ jdk:
   - openjdk7
   - openjdk6
 
+before_install: "git clone -b travis `git config --get https://github.com/jmrozanec/cron-utils.git` target/travis"
+
+script: "mvn deploy --settings target/travis/settings.xml -Dsettings.security=target/travis/security-settings.xml"
+
 after_success:
   - mvn clean cobertura:cobertura coveralls:cobertura
