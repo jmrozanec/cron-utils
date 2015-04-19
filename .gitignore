@@ -7,3 +7,4 @@ target/
 nbbuild
 nb-build.xml
 nbproject
+*.sh
