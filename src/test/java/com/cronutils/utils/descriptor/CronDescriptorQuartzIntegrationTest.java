@@ -58,12 +58,45 @@ public class CronDescriptorQuartzIntegrationTest {
 
     @Test
     public void testEvery45Seconds(){
-        assertEquals("every 45 seconds", descriptor.describe(parser.parse("*/45 * * * * *")));
+        assertExpression("*/45 * * * * *", "every 45 seconds");
     }
 
     @Test
     public void testEveryHour(){
-        assertEquals("every hour", descriptor.describe(parser.parse("0 0 * * * ?")));
-        assertEquals("every hour", descriptor.describe(parser.parse("0 0 0/1 * * ?")));
+        assertExpression("0 0 * * * ?", "every hour");
+        assertExpression("0 0 0/1 * * ?", "every hour");
+    }
+
+    /* Examples exposed at cron documentations */
+    @Test
+    public void testEveryDayFireAtNoon() throws Exception {
+        assertExpression("0 0 12 * * ?", "at 12:00");
+    }
+
+    @Test
+    public void testEveryDayFireAtTenFifteen() throws Exception {
+        String description = "at 10:15";
+        assertExpression("0 15 10 ? * *", description);
+        assertExpression("0 15 10 * * ?", description);
+        assertExpression("0 15 10 * * ? *", description);
+    }
+
+    @Test
+    public void testEveryDayFireAtTenFifteenYear2005() throws Exception {
+        assertExpression("0 15 10 * * ? 2005", "at 10:15 at 2005 year");
+    }
+
+    @Test
+    public void testEveryMinuteBetween14and15EveryDay() throws Exception {
+        assertExpression("0 * 14 * * ?", "at 14 hour");
+    }
+
+    @Test
+    public void testEveryFiveMinutesBetween14and15EveryDay() throws Exception {
+        assertExpression("0 0/5 14 * * ?", "every 5 minutes at 14 hour");
+    }
+
+    private void assertExpression(String cron, String description){
+        assertEquals(description, descriptor.describe(parser.parse(cron)));
     }
 }
