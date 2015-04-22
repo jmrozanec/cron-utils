@@ -96,6 +96,11 @@ public class CronDescriptorQuartzIntegrationTest {
         assertExpression("0 0/5 14 * * ?", "every 5 minutes at 14 hour");
     }
 
+    @Test
+    public void testEveryFiveMinutesBetween14and15AndBetween18And19EveryDay() throws Exception {
+        assertExpression("0 0/5 14,18 * * ?", "every 5 minutes at 14 and 18 hours");
+    }
+
     private void assertExpression(String cron, String description){
         assertEquals(description, descriptor.describe(parser.parse(cron)));
     }
