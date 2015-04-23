@@ -35,25 +35,23 @@ public class CronDescriptorQuartzIntegrationTest {
 
     @Test
     public void testCronWithAndHours(){
-        assertEquals("at 1, 2, 3 and 4 hours", descriptor.describe(parser.parse("* * 1,2,3,4 * * * *")));
+        assertExpression("* * 1,2,3,4 * * * *", "at 1, 2, 3 and 4 hours");
     }
 
     @Test
     public void testCronAndWithRangeHours(){
-        assertEquals("at 1, 2, 3 and 4 hours and every hour between 6 and 9",
-                descriptor.describe(parser.parse("* * 1,2,3,4,6-9 * * * *")));
+        assertExpression("* * 1,2,3,4,6-9 * * * *", "at 1, 2, 3 and 4 hours and every hour between 6 and 9");
     }
 
     @Test
     public void testCronAndWithRangesAndEveryExpressions(){
-        assertEquals("every 3 minutes between 2 and 59 at 1, 9 " +
-                "and 22 hours every day between 11 and 26 every month between January and June",
-                descriptor.describe(parser.parse("0 2-59/3 1,9,22 11-26 1-6 ?")));
+        assertExpression("0 2-59/3 1,9,22 11-26 1-6 ?", "every 3 minutes between 2 and 59 at 1, 9 " +
+                "and 22 hours every day between 11 and 26 every month between January and June");
     }
 
     @Test
-    public void testEverySecond(){
-        assertEquals("every second", descriptor.describe(parser.parse("* * * * * *")));
+    public void testEverySecond() {
+        assertExpression("* * * * * *", "every second");
     }
 
     @Test
