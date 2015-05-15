@@ -98,7 +98,7 @@ public class ExecutionTimeIntegrationTest {
         DateTime previousHour = now.minusHours(1);
         String quartzCronExpression = String.format("0 0 %s * * ?", previousHour.getHourOfDay());
         ExecutionTime executionTime = ExecutionTime.forCron(quartzCronParser.parse(quartzCronExpression));
-        System.out.println(executionTime.lastExecution(now));
+        
         assertTrue(executionTime.timeFromLastExecution(now).getStandardMinutes() <= 120);
     }
 
