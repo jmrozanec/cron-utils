@@ -10,6 +10,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 /*
  * Copyright 2015 jmrozanec
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -88,6 +90,16 @@ public class ExecutionTimeIntegrationTest {
         assertEquals(11, whenToExecuteNext.getHourOfDay());
         assertEquals(11, whenToExecuteNext.getMinuteOfHour());
         assertEquals(0, whenToExecuteNext.getSecondOfMinute());
+    }
+
+    @Test
+    public void testHourlyIntervalTimeFromLastExecution() throws Exception {
+        DateTime now = DateTime.now();
+        DateTime previousHour = now.minusHours(1);
+        String quartzCronExpression = String.format("0 0 %s * * ?", previousHour.getHourOfDay());
+        ExecutionTime executionTime = ExecutionTime.forCron(quartzCronParser.parse(quartzCronExpression));
+        System.out.println(executionTime.lastExecution(now));
+        assertTrue(executionTime.timeFromLastExecution(now).getStandardMinutes() <= 120);
     }
 
     private DateTime truncateToSeconds(DateTime dateTime){
