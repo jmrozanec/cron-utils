@@ -2,12 +2,13 @@ package com.cronutils.mapper;
 
 import com.cronutils.model.Cron;
 import com.cronutils.model.definition.CronDefinition;
-import com.cronutils.model.field.Always;
-import com.cronutils.model.field.CronField;
-import com.cronutils.model.field.CronFieldName;
-import com.cronutils.model.field.On;
+import com.cronutils.model.field.*;
+import com.cronutils.model.field.constraint.FieldConstraints;
 import com.cronutils.model.field.constraint.FieldConstraintsBuilder;
+import com.cronutils.model.field.definition.DayOfWeekFieldDefinition;
 import com.cronutils.model.field.definition.FieldDefinition;
+import com.cronutils.model.field.value.IntegerFieldValue;
+import com.cronutils.parser.field.FieldParser;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
@@ -127,7 +128,8 @@ public class CronMapper {
         return new Function<CronField, CronField>() {
             @Override
             public CronField apply(CronField field) {
-                return new CronField(name, new On(FieldConstraintsBuilder.instance().forField(name).createConstraintsInstance(),"0"));
+                FieldConstraints constraints = FieldConstraintsBuilder.instance().forField(name).createConstraintsInstance();
+                return new CronField(name, new On(constraints, new IntegerFieldValue(0)));
             }
         };
     }

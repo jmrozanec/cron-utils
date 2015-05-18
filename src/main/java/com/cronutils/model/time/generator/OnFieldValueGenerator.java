@@ -24,7 +24,7 @@ class OnFieldValueGenerator extends FieldValueGenerator {
 
     @Override
     public int generateNextValue(int reference) throws NoSuchValueException {
-        int time = ((On) expression).getTime();
+        int time = ((On) expression).getTime().getValue();
         if(time<=reference){
             throw new NoSuchValueException();
         }
@@ -33,7 +33,7 @@ class OnFieldValueGenerator extends FieldValueGenerator {
 
     @Override
     public int generatePreviousValue(int reference) throws NoSuchValueException {
-        int time = ((On) expression).getTime();
+        int time = ((On) expression).getTime().getValue();
         if(time>=reference){
             throw new NoSuchValueException();
         }
@@ -43,7 +43,7 @@ class OnFieldValueGenerator extends FieldValueGenerator {
     @Override
     protected List<Integer> generateCandidatesNotIncludingIntervalExtremes(int start, int end) {
         List<Integer> values = Lists.newArrayList();
-        int time = ((On) expression).getTime();
+        int time = ((On) expression).getTime().getValue();
         if(time>start && time<end){
             values.add(time);
         }
@@ -52,7 +52,7 @@ class OnFieldValueGenerator extends FieldValueGenerator {
 
     @Override
     public boolean isMatch(int value) {
-        return ((On) expression).getTime()==value;
+        return ((On) expression).getTime().getValue()==value;
     }
 
     @Override

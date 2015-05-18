@@ -14,6 +14,8 @@ package com.cronutils.model.field;
  */
 
 import com.cronutils.model.field.constraint.FieldConstraints;
+import com.cronutils.model.field.value.FieldValue;
+import com.cronutils.model.field.value.IntegerFieldValue;
 
 /**
  * Represents a star (*) value on cron expression field
@@ -25,12 +27,16 @@ public class Always extends FieldExpression {
         this(constraints, null);
     }
 
-    public Always(FieldConstraints constraints, String every) {
+    private Always(Always always) {
+        this(always.getConstraints(), always.getEvery().getTime());
+    }
+
+    public Always(FieldConstraints constraints, IntegerFieldValue every) {
         super(constraints);
         if (every != null) {
             this.every = new Every(getConstraints(), every);
         } else {
-            this.every = new Every(getConstraints(), "1");
+            this.every = new Every(getConstraints(), new IntegerFieldValue(1));
         }
     }
 

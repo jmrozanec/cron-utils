@@ -40,11 +40,11 @@ class DescriptionStrategyFactory {
             public String apply(FieldExpression fieldExpression) {
                 if (fieldExpression instanceof On) {
                     On on = (On) fieldExpression;
-                    switch (on.getSpecialChar()) {
+                    switch (on.getSpecialChar().getValue()) {
                         case HASH:
-                            return String.format("%s %s %s ", nominal.apply(on.getTime()), on.getNth(), bundle.getString("of_every_month"));
+                            return String.format("%s %s %s ", nominal.apply(on.getTime().getValue()), on.getNth(), bundle.getString("of_every_month"));
                         case L:
-                            return String.format("%s %s %s ", bundle.getString("last"), nominal.apply(on.getTime()), bundle.getString("of_every_month"));
+                            return String.format("%s %s %s ", bundle.getString("last"), nominal.apply(on.getTime().getValue()), bundle.getString("of_every_month"));
                         default:
                             return "";
                     }
@@ -69,9 +69,9 @@ class DescriptionStrategyFactory {
             public String apply(FieldExpression fieldExpression) {
                 if (fieldExpression instanceof On) {
                     On on = (On) fieldExpression;
-                    switch (on.getSpecialChar()) {
+                    switch (on.getSpecialChar().getValue()) {
                         case W:
-                            return String.format("%s %s %s ", bundle.getString("the_nearest_weekday_to_the"), on.getTime(), bundle.getString("of_the_month"));
+                            return String.format("%s %s %s ", bundle.getString("the_nearest_weekday_to_the"), on.getTime().getValue(), bundle.getString("of_the_month"));
                         case L:
                             return bundle.getString("last_day_of_month");
                         case LW:

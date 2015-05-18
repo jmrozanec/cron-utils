@@ -5,6 +5,8 @@ import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.field.On;
 import com.cronutils.model.field.constraint.FieldConstraints;
 import com.cronutils.model.field.constraint.FieldConstraintsBuilder;
+import com.cronutils.model.field.value.SpecialChar;
+import com.cronutils.model.field.value.SpecialCharFieldValue;
 import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
@@ -33,7 +35,7 @@ public class OnDayOfMonthValueGeneratorLTest {
     @Before
     public void setUp(){
         FieldConstraints constraints = FieldConstraintsBuilder.instance().addLSupport().createConstraintsInstance();
-        fieldValueGenerator = new OnDayOfMonthValueGenerator(new CronField(CronFieldName.DAY_OF_MONTH, new On(constraints, "L")), year, month);
+        fieldValueGenerator = new OnDayOfMonthValueGenerator(new CronField(CronFieldName.DAY_OF_MONTH, new On(constraints, new SpecialCharFieldValue(SpecialChar.L))), year, month);
     }
 
     @Test(expected = NoSuchValueException.class)

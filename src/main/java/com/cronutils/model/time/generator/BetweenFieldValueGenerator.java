@@ -2,6 +2,8 @@ package com.cronutils.model.time.generator;
 
 import com.cronutils.model.field.Between;
 import com.cronutils.model.field.FieldExpression;
+import com.cronutils.model.field.value.FieldValue;
+import com.cronutils.model.field.value.IntegerFieldValue;
 import com.google.common.collect.Lists;
 
 import java.util.List;
@@ -28,9 +30,10 @@ class BetweenFieldValueGenerator extends FieldValueGenerator {
         Between between = (Between)expression;
         int candidate = new EveryFieldValueGenerator(between.getEvery()).generateNextValue(reference);
 
-        if(candidate > between.getTo()){
+        if(candidate > map(between.getTo())){
             throw new NoSuchValueException();
         }
+
         return candidate;
     }
 
@@ -39,7 +42,7 @@ class BetweenFieldValueGenerator extends FieldValueGenerator {
         Between between = (Between)expression;
         int candidate = new EveryFieldValueGenerator(between.getEvery()).generatePreviousValue(reference);
 
-        if(candidate < between.getFrom()){
+        if(candidate < map(between.getFrom())){
             throw new NoSuchValueException();
         }
         return candidate;
@@ -50,12 +53,12 @@ class BetweenFieldValueGenerator extends FieldValueGenerator {
         List<Integer> values = Lists.newArrayList();
         //check overlapping ranges: x1 <= y2 && y1 <= x2
         Between between = (Between)expression;
-        if(start<=between.getTo() && between.getFrom()<=end){//ranges overlap
-            if(between.getTo()<end){
-                end=between.getTo();
+        if(start<=map(between.getTo()) && map(between.getFrom())<=end){//ranges overlap
+            if(map(between.getTo())<end){
+                end=map(between.getTo());
             }
-            if(between.getFrom()>start){
-                start=between.getFrom();
+            if(map(between.getFrom())>start){
+                start=map(between.getFrom());
             }
             try {
                 int reference = generateNextValue(start);
@@ -71,7 +74,7 @@ class BetweenFieldValueGenerator extends FieldValueGenerator {
     @Override
     public boolean isMatch(int value) {
         Between between = (Between)expression;
-        if(value >= between.getFrom() && value <= between.getTo()){
+        if(value >= map(between.getFrom()) && value <= map(between.getTo())){
             return new EveryFieldValueGenerator(between.getEvery()).isMatch(value);
         }
         return false;
@@ -80,5 +83,12 @@ class BetweenFieldValueGenerator extends FieldValueGenerator {
     @Override
     protected boolean matchesFieldExpressionClass(FieldExpression fieldExpression) {
         return fieldExpression instanceof Between;
+    }
+
+    private int map(FieldValue fieldValue){
+        if(fieldValue instanceof IntegerFieldValue){
+            return ((IntegerFieldValue)fieldValue).getValue();
+        }
+        throw new RuntimeException("Non integer values at intervals are not fully supported yet.");
     }
 }

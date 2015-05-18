@@ -2,6 +2,7 @@ package com.cronutils.model.field;
 
 import com.cronutils.model.field.constraint.FieldConstraints;
 import com.cronutils.model.field.constraint.FieldConstraintsBuilder;
+import com.cronutils.model.field.value.IntegerFieldValue;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -29,11 +30,11 @@ public class EveryTest {
     @Test
     public void testGetTime() throws Exception {
         int every = 5;
-        assertEquals(every, new Every(nullFieldConstraints, "" + every).getTime());
+        assertEquals(every, (int)new Every(nullFieldConstraints, new IntegerFieldValue(every)).getTime().getValue());
     }
 
     @Test
     public void testGetTimeNull() throws Exception {
-        assertEquals(1, new Every(nullFieldConstraints, null).getTime());
+        assertEquals(1, (int)new Every(nullFieldConstraints, null).getTime().getValue());
     }
 }

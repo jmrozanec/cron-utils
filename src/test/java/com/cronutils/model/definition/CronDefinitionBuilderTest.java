@@ -2,7 +2,7 @@ package com.cronutils.model.definition;
 
 import com.cronutils.model.CronType;
 import com.cronutils.model.field.CronFieldName;
-import com.cronutils.model.field.SpecialChar;
+import com.cronutils.model.field.value.SpecialChar;
 import com.cronutils.model.field.constraint.FieldConstraints;
 import com.cronutils.model.field.definition.FieldDefinition;
 import com.google.common.collect.Maps;

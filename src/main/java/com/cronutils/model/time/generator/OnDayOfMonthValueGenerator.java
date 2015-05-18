@@ -80,20 +80,21 @@ class OnDayOfMonthValueGenerator extends FieldValueGenerator {
     }
 
     private int generateValue(On on, int year, int month) throws NoSuchValueException {
-        switch (on.getSpecialChar()){
+        int time = on.getTime().getValue();
+        switch (on.getSpecialChar().getValue()){
             case L:
                 return new DateTime(year, month, 1, 1, 1).dayOfMonth().getMaximumValue();
             case W:
-                DateTime doM = new DateTime(year, month, on.getTime(), 1, 1);
+                DateTime doM = new DateTime(year, month, time, 1, 1);
                 if(doM.getDayOfWeek()==6){//dayOfWeek is Saturday!
-                    if(on.getTime()==1){//first day in month is Saturday! We execute on Monday
+                    if(time==1){//first day in month is Saturday! We execute on Monday
                         return 3;
                     }
-                    return on.getTime()-1;
+                    return time-1;
                 }
                 if(doM.getDayOfWeek()==7){
-                    if((on.getTime()+1)<=doM.dayOfMonth().getMaximumValue()){
-                        return on.getTime()+1;
+                    if((time+1)<=doM.dayOfMonth().getMaximumValue()){
+                        return time+1;
                     }
                 }
                 break;

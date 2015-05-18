@@ -6,6 +6,7 @@ import com.cronutils.model.field.FieldExpression;
 import com.cronutils.model.field.On;
 import com.cronutils.model.field.constraint.FieldConstraints;
 import com.cronutils.model.field.constraint.FieldConstraintsBuilder;
+import com.cronutils.model.field.value.IntegerFieldValue;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -32,7 +33,12 @@ public class OnDayOfMonthValueGeneratorTest {
     @Before
     public void setUp(){
         FieldConstraints constraints = FieldConstraintsBuilder.instance().createConstraintsInstance();
-        fieldValueGenerator = new OnDayOfMonthValueGenerator(new CronField(CronFieldName.DAY_OF_MONTH, new On(constraints, "3")), year, month);
+        fieldValueGenerator =
+                new OnDayOfMonthValueGenerator(
+                        new CronField(
+                                CronFieldName.DAY_OF_MONTH,
+                                new On(constraints, new IntegerFieldValue(3))),
+                        year, month);
     }
 
     @Test(expected = NoSuchValueException.class)

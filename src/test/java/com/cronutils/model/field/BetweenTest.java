@@ -2,6 +2,9 @@ package com.cronutils.model.field;
 
 import com.cronutils.model.field.constraint.FieldConstraints;
 import com.cronutils.model.field.constraint.FieldConstraintsBuilder;
+import com.cronutils.model.field.value.IntegerFieldValue;
+import com.cronutils.model.field.value.SpecialChar;
+import com.cronutils.model.field.value.SpecialCharFieldValue;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -34,36 +37,45 @@ public class BetweenTest {
 
     @Test
     public void testGetFrom() throws Exception {
-        assertEquals(from, new Between(nullFieldConstraints, "" + from, "" + to).getFrom());
+        assertEquals(from, new Between(nullFieldConstraints, new IntegerFieldValue(from), new IntegerFieldValue(to)).getFrom().getValue());
     }
 
     @Test
     public void testGetTo() throws Exception {
-        assertEquals(to, new Between(nullFieldConstraints, "" + from, "" + to).getTo());
+        assertEquals(to, new Between(nullFieldConstraints, new IntegerFieldValue(from), new IntegerFieldValue(to)).getTo().getValue());
+    }
+
+    @Test
+    public void testNonNumericRangeSupported() throws Exception {
+        SpecialChar specialChar = SpecialChar.L;
+        Between between = new Between(nullFieldConstraints, new SpecialCharFieldValue(specialChar), new IntegerFieldValue(to));
+        assertEquals(specialChar, between.getFrom().getValue());
+        assertEquals(to, between.getTo().getValue());
+        assertEquals(String.format("%s-%s", specialChar, to), between.asString());
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testFromGreaterThanTo() throws Exception {
-        new Between(nullFieldConstraints, "" + to, "" + from);
+        new Between(nullFieldConstraints, new IntegerFieldValue(to), new IntegerFieldValue(from));
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testFromEqualThanTo() throws Exception {
-        new Between(nullFieldConstraints, "" + from, "" + from);
+        new Between(nullFieldConstraints, new IntegerFieldValue(from), new IntegerFieldValue(from));
     }
 
     @Test
     public void testGetEveryDefault() throws Exception {
-        assertEquals(1, new Between(nullFieldConstraints, "" + from, "" + to).getEvery().getTime());
+        assertEquals(1, (int)new Between(nullFieldConstraints, new IntegerFieldValue(from), new IntegerFieldValue(to)).getEvery().getTime().getValue());
     }
 
     @Test
     public void testGetEveryX() throws Exception {
-        assertEquals(every, new Between(nullFieldConstraints, "" + from, "" + to, "" + every).getEvery().getTime());
+        assertEquals(every, (int)new Between(nullFieldConstraints, new IntegerFieldValue(from), new IntegerFieldValue(to), new IntegerFieldValue(every)).getEvery().getTime().getValue());
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testGetEveryXBiggerThanRange() throws Exception {
-        assertEquals(1, new Between(nullFieldConstraints, "" + from, "" + to, "" + 2 * to).getEvery().getTime());
+        assertEquals(1, (int)new Between(nullFieldConstraints, new IntegerFieldValue(from), new IntegerFieldValue(to), new IntegerFieldValue(2 * to)).getEvery().getTime().getValue());
     }
 }

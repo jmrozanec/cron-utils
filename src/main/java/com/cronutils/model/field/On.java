@@ -1,6 +1,10 @@
 package com.cronutils.model.field;
 
 import com.cronutils.model.field.constraint.FieldConstraints;
+import com.cronutils.model.field.value.IntegerFieldValue;
+import com.cronutils.model.field.value.SpecialChar;
+import com.cronutils.model.field.value.SpecialCharFieldValue;
+import org.apache.commons.lang3.Validate;
 
 /*
  * Copyright 2014 jmrozanec
@@ -15,84 +19,77 @@ import com.cronutils.model.field.constraint.FieldConstraints;
  * limitations under the License.
  */
 public class On extends FieldExpression {
-    private int time;
-    private int nth;
-    private SpecialChar specialChar;
+    private static final int DEFAULT_NTH_VALUE = -1;
+    private IntegerFieldValue time;
+    private IntegerFieldValue nth;
+    private SpecialCharFieldValue specialChar;
 
-    public On(FieldConstraints constraints, String exp) {
-        super(constraints);
-        constraints.validateAllCharsValid(exp);
-        nth = -1;
-        specialChar = SpecialChar.NONE;
-        time = getConstraints().validateInRange(
-                getConstraints().intToInt(
-                        getConstraints().stringToInt(
-                                retrieveSpecialChar(getConstraints(), exp)
-                        )
-                )
-        );
+    public On(FieldConstraints constraints, SpecialCharFieldValue specialChar) {
+        this(constraints, new IntegerFieldValue(DEFAULT_NTH_VALUE), specialChar);
     }
 
-    public int getTime() {
+    public On(FieldConstraints constraints, IntegerFieldValue time) {
+        this(constraints, time, new SpecialCharFieldValue(SpecialChar.NONE));
+    }
+
+    public On(FieldConstraints constraints, IntegerFieldValue time, SpecialCharFieldValue specialChar) {
+        this(constraints, time, specialChar, new IntegerFieldValue(-1));
+        if(specialChar.getValue().equals(SpecialChar.HASH)){
+            throw new IllegalArgumentException("value missing for a#b cron expression");
+        }
+    }
+
+    public On(FieldConstraints constraints, IntegerFieldValue time, SpecialCharFieldValue specialChar, IntegerFieldValue nth) {
+        super(constraints);
+        Validate.notNull(time, "time must not be null");
+        Validate.notNull(specialChar, "special char must not null");
+        Validate.notNull(nth, "nth value must not be null");
+        if(!specialChar.getValue().equals(SpecialChar.HASH) && !specialChar.getValue().equals(SpecialChar.NONE)){
+            this.time = (time.getValue()!=-1)?(IntegerFieldValue)validate(time):time;
+        } else {
+            this.time = (IntegerFieldValue)validate(time);
+        }
+        this.specialChar = (SpecialCharFieldValue)validate(specialChar);
+        this.nth = (nth.getValue()!=-1)?(IntegerFieldValue)validate(nth):nth;
+    }
+
+    public IntegerFieldValue getTime() {
         return time;
     }
 
-    public int getNth() {
+    public IntegerFieldValue getNth() {
         return nth;
     }
 
-    public SpecialChar getSpecialChar() {
+    public SpecialCharFieldValue getSpecialChar() {
         return specialChar;
-    }
-
-    private String retrieveSpecialChar(FieldConstraints constraints, String exp) {
-        String expression = exp;
-        if (exp.contains("#")) {
-            specialChar = SpecialChar.HASH;
-            String[] array = exp.split("#");
-            nth = constraints.validateInRange(constraints.intToInt(constraints.stringToInt(array[1])));
-            if (array[0].isEmpty()) {
-                throw new RuntimeException("Time should be specified!");
-            }
-            expression = array[0];
-        }
-        if (exp.contains("LW")) {
-            specialChar = SpecialChar.LW;
-            exp = exp.replace("LW", "");
-            if ("".equals(exp)) {
-                expression = "0";//to avoid a NumberFormatException
-            } else {
-                expression = exp;
-            }
-        }
-        if (exp.contains("L")) {
-            specialChar = SpecialChar.L;
-            exp = exp.replace("L", "");
-            if ("".equals(exp)) {
-                expression = "0";//to avoid a NumberFormatException
-            } else {
-                expression = exp;
-            }
-        }
-        if (exp.contains("W")) {
-            specialChar = SpecialChar.W;
-            expression = exp.replace("W", "");
-        }
-        constraints.validateSpecialCharAllowed(specialChar);
-        return expression;
     }
 
     @Override
     public String asString() {
-        switch (specialChar){
+        switch (specialChar.getValue()){
             case NONE:
                 return ""+getTime();
             case HASH:
                 return String.format("%s#%s", getTime(), getNth());
             case W:
-                return String.format("%sW", getTime());
+                if(isDefault(getTime())){
+                    return "W";
+                }else{
+                    return String.format("%sW", getTime());
+                }
+            case L:
+                if(isDefault(getTime())){
+                    return "L";
+                }else{
+                    return String.format("%sL", getTime());
+                }
             default:
                 return specialChar.toString();
         }
+    }
+
+    private boolean isDefault(IntegerFieldValue fieldValue){
+        return fieldValue.getValue()==DEFAULT_NTH_VALUE;
     }
 }

@@ -2,6 +2,9 @@ package com.cronutils.model.field;
 
 import com.cronutils.model.field.constraint.FieldConstraints;
 import com.cronutils.model.field.constraint.FieldConstraintsBuilder;
+import com.cronutils.model.field.value.IntegerFieldValue;
+import com.cronutils.model.field.value.SpecialChar;
+import com.cronutils.model.field.value.SpecialCharFieldValue;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -37,64 +40,44 @@ public class OnTest {
 
     @Test
     public void testGetTime() throws Exception {
-        assertEquals(time, new On(nullFieldConstraints, "" + time).getTime());
+        assertEquals(time, (int)new On(nullFieldConstraints, new IntegerFieldValue(time)).getTime().getValue());
     }
 
     @Test
     public void testGetNth() throws Exception {
-        assertEquals(nth, new On(nullFieldConstraints, String.format("%s#%s", time, nth)).getNth());
+        assertEquals(nth, (int)new On(nullFieldConstraints, new IntegerFieldValue(time), new SpecialCharFieldValue(SpecialChar.HASH), new IntegerFieldValue(nth)).getNth().getValue());
     }
 
     @Test(expected = RuntimeException.class)
     public void testOnlyNthFails() throws Exception {
-        new On(nullFieldConstraints, String.format("#%s", nth));
+        new On(nullFieldConstraints, null, new SpecialCharFieldValue(SpecialChar.HASH), new IntegerFieldValue(nth));
     }
 
     @Test
     public void testAsStringJustNumber(){
-        String expression = "3";
-        assertEquals(expression, new On(nullFieldConstraints, expression).asString());
+        int expression = 3;
+        assertEquals(String.format("%s", expression), new On(nullFieldConstraints, new IntegerFieldValue(expression)).asString());
     }
 
     @Test
     public void testAsStringSpecialCharW(){
         String expression = "1W";
-        assertEquals(expression, new On(nullFieldConstraints, expression).asString());
+        assertEquals(expression, new On(nullFieldConstraints, new IntegerFieldValue(1), new SpecialCharFieldValue(SpecialChar.W)).asString());
     }
 
     @Test
     public void testAsStringSpecialCharL(){
         String expression = "L";
-        assertEquals(expression, new On(nullFieldConstraints, expression).asString());
+        assertEquals(expression, new On(nullFieldConstraints, new SpecialCharFieldValue(SpecialChar.L)).asString());
     }
 
     @Test
     public void testAsStringWithNth(){
-        String expression = "3#4";
-        assertEquals(expression, new On(nullFieldConstraints, expression).asString());
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void testJustNumberInvalidChar(){
-        String expression = "$";
-        assertEquals(expression, new On(nullFieldConstraints, expression).asString());
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void testAsStringSpecialCharWInvalidChar(){
-        String expression = "$W";
-        assertEquals(expression, new On(nullFieldConstraints, expression).asString());
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void testAsStringWithNthInvalidCharFirstTerm(){
-        String expression = "$#4";
-        assertEquals(expression, new On(nullFieldConstraints, expression).asString());
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void testAsStringWithNthInvalidCharSecondTerm(){
-        String expression = "3#$";
-        assertEquals(expression, new On(nullFieldConstraints, expression).asString());
+        int first = 3;
+        int second = 4;
+        String expression = String.format("%s#%s", first, second);
+        assertEquals(expression,
+                new On(nullFieldConstraints, new IntegerFieldValue(first),
+                        new SpecialCharFieldValue(SpecialChar.HASH), new IntegerFieldValue(second)).asString());
     }
 }

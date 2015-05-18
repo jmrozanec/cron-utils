@@ -2,6 +2,8 @@ package com.cronutils.model.time.generator;
 
 import com.cronutils.mapper.WeekDay;
 import com.cronutils.model.field.*;
+import com.cronutils.model.field.value.SpecialChar;
+
 /*
  * Copyright 2015 jmrozanec
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -38,7 +40,7 @@ public class FieldValueGeneratorFactory {
         }
         if(fieldExpression instanceof On){
             On on = (On) fieldExpression;
-            if(!SpecialChar.NONE.equals(on.getSpecialChar())) {
+            if(!SpecialChar.NONE.equals(on.getSpecialChar().getValue())) {
                 throw new RuntimeException(String.format("Cannot create instance for On instance with %s value", on.getSpecialChar()));
             }
             return new OnFieldValueGenerator(fieldExpression);
@@ -50,7 +52,7 @@ public class FieldValueGeneratorFactory {
         FieldExpression fieldExpression = cronField.getExpression();
         if(fieldExpression instanceof On){
             On on = (On) fieldExpression;
-            if(!SpecialChar.NONE.equals(on.getSpecialChar())){
+            if(!SpecialChar.NONE.equals(on.getSpecialChar().getValue())){
                 return new OnDayOfMonthValueGenerator(cronField, year, month);
             }
         }

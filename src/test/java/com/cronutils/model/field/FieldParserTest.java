@@ -1,6 +1,7 @@
 package com.cronutils.model.field;
 
 import com.cronutils.model.field.constraint.FieldConstraintsBuilder;
+import com.cronutils.model.field.value.IntegerFieldValue;
 import com.cronutils.parser.field.FieldParser;
 import org.junit.Before;
 import org.junit.Test;
@@ -28,19 +29,19 @@ public class FieldParserTest {
 
     @Test
     public void testParseAlways() throws Exception {
-        assertEquals(1, ((Always) parser.parse("*")).getEvery().getTime());
+        assertEquals(1, (int)((Always) parser.parse("*")).getEvery().getTime().getValue());
     }
 
     @Test
     public void testParseAlwaysEveryX() throws Exception {
         int every = 5;
-        assertEquals(every, ((Every) parser.parse("*/" + 5)).getTime());
+        assertEquals(every, (int)((Every) parser.parse("*/" + every)).getTime().getValue());
     }
 
     @Test
     public void testParseOn() throws Exception {
         int on = 5;
-        assertEquals(5, ((On) parser.parse("" + 5)).getTime());
+        assertEquals(on, (int)((On) parser.parse("" + on)).getTime().getValue());
     }
 
     @Test
@@ -49,8 +50,8 @@ public class FieldParserTest {
         int on2 = 4;
         And and = (And) parser.parse(String.format("%s,%s", on1, on2));
         assertEquals(2, and.getExpressions().size());
-        assertEquals(on1, ((On) and.getExpressions().get(0)).getTime());
-        assertEquals(on2, ((On) and.getExpressions().get(1)).getTime());
+        assertEquals(on1, (int)((On) and.getExpressions().get(0)).getTime().getValue());
+        assertEquals(on2, (int)((On) and.getExpressions().get(1)).getTime().getValue());
     }
 
     @Test
@@ -58,8 +59,8 @@ public class FieldParserTest {
         int from = 3;
         int to = 4;
         Between between = (Between) parser.parse(String.format("%s-%s", from, to));
-        assertEquals(from, between.getFrom());
-        assertEquals(to, between.getTo());
+        assertEquals(from, (int)((IntegerFieldValue)between.getFrom()).getValue());
+        assertEquals(to, (int)((IntegerFieldValue)between.getTo()).getValue());
     }
 
     @Test
@@ -68,9 +69,9 @@ public class FieldParserTest {
         int to = 40;
         int every = 5;
         Between between = (Between) parser.parse(String.format("%s-%s/%s", from, to, every));
-        assertEquals(from, between.getFrom());
-        assertEquals(to, between.getTo());
-        assertEquals(every, between.getEvery().getTime());
+        assertEquals(from, (int)((IntegerFieldValue)between.getFrom()).getValue());
+        assertEquals(to, (int)((IntegerFieldValue)between.getTo()).getValue());
+        assertEquals(every, (int)(between.getEvery().getTime()).getValue());
     }
 
     @Test(expected = NullPointerException.class)

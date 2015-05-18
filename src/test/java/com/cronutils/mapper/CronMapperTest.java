@@ -59,7 +59,7 @@ public class CronMapperTest {
 
         assertEquals(testCronFieldName, function.apply(mockCronField).getField());
         On result = (On)function.apply(mockCronField).getExpression();
-        assertEquals(0, result.getTime());
+        assertEquals(0, (int)result.getTime().getValue());
     }
 
     @Test

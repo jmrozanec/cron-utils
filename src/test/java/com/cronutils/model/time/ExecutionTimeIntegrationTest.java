@@ -92,13 +92,17 @@ public class ExecutionTimeIntegrationTest {
         assertEquals(0, whenToExecuteNext.getSecondOfMinute());
     }
 
+    /**
+     * Test for issue #18
+     * @throws Exception
+     */
     @Test
     public void testHourlyIntervalTimeFromLastExecution() throws Exception {
         DateTime now = DateTime.now();
         DateTime previousHour = now.minusHours(1);
         String quartzCronExpression = String.format("0 0 %s * * ?", previousHour.getHourOfDay());
         ExecutionTime executionTime = ExecutionTime.forCron(quartzCronParser.parse(quartzCronExpression));
-        
+
         assertTrue(executionTime.timeFromLastExecution(now).getStandardMinutes() <= 120);
     }
 

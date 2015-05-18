@@ -1,6 +1,6 @@
 package com.cronutils.model.field.constraint;
 
-import com.cronutils.model.field.SpecialChar;
+import com.cronutils.model.field.value.SpecialChar;
 import com.google.common.collect.Sets;
 import org.apache.commons.lang3.Validate;
 

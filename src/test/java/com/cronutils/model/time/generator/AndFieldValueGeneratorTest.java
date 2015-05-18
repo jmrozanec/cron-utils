@@ -5,6 +5,7 @@ import com.cronutils.model.field.FieldExpression;
 import com.cronutils.model.field.On;
 import com.cronutils.model.field.constraint.FieldConstraints;
 import com.cronutils.model.field.constraint.FieldConstraintsBuilder;
+import com.cronutils.model.field.value.IntegerFieldValue;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -39,9 +40,9 @@ public class AndFieldValueGeneratorTest {
         fieldValueGenerator =
                 new AndFieldValueGenerator(
                         new And()
-                                .and(new On(constraints, ""+value0))
-                                .and(new On(constraints, "" + value1))
-                                .and(new On(constraints, "" + value2))
+                                .and(new On(constraints, new IntegerFieldValue(value0)))
+                                .and(new On(constraints, new IntegerFieldValue(value1)))
+                                .and(new On(constraints, new IntegerFieldValue(value2)))
                 );
     }
 

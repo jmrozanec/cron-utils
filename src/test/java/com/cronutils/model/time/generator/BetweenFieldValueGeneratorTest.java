@@ -4,6 +4,7 @@ import com.cronutils.model.field.Between;
 import com.cronutils.model.field.FieldExpression;
 import com.cronutils.model.field.constraint.FieldConstraints;
 import com.cronutils.model.field.constraint.FieldConstraintsBuilder;
+import com.cronutils.model.field.value.IntegerFieldValue;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -33,7 +34,7 @@ public class BetweenFieldValueGeneratorTest {
     @Before
     public void setUp(){
         FieldConstraints constraints = FieldConstraintsBuilder.instance().createConstraintsInstance();
-        fieldValueGenerator = new BetweenFieldValueGenerator(new Between(constraints, ""+from, ""+to));
+        fieldValueGenerator = new BetweenFieldValueGenerator(new Between(constraints, new IntegerFieldValue(from), new IntegerFieldValue(to)));
     }
 
     @Test(expected = NoSuchValueException.class)

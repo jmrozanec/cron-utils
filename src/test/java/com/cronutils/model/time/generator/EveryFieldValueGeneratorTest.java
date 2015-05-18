@@ -4,6 +4,7 @@ import com.cronutils.model.field.Every;
 import com.cronutils.model.field.FieldExpression;
 import com.cronutils.model.field.constraint.FieldConstraints;
 import com.cronutils.model.field.constraint.FieldConstraintsBuilder;
+import com.cronutils.model.field.value.IntegerFieldValue;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -31,7 +32,7 @@ public class EveryFieldValueGeneratorTest {
     @Before
     public void setUp(){
         FieldConstraints constraints = FieldConstraintsBuilder.instance().createConstraintsInstance();
-        fieldValueGenerator = new EveryFieldValueGenerator(new Every(constraints, ""+time));
+        fieldValueGenerator = new EveryFieldValueGenerator(new Every(constraints, new IntegerFieldValue(time)));
     }
 
     @Test()

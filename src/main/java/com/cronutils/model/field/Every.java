@@ -14,29 +14,29 @@ package com.cronutils.model.field;
  */
 
 import com.cronutils.model.field.constraint.FieldConstraints;
+import com.cronutils.model.field.value.IntegerFieldValue;
 
 /**
  * Represents every x time on a cron field.
  */
 public class Every extends FieldExpression {
-    private int time;
+    private IntegerFieldValue time;
 
-    public Every(FieldConstraints constraints, String time) {
+    public Every(FieldConstraints constraints, IntegerFieldValue time) {
         super(constraints);
         if (time == null) {
-            time = "1";
+            time = new IntegerFieldValue(1);
         }
-        constraints.validateAllCharsValid(time);
-        this.time = getConstraints().stringToInt(time);
+        this.time = time;
     }
 
-    public int getTime() {
+    public IntegerFieldValue getTime() {
         return time;
     }
 
     @Override
     public String asString() {
-        if(time==1){
+        if(time.getValue()==1){
             return "";
         }
         return String.format("/%s", getTime());

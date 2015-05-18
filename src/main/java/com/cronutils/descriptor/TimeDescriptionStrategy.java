@@ -2,6 +2,7 @@ package com.cronutils.descriptor;
 
 import com.cronutils.model.field.*;
 import com.cronutils.model.field.constraint.FieldConstraintsBuilder;
+import com.cronutils.model.field.value.IntegerFieldValue;
 import com.google.common.base.Function;
 import com.google.common.collect.Sets;
 import org.apache.commons.lang3.Validate;
@@ -59,7 +60,7 @@ class TimeDescriptionStrategy extends DescriptionStrategy {
                 new On(
                         FieldConstraintsBuilder.instance()
                                 .forField(CronFieldName.SECOND).createConstraintsInstance(),
-                        "" + defaultSeconds)
+                        new IntegerFieldValue(defaultSeconds))
         );
         descriptions = Sets.newHashSet();
         registerFunctions();
@@ -125,8 +126,9 @@ class TimeDescriptionStrategy extends DescriptionStrategy {
                                 if (isDefault((On) timeFields.seconds)) {
                                     return String.format("%s %s ", bundle.getString("every"), bundle.getString("minute"));
                                 } else {
-                                    return String.format("%s %s %s %s %02d", bundle.getString("every"), bundle.getString("minute"),
-                                            bundle.getString("at"), bundle.getString("second"), ((On) timeFields.seconds).getTime());
+                                    return String.format("%s %s %s %s %02d", bundle.getString("every"),
+                                            bundle.getString("minute"), bundle.getString("at"),
+                                            bundle.getString("second"), ((On) timeFields.seconds).getTime().getValue());
                                 }
                             }
                         }
@@ -148,13 +150,13 @@ class TimeDescriptionStrategy extends DescriptionStrategy {
                                     }
                                     return String.format("%s %s %s %s %s", bundle.getString("every"),
                                             bundle.getString("hour"), bundle.getString("at"),
-                                            bundle.getString("minute"), ((On) timeFields.minutes).getTime());
+                                            bundle.getString("minute"), ((On) timeFields.minutes).getTime().getValue());
                                 } else {
                                     return String.format("%s %s %s %s %s %s %s %s", bundle.getString("every"),
                                             bundle.getString("hour"), bundle.getString("at"),
-                                            bundle.getString("minute"), ((On) timeFields.minutes).getTime(),
+                                            bundle.getString("minute"), ((On) timeFields.minutes).getTime().getValue(),
                                             bundle.getString("and"), bundle.getString("second"),
-                                            ((On) timeFields.seconds).getTime());
+                                            ((On) timeFields.seconds).getTime().getValue());
                                 }
                             }
                         return "";
@@ -171,7 +173,7 @@ class TimeDescriptionStrategy extends DescriptionStrategy {
                                 && timeFields.seconds instanceof Always) {
                             return String.format("%s %s %s %02d:%02d", bundle.getString("every"),
                                     bundle.getString("second"), bundle.getString("at"),
-                                    ((On) hours).getTime(), ((On) minutes).getTime());
+                                    ((On) hours).getTime().getValue(), ((On) minutes).getTime().getValue());
                         }
                         return "";
                     }
@@ -187,11 +189,13 @@ class TimeDescriptionStrategy extends DescriptionStrategy {
                                 timeFields.minutes instanceof On
                                 && timeFields.seconds instanceof On) {
                             if (isDefault((On) timeFields.seconds)) {
-                                return String.format("%s %02d:%02d", bundle.getString("at"), ((On) hours).getTime(),
-                                        ((On) minutes).getTime());
+                                return String.format("%s %02d:%02d", bundle.getString("at"),
+                                        ((On) hours).getTime().getValue(),
+                                        ((On) minutes).getTime().getValue());
                             } else {
-                                return String.format("%s %02d:%02d:%02d", bundle.getString("at"), ((On) hours).getTime(),
-                                        ((On) minutes).getTime(), ((On) seconds).getTime());
+                                return String.format("%s %02d:%02d:%02d", bundle.getString("at"),
+                                        ((On) hours).getTime().getValue(),
+                                        ((On) minutes).getTime().getValue(), ((On) seconds).getTime().getValue());
                             }
                         }
                         return "";
@@ -206,7 +210,7 @@ class TimeDescriptionStrategy extends DescriptionStrategy {
                         if (timeFields.hours instanceof On &&
                                 timeFields.minutes instanceof Always &&
                                 timeFields.seconds instanceof Always) {
-                            return String.format("%s %02d:00", bundle.getString("at"), ((On) hours).getTime());
+                            return String.format("%s %02d:00", bundle.getString("at"), ((On) hours).getTime().getValue());
                         }
                         return "";
                     }
@@ -225,18 +229,22 @@ class TimeDescriptionStrategy extends DescriptionStrategy {
                                         bundle.getString("every"),
                                         bundle.getString("minute"),
                                         bundle.getString("between"),
-                                        ((On) timeFields.hours).getTime(), ((Between) timeFields.minutes).getFrom(),
+                                        ((On) timeFields.hours).getTime().getValue(),
+                                        ((Between) timeFields.minutes).getFrom().getValue(),
                                         bundle.getString("and"),
-                                        ((On) timeFields.hours).getTime(), ((Between) timeFields.minutes).getTo());
+                                        ((On) timeFields.hours).getTime().getValue(),
+                                        ((Between) timeFields.minutes).getTo().getValue());
                             }
                             if (timeFields.seconds instanceof Always) {
                                 return String.format("%s %s %s %02d:%02d %s %02d:%02d",
                                         bundle.getString("every"),
                                         bundle.getString("second"),
                                         bundle.getString("between"),
-                                        ((On) timeFields.hours).getTime(), ((Between) timeFields.minutes).getFrom(),
+                                        ((On) timeFields.hours).getTime().getValue(),
+                                        ((Between) timeFields.minutes).getFrom().getValue(),
                                         bundle.getString("and"),
-                                        ((On) timeFields.hours).getTime(), ((Between) timeFields.minutes).getTo());
+                                        ((On) timeFields.hours).getTime().getValue(),
+                                        ((Between) timeFields.minutes).getTo().getValue());
                             }
                         }
                         return "";
@@ -251,11 +259,12 @@ class TimeDescriptionStrategy extends DescriptionStrategy {
                         if (timeFields.hours instanceof Always &&
                                 timeFields.minutes instanceof Every &&
                                 timeFields.seconds instanceof On) {
-                            if (((Every) timeFields.minutes).getTime()==1 &&
+                            if (((Every) timeFields.minutes).getTime().getValue()==1 &&
                                     isDefault((On) timeFields.seconds)) {
                                 return String.format("%s %s", bundle.getString("every"), bundle.getString("minute"));
                             }
-                            return String.format("%s %s %s ", bundle.getString("every"), ((Every) minutes).getTime(), bundle.getString("minutes"));
+                            return String.format("%s %s %s ", bundle.getString("every"),
+                                    ((Every) minutes).getTime().getValue(), bundle.getString("minutes"));
                         }
                         return "";
                     }
@@ -270,17 +279,18 @@ class TimeDescriptionStrategy extends DescriptionStrategy {
                                 timeFields.minutes instanceof On &&
                                 timeFields.seconds instanceof On) {
                             //every hour
-                            if(((On) timeFields.minutes).getTime()==0 && ((On) timeFields.seconds).getTime()==0){
+                            if(((On) timeFields.minutes).getTime().getValue()==0 &&
+                                    ((On) timeFields.seconds).getTime().getValue()==0){
                                 return String.format("%s %s", bundle.getString("every"), bundle.getString("hour"));
                             }
                             String result = String.format("%s %s %s %s %s %s ",
-                                    bundle.getString("every"), ((Every) hours).getTime(), bundle.getString("hours"),
-                                    bundle.getString("at"), bundle.getString("minute"), ((On) minutes).getTime());
+                                    bundle.getString("every"), ((Every) hours).getTime().getValue(), bundle.getString("hours"),
+                                    bundle.getString("at"), bundle.getString("minute"), ((On) minutes).getTime().getValue());
                             if (isDefault((On) timeFields.seconds)) {
                                 return result;
                             } else {
                                 return String.format("%s %s %s", bundle.getString("and"),
-                                        bundle.getString("second"), ((On) seconds).getTime());
+                                        bundle.getString("second"), ((On) seconds).getTime().getValue());
                             }
                         }
                         return "";
@@ -310,6 +320,6 @@ class TimeDescriptionStrategy extends DescriptionStrategy {
      * @return boolean - true if time value matches a default; false otherwise.
      */
     private boolean isDefault(On on) {
-        return on.getTime() == defaultSeconds;
+        return on.getTime().getValue() == defaultSeconds;
     }
 }

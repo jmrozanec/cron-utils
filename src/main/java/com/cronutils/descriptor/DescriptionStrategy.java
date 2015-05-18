@@ -1,6 +1,8 @@
 package com.cronutils.descriptor;
 
 import com.cronutils.model.field.*;
+import com.cronutils.model.field.value.FieldValue;
+import com.cronutils.model.field.value.IntegerFieldValue;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import org.apache.commons.lang3.Validate;
@@ -87,11 +89,15 @@ abstract class DescriptionStrategy {
      * 1 in weeks context, may mean "Monday",
      * so nominal value for 1 would be "Monday"
      * Default will return int as String
-     * @param value - some integer
+     * @param fieldValue - some FieldValue
      * @return String
      */
-    protected String nominalValue(int value) {
-        return nominalValueFunction.apply(value);
+    protected String nominalValue(FieldValue fieldValue) {
+        Validate.notNull(fieldValue, "FieldValue must not be null");
+        if(fieldValue instanceof IntegerFieldValue){
+            return nominalValueFunction.apply(((IntegerFieldValue)fieldValue).getValue());
+        }
+        return fieldValue.toString();
     }
 
     /**
@@ -100,7 +106,7 @@ abstract class DescriptionStrategy {
      * @return human readable description - String
      */
     protected String describe(Always always, boolean and) {
-        if (always.getEvery().getTime() <= 1) {
+        if (always.getEvery().getTime().getValue() <= 1) {
             return "";
         }
         return describe(always.getEvery(), and);
@@ -176,7 +182,7 @@ abstract class DescriptionStrategy {
      */
     protected String describe(Every every, boolean and) {
         String description;
-        if (every.getTime() > 1) {
+        if (every.getTime().getValue() > 1) {
             description = String.format("%s %s ", bundle.getString("every"), nominalValue(every.getTime())) + " %p ";
         } else {
             description = bundle.getString("every")+" %s ";

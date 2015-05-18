@@ -4,6 +4,7 @@ import com.cronutils.model.field.FieldExpression;
 import com.cronutils.model.field.On;
 import com.cronutils.model.field.constraint.FieldConstraints;
 import com.cronutils.model.field.constraint.FieldConstraintsBuilder;
+import com.cronutils.model.field.value.IntegerFieldValue;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -31,7 +32,7 @@ public class OnFieldValueGeneratorTest {
     @Before
     public void setUp(){
         FieldConstraints constraints = FieldConstraintsBuilder.instance().addLSupport().createConstraintsInstance();
-        fieldValueGenerator = new OnFieldValueGenerator(new On(constraints, ""+3));
+        fieldValueGenerator = new OnFieldValueGenerator(new On(constraints, new IntegerFieldValue(3)));
     }
 
     @Test(expected = NoSuchValueException.class)

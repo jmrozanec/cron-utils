@@ -14,35 +14,40 @@ package com.cronutils.model.field;
  */
 
 import com.cronutils.model.field.constraint.FieldConstraints;
+import com.cronutils.model.field.value.FieldValue;
+import com.cronutils.model.field.value.IntegerFieldValue;
+import com.cronutils.model.field.value.SpecialChar;
+import com.cronutils.model.field.value.SpecialCharFieldValue;
 
 /**
  * Represents a range in a cron expression.
  */
 public class Between extends FieldExpression {
-    private int from;
-    private int to;
+    private FieldValue from;
+    private FieldValue to;
     private Every every;
 
-    public Between(FieldConstraints constraints, String from, String to) {
-        this(constraints, from, to, "1");
+    public Between(FieldConstraints constraints, FieldValue from, FieldValue to) {
+        this(constraints, from, to, new IntegerFieldValue(1));
     }
 
-    public Between(FieldConstraints constraints, String from, String to, String every) {
+    public Between(FieldConstraints constraints, FieldValue from, FieldValue to, IntegerFieldValue every) {
         super(constraints);
-        constraints.validateAllCharsValid(from);
-        constraints.validateAllCharsValid(to);
-        constraints.validateAllCharsValid(every);
-        this.from = getConstraints().validateInRange(getConstraints().intToInt(getConstraints().stringToInt(from)));
-        this.to = getConstraints().validateInRange(getConstraints().intToInt(getConstraints().stringToInt(to)));
+        this.from = validate(from);
+        this.to = validate(to);
         this.every = new Every(getConstraints(), every);
         validate();
     }
 
-    public int getFrom() {
+    public Between(Between between) {
+        this(between.getConstraints(), between.getFrom(), between.getTo(), between.getEvery().getTime());
+    }
+
+    public FieldValue getFrom() {
         return from;
     }
 
-    public int getTo() {
+    public FieldValue getTo() {
         return to;
     }
 
@@ -51,11 +56,25 @@ public class Between extends FieldExpression {
     }
 
     private void validate() {
-        if (from >= to) {
-            throw new IllegalArgumentException("Bad range defined! Defined range should satisfy from <= to, but was [%s, %s]");
+        if(from instanceof IntegerFieldValue && to instanceof IntegerFieldValue){
+            int fromValue = ((IntegerFieldValue)from).getValue();
+            int toValue = ((IntegerFieldValue)to).getValue();
+            if (fromValue >= toValue) {
+                throw new IllegalArgumentException("Bad range defined! Defined range should satisfy from <= to, but was [%s, %s]");
+            }
+            if (every.getTime().getValue() > (toValue - fromValue)) {
+                throw new IllegalArgumentException("Every x time cannot exceed range length");
+            }
         }
-        if (every.getTime() > (to - from)) {
-            throw new IllegalArgumentException("Every x time cannot exceed range length");
+        validateSpecialCharValue(from);
+        validateSpecialCharValue(to);
+    }
+
+    private void validateSpecialCharValue(FieldValue fieldValue){
+        if(fieldValue instanceof SpecialCharFieldValue){
+            if(!SpecialChar.L.equals(fieldValue.getValue())){
+                throw new IllegalArgumentException(String.format("%s value not supported in ranges", fieldValue));
+            }
         }
     }
 

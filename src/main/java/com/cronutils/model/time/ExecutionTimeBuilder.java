@@ -6,6 +6,7 @@ import com.cronutils.model.field.CronField;
 import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.field.On;
 import com.cronutils.model.field.constraint.FieldConstraintsBuilder;
+import com.cronutils.model.field.value.IntegerFieldValue;
 import com.cronutils.model.time.generator.FieldValueGenerator;
 import com.cronutils.model.time.generator.FieldValueGeneratorFactory;
 import org.apache.commons.lang3.Validate;
@@ -44,7 +45,7 @@ class ExecutionTimeBuilder {
                                 new On(
                                         FieldConstraintsBuilder.instance()
                                                 .forField(CronFieldName.SECOND)
-                                                .createConstraintsInstance(), "0")
+                                                .createConstraintsInstance(), new IntegerFieldValue(0))
                         )
                 ).generateCandidates(0,59));
         yearsValueGenerator = FieldValueGeneratorFactory.forCronField(

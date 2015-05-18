@@ -7,6 +7,9 @@ import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.field.On;
 import com.cronutils.model.field.constraint.FieldConstraints;
 import com.cronutils.model.field.constraint.FieldConstraintsBuilder;
+import com.cronutils.model.field.value.IntegerFieldValue;
+import com.cronutils.model.field.value.SpecialChar;
+import com.cronutils.model.field.value.SpecialCharFieldValue;
 import org.junit.Test;
 
 import java.util.List;
@@ -136,7 +139,8 @@ public class OnDayOfWeekValueGeneratorHashTest {
         return new OnDayOfWeekValueGenerator(
                 new CronField(
                         CronFieldName.DAY_OF_WEEK,
-                        new On(constraints, String.format("%s#%s", firstDayDoWGreaterThanRequestedDoW_TimeValue, firstDayDoWGreaterThanRequestedDoW_HashValue)
+                        new On(constraints, new IntegerFieldValue(firstDayDoWGreaterThanRequestedDoW_TimeValue),
+                                new SpecialCharFieldValue(SpecialChar.HASH), new IntegerFieldValue(firstDayDoWGreaterThanRequestedDoW_HashValue)
                         )
                 ),
                 year, firstDayDoWGreaterThanRequestedDoW_Month, mondayDoWValue
@@ -147,8 +151,8 @@ public class OnDayOfWeekValueGeneratorHashTest {
         return new OnDayOfWeekValueGenerator(
                 new CronField(
                         CronFieldName.DAY_OF_WEEK,
-                        new On(constraints, String.format("%s#%s", firstDayDoWLessThanRequestedDoW_TimeValue, firstDayDoWLessThanRequestedDoW_HashValue)
-                        )
+                        new On(constraints, new IntegerFieldValue(firstDayDoWLessThanRequestedDoW_TimeValue),
+                                new SpecialCharFieldValue(SpecialChar.HASH), new IntegerFieldValue(firstDayDoWLessThanRequestedDoW_HashValue))
                 ),
                 year, firstDayDoWLessThanRequestedDoW_Month, mondayDoWValue
         );
@@ -158,7 +162,8 @@ public class OnDayOfWeekValueGeneratorHashTest {
         return new OnDayOfWeekValueGenerator(
                 new CronField(
                         CronFieldName.DAY_OF_WEEK,
-                        new On(constraints, String.format("%s#%s", firstDayDoWEqualToRequestedDoW_TimeValue, firstDayDoWEqualToRequestedDoW_HashValue)
+                        new On(constraints,
+                                new IntegerFieldValue(firstDayDoWEqualToRequestedDoW_TimeValue), new SpecialCharFieldValue(SpecialChar.HASH), new IntegerFieldValue(firstDayDoWEqualToRequestedDoW_HashValue)
                         )
                 ),
                 year, firstDayDoWEqualToRequestedDoW_Month, mondayDoWValue

@@ -7,6 +7,9 @@ import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.field.On;
 import com.cronutils.model.field.constraint.FieldConstraints;
 import com.cronutils.model.field.constraint.FieldConstraintsBuilder;
+import com.cronutils.model.field.value.IntegerFieldValue;
+import com.cronutils.model.field.value.SpecialChar;
+import com.cronutils.model.field.value.SpecialCharFieldValue;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -134,14 +137,14 @@ public class OnDayOfWeekValueGeneratorLTest {
     }
 
     private OnDayOfWeekValueGenerator createFieldValueGeneratorInstanceLastDayDoWGreaterThanRequestedDoW() {
-        return new OnDayOfWeekValueGenerator(new CronField(CronFieldName.DAY_OF_WEEK, new On(constraints, String.format("%sL", lastDayDoWGreaterThanRequestedDoW_Value))), year, lastDayDoWGreaterThanRequestedDoW_Month, mondayDoWValue);
+        return new OnDayOfWeekValueGenerator(new CronField(CronFieldName.DAY_OF_WEEK, new On(constraints, new IntegerFieldValue(lastDayDoWGreaterThanRequestedDoW_Value), new SpecialCharFieldValue(SpecialChar.L))), year, lastDayDoWGreaterThanRequestedDoW_Month, mondayDoWValue);
     }
 
     private OnDayOfWeekValueGenerator createFieldValueGeneratorInstanceLastDayDoWLessThanRequestedDoW() {
-        return new OnDayOfWeekValueGenerator(new CronField(CronFieldName.DAY_OF_WEEK, new On(constraints, String.format("%sL", lastDayDoWLessThanRequestedDoW_Value))), year, lastDayDoWLessThanRequestedDoW_Month, mondayDoWValue);
+        return new OnDayOfWeekValueGenerator(new CronField(CronFieldName.DAY_OF_WEEK, new On(constraints, new IntegerFieldValue(lastDayDoWLessThanRequestedDoW_Value), new SpecialCharFieldValue(SpecialChar.L))), year, lastDayDoWLessThanRequestedDoW_Month, mondayDoWValue);
     }
 
     private OnDayOfWeekValueGenerator createFieldValueGeneratorInstanceLastDayDoWEqualToRequestedDoW() {
-        return new OnDayOfWeekValueGenerator(new CronField(CronFieldName.DAY_OF_WEEK, new On(constraints, String.format("%sL", lastDayDoWEqualToRequestedDoW_Value))), year, lastDayDoWEqualToRequestedDoW_Month, mondayDoWValue);
+        return new OnDayOfWeekValueGenerator(new CronField(CronFieldName.DAY_OF_WEEK, new On(constraints, new IntegerFieldValue(lastDayDoWEqualToRequestedDoW_Value), new SpecialCharFieldValue(SpecialChar.L))), year, lastDayDoWEqualToRequestedDoW_Month, mondayDoWValue);
     }
 }

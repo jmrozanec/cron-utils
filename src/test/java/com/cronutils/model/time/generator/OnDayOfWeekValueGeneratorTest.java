@@ -7,6 +7,7 @@ import com.cronutils.model.field.FieldExpression;
 import com.cronutils.model.field.On;
 import com.cronutils.model.field.constraint.FieldConstraints;
 import com.cronutils.model.field.constraint.FieldConstraintsBuilder;
+import com.cronutils.model.field.value.IntegerFieldValue;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -37,7 +38,7 @@ public class OnDayOfWeekValueGeneratorTest {
     public void setUp(){
         FieldConstraints constraints = FieldConstraintsBuilder.instance().createConstraintsInstance();
         mondayDoWValue = new WeekDay(1, false);
-        fieldValueGenerator = new OnDayOfWeekValueGenerator(new CronField(CronFieldName.DAY_OF_WEEK, new On(constraints, "3")), year, month, mondayDoWValue);
+        fieldValueGenerator = new OnDayOfWeekValueGenerator(new CronField(CronFieldName.DAY_OF_WEEK, new On(constraints, new IntegerFieldValue(3))), year, month, mondayDoWValue);
     }
 
     @Test

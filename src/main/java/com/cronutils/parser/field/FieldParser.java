@@ -2,6 +2,10 @@ package com.cronutils.parser.field;
 
 import com.cronutils.model.field.*;
 import com.cronutils.model.field.constraint.FieldConstraints;
+import com.cronutils.model.field.value.FieldValue;
+import com.cronutils.model.field.value.IntegerFieldValue;
+import com.cronutils.model.field.value.SpecialChar;
+import com.cronutils.model.field.value.SpecialCharFieldValue;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
 
@@ -43,7 +47,8 @@ public class FieldParser {
             if ("*".equals(expression)) {//all crons support asterisk
                 return new Always(constraints);
             } else {
-                return new On(constraints, expression);
+                constraints.validateAllCharsValid(expression);
+                return parseOn(expression);
             }
         } else {
             String[] array = expression.split(",");
@@ -56,16 +61,97 @@ public class FieldParser {
             } else {
                 array = expression.split("-");
                 if (array.length > 1) {
-                    if (array[1].contains("/")) {
-                        String[] every = array[1].split("/");
-                        return new Between(constraints, array[0], every[0], every[1]);
-                    } else {
-                        return new Between(constraints, array[0], array[1]);
-                    }
+                    return parseBetween(array);
                 } else {
-                    return new Every(constraints, expression.split("/")[1]);
+                    String value = expression.split("/")[1];
+                    constraints.validateAllCharsValid(value);
+                    return new Every(constraints, new IntegerFieldValue(Integer.parseInt(value)));
                 }
             }
         }
+    }
+
+    private Between parseBetween(String[]array){
+        if (array[1].contains("/")) {
+            String[] every = array[1].split("/");
+
+            return
+                    new Between(
+                            constraints,
+                            map(constraints, array[0]),
+                            map(constraints, every[0]),
+                            mapToIntegerFieldValue(every[1])
+                    );
+        } else {
+            String from = array[0];
+            String to = array[1];
+            constraints.validateAllCharsValid(from);
+            constraints.validateAllCharsValid(to);
+            return
+                    new Between(
+                            constraints,
+                            map(constraints, from),
+                            map(constraints, to)
+                    );
+        }
+    }
+
+    private On parseOn(String exp){
+        constraints.validateAllCharsValid(exp);
+        SpecialCharFieldValue specialChar = new SpecialCharFieldValue(SpecialChar.NONE);
+        IntegerFieldValue nth = new IntegerFieldValue(-1);
+        String expression = exp;
+        if (exp.contains("#")) {
+            specialChar = new SpecialCharFieldValue(SpecialChar.HASH);
+            String[] array = exp.split("#");
+            nth = mapToIntegerFieldValue(array[1]);
+            if (array[0].isEmpty()) {
+                throw new IllegalArgumentException("Time should be specified!");
+            }
+            expression = array[0];
+        }
+        if (exp.contains("LW")) {
+            specialChar = new SpecialCharFieldValue(SpecialChar.LW);
+            exp = exp.replace("LW", "");
+            if ("".equals(exp)) {
+                expression = "0";//to avoid a NumberFormatException
+            } else {
+                expression = exp;
+            }
+        }
+        if (exp.contains("L")) {
+            specialChar = new SpecialCharFieldValue(SpecialChar.L);
+            exp = exp.replace("L", "");
+            if ("".equals(exp)) {
+                expression = "0";//to avoid a NumberFormatException
+            } else {
+                expression = exp;
+            }
+        }
+        if (exp.contains("W")) {
+            specialChar = new SpecialCharFieldValue(SpecialChar.W);
+            expression = exp.replace("W", "");
+        }
+        constraints.validateSpecialCharAllowed(specialChar.getValue());
+        return new On(constraints, mapToIntegerFieldValue(expression), specialChar, nth);
+    }
+
+    private IntegerFieldValue mapToIntegerFieldValue(String string){
+        constraints.validateAllCharsValid(string);
+        try{
+            return new IntegerFieldValue(Integer.parseInt(string));
+        }catch (NumberFormatException e){
+            throw new IllegalArgumentException(String.format("Invalid value. Expected some integer, found %s", string));
+        }
+    }
+
+    private FieldValue map(FieldConstraints constraints, String string){
+        constraints.validateAllCharsValid(string);
+        for(SpecialChar sc : SpecialChar.values()){
+            if(sc.toString().equals(string)){
+                return new SpecialCharFieldValue(sc);
+            }
+        }
+        return new IntegerFieldValue(constraints.stringToInt(string));
     }
 }

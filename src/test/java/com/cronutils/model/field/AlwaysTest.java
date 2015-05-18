@@ -1,6 +1,7 @@
 package com.cronutils.model.field;
 
 import com.cronutils.model.field.constraint.FieldConstraintsBuilder;
+import com.cronutils.model.field.value.IntegerFieldValue;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -21,19 +22,19 @@ public class AlwaysTest {
     @Test
     public void testGetEveryDefault() throws Exception {
         assertEquals(1,
-                new Always(
+                (int)new Always(
                         FieldConstraintsBuilder.instance().createConstraintsInstance()
-                ).getEvery().getTime());
+                ).getEvery().getTime().getValue());
     }
 
     @Test
     public void testGetEveryX() throws Exception {
         int value = 11;
         assertEquals(value,
-                new Always(
+                (int)new Always(
                         FieldConstraintsBuilder.instance().createConstraintsInstance(),
-                        "" + value
-                ).getEvery().getTime());
+                        new IntegerFieldValue(value)
+                ).getEvery().getTime().getValue());
     }
 
     @Test(expected = NullPointerException.class)

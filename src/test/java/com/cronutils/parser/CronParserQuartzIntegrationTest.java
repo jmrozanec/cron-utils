@@ -38,9 +38,35 @@ public class CronParserQuartzIntegrationTest {
         parser.parse("* * * * $ ?");
     }
 
-    public void testLSupportedInRange() throws Exception {
-        //TODO: we have no accurate validation for L-3 See: http://quartz-scheduler.org/documentation/quartz-2.x/tutorials/tutorial-lesson-06
+    @Test(expected = IllegalArgumentException.class)
+    public void testInvalidCharsDetectedWithSingleSpecialChar() throws Exception {
+        parser.parse("* * * * $W ?");
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testInvalidCharsDetectedWithHashExpression1() throws Exception {
+        parser.parse("* * * * $#3 ?");
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testInvalidCharsDetectedWithHashExpression2() throws Exception {
+        parser.parse("* * * * 3#$ ?");
+    }
+
+    /**
+     * Issue #15: we should support L in range (ex.: L-3)
+     */
+    @Test
+    public void testLSupportedInDoMRange() throws Exception {
         parser.parse("* * * L-3 * ?");
+    }
+
+    /**
+     * Issue #15: we should support L in range (ex.: L-3), but not other special chars
+     */
+    @Test(expected = IllegalArgumentException.class)
+    public void testLSupportedInRange() throws Exception {
+        parser.parse("* * * W-3 * ?");
     }
 
     @Test

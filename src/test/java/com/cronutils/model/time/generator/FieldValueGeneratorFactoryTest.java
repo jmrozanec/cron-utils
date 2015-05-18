@@ -2,6 +2,8 @@ package com.cronutils.model.time.generator;
 
 import com.cronutils.mapper.WeekDay;
 import com.cronutils.model.field.*;
+import com.cronutils.model.field.value.SpecialChar;
+import com.cronutils.model.field.value.SpecialCharFieldValue;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -50,15 +52,15 @@ public class FieldValueGeneratorFactoryTest {
     @Test
     public void testForCronFieldBetween() throws Exception {
         when(mockCronField.getExpression()).thenReturn(mock(Between.class));
-        assertEquals(BetweenFieldValueGenerator.class, fieldValueGeneratorFactory.forCronField(mockCronField).getClass());
+        assertEquals(BetweenFieldValueGenerator.class, FieldValueGeneratorFactory.forCronField(mockCronField).getClass());
     }
 
     @Test
     public void testForCronFieldOnSpecialCharNone() throws Exception {
         On mockOn = mock(On.class);
-        when(mockOn.getSpecialChar()).thenReturn(SpecialChar.NONE);
+        when(mockOn.getSpecialChar()).thenReturn(new SpecialCharFieldValue(SpecialChar.NONE));
         when(mockCronField.getExpression()).thenReturn(mockOn);
-        assertEquals(OnFieldValueGenerator.class, fieldValueGeneratorFactory.forCronField(mockCronField).getClass());
+        assertEquals(OnFieldValueGenerator.class, FieldValueGeneratorFactory.forCronField(mockCronField).getClass());
     }
 
     @Test
@@ -67,10 +69,10 @@ public class FieldValueGeneratorFactoryTest {
         for(SpecialChar s : SpecialChar.values()){
             if(!s.equals(SpecialChar.NONE)){
                 boolean gotException = false;
-                when(mockOn.getSpecialChar()).thenReturn(s);
+                when(mockOn.getSpecialChar()).thenReturn(new SpecialCharFieldValue(s));
                 when(mockCronField.getExpression()).thenReturn(mockOn);
                 try{
-                    fieldValueGeneratorFactory.forCronField(mockCronField);
+                    FieldValueGeneratorFactory.forCronField(mockCronField);
                 }catch (RuntimeException e){
                     gotException = true;
                 }
@@ -82,24 +84,65 @@ public class FieldValueGeneratorFactoryTest {
     @Test
     public void testForCronField() throws Exception {
         when(mockCronField.getExpression()).thenReturn(mock(FieldExpression.class));
-        assertEquals(NullFieldValueGenerator.class, fieldValueGeneratorFactory.forCronField(mockCronField).getClass());
+        assertEquals(NullFieldValueGenerator.class, FieldValueGeneratorFactory.forCronField(mockCronField).getClass());
     }
 
     @Test
-    public void testCreateDayOfMonthValueGeneratorInstance() throws Exception {
-        when(mockCronField.getField()).thenReturn(CronFieldName.DAY_OF_MONTH);
-        when(mockCronField.getExpression()).thenReturn(mock(On.class));
+    public void testCreateDayOfMonthValueGeneratorInstanceForL() throws Exception {
         assertEquals(
                 OnDayOfMonthValueGenerator.class,
-                fieldValueGeneratorFactory.createDayOfMonthValueGeneratorInstance(mockCronField, 2015, 1).getClass()
+                createDayOfMonthValueGeneratorInstance(SpecialChar.L).getClass()
         );
+    }
+
+    @Test
+    public void testCreateDayOfMonthValueGeneratorInstanceForW() throws Exception {
+        assertEquals(
+                OnDayOfMonthValueGenerator.class,
+                createDayOfMonthValueGeneratorInstance(SpecialChar.W).getClass()
+        );
+    }
+
+    @Test
+    public void testCreateDayOfMonthValueGeneratorInstanceForLW() throws Exception {
+        assertEquals(
+                OnDayOfMonthValueGenerator.class,
+                createDayOfMonthValueGeneratorInstance(SpecialChar.LW).getClass()
+        );
+    }
+
+    @Test
+    public void testCreateDayOfMonthValueGeneratorInstanceForHash() throws Exception {
+        assertEquals(
+                OnDayOfMonthValueGenerator.class,
+                createDayOfMonthValueGeneratorInstance(SpecialChar.HASH).getClass()
+        );
+    }
+
+    @Test
+    public void testCreateDayOfMonthValueGeneratorInstanceForNONE() throws Exception {
+        assertEquals(
+                OnFieldValueGenerator.class,
+                createDayOfMonthValueGeneratorInstance(SpecialChar.NONE).getClass()
+        );
+    }
+
+    private FieldValueGenerator createDayOfMonthValueGeneratorInstance(SpecialChar specialChar){
+        when(mockCronField.getField()).thenReturn(CronFieldName.DAY_OF_MONTH);
+        On mockOn = mock(On.class);
+        when(mockOn.getSpecialChar()).thenReturn(new SpecialCharFieldValue(specialChar));
+        when(mockCronField.getExpression()).thenReturn(mockOn);
+        return FieldValueGeneratorFactory.createDayOfMonthValueGeneratorInstance(mockCronField, 2015, 1);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testCreateDayOfMonthValueGeneratorInstanceBadCronFieldName() throws Exception {
         when(mockCronField.getField()).thenReturn(CronFieldName.YEAR);
-        when(mockCronField.getExpression()).thenReturn(mock(On.class));
-        fieldValueGeneratorFactory.createDayOfMonthValueGeneratorInstance(mockCronField, 2015, 1);
+        On mockOn = mock(On.class);
+        when(mockOn.getSpecialChar()).thenReturn(new SpecialCharFieldValue(SpecialChar.L));//any value except NONE
+        when(mockCronField.getExpression()).thenReturn(mockOn);
+
+        FieldValueGeneratorFactory.createDayOfMonthValueGeneratorInstance(mockCronField, 2015, 1);
     }
 
     @Test
@@ -108,7 +151,7 @@ public class FieldValueGeneratorFactoryTest {
         when(mockCronField.getExpression()).thenReturn(mock(On.class));
         assertEquals(
                 OnDayOfWeekValueGenerator.class,
-                fieldValueGeneratorFactory.createDayOfWeekValueGeneratorInstance(mockCronField, 2015, 1, new WeekDay(1, false)).getClass()
+                FieldValueGeneratorFactory.createDayOfWeekValueGeneratorInstance(mockCronField, 2015, 1, new WeekDay(1, false)).getClass()
         );
     }
 
@@ -116,6 +159,6 @@ public class FieldValueGeneratorFactoryTest {
     public void testCreateDayOfWeekValueGeneratorInstanceBadCronFieldName() throws Exception {
         when(mockCronField.getField()).thenReturn(CronFieldName.YEAR);
         when(mockCronField.getExpression()).thenReturn(mock(On.class));
-        fieldValueGeneratorFactory.createDayOfWeekValueGeneratorInstance(mockCronField, 2015, 1, new WeekDay(1, false));
+        FieldValueGeneratorFactory.createDayOfWeekValueGeneratorInstance(mockCronField, 2015, 1, new WeekDay(1, false));
     }
 }

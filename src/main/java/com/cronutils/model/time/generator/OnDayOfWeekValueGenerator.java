@@ -83,7 +83,7 @@ class OnDayOfWeekValueGenerator extends FieldValueGenerator {
     }
 
     private int generateValue(On on, int year, int month) throws NoSuchValueException {
-        switch (on.getSpecialChar()){
+        switch (on.getSpecialChar().getValue()){
             case HASH:
                 return generateHashValues(on, year, month);
             case L:
@@ -94,8 +94,8 @@ class OnDayOfWeekValueGenerator extends FieldValueGenerator {
 
     private int generateHashValues(On on, int year, int month){
         int dowForFirstDoM = new DateTime(year, month, 1, 1, 1).getDayOfWeek();//1-7
-        int requiredDoW = ConstantsMapper.weekDayMapping(mondayDoWValue, ConstantsMapper.JODATIME_WEEK_DAY, on.getTime());//to normalize to joda-time value
-        int requiredNth = on.getNth();
+        int requiredDoW = ConstantsMapper.weekDayMapping(mondayDoWValue, ConstantsMapper.JODATIME_WEEK_DAY, on.getTime().getValue());//to normalize to joda-time value
+        int requiredNth = on.getNth().getValue();
         int baseDay = 1;//day 1 from given month
         int diff = dowForFirstDoM - requiredDoW;
         if(diff == 0){
@@ -114,7 +114,7 @@ class OnDayOfWeekValueGenerator extends FieldValueGenerator {
         int lastDoM = new DateTime(year, month, 1, 1, 1).dayOfMonth().getMaximumValue();
         DateTime lastDoMDateTime = new DateTime(year, month, lastDoM, 1, 1);
         int dowForLastDoM = lastDoMDateTime.getDayOfWeek();//1-7
-        int requiredDoW = ConstantsMapper.weekDayMapping(mondayDoWValue, ConstantsMapper.JODATIME_WEEK_DAY, on.getTime());//to normalize to joda-time value
+        int requiredDoW = ConstantsMapper.weekDayMapping(mondayDoWValue, ConstantsMapper.JODATIME_WEEK_DAY, on.getTime().getValue());//to normalize to joda-time value
         int dowDiff = dowForLastDoM - requiredDoW;
 
         if(dowDiff==0){

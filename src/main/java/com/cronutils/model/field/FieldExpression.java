@@ -1,6 +1,9 @@
 package com.cronutils.model.field;
 
 import com.cronutils.model.field.constraint.FieldConstraints;
+import com.cronutils.model.field.value.FieldValue;
+import com.cronutils.model.field.value.IntegerFieldValue;
+import com.cronutils.model.field.value.SpecialCharFieldValue;
 import org.apache.commons.lang3.Validate;
 
 /*
@@ -30,6 +33,15 @@ public abstract class FieldExpression {
 
     protected FieldConstraints getConstraints() {
         return constraints;
+    }
+
+    protected FieldValue validate(FieldValue fieldValue){
+        if(fieldValue instanceof IntegerFieldValue){
+            getConstraints().validateInRange(getConstraints().intToInt(((IntegerFieldValue)fieldValue).getValue()));
+        }else{
+            getConstraints().isSpecialCharAllowed(((SpecialCharFieldValue)fieldValue).getValue());
+        }
+        return fieldValue;
     }
 
     public abstract String asString();

@@ -26,7 +26,7 @@ class EveryFieldValueGenerator extends FieldValueGenerator {
     @Override
     public int generateNextValue(int reference) throws NoSuchValueException {
         Every every = (Every)expression;
-        int period = every.getTime();
+        int period = every.getTime().getValue();
         int remainder = reference % period;
         return reference+(period-remainder);
     }
@@ -34,7 +34,7 @@ class EveryFieldValueGenerator extends FieldValueGenerator {
     @Override
     public int generatePreviousValue(int reference) throws NoSuchValueException {
         Every every = (Every)expression;
-        int period = every.getTime();
+        int period = every.getTime().getValue();
         int remainder = reference % period;
         if(remainder == 0){
             return reference-period;
@@ -61,7 +61,7 @@ class EveryFieldValueGenerator extends FieldValueGenerator {
     @Override
     public boolean isMatch(int value) {
         Every every = (Every)expression;
-        return (value % every.getTime())==0;
+        return (value % every.getTime().getValue())==0;
     }
 
     @Override

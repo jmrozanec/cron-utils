@@ -5,6 +5,9 @@ import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.field.On;
 import com.cronutils.model.field.constraint.FieldConstraints;
 import com.cronutils.model.field.constraint.FieldConstraintsBuilder;
+import com.cronutils.model.field.value.IntegerFieldValue;
+import com.cronutils.model.field.value.SpecialChar;
+import com.cronutils.model.field.value.SpecialCharFieldValue;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -133,6 +136,10 @@ public class OnDayOfMonthValueGeneratorWTest {
     }
 
     private OnDayOfMonthValueGenerator createFieldValueGeneratorInstance(int month, int day) {
-        return new OnDayOfMonthValueGenerator(new CronField(CronFieldName.DAY_OF_MONTH, new On(constraints, String.format("%sW", day))), YEAR, month);
+        return new OnDayOfMonthValueGenerator(
+                new CronField(CronFieldName.DAY_OF_MONTH,
+                        new On(constraints, new IntegerFieldValue(day),
+                                new SpecialCharFieldValue(SpecialChar.W), new IntegerFieldValue(-1))
+                ),YEAR, month);
     }
 }
