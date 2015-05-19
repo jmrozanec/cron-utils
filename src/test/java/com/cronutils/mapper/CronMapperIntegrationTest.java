@@ -62,6 +62,13 @@ public class CronMapperIntegrationTest {
         assertEquals(expected, createFromQuartzToCron4j().map(quartzParser().parse(expression)).asString());
     }
 
+    @Test
+    public void testDaysOfWeekUnixToQuartz(){
+        String input = "* * * * 3,5-6";
+        String expected = "0 * * * * 4,6-7";
+        assertEquals(expected, createFromUnixToQuartz().map(unixParser().parse(input)).asString());
+    }
+
     private CronParser cron4jParser(){
         return new CronParser(CronDefinitionBuilder.instanceDefinitionFor(CronType.CRON4J));
     }
@@ -69,6 +76,11 @@ public class CronMapperIntegrationTest {
     private CronParser quartzParser(){
         return new CronParser(CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ));
     }
+    
+    private CronParser unixParser(){
+        return new CronParser(CronDefinitionBuilder.instanceDefinitionFor(CronType.UNIX));
+    }
+
 
     private CronMapper createFromCron4jToQuartz(){
         return new CronMapper(
@@ -81,4 +93,11 @@ public class CronMapperIntegrationTest {
                 CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ),
                 CronDefinitionBuilder.instanceDefinitionFor(CronType.CRON4J));
     }
+
+    private CronMapper createFromUnixToQuartz(){
+        return new CronMapper(
+                CronDefinitionBuilder.instanceDefinitionFor(CronType.UNIX),
+                CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ));
+    }
+
 }
