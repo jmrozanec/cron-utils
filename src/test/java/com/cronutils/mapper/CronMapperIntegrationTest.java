@@ -37,7 +37,7 @@ public class CronMapperIntegrationTest {
     @Test
     public void testRangeOfTimeCron4jToQuartz(){
         String expression = "0 9-18 * * 1-3";
-        String expected = String.format("0 %s *", expression);
+        String expected = "0 0 9-18 * * 2-4 *";
         assertEquals(expected, createFromCron4jToQuartz().map(cron4jParser().parse(expression)).asString());
     }
 
@@ -57,8 +57,8 @@ public class CronMapperIntegrationTest {
 
     @Test
     public void testRangeOfTimeQuartzToCron4j(){
-        String expected = "0 9-18 * * 1-3";
-        String expression = String.format("5 %s 1984", expected);
+        String expected = "0 9-18 * * 0-2";
+        String expression = "5 0 9-18 * * 1-3 1984";
         assertEquals(expected, createFromQuartzToCron4j().map(quartzParser().parse(expression)).asString());
     }
 

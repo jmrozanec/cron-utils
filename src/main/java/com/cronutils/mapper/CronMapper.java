@@ -6,9 +6,14 @@ import com.cronutils.model.field.CronField;
 import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.field.constraint.FieldConstraints;
 import com.cronutils.model.field.constraint.FieldConstraintsBuilder;
+import com.cronutils.model.field.definition.DayOfWeekFieldDefinition;
 import com.cronutils.model.field.definition.FieldDefinition;
 import com.cronutils.model.field.expression.Always;
+import com.cronutils.model.field.expression.FieldExpression;
 import com.cronutils.model.field.expression.On;
+import com.cronutils.model.field.expression.visitor.FieldExpressionVisitor;
+import com.cronutils.model.field.expression.visitor.ValueMappingFieldExpressionVisitor;
+import com.cronutils.model.field.value.FieldValue;
 import com.cronutils.model.field.value.IntegerFieldValue;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Function;
@@ -100,7 +105,16 @@ public class CronMapper {
                 mappings.put(name, returnAlwaysExpression(name));
             }
             if(sourceFieldDefinitions.get(name) != null && destFieldDefinitions.get(name) != null){
-                mappings.put(name, returnSameExpression());
+                if(CronFieldName.DAY_OF_WEEK.equals(name)){
+                    mappings.put(name,
+                            dayOfWeekMapping(
+                                    (DayOfWeekFieldDefinition)sourceFieldDefinitions.get(name),
+                                    (DayOfWeekFieldDefinition)destFieldDefinitions.get(name)
+                            )
+                    );
+                }else{
+                    mappings.put(name, returnSameExpression());
+                }
             }
         }
     }
@@ -146,6 +160,38 @@ public class CronMapper {
             @Override
             public CronField apply(CronField field) {
                 return new CronField(name, new Always(FieldConstraintsBuilder.instance().forField(name).createConstraintsInstance()));
+            }
+        };
+    }
+
+
+    @VisibleForTesting
+    static Function<CronField, CronField> dayOfWeekMapping(final DayOfWeekFieldDefinition sourceDef, final DayOfWeekFieldDefinition targetDef){
+        return new Function<CronField, CronField>() {
+            @Override
+            public CronField apply(final CronField field) {
+                FieldExpression expression = field.getExpression().accept(
+                        new ValueMappingFieldExpressionVisitor(
+                                targetDef.getConstraints(),
+                                new Function<FieldValue, FieldValue>() {
+                                    @Override
+                                    public FieldValue apply(FieldValue fieldValue) {
+                                        if(fieldValue instanceof IntegerFieldValue){
+                                            return new IntegerFieldValue(
+                                                    ConstantsMapper.weekDayMapping(
+                                                            sourceDef.getMondayDoWValue(),
+                                                            targetDef.getMondayDoWValue(),
+                                                            ((IntegerFieldValue) fieldValue).getValue()
+                                                    )
+                                            );
+                                        }else{
+                                            return fieldValue;
+                                        }
+                                    };
+                                }
+                        )
+                );
+                return new CronField(CronFieldName.DAY_OF_WEEK, expression);
             }
         };
     }
