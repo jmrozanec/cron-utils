@@ -24,6 +24,10 @@ public class On extends FieldExpression {
     private IntegerFieldValue nth;
     private SpecialCharFieldValue specialChar;
 
+    private On(On on){
+        this(on.constraints, on.time, on.specialChar, on.nth);
+    }
+
     public On(FieldConstraints constraints, SpecialCharFieldValue specialChar) {
         this(constraints, new IntegerFieldValue(DEFAULT_NTH_VALUE), specialChar);
     }
@@ -87,6 +91,11 @@ public class On extends FieldExpression {
             default:
                 return specialChar.toString();
         }
+    }
+
+    @Override
+    protected FieldExpression copyInstanceByConstructor() {
+        return new On(this);
     }
 
     private boolean isDefault(IntegerFieldValue fieldValue){

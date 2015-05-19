@@ -44,6 +44,11 @@ public class Always extends FieldExpression {
         return String.format("*%s", every.asString());
     }
 
+    @Override
+    protected FieldExpression copyInstanceByConstructor() {
+        return new Always(this);
+    }
+
     public Every getEvery() {
         return every;
     }

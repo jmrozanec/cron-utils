@@ -30,6 +30,10 @@ public class Every extends FieldExpression {
         this.time = time;
     }
 
+    private Every(Every every){
+        this(every.constraints, every.time);
+    }
+
     public IntegerFieldValue getTime() {
         return time;
     }
@@ -40,5 +44,10 @@ public class Every extends FieldExpression {
             return "";
         }
         return String.format("/%s", getTime());
+    }
+
+    @Override
+    protected FieldExpression copyInstanceByConstructor() {
+        return new Every(this);
     }
 }

@@ -53,6 +53,11 @@ public class And extends FieldExpression {
         return builder.toString();
     }
 
+    @Override
+    protected FieldExpression copyInstanceByConstructor() {
+        return new And(this);
+    }
+
     public List<FieldExpression> getExpressions() {
         return Collections.unmodifiableList(expressions);
     }

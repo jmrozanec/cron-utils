@@ -58,9 +58,15 @@ public class FieldExpressionTest {
             super(constraints);
         }
 
+
         @Override
         public String asString() {
             return null;
+        }
+
+        @Override
+        protected FieldExpression copyInstanceByConstructor() {
+            return new TestFieldExpression(this.constraints);
         }
     }
 }

@@ -1,6 +1,7 @@
 package com.cronutils.model.field.expression;
 
 import com.cronutils.model.field.constraint.FieldConstraints;
+import com.cronutils.model.field.expression.visitor.FieldExpressionVisitor;
 import com.cronutils.model.field.value.FieldValue;
 import com.cronutils.model.field.value.IntegerFieldValue;
 import com.cronutils.model.field.value.SpecialCharFieldValue;
@@ -45,4 +46,28 @@ public abstract class FieldExpression {
     }
 
     public abstract String asString();
+
+    /**
+     * This method performs a copy by constructor.
+     * We do not force copy by constructor using FieldExpression(FieldExpression)
+     * to avoid need to check correct subclass on instantiation.
+     * Invocation of copy constructor is delegated to this method, so we can use it
+     * at abstract class level.
+     * @return new FieldExpression instance.
+     */
+    protected abstract FieldExpression copyInstanceByConstructor();
+
+    /**
+     * Accept a visitor to perform some action on the instance.
+     * Current instance is cloned, so that we ensure immutability.
+     * Clone of this instance is returned after visitor.visit(clone) was invoked.
+     * @param visitor - FieldExpressionVisitor instance, never null
+     * @return FieldExpression copied instance with visitor action performed.
+     */
+    public final FieldExpression accept(FieldExpressionVisitor visitor){
+        Validate.notNull(visitor, "FieldExpressionVisitor must not be null");
+        FieldExpression clone = copyInstanceByConstructor();
+        visitor.visit(clone);
+        return clone;
+    }
 }
