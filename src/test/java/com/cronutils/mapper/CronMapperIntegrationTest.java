@@ -65,7 +65,7 @@ public class CronMapperIntegrationTest {
     @Test
     public void testDaysOfWeekUnixToQuartz(){
         String input = "* * * * 3,5-6";
-        String expected = "0 * * * * 4,6-7";
+        String expected = "0 * * * * 4,6-7 *";
         assertEquals(expected, createFromUnixToQuartz().map(unixParser().parse(input)).asString());
     }
 
