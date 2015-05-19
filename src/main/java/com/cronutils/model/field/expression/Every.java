@@ -45,9 +45,4 @@ public class Every extends FieldExpression {
         }
         return String.format("/%s", getTime());
     }
-
-    @Override
-    protected FieldExpression copyInstanceByConstructor() {
-        return new Every(this);
-    }
 }

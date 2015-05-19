@@ -1,8 +1,8 @@
 package com.cronutils.model.time.generator;
 
+import com.cronutils.model.field.constraint.FieldConstraintsBuilder;
 import com.cronutils.model.field.expression.Always;
 import com.cronutils.model.field.expression.FieldExpression;
-import com.cronutils.model.field.constraint.FieldConstraintsBuilder;
 import org.junit.Before;
 import org.junit.Test;
 

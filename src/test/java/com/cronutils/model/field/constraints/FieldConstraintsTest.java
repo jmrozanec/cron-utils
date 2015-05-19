@@ -1,7 +1,7 @@
 package com.cronutils.model.field.constraints;
 
-import com.cronutils.model.field.value.SpecialChar;
 import com.cronutils.model.field.constraint.FieldConstraints;
+import com.cronutils.model.field.value.SpecialChar;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import org.junit.Before;

@@ -1,9 +1,9 @@
 package com.cronutils.model.time.generator;
 
-import com.cronutils.model.field.expression.FieldExpression;
-import com.cronutils.model.field.expression.On;
 import com.cronutils.model.field.constraint.FieldConstraints;
 import com.cronutils.model.field.constraint.FieldConstraintsBuilder;
+import com.cronutils.model.field.expression.FieldExpression;
+import com.cronutils.model.field.expression.On;
 import com.cronutils.model.field.value.IntegerFieldValue;
 import org.junit.Before;
 import org.junit.Test;

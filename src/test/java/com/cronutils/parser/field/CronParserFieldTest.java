@@ -2,8 +2,8 @@ package com.cronutils.parser.field;
 
 import com.cronutils.model.field.CronField;
 import com.cronutils.model.field.CronFieldName;
-import com.cronutils.model.field.expression.FieldExpression;
 import com.cronutils.model.field.constraint.FieldConstraints;
+import com.cronutils.model.field.expression.FieldExpression;
 import com.cronutils.parser.CronParser;
 import org.junit.Before;
 import org.junit.Test;

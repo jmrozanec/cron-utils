@@ -1,6 +1,6 @@
 package com.cronutils.descriptor;
 
-import com.cronutils.model.field.*;
+import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.field.constraint.FieldConstraintsBuilder;
 import com.cronutils.model.field.expression.*;
 import com.cronutils.model.field.value.IntegerFieldValue;

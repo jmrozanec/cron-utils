@@ -1,8 +1,8 @@
 package com.cronutils.descriptor;
 
+import com.cronutils.model.field.constraint.FieldConstraintsBuilder;
 import com.cronutils.model.field.expression.Always;
 import com.cronutils.model.field.expression.FieldExpression;
-import com.cronutils.model.field.constraint.FieldConstraintsBuilder;
 import com.google.common.base.Function;
 import com.google.common.collect.Sets;
 

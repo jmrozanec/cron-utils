@@ -4,11 +4,11 @@ import com.cronutils.model.field.expression.*;
 
 public interface FieldExpressionVisitor {
 
-    void visit(FieldExpression expression);
+    FieldExpression visit(FieldExpression expression);
 
-    void visit(Always always);
-    void visit(And and);
-    void visit(Between between);
-    void visit(Every every);
-    void visit(On on);
+    Always visit(Always always);
+    And visit(And and);
+    Between visit(Between between);
+    Every visit(Every every);
+    On visit(On on);
 }

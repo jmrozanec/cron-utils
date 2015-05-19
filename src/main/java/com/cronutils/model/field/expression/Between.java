@@ -82,9 +82,4 @@ public class Between extends FieldExpression {
     public String asString() {
         return String.format("%s-%s%s", from, to, every.asString());
     }
-
-    @Override
-    protected FieldExpression copyInstanceByConstructor() {
-        return new Between(this);
-    }
 }

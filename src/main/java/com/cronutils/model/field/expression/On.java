@@ -93,11 +93,6 @@ public class On extends FieldExpression {
         }
     }
 
-    @Override
-    protected FieldExpression copyInstanceByConstructor() {
-        return new On(this);
-    }
-
     private boolean isDefault(IntegerFieldValue fieldValue){
         return fieldValue.getValue()==DEFAULT_NTH_VALUE;
     }
