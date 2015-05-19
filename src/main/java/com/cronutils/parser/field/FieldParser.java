@@ -1,7 +1,7 @@
 package com.cronutils.parser.field;
 
-import com.cronutils.model.field.*;
 import com.cronutils.model.field.constraint.FieldConstraints;
+import com.cronutils.model.field.expression.*;
 import com.cronutils.model.field.value.FieldValue;
 import com.cronutils.model.field.value.IntegerFieldValue;
 import com.cronutils.model.field.value.SpecialChar;

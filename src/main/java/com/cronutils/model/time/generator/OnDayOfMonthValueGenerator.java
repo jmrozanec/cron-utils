@@ -2,8 +2,8 @@ package com.cronutils.model.time.generator;
 
 import com.cronutils.model.field.CronField;
 import com.cronutils.model.field.CronFieldName;
-import com.cronutils.model.field.FieldExpression;
-import com.cronutils.model.field.On;
+import com.cronutils.model.field.expression.FieldExpression;
+import com.cronutils.model.field.expression.On;
 import com.google.common.collect.Lists;
 import org.apache.commons.lang3.Validate;
 import org.joda.time.DateTime;

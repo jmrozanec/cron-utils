@@ -3,7 +3,7 @@ package com.cronutils.model;
 import com.cronutils.model.definition.CronDefinition;
 import com.cronutils.model.field.CronField;
 import com.cronutils.model.field.CronFieldName;
-import com.cronutils.model.field.FieldExpression;
+import com.cronutils.model.field.expression.FieldExpression;
 import com.google.common.collect.Lists;
 import org.junit.Before;
 import org.junit.Test;

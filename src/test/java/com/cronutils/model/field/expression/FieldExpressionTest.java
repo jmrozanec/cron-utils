@@ -1,6 +1,8 @@
-package com.cronutils.model.field;
+package com.cronutils.model.field.expression;
 
 import com.cronutils.model.field.constraint.FieldConstraints;
+import com.cronutils.model.field.expression.And;
+import com.cronutils.model.field.expression.FieldExpression;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;

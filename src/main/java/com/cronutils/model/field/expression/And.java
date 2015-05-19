@@ -1,9 +1,8 @@
-package com.cronutils.model.field;
+package com.cronutils.model.field.expression;
 
 import com.cronutils.model.field.constraint.FieldConstraintsBuilder;
 import com.google.common.collect.Lists;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 

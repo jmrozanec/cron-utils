@@ -1,7 +1,8 @@
-package com.cronutils.model.field;
+package com.cronutils.model.field.expression;
 
 import com.cronutils.model.field.constraint.FieldConstraints;
 import com.cronutils.model.field.constraint.FieldConstraintsBuilder;
+import com.cronutils.model.field.expression.Every;
 import com.cronutils.model.field.value.IntegerFieldValue;
 import org.junit.Before;
 import org.junit.Test;

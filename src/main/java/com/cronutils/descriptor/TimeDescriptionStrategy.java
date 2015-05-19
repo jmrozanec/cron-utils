@@ -2,6 +2,7 @@ package com.cronutils.descriptor;
 
 import com.cronutils.model.field.*;
 import com.cronutils.model.field.constraint.FieldConstraintsBuilder;
+import com.cronutils.model.field.expression.*;
 import com.cronutils.model.field.value.IntegerFieldValue;
 import com.google.common.base.Function;
 import com.google.common.collect.Sets;

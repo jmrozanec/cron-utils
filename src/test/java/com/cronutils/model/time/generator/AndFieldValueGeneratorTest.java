@@ -1,8 +1,8 @@
 package com.cronutils.model.time.generator;
 
-import com.cronutils.model.field.And;
-import com.cronutils.model.field.FieldExpression;
-import com.cronutils.model.field.On;
+import com.cronutils.model.field.expression.And;
+import com.cronutils.model.field.expression.FieldExpression;
+import com.cronutils.model.field.expression.On;
 import com.cronutils.model.field.constraint.FieldConstraints;
 import com.cronutils.model.field.constraint.FieldConstraintsBuilder;
 import com.cronutils.model.field.value.IntegerFieldValue;

@@ -1,10 +1,10 @@
 package com.cronutils.model.time;
 
 import com.cronutils.model.definition.CronDefinition;
-import com.cronutils.model.field.Always;
+import com.cronutils.model.field.expression.Always;
 import com.cronutils.model.field.CronField;
 import com.cronutils.model.field.CronFieldName;
-import com.cronutils.model.field.On;
+import com.cronutils.model.field.expression.On;
 import com.cronutils.model.field.constraint.FieldConstraintsBuilder;
 import com.cronutils.model.field.value.IntegerFieldValue;
 import com.cronutils.model.time.generator.FieldValueGenerator;

@@ -1,4 +1,4 @@
-package com.cronutils.model.field;
+package com.cronutils.model.field.expression;
 
 /*
  * Copyright 2014 jmrozanec
@@ -14,7 +14,6 @@ package com.cronutils.model.field;
  */
 
 import com.cronutils.model.field.constraint.FieldConstraints;
-import com.cronutils.model.field.value.FieldValue;
 import com.cronutils.model.field.value.IntegerFieldValue;
 
 /**

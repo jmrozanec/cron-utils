@@ -1,10 +1,10 @@
 package com.cronutils.mapper;
 
 import com.cronutils.model.definition.CronDefinition;
-import com.cronutils.model.field.Always;
+import com.cronutils.model.field.expression.Always;
 import com.cronutils.model.field.CronField;
 import com.cronutils.model.field.CronFieldName;
-import com.cronutils.model.field.On;
+import com.cronutils.model.field.expression.On;
 import com.google.common.base.Function;
 import org.junit.Before;
 import org.junit.Test;

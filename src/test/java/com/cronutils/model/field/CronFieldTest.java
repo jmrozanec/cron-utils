@@ -1,5 +1,6 @@
 package com.cronutils.model.field;
 
+import com.cronutils.model.field.expression.FieldExpression;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;

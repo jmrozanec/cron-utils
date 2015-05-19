@@ -1,6 +1,6 @@
 package com.cronutils.model.time.generator;
 
-import com.cronutils.model.field.FieldExpression;
+import com.cronutils.model.field.expression.FieldExpression;
 import org.apache.commons.lang3.Validate;
 
 import java.util.List;

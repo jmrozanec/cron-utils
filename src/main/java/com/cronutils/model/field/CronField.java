@@ -1,5 +1,7 @@
 package com.cronutils.model.field;
 
+import com.cronutils.model.field.expression.FieldExpression;
+
 import java.util.Comparator;
 
 /*

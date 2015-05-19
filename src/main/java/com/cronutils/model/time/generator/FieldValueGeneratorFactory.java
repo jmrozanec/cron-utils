@@ -2,6 +2,7 @@ package com.cronutils.model.time.generator;
 
 import com.cronutils.mapper.WeekDay;
 import com.cronutils.model.field.*;
+import com.cronutils.model.field.expression.*;
 import com.cronutils.model.field.value.SpecialChar;
 
 /*

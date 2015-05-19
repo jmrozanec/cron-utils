@@ -1,4 +1,4 @@
-package com.cronutils.model.field;
+package com.cronutils.model.field.expression;
 
 /*
  * Copyright 2014 jmrozanec

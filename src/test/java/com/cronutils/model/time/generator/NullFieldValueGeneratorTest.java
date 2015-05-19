@@ -1,6 +1,6 @@
 package com.cronutils.model.time.generator;
 
-import com.cronutils.model.field.FieldExpression;
+import com.cronutils.model.field.expression.FieldExpression;
 import org.junit.Before;
 import org.junit.Test;
 
