@@ -106,6 +106,42 @@ public class ExecutionTimeIntegrationTest {
         assertTrue(executionTime.timeFromLastExecution(now).getStandardMinutes() <= 120);
     }
 
+    /**
+     * Test for issue #19
+     * https://github.com/jmrozanec/cron-utils/issues/19
+     * Reported case: When nextExecution shifts to the 24th hour (e.g. 23:59:59 + 00:00:01), JodaTime will throw an exception
+     * Expected: should shift one day
+     */
+    @Test
+    public void testShiftTo24thHour() {
+        String expression = "0/1 * * 1/1 * ? *";  // every second every day
+        ExecutionTime executionTime = ExecutionTime.forCron(quartzCronParser.parse(expression));
+
+        DateTime now = new DateTime().withTime(23, 59, 59, 0);
+        DateTime expected = now.plusSeconds(1);
+        DateTime nextExecution = executionTime.nextExecution(now);
+
+        assertEquals(expected, nextExecution);
+    }
+
+    /**
+     * Test for issue #19
+     * https://github.com/jmrozanec/cron-utils/issues/19
+     * Reported case: When nextExecution shifts to 32nd day (e.g. 2015-01-31 23:59:59 + 00:00:01), JodaTime will throw an exception
+     * Expected: should shift one month
+     */
+    @Test
+    public void testShiftTo32ndDay() {
+        String expression = "0/1 * * 1/1 * ? *";  // every second every day
+        ExecutionTime executionTime = ExecutionTime.forCron(quartzCronParser.parse(expression));
+
+        DateTime now = new DateTime(2015, 1, 31, 23, 59, 59, 0);
+        DateTime expected = now.plusSeconds(1);
+        DateTime nextExecution = executionTime.nextExecution(now);
+
+        assertEquals(expected, nextExecution);
+    }
+
     private DateTime truncateToSeconds(DateTime dateTime){
         return new DateTime(
                 dateTime.getYear(),
