@@ -11,9 +11,23 @@ package com.cronutils.model.field.value;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+/**
+ * Encapsulates a field value, allowing us to
+ * manipulate different types of values in a homogeneous way
+ * @param <T>
+ */
 public abstract class FieldValue<T> {
+    /**
+     * Allows to obtain the value
+     * @return some value, never null
+     */
     public abstract T getValue();
 
+    /**
+     * String representation of encapsulated value.
+     * @return String, never null
+     */
     public final String toString(){
         return String.format("%s", getValue());
     }
