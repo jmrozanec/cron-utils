@@ -6,6 +6,11 @@ import com.cronutils.model.field.value.FieldValue;
 import com.cronutils.model.field.value.IntegerFieldValue;
 import com.google.common.base.Function;
 
+/**
+ * Performs a transformation on FieldExpression values.
+ * Returns a new FieldExpression instance considering a possible change
+ * in new FieldExpression instance constraints.
+ */
 public class ValueMappingFieldExpressionVisitor implements FieldExpressionVisitor {
     private FieldConstraints destinationConstraint;
     private Function<FieldValue, FieldValue> transform;

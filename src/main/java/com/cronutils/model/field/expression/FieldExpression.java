@@ -36,6 +36,13 @@ public abstract class FieldExpression {
         return constraints;
     }
 
+    /**
+     * Validates given FieldValue.
+     * If an IntegerFieldValue instance, will check if is in allowed range.
+     * If a SpecialCharFieldValue instance, will check if SpecialChar is allowed.
+     * @param fieldValue - FieldValue instance, never null
+     * @return same FieldValue instance as parameter, never null
+     */
     protected FieldValue validate(FieldValue fieldValue){
         if(fieldValue instanceof IntegerFieldValue){
             getConstraints().validateInRange(getConstraints().intToInt(((IntegerFieldValue)fieldValue).getValue()));
@@ -45,6 +52,10 @@ public abstract class FieldExpression {
         return fieldValue;
     }
 
+    /**
+     * Represents FieldExpression as string
+     * @return String representation, never null.
+     */
     public abstract String asString();
 
     /**
