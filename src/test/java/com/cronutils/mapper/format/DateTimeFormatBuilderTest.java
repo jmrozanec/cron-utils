@@ -21,11 +21,11 @@ public class DateTimeFormatBuilderTest {
 
     @Test
     public void testCreatePatternFor() throws Exception {
-        assertForPattern("MMMM dd, YYYY", "June 9, 2011");
-        assertForPattern("MMM dd, YYYY", "Jun 9, 2011");
+        assertForPattern("MMMM d, YYYY", "June 9, 2011");
+        assertForPattern("MMM d, YYYY", "Jun 9, 2011");
         assertForPattern("MMM dd", "Jun 09");
-        assertForPattern("EEEE, MMMM dd, YYYY", "Thursday, June 9, 2011");
-        assertForPattern("EEE MMM dd", "Thu Jun 9");
+        assertForPattern("EEEE, MMMM d, YYYY", "Thursday, June 9, 2011");
+        assertForPattern("EEE MMM d", "Thu Jun 9");
         assertForPattern("MM/dd/YY", "06/09/11");
         assertForPattern("hh:mm:ss a", "01:00:00 AM");
         assertForPattern("HH:mm", "20:52");
