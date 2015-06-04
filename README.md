@@ -120,16 +120,6 @@ cron-utils is available on [Maven central](http://search.maven.org/#search%7Cga%
     //Time to next execution
     Duration timeToNextExecution = executionTime.timeToNextExecution(now);
 
-***Date and time formatting for humans!***
-
-    //You no longer need to remember "YYYY-MM-dd KK a" patterns.
-    DateTimeFormatter formatter =
-            DateTimeFormatBuilder
-                    .usingLocale(Locale.US)
-                    .createPatternFor("Thursday, June 9, 2011");
-    String formattedDateTime = formatter.print(lastExecution);
-    //formattedDateTime will be lastExecution in "dayOfWeek, Month day, Year" format
-
 ***Map constants between libraries***
 
     //Map day of week value from Quartz to JodaTime
@@ -138,6 +128,21 @@ cron-utils is available on [Maven central](http://search.maven.org/#search%7Cga%
                     ConstantsMapper.QUARTZ_WEEK_DAY,
                     ConstantsMapper.JODATIME_WEEK_DAY
             );
+
+***Date and time formatting for humans!***
+
+Use [htime](https://github.com/jmrozanec/htime) - Human readable datetime formatting for Java!
+Despite this functionality is not bundled in the same jar, is a cron-utils project you may find useful.
+
+    //You no longer need to remember "YYYY-MM-dd KK a" patterns.
+    DateTimeFormatter formatter = 
+	    HDateTimeFormatBuilder
+		    .getInstance()
+		    .forJodaTime()
+		    .getFormatter(Locale.US)
+		    .forPattern("June 9, 2011");
+    String formattedDateTime = formatter.print(lastExecution);
+    //formattedDateTime will be lastExecution in "dayOfWeek, Month day, Year" format
 
 
 **Contribute & Support!**
