@@ -63,6 +63,8 @@
 		<junit.version>4.11</junit.version>
         <mockito.version>1.9.5</mockito.version>
         <powermock.version>1.5.5</powermock.version>
+        <guava.version>18.0</guava.version>
+        <htime.version>1.0.0</htime.version>
 
 		<github.global.server>github</github.global.server>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -89,7 +91,12 @@
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>17.0</version>
+            <version>${guava.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.cronutils</groupId>
+            <artifactId>htime</artifactId>
+            <version>${htime.version}</version>
         </dependency>
 
         <dependency>
