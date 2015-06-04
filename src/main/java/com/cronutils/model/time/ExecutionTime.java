@@ -160,15 +160,7 @@ public class ExecutionTime {
                 new TimeNode(generateYearCandidates(date.getYear()))
                         .getNextValue(date.getYear(), monthsValue.getShifts());
 
-        return
-                new DateTime(
-                        yearsValue.getValue(),
-                        monthsValue.getValue(),
-                        daysValue.getValue(),
-                        hoursValue.getValue(),
-                        minutesValue.getValue(),
-                        secondsValue.getValue()
-                );
+        return initDateTime(yearsValue, monthsValue, daysValue, hoursValue, minutesValue, secondsValue);
     }
 
     /**
@@ -246,15 +238,7 @@ public class ExecutionTime {
                 new TimeNode(generateYearCandidates(date.getYear()))
                         .getPreviousValue(date.getYear(), monthsValue.getShifts());
 
-        return
-                new DateTime(
-                        yearsValue.getValue(),
-                        monthsValue.getValue(),
-                        daysValue.getValue(),
-                        hoursValue.getValue(),
-                        minutesValue.getValue(),
-                        secondsValue.getValue()
-                );
+        return initDateTime(yearsValue, monthsValue, daysValue, hoursValue, minutesValue, secondsValue);
     }
 
     /**
@@ -292,5 +276,17 @@ public class ExecutionTime {
             } catch (NoSuchValueException e) {}
         }
         return candidates;
+    }
+
+    private DateTime initDateTime(NearestValue yearsValue, NearestValue monthsValue, NearestValue daysValue,
+                                  NearestValue hoursValue, NearestValue minutesValue, NearestValue secondsValue) {
+
+        return new DateTime(0, 1, 1, 0, 0, 0)
+                .plusYears(yearsValue.getValue())
+                .plusMonths(monthsValue.getValue() - 1)
+                .plusDays(daysValue.getValue() - 1)
+                .plusHours(hoursValue.getValue())
+                .plusMinutes(minutesValue.getValue())
+                .plusSeconds(secondsValue.getValue());
     }
 }
