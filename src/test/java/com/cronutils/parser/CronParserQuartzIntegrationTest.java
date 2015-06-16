@@ -73,4 +73,12 @@ public class CronParserQuartzIntegrationTest {
     public void testNLSupported() throws Exception {
         parser.parse("* * * 3L * ?");
     }
+
+    /**
+     * Issue #23: we should support L in DoM
+     */
+    @Test
+    public void testLSupportedInDoM() throws Exception {
+        parser.parse("0 0/10 22 L * ?");
+    }
 }

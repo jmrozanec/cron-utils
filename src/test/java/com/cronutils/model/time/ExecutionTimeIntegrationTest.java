@@ -142,6 +142,23 @@ public class ExecutionTimeIntegrationTest {
         assertEquals(expected, nextExecution);
     }
 
+    /**
+     * Issue #24: next execution not properly calculated
+     */
+    public void testTimeShiftingProperlyDone() throws Exception {
+        ExecutionTime executionTime = ExecutionTime.forCron(quartzCronParser.parse("0 0/10 22 * * *"));
+        DateTime nextExecution =
+                executionTime.nextExecution(
+                        DateTime.now()
+                                .withHourOfDay(15)
+                                .withMinuteOfHour(27)
+                );
+        assertEquals(22, nextExecution.getHourOfDay());
+        assertEquals(0, nextExecution.getMinuteOfHour());
+    }
+
+
+
     private DateTime truncateToSeconds(DateTime dateTime){
         return new DateTime(
                 dateTime.getYear(),

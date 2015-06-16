@@ -100,6 +100,7 @@ public class FieldParser {
         constraints.validateAllCharsValid(exp);
         SpecialCharFieldValue specialChar = new SpecialCharFieldValue(SpecialChar.NONE);
         IntegerFieldValue nth = new IntegerFieldValue(-1);
+        IntegerFieldValue time = new IntegerFieldValue(-1);
         String expression = exp;
         if (exp.contains("#")) {
             specialChar = new SpecialCharFieldValue(SpecialChar.HASH);
@@ -114,7 +115,7 @@ public class FieldParser {
             specialChar = new SpecialCharFieldValue(SpecialChar.LW);
             exp = exp.replace("LW", "");
             if ("".equals(exp)) {
-                expression = "0";//to avoid a NumberFormatException
+                expression = null;
             } else {
                 expression = exp;
             }
@@ -123,7 +124,7 @@ public class FieldParser {
             specialChar = new SpecialCharFieldValue(SpecialChar.L);
             exp = exp.replace("L", "");
             if ("".equals(exp)) {
-                expression = "0";//to avoid a NumberFormatException
+                expression = null;
             } else {
                 expression = exp;
             }
@@ -133,7 +134,11 @@ public class FieldParser {
             expression = exp.replace("W", "");
         }
         constraints.validateSpecialCharAllowed(specialChar.getValue());
-        return new On(constraints, mapToIntegerFieldValue(expression), specialChar, nth);
+        if(expression!=null){
+            return new On(constraints, mapToIntegerFieldValue(expression), specialChar, nth);
+        }else{
+            return new On(constraints, time, specialChar, nth);
+        }
     }
 
     private IntegerFieldValue mapToIntegerFieldValue(String string){
