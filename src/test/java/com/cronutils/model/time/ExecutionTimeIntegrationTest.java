@@ -156,7 +156,6 @@ public class ExecutionTimeIntegrationTest {
                                 .withHourOfDay(15)
                                 .withMinuteOfHour(27)
                 );
-        System.out.println(nextExecution);
         assertEquals(22, nextExecution.getHourOfDay());
         assertEquals(0, nextExecution.getMinuteOfHour());
     }

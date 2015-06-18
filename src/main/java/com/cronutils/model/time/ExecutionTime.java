@@ -95,50 +95,25 @@ public class ExecutionTime {
      */
     public DateTime nextExecution(DateTime date) {
         Validate.notNull(date);
-        if(isMatch(date)){
-            date = date.plusSeconds(1);
-        }
         try {
-            return nextClosestMatch(date);
+            DateTime nextMatch = nextClosestMatch(date);
+            if(nextMatch.equals(date)){
+                nextMatch = nextClosestMatch(date.plusSeconds(1));
+            }
+            return nextMatch;
         } catch (NoSuchValueException e) {
             throw new IllegalArgumentException(e);
         }
     }
 
-    @VisibleForTesting
-    boolean isMatch(DateTime date){
-        List<Integer> year = yearsValueGenerator.generateCandidates(date.getYear(), date.getYear());
-        if(year.isEmpty()){
-            return false;
-        }
-        if(!months.getValues().contains(date.getMonthOfYear())){
-            return false;
-        }
-        TimeNode days =
-                new TimeNode(
-                        generateDayCandidates(
-                                date.getYear(), date.getMonthOfYear(),
-                                ((DayOfWeekFieldDefinition)
-                                        cronDefinition.getFieldDefinition(CronFieldName.DAY_OF_WEEK)
-                                ).getMondayDoWValue()
-                        )
-                );
-        if(!days.getValues().contains(date.getDayOfMonth())){
-            return false;
-        }
-        if(!hours.getValues().contains(date.getHourOfDay())){
-            return false;
-        }
-        if(!minutes.getValues().contains(date.getMinuteOfHour())){
-            return false;
-        }
-        if(!seconds.getValues().contains(date.getSecondOfMinute())){
-            return false;
-        }
-        return true;
-    }
-
-    public DateTime nextClosestMatch(DateTime date) throws NoSuchValueException {
+    /**
+     * If date is not match, will return next closest match.
+     * If date is match, will return this date.
+     * @param date - reference DateTime instance - never null;
+     * @return DateTime instance, never null. Value obeys logic specified above.
+     * @throws NoSuchValueException
+     */
+    DateTime nextClosestMatch(DateTime date) throws NoSuchValueException {
         List<Integer> year = yearsValueGenerator.generateCandidates(date.getYear(), date.getYear());
         TimeNode days =
                 new TimeNode(
