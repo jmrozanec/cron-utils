@@ -40,8 +40,7 @@ public class ExecutionTimeIntegrationTest {
 
     @Test
     public void testNextExecutionEverySecond() throws Exception {
-        DateTime now = DateTime.now();
-        now = now.minusMillis(now.getMillisOfSecond());
+        DateTime now = truncateToSeconds(DateTime.now());
         DateTime expected = truncateToSeconds(now.plusSeconds(1));
         ExecutionTime executionTime = ExecutionTime.forCron(quartzCronParser.parse(EVERY_SECOND));
         assertEquals(expected, executionTime.nextExecution(now));
@@ -49,8 +48,7 @@ public class ExecutionTimeIntegrationTest {
 
     @Test
     public void testTimeToNextExecution() throws Exception {
-        DateTime now = DateTime.now();
-        now = now.minusMillis(now.getMillisOfSecond());
+        DateTime now = truncateToSeconds(DateTime.now());
         DateTime expected = truncateToSeconds(now.plusSeconds(1));
         ExecutionTime executionTime = ExecutionTime.forCron(quartzCronParser.parse(EVERY_SECOND));
         assertEquals(new Interval(now, expected).toDuration(), executionTime.timeToNextExecution(now));
@@ -58,7 +56,7 @@ public class ExecutionTimeIntegrationTest {
 
     @Test
     public void testLastExecution() throws Exception {
-        DateTime now = DateTime.now();
+        DateTime now = truncateToSeconds(DateTime.now());
         DateTime expected = truncateToSeconds(now.minusSeconds(1));
         ExecutionTime executionTime = ExecutionTime.forCron(quartzCronParser.parse(EVERY_SECOND));
         assertEquals(expected, executionTime.lastExecution(now));
@@ -66,7 +64,7 @@ public class ExecutionTimeIntegrationTest {
 
     @Test
     public void testTimeFromLastExecution() throws Exception {
-        DateTime now = DateTime.now();
+        DateTime now = truncateToSeconds(DateTime.now());
         DateTime expected = truncateToSeconds(now.minusSeconds(1));
         ExecutionTime executionTime = ExecutionTime.forCron(quartzCronParser.parse(EVERY_SECOND));
         assertEquals(new Interval(expected, now).toDuration(), executionTime.timeFromLastExecution(now));

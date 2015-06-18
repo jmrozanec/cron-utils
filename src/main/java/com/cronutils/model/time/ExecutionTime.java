@@ -131,26 +131,76 @@ public class ExecutionTime {
         int lowestSecond = seconds.getValues().get(0);
 
         if(year.isEmpty()){
-            return new DateTime(yearsValueGenerator.generateNextValue(date.getYear()), lowestMonth, lowestDay, lowestHour, lowestMinute, lowestSecond);
+            return initDateTime(yearsValueGenerator.generateNextValue(date.getYear()), lowestMonth, lowestDay, lowestHour, lowestMinute, lowestSecond);
         }
         if(!months.getValues().contains(date.getMonthOfYear())){
-            return new DateTime(date.getYear(), months.getNextValue(date.getMonthOfYear(), 0).getValue(), lowestDay, lowestHour, lowestMinute, lowestSecond);
+            return initDateTime(date.getYear(), months.getNextValue(date.getMonthOfYear(), 0).getValue(), lowestDay, lowestHour, lowestMinute, lowestSecond);
         }
         if(!days.getValues().contains(date.getDayOfMonth())){
-            return new DateTime(date.getYear(), date.getMonthOfYear(), days.getNextValue(date.getDayOfMonth(), 0).getValue(), lowestHour, lowestMinute, lowestSecond);
+            return initDateTime(date.getYear(), date.getMonthOfYear(), days.getNextValue(date.getDayOfMonth(), 0).getValue(), lowestHour, lowestMinute, lowestSecond);
         }
         if(!hours.getValues().contains(date.getHourOfDay())){
-            return new DateTime(date.getYear(), date.getMonthOfYear(), date.getDayOfMonth(), hours.getNextValue(date.getHourOfDay(), 0).getValue(), lowestMinute, lowestSecond);
+            return initDateTime(date.getYear(), date.getMonthOfYear(), date.getDayOfMonth(), hours.getNextValue(date.getHourOfDay(), 0).getValue(), lowestMinute, lowestSecond);
         }
         if(!minutes.getValues().contains(date.getMinuteOfHour())){
-            return new DateTime(date.getYear(), date.getMonthOfYear(), date.getDayOfMonth(), date.getHourOfDay(), minutes.getNextValue(date.getMinuteOfHour(), 0).getValue(), lowestSecond);
+            return initDateTime(date.getYear(), date.getMonthOfYear(), date.getDayOfMonth(), date.getHourOfDay(), minutes.getNextValue(date.getMinuteOfHour(), 0).getValue(), lowestSecond);
         }
         if(!seconds.getValues().contains(date.getSecondOfMinute())){
             int nextSeconds = seconds.getNextValue(date.getSecondOfMinute(), 0).getValue();
             if(nextSeconds<=date.getSecondOfMinute()){
                 return nextClosestMatch(date.plusSeconds(1));
             }else{
-                return new DateTime(date.getYear(), date.getMonthOfYear(), date.getDayOfMonth(), date.getHourOfDay(), date.getMinuteOfHour(), nextSeconds);
+                return initDateTime(date.getYear(), date.getMonthOfYear(), date.getDayOfMonth(), date.getHourOfDay(), date.getMinuteOfHour(), nextSeconds);
+            }
+        }
+        return date;
+    }
+
+    /**
+     * If date is not match, will return prevoius closest match.
+     * If date is match, will return this date.
+     * @param date - reference DateTime instance - never null;
+     * @return DateTime instance, never null. Value obeys logic specified above.
+     * @throws NoSuchValueException
+     */
+    DateTime previousClosestMatch(DateTime date) throws NoSuchValueException {
+        List<Integer> year = yearsValueGenerator.generateCandidates(date.getYear(), date.getYear());
+        TimeNode days =
+                new TimeNode(
+                        generateDayCandidates(
+                                date.getYear(), date.getMonthOfYear(),
+                                ((DayOfWeekFieldDefinition)
+                                        cronDefinition.getFieldDefinition(CronFieldName.DAY_OF_WEEK)
+                                ).getMondayDoWValue()
+                        )
+                );
+        int highestMonth = months.getValues().get(months.getValues().size()-1);
+        int highestDay = days.getValues().get(days.getValues().size()-1);
+        int highestHour = hours.getValues().get(hours.getValues().size()-1);
+        int highestMinute = minutes.getValues().get(minutes.getValues().size()-1);
+        int highestSecond = seconds.getValues().get(seconds.getValues().size()-1);
+
+        if(year.isEmpty()){
+            return initDateTime(yearsValueGenerator.generatePreviousValue(date.getYear()), highestMonth, highestDay, highestHour, highestMinute, highestSecond);
+        }
+        if(!months.getValues().contains(date.getMonthOfYear())){
+            return initDateTime(date.getYear(), months.getPreviousValue(date.getMonthOfYear(), 0).getValue(), highestDay, highestHour, highestMinute, highestSecond);
+        }
+        if(!days.getValues().contains(date.getDayOfMonth())){
+            return initDateTime(date.getYear(), date.getMonthOfYear(), days.getPreviousValue(date.getDayOfMonth(), 0).getValue(), highestHour, highestMinute, highestSecond);
+        }
+        if(!hours.getValues().contains(date.getHourOfDay())){
+            return initDateTime(date.getYear(), date.getMonthOfYear(), date.getDayOfMonth(), hours.getPreviousValue(date.getHourOfDay(), 0).getValue(), highestMinute, highestSecond);
+        }
+        if(!minutes.getValues().contains(date.getMinuteOfHour())){
+            return initDateTime(date.getYear(), date.getMonthOfYear(), date.getDayOfMonth(), date.getHourOfDay(), minutes.getPreviousValue(date.getMinuteOfHour(), 0).getValue(), highestSecond);
+        }
+        if(!seconds.getValues().contains(date.getSecondOfMinute())){
+            int previousSeconds = seconds.getPreviousValue(date.getSecondOfMinute(), 0).getValue();
+            if(previousSeconds>=date.getSecondOfMinute()){
+                return previousClosestMatch(date.minusSeconds(1));
+            }else{
+                return initDateTime(date.getYear(), date.getMonthOfYear(), date.getDayOfMonth(), date.getHourOfDay(), date.getMinuteOfHour(), previousSeconds);
             }
         }
         return date;
@@ -172,66 +222,15 @@ public class ExecutionTime {
      */
     public DateTime lastExecution(DateTime date){
         Validate.notNull(date);
-        //we request previous second value. Ask for a shift, since if matches, we stay at same time as reference time
-        NearestValue secondsValue = seconds.getPreviousValue(date.getSecondOfMinute(), 1);
-        //prev minute value. If second shifted, lets shift
-        NearestValue minutesValue = minutes.getPreviousValue(date.getMinuteOfHour(), secondsValue.getShifts());
-        //prev hour value. If minutes shifted, lets shift
-        NearestValue hoursValue = hours.getPreviousValue(date.getHourOfDay(), minutesValue.getShifts());
-        NearestValue monthsValue;
-
-        /*
-        since days differ from month to month, we need to generate possible days for
-        reference month, evaluate, and if we need to switch to next month, days need
-        to be re-evaluated.
-         */
-        int month = 1;
-        int day = 1;
-        //if current month is contained, we calculate days and try
-        if(months.getValues().contains(date.getMonthOfYear())){
-            monthsValue = new NearestValue(date.getMonthOfYear(), 0);
-            month = monthsValue.getValue();
-            day = date.getDayOfMonth();
-        } else {
-            //if current month is not contained, get the nearest match,
-            // and reset reference day to last day in month, since last day match in month will be ok
-            monthsValue = months.getPreviousValue(date.getMonthOfYear(), 0);
-            month = monthsValue.getValue();
-            day = new DateTime(date.getYear(), month, 1, 1, 1).dayOfMonth().withMaximumValue().getDayOfMonth();
+        try {
+            DateTime previousMatch = previousClosestMatch(date);
+            if(previousMatch.equals(date)){
+                previousMatch = previousClosestMatch(date.minusSeconds(1));
+            }
+            return previousMatch;
+        } catch (NoSuchValueException e) {
+            throw new IllegalArgumentException(e);
         }
-        TimeNode days =
-                new TimeNode(
-                        generateDayCandidates(
-                                date.getYear(), month,
-                                ((DayOfWeekFieldDefinition)
-                                        cronDefinition.getFieldDefinition(CronFieldName.DAY_OF_WEEK)
-                                ).getMondayDoWValue()
-                        )
-                );
-        //we evaluate days and apply hour shifts
-        NearestValue daysValue = days.getPreviousValue(day, hoursValue.getShifts());
-        //if days requires a new shift, we need to recalculate months and pick last day
-        monthsValue = months.getPreviousValue(month, daysValue.getShifts());
-        if(daysValue.getShifts()>0){
-            days =
-                    new TimeNode(
-                            generateDayCandidates(
-                                    date.getYear(), monthsValue.getValue(),
-                                    ((DayOfWeekFieldDefinition)
-                                            cronDefinition.getFieldDefinition(CronFieldName.DAY_OF_WEEK)
-                                    ).getMondayDoWValue()
-                            )
-                    );
-            //we ask for day candidates and pick the last one. We know candidates are sorted
-            List<Integer>dayCandidates = days.getValues();
-            daysValue = new NearestValue(dayCandidates.get(dayCandidates.size()-1), 0);
-        }
-        //finally calculate years: we take reference and apply month shifts
-        NearestValue yearsValue =
-                new TimeNode(generateYearCandidates(date.getYear()))
-                        .getPreviousValue(date.getYear(), monthsValue.getShifts());
-
-        return initDateTime(yearsValue, monthsValue, daysValue, hoursValue, minutesValue, secondsValue);
     }
 
     /**
@@ -253,33 +252,14 @@ public class ExecutionTime {
         return candidatesList;
     }
 
-    private List<Integer> generateYearCandidates(int referenceYear){
-        List<Integer> candidates = Lists.newArrayList();
-        if(yearsValueGenerator.isMatch(referenceYear)){
-            candidates.add(referenceYear);
-        }
-        int highReference = referenceYear;
-        int lowReference = referenceYear;
-        for(int j=0; j<5; j++){
-            try {
-                highReference = yearsValueGenerator.generateNextValue(highReference);
-                lowReference = yearsValueGenerator.generatePreviousValue(lowReference);
-                candidates.add(highReference);
-                candidates.add(lowReference);
-            } catch (NoSuchValueException e) {}
-        }
-        return candidates;
-    }
-
-    private DateTime initDateTime(NearestValue yearsValue, NearestValue monthsValue, NearestValue daysValue,
-                                  NearestValue hoursValue, NearestValue minutesValue, NearestValue secondsValue) {
-
+    private DateTime initDateTime(int years, int monthsOfYear, int dayOfMonth,
+                                  int hoursOfDay, int minutesOfHour, int secondsOfMinute) {
         return new DateTime(0, 1, 1, 0, 0, 0)
-                .plusYears(yearsValue.getValue())
-                .plusMonths(monthsValue.getValue() - 1)
-                .plusDays(daysValue.getValue() - 1)
-                .plusHours(hoursValue.getValue())
-                .plusMinutes(minutesValue.getValue())
-                .plusSeconds(secondsValue.getValue());
+                .plusYears(years)
+                .plusMonths(monthsOfYear - 1)
+                .plusDays(dayOfMonth - 1)
+                .plusHours(hoursOfDay)
+                .plusMinutes(minutesOfHour)
+                .plusSeconds(secondsOfMinute);
     }
 }
