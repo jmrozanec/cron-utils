@@ -41,6 +41,7 @@ public class ExecutionTimeIntegrationTest {
     @Test
     public void testNextExecutionEverySecond() throws Exception {
         DateTime now = DateTime.now();
+        now = now.minusMillis(now.getMillisOfSecond());
         DateTime expected = truncateToSeconds(now.plusSeconds(1));
         ExecutionTime executionTime = ExecutionTime.forCron(quartzCronParser.parse(EVERY_SECOND));
         assertEquals(expected, executionTime.nextExecution(now));
@@ -49,6 +50,7 @@ public class ExecutionTimeIntegrationTest {
     @Test
     public void testTimeToNextExecution() throws Exception {
         DateTime now = DateTime.now();
+        now = now.minusMillis(now.getMillisOfSecond());
         DateTime expected = truncateToSeconds(now.plusSeconds(1));
         ExecutionTime executionTime = ExecutionTime.forCron(quartzCronParser.parse(EVERY_SECOND));
         assertEquals(new Interval(now, expected).toDuration(), executionTime.timeToNextExecution(now));
@@ -145,6 +147,7 @@ public class ExecutionTimeIntegrationTest {
     /**
      * Issue #24: next execution not properly calculated
      */
+    @Test
     public void testTimeShiftingProperlyDone() throws Exception {
         ExecutionTime executionTime = ExecutionTime.forCron(quartzCronParser.parse("0 0/10 22 * * *"));
         DateTime nextExecution =
@@ -153,11 +156,10 @@ public class ExecutionTimeIntegrationTest {
                                 .withHourOfDay(15)
                                 .withMinuteOfHour(27)
                 );
+        System.out.println(nextExecution);
         assertEquals(22, nextExecution.getHourOfDay());
         assertEquals(0, nextExecution.getMinuteOfHour());
     }
-
-
 
     private DateTime truncateToSeconds(DateTime dateTime){
         return new DateTime(

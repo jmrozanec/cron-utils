@@ -74,7 +74,7 @@ class ExecutionTimeBuilder {
 
     ExecutionTimeBuilder forHoursMatching(CronField cronField){
         validate(CronFieldName.HOUR, cronField);
-        hours = new TimeNode(FieldValueGeneratorFactory.forCronField(cronField).generateCandidates(0,59));
+        hours = new TimeNode(FieldValueGeneratorFactory.forCronField(cronField).generateCandidates(0,23));
         return this;
     }
 
