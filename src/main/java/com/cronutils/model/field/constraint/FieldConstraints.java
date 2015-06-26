@@ -1,6 +1,7 @@
 package com.cronutils.model.field.constraint;
 
 import com.cronutils.model.field.value.SpecialChar;
+import com.google.common.collect.Range;
 import com.google.common.collect.Sets;
 import org.apache.commons.lang3.Validate;
 
@@ -36,8 +37,7 @@ public class FieldConstraints {
     private Map<String, Integer> stringMapping;
     private Map<Integer, Integer> intMapping;
     private Set<SpecialChar> specialChars;
-    private int startRange;
-    private int endRange;
+    private Range<Integer> range;
     private Pattern numsAndCharsPattern;
     private Pattern stringToIntKeysPattern;
     private Pattern lwPattern;
@@ -59,8 +59,7 @@ public class FieldConstraints {
         this.stringMapping = Collections.unmodifiableMap(Validate.notNull(stringMapping, "String mapping must not be null"));
         this.intMapping = Collections.unmodifiableMap(Validate.notNull(intMapping, "Integer mapping must not be null"));
         this.specialChars = Collections.unmodifiableSet(Validate.notNull(specialChars, "Special (non-standard) chars set must not be null"));
-        this.startRange = startRange;
-        this.endRange = endRange;
+        this.range = Range.closed(startRange, endRange);
         this.lwPattern = buildLWPattern(this.specialChars);
         this.stringToIntKeysPattern = buildStringToIntPattern(stringMapping.keySet());
         this.numsAndCharsPattern = Pattern.compile("[#\\?/\\*0-9]");
@@ -108,7 +107,11 @@ public class FieldConstraints {
         if(isInRange(number)){
             return number;
         }
-        throw new IllegalArgumentException(String.format("Number %s out of range [%s,%s]", number, startRange, endRange));
+        throw new IllegalArgumentException(
+                String.format("Number %s out of range [%s,%s]",
+                        number, range.lowerEndpoint(), range.upperEndpoint()
+                )
+        );
     }
 
     /**
@@ -117,10 +120,7 @@ public class FieldConstraints {
      * @return - true if in range; false otherwise
      */
     public boolean isInRange(int number) {
-        if (number >= startRange && number <= endRange) {
-            return true;
-        }
-        return false;
+        return range.contains(number);
     }
 
     /**
@@ -151,6 +151,10 @@ public class FieldConstraints {
         if(!invalidChars.isEmpty()){
             throw new IllegalArgumentException(String.format("Invalid chars in expression! Expression: %s Invalid chars: %s", exp, invalidChars));
         }
+    }
+
+    public Range<Integer> getValidRange(){
+        return range;
     }
 
     String removeValidChars(String exp){
