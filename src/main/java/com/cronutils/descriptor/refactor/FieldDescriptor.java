@@ -96,6 +96,9 @@ class FieldDescriptor {
             }
         }
         if (current instanceof On) {
+            if(((On)current).getTime().getValue()==0){
+                return "";
+            }
             return describeOnX(previous, (On)current, onX);
         }
         if (current instanceof And) {
@@ -161,7 +164,7 @@ class FieldDescriptor {
     }
 
     protected String describeAlways(FieldExpression previous, FieldExpression current, String always){
-        if(previous instanceof Always){
+        if(previous instanceof Always || previous instanceof Every){
             return "";
         }
         return bundle.getString(always);

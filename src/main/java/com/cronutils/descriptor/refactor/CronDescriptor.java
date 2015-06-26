@@ -91,4 +91,21 @@ class CronDescriptor {
                 .append(descriptor.describe(month, year, yearRange))
                 .toString().replaceAll("\\s+", " ").trim();
     }
+
+    /**
+     * Creates an instance with UK locale
+     * @return CronDescriptor - never null.
+     */
+    public static CronDescriptor instance() {
+        return new CronDescriptor();
+    }
+
+    /**
+     * Creates and instance with given locale
+     * @param locale - Locale in which descriptions will be given
+     * @return CronDescriptor - never null.
+     */
+    public static CronDescriptor instance(Locale locale) {
+        return new CronDescriptor(locale);
+    }
 }
