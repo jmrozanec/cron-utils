@@ -83,35 +83,43 @@ public class CronParserQuartzIntegrationTest {
     }
 
     /**
-     * Issue #27: ranges mapping
+     * Issue #27: month ranges string mapping
      */
     @Test
-    public void testMonthRangeMapping(){
+    public void testMonthRangeStringMapping(){
         parser.parse("0 0 0 * JUL-AUG * *");
         parser.parse("0 0 0 * JAN-FEB * *");
     }
 
     /**
-     * Issue #27: ranges mapping
+     * Issue #27: month string mapping
      */
     @Test
-    public void testSingleMonthMapping(){
+    public void testSingleMonthStringMapping(){
         parser.parse("0 0 0 * JAN * *");
     }
 
     /**
-     * Issue #27: ranges mapping
+     * Issue #27: day of week string ranges mapping
      */
     @Test
-    public void testDoWRangeMapping(){
+    public void testDoWRangeStringMapping(){
         parser.parse("0 0 0 * * MON-FRI *");
     }
 
     /**
-     * Issue #27: ranges mapping
+     * Issue #27: day of week string mapping
      */
     @Test
-    public void testSingleDoWMapping(){
+    public void testSingleDoWStringMapping(){
         parser.parse("0 0 0 * * MON *");
+    }
+
+    /**
+     * Issue #27: July month as string is parsed as some special char occurrence
+     */
+    //TODO
+    public void testJulyMonthAsStringConsideredSpecialChar(){
+        parser.parse("0 0 0 * JUL * *");
     }
 }
