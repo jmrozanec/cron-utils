@@ -81,4 +81,37 @@ public class CronParserQuartzIntegrationTest {
     public void testLSupportedInDoM() throws Exception {
         parser.parse("0 0/10 22 L * ?");
     }
+
+    /**
+     * Issue #27: ranges mapping
+     */
+    @Test
+    public void testMonthRangeMapping(){
+        parser.parse("0 0 0 * JUL-AUG * *");
+        parser.parse("0 0 0 * JAN-FEB * *");
+    }
+
+    /**
+     * Issue #27: ranges mapping
+     */
+    @Test
+    public void testSingleMonthMapping(){
+        parser.parse("0 0 0 * JAN * *");
+    }
+
+    /**
+     * Issue #27: ranges mapping
+     */
+    @Test
+    public void testDoWRangeMapping(){
+        parser.parse("0 0 0 * * MON-FRI *");
+    }
+
+    /**
+     * Issue #27: ranges mapping
+     */
+    @Test
+    public void testSingleDoWMapping(){
+        parser.parse("0 0 0 * * MON *");
+    }
 }

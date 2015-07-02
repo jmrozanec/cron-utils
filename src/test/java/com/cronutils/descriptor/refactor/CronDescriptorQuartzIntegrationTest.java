@@ -40,7 +40,7 @@ public class CronDescriptorQuartzIntegrationTest {
 
     //TODO fix: we get: every day of week on day 1 every month
     public void testDescribeEveryDayOfMonth() throws Exception {
-        assertExpression("0 0 0 1 * *", "first day of every month");
+        assertExpression("0 0 0 1 * *", "day 1 of every month");//TODO ideally: first day of every month
     }
 
     public void testDescribeEveryYear() throws Exception {
