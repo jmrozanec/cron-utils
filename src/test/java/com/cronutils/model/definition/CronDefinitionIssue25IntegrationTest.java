@@ -45,11 +45,13 @@ public class CronDefinitionIssue25IntegrationTest {
     public void testParser(){
         CronParser parser = new CronParser(cronDefinition);
         Cron cron = parser.parse(CRON_EXPRESSION);
+        //TODO assert
     }
 
     /**
      * Issue #25: next execution time produces NullPointerException for custom cron definitions.
      */
+    //TODO
     public void testExecutionTime(){
         CronParser parser = new CronParser(cronDefinition);
         Cron cron = parser.parse(CRON_EXPRESSION);

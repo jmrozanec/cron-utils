@@ -158,6 +158,14 @@ public class ExecutionTimeQuartzIntegrationTest {
         assertEquals(0, nextExecution.getMinuteOfHour());
     }
 
+    /**
+     * Issue #27: execution time properly calculated
+     */
+    //TODO
+    public void testMonthRangeExecutionTime(){
+        ExecutionTime.forCron(quartzCronParser.parse("0 0 0 * JUL-AUG * *"));
+    }
+
     private DateTime truncateToSeconds(DateTime dateTime){
         return new DateTime(
                 dateTime.getYear(),
