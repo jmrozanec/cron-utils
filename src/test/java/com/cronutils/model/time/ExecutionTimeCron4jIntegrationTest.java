@@ -8,6 +8,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /*
  * Copyright 2015 jmrozanec
@@ -36,13 +37,38 @@ public class ExecutionTimeCron4jIntegrationTest {
         assertEquals(ExecutionTime.class, ExecutionTime.forCron(cron4jCronParser.parse(EVERY_MONDAY_AT_18)).getClass());
     }
 
+    /**
+     * Issue #26: bug 1: if day of week specified, always from day of month is not considered.
+     */
+    public void testDayOfWeekOverridesAlwaysAtDayOfMonth() throws Exception {
+        DateTime now = DateTime.now();
+        ExecutionTime executionTime = ExecutionTime.forCron(cron4jCronParser.parse(EVERY_MONDAY_AT_18));
+        DateTime next = executionTime.nextExecution(now);
+        assertEquals(1, next.getDayOfWeek());
+        assertTrue(now.isBefore(next));
+    }
 
+    /**
+     * Issue #26: bug 1: if day of week specified, always from day of month is not considered.
+     */
+    public void testDayOfMonthOverridesAlwaysAtDayOfWeek() throws Exception {
+        DateTime now = DateTime.now();
+        ExecutionTime executionTime = ExecutionTime.forCron(cron4jCronParser.parse("0 18 1 * *"));
+        DateTime next = executionTime.nextExecution(now);
+        assertEquals(1, next.getDayOfMonth());
+        assertTrue(now.isBefore(next));
+    }
+
+    /**
+     * Issue #26: bug 2: nextNext should be greater than next, not the same value.
+     */
     public void testNextExecutionOverNextExecution() throws Exception {
         DateTime now = DateTime.now();
         ExecutionTime executionTime = ExecutionTime.forCron(cron4jCronParser.parse(EVERY_MONDAY_AT_18));
         //TODO complete
         DateTime next = executionTime.nextExecution(now);
-        System.out.println(next);
-        System.out.println(executionTime.nextExecution(next));
+        DateTime nextNext = executionTime.nextExecution(next);
+        assertTrue(now.isBefore(next));
+        assertTrue(next.isBefore(nextNext));
     }
 }
