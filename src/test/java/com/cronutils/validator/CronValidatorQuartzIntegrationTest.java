@@ -1,11 +1,14 @@
 package com.cronutils.validator;
 
 import com.cronutils.model.CronType;
-import com.cronutils.model.definition.CronDefinition;
 import com.cronutils.model.definition.CronDefinitionBuilder;
-import com.cronutils.parser.CronParser;
+import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.util.Locale;
+
+import static org.junit.Assert.assertTrue;
 
 /*
  * Copyright 2015 jmrozanec
@@ -20,19 +23,50 @@ import org.junit.Test;
  * limitations under the License.
  */
 public class CronValidatorQuartzIntegrationTest {
-    private CronDefinition quartz;
+    private CronValidator validator;
 
     @Before
     public void setUp() throws Exception {
-        quartz = CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ);
+        validator = new CronValidator(CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ));
     }
 
     /**
-     * Issue #27: range is valid
+     * Issue #27: month range string mapping is valid
      */
     @Test
     public void testMonthRangeMappingIsValid(){
-        CronValidator validator = new CronValidator(quartz);
-        validator.isValid("0 0 0 * JUL-AUG * *");
+        assertTrue(validator.isValid("0 0 0 * JUL-AUG * *"));
+    }
+
+    /**
+     * Issue #27: single month string mapping is valid
+     */
+    //TODO
+    public void testSingleMonthMappingIsValid(){
+        DateTime date = new DateTime(2015, 1, 1, 1, 1);
+        for(int j=0;j<12;j++){
+            String expression = String.format("0 0 0 * %s * *", date.plusMonths(j).toString("MMM", Locale.US).toUpperCase());
+            assertTrue(String.format("We expect '%s' to be valid", expression), validator.isValid(expression));
+        }
+    }
+
+    /**
+     * Issue #27: day of week range string mapping is valid
+     */
+    @Test
+    public void testDayOfWeekRangeMappingIsValid(){
+        assertTrue(validator.isValid("0 0 0 * * MON-FRI *"));
+    }
+
+    /**
+     * Issue #27: single day of week string mapping is valid
+     */
+    //TODO
+    public void testDayOfWeekMappingIsValid(){
+        for(String dow : new String[]{"MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"}){
+            String expression = String.format("0 0 0 * * %s *", dow);
+            assertTrue(String.format("We expect '%s' to be valid", expression), validator.isValid(expression));
+        }
+
     }
 }
