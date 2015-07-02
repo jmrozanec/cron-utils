@@ -144,7 +144,7 @@ public class FieldParser {
     private IntegerFieldValue mapToIntegerFieldValue(String string){
         constraints.validateAllCharsValid(string);
         try{
-            return new IntegerFieldValue(Integer.parseInt(string));
+            return new IntegerFieldValue(constraints.stringToInt(string));
         }catch (NumberFormatException e){
             throw new IllegalArgumentException(String.format("Invalid value. Expected some integer, found %s", string));
         }
