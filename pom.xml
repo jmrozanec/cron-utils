@@ -56,13 +56,13 @@
 	</distributionManagement>
 
 	<properties>
-		<slf4j.version>1.7.7</slf4j.version>
+		<slf4j.version>1.7.12</slf4j.version>
 		<log4j.version>1.2.17</log4j.version>
-		<commonsLang.version>3.3.2</commonsLang.version>
-		<jodatime.version>2.3</jodatime.version>
+		<commonsLang.version>3.4</commonsLang.version>
+		<jodatime.version>2.8.1</jodatime.version>
 		<junit.version>4.11</junit.version>
-        <mockito.version>1.9.5</mockito.version>
-        <powermock.version>1.5.5</powermock.version>
+        <mockito.version>1.10.19</mockito.version>
+        <powermock.version>1.6.2</powermock.version>
         <guava.version>18.0</guava.version>
         <htime.version>1.0.0</htime.version>
 
