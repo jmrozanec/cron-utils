@@ -41,7 +41,7 @@ public class CronValidatorQuartzIntegrationTest {
     /**
      * Issue #27: single month string mapping is valid
      */
-    //TODO
+    @Test
     public void testSingleMonthMappingIsValid(){
         DateTime date = new DateTime(2015, 1, 1, 1, 1);
         for(int j=0;j<12;j++){
@@ -61,7 +61,7 @@ public class CronValidatorQuartzIntegrationTest {
     /**
      * Issue #27: single day of week string mapping is valid
      */
-    //TODO
+    @Test
     public void testDayOfWeekMappingIsValid(){
         for(String dow : new String[]{"MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"}){
             String expression = String.format("0 0 0 * * %s *", dow);
