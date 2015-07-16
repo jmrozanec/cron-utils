@@ -118,7 +118,7 @@ public class CronParserQuartzIntegrationTest {
     /**
      * Issue #27: July month as string is parsed as some special char occurrence
      */
-    //TODO
+    @Test
     public void testJulyMonthAsStringConsideredSpecialChar(){
         parser.parse("0 0 0 * JUL * *");
     }
