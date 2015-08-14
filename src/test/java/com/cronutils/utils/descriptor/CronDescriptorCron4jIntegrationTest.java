@@ -60,4 +60,16 @@ public class CronDescriptorCron4jIntegrationTest {
         assertEquals("at 23:00 every day between Monday and Friday", descriptor.describe(parser.parse("0 23 ? * MON-FRI")));
         assertEquals("at 23:00 every day between Monday and Friday", descriptor.describe(parser.parse("0 23 * * 1-5")));
     }
+
+    //TODO issue #32
+    public void testDescribeIssue32Expression01() throws Exception {
+        String cronExpr = "* 1,2,3,4,5,6 * 1,2,3 *";
+        descriptor.describe(parser.parse(cronExpr));
+    }
+
+    //TODO issue #32
+    public void testDescribeIssue32Expression02() throws Exception {
+        String cronExpr = "* 1 1,2 * 4";
+        descriptor.describe(parser.parse(cronExpr));
+    }
 }
