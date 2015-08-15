@@ -1,21 +1,16 @@
 package com.cronutils.model.time;
 
-import com.cronutils.descriptor.CronDescriptor;
 import com.cronutils.mapper.WeekDay;
 import com.cronutils.model.Cron;
-import com.cronutils.model.CronType;
 import com.cronutils.model.definition.CronDefinition;
-import com.cronutils.model.definition.CronDefinitionBuilder;
 import com.cronutils.model.field.CronField;
 import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.field.definition.DayOfWeekFieldDefinition;
 import com.cronutils.model.field.expression.Always;
 import com.cronutils.model.field.expression.QuestionMark;
-import com.cronutils.model.field.value.SpecialChar;
 import com.cronutils.model.time.generator.FieldValueGenerator;
 import com.cronutils.model.time.generator.FieldValueGeneratorFactory;
 import com.cronutils.model.time.generator.NoSuchValueException;
-import com.cronutils.parser.CronParser;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
@@ -24,7 +19,10 @@ import org.joda.time.DateTime;
 import org.joda.time.Duration;
 import org.joda.time.Interval;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import static com.cronutils.model.field.CronFieldName.DAY_OF_WEEK;
 import static com.cronutils.model.field.value.SpecialChar.QUESTION_MARK;

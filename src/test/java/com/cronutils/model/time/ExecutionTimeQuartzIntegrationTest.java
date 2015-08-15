@@ -9,9 +9,7 @@ import org.joda.time.Interval;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 /*
  * Copyright 2015 jmrozanec
