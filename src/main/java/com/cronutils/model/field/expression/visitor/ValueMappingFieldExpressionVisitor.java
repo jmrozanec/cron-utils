@@ -63,6 +63,11 @@ public class ValueMappingFieldExpressionVisitor implements FieldExpressionVisito
     }
 
     @Override
+    public QuestionMark visit(QuestionMark questionMark) {
+        return new QuestionMark(destinationConstraint);
+    }
+
+    @Override
     public FieldExpression visit(FieldExpression expression) {
         if(expression instanceof Always){
             return visit((Always)expression);
@@ -78,6 +83,9 @@ public class ValueMappingFieldExpressionVisitor implements FieldExpressionVisito
         }
         if(expression instanceof On){
             return visit((On)expression);
+        }
+        if(expression instanceof QuestionMark){
+            return visit((QuestionMark)expression);
         }
         return expression;
     }

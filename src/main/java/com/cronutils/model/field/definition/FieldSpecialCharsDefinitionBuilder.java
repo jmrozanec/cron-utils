@@ -66,6 +66,15 @@ public class FieldSpecialCharsDefinitionBuilder extends FieldDefinitionBuilder {
     }
 
     /**
+     * Registers the field supports the LW (LW) special char
+     * @return this FieldSpecialCharsDefinitionBuilder instance
+     */
+    public FieldSpecialCharsDefinitionBuilder supportsQuestionMark(){
+        constraints.addQuestionMarkSupport();
+        return this;
+    }
+
+    /**
      * Defines mapping between integer values with equivalent meaning
      * @param source - higher value
      * @param dest - lower value with equivalent meaning to source

@@ -153,9 +153,9 @@ public class CronDefinitionBuilder {
                 .withSeconds().and()
                 .withMinutes().and()
                 .withHours().and()
-                .withDayOfMonth().supportsHash().supportsL().supportsW().and()
+                .withDayOfMonth().supportsHash().supportsL().supportsW().supportsLW().supportsQuestionMark().and()
                 .withMonth().and()
-                .withDayOfWeek().withValidRange(1,7).withMondayDoWValue(2).supportsHash().supportsL().supportsW().and()
+                .withDayOfWeek().withValidRange(1, 7).withMondayDoWValue(2).supportsHash().supportsL().supportsW().supportsQuestionMark().and()
                 .withYear().withValidRange(1970, 2099).and()
                 .lastFieldOptional()
                 .instance();

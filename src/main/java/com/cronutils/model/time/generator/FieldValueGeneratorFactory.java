@@ -64,9 +64,9 @@ public class FieldValueGeneratorFactory {
         FieldExpression fieldExpression = cronField.getExpression();
         if(fieldExpression instanceof On){
             On on = (On) fieldExpression;
-            if(!SpecialChar.NONE.equals(on.getSpecialChar())){
+            //if(!SpecialChar.NONE.equals(on.getSpecialChar().getValue())){
                 return new OnDayOfWeekValueGenerator(cronField, year, month, mondayDoWValue);
-            }
+            //}
         }
         return forCronField(cronField);
     }

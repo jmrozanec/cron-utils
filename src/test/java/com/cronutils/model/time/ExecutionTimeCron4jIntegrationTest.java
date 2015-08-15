@@ -23,7 +23,6 @@ import static org.junit.Assert.assertTrue;
  * limitations under the License.
  */
 public class ExecutionTimeCron4jIntegrationTest {
-
     private CronParser cron4jCronParser;
     private static final String EVERY_MONDAY_AT_18 = "0 18 * * 1";
 
@@ -40,6 +39,7 @@ public class ExecutionTimeCron4jIntegrationTest {
     /**
      * Issue #26: bug 1: if day of week specified, always from day of month is not considered.
      */
+    @Test
     public void testDayOfWeekOverridesAlwaysAtDayOfMonth() throws Exception {
         DateTime now = DateTime.now();
         ExecutionTime executionTime = ExecutionTime.forCron(cron4jCronParser.parse(EVERY_MONDAY_AT_18));
@@ -51,6 +51,7 @@ public class ExecutionTimeCron4jIntegrationTest {
     /**
      * Issue #26: bug 1: if day of week specified, always from day of month is not considered.
      */
+    @Test
     public void testDayOfMonthOverridesAlwaysAtDayOfWeek() throws Exception {
         DateTime now = DateTime.now();
         ExecutionTime executionTime = ExecutionTime.forCron(cron4jCronParser.parse("0 18 1 * *"));
@@ -62,10 +63,10 @@ public class ExecutionTimeCron4jIntegrationTest {
     /**
      * Issue #26: bug 2: nextNext should be greater than next, not the same value.
      */
+    @Test
     public void testNextExecutionOverNextExecution() throws Exception {
         DateTime now = DateTime.now();
         ExecutionTime executionTime = ExecutionTime.forCron(cron4jCronParser.parse(EVERY_MONDAY_AT_18));
-        //TODO complete
         DateTime next = executionTime.nextExecution(now);
         DateTime nextNext = executionTime.nextExecution(next);
         assertTrue(now.isBefore(next));

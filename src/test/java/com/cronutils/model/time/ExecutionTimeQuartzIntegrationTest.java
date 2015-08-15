@@ -10,6 +10,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 
 /*
@@ -86,7 +87,7 @@ public class ExecutionTimeQuartzIntegrationTest {
         DateTime whenToExecuteNext = executionTime.nextExecution(now);
         assertEquals(2015, whenToExecuteNext.getYear());
         assertEquals(11, whenToExecuteNext.getMonthOfYear());
-        assertEquals(1, whenToExecuteNext.getDayOfMonth());
+        assertEquals(11, whenToExecuteNext.getDayOfMonth());
         assertEquals(11, whenToExecuteNext.getHourOfDay());
         assertEquals(11, whenToExecuteNext.getMinuteOfHour());
         assertEquals(0, whenToExecuteNext.getSecondOfMinute());
@@ -161,9 +162,22 @@ public class ExecutionTimeQuartzIntegrationTest {
     /**
      * Issue #27: execution time properly calculated
      */
-    //TODO
+    @Test
     public void testMonthRangeExecutionTime(){
         ExecutionTime.forCron(quartzCronParser.parse("0 0 0 * JUL-AUG * *"));
+    }
+
+    /**
+     * Issue #30: execution time properly calculated
+     */
+    @Test
+    public void testSaturdayExecutionTime(){
+        DateTime now = DateTime.now();
+        CronParser parser = new CronParser(CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ));
+        ExecutionTime executionTime = ExecutionTime.forCron(parser.parse("0 0 3 ? * 6"));
+        DateTime last = executionTime.lastExecution(now);
+        DateTime next = executionTime.nextExecution(now);
+        assertNotEquals(last, next);
     }
 
     private DateTime truncateToSeconds(DateTime dateTime){

@@ -51,13 +51,18 @@ class TimeNode {
     private NearestValue getNearestForwardValue(int reference, int shiftsToApply){
         List<Integer> values = new ArrayList<Integer>(this.values);
         int index=0;
+        boolean foundGreater = false;
         if (!values.contains(reference)) {
             for(Integer value : values){
                 if(value>reference){
                     index = values.indexOf(value);
                     shiftsToApply--;//we just moved a position!
+                    foundGreater = true;
                     break;
                 }
+            }
+            if(!foundGreater){
+                shiftsToApply++;
             }
         }else{
             index = values.indexOf(reference);
@@ -83,13 +88,18 @@ class TimeNode {
         List<Integer> values = new ArrayList<Integer>(this.values);
         Collections.reverse(values);
         int index=0;
+        boolean foundSmaller=false;
         if (!values.contains(reference)) {
             for(Integer value : values){
                 if(value<reference){
                     index = values.indexOf(value);
                     shiftsToApply--;//we just moved a position!
+                    foundSmaller = true;
                     break;
                 }
+            }
+            if(!foundSmaller){
+                shiftsToApply++;
             }
         }else{
             index = values.indexOf(reference);

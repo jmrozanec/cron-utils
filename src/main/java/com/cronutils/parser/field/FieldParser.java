@@ -50,6 +50,9 @@ public class FieldParser {
             if ("*".equals(expression)) {//all crons support asterisk
                 return new Always(constraints);
             } else {
+                if("?".equals(expression)){
+                    return new QuestionMark(constraints);
+                }
                 return parseOn(expression);
             }
         } else {
@@ -126,6 +129,16 @@ public class FieldParser {
             throw new IllegalArgumentException("Time should be specified!");
         }
         return new On(constraints, mapToIntegerFieldValue(array[0]), specialChar, nth);
+    }
+
+    private On parseOnWithQuestionMark(String exp){
+        SpecialCharFieldValue specialChar = new SpecialCharFieldValue(SpecialChar.QUESTION_MARK);
+        exp = exp.replace("?", "");
+        if("".equals(exp)){
+            return new On(constraints, new IntegerFieldValue(-1), specialChar, new IntegerFieldValue(-1));
+        }else{
+            throw new IllegalArgumentException(String.format("Expected: '?', found: %s", exp));
+        }
     }
 
     private On parseOnWithLW(String exp){

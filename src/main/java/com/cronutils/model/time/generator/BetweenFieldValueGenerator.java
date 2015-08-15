@@ -53,18 +53,25 @@ class BetweenFieldValueGenerator extends FieldValueGenerator {
         List<Integer> values = Lists.newArrayList();
         //check overlapping ranges: x1 <= y2 && y1 <= x2
         Between between = (Between)expression;
-        if(start<=map(between.getTo()) && map(between.getFrom())<=end){//ranges overlap
-            if(map(between.getTo())<end){
-                end=map(between.getTo());
+        int expressionStart = map(between.getFrom());
+        int expressionEnd = map(between.getTo());
+        int rangestart=start;
+        int rangeend=end;
+        if(start<=expressionEnd && expressionStart<=end){//ranges overlap
+            if(expressionEnd<end){
+                rangeend=expressionEnd;
             }
             if(map(between.getFrom())>start){
-                start=map(between.getFrom());
+                rangestart=expressionStart;
             }
             try {
-                int reference = generateNextValue(start);
-                while(reference<end){
+                int reference = generateNextValue(rangestart);
+                while(reference<rangeend){
                     values.add(reference);
                     reference = generateNextValue(reference);
+                }
+                if(rangeend!=end){
+                    values.add(reference);
                 }
             } catch (NoSuchValueException e) {}
         }

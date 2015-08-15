@@ -69,4 +69,16 @@ public class CronValidatorQuartzIntegrationTest {
         }
 
     }
+
+    /**
+     * Issue #31: expressions
+     * "0 10,44 14 ? 3 WED" and "0 0 12 ? * SAT-SUN"
+     * considered invalid when replacing '?' for '*'
+     * Fixed by adding support for question mark character.
+     */
+    @Test
+    public void testQuestionMarkSupport(){
+        assertTrue(validator.isValid("0 10,44 14 ? 3 WED"));
+        assertTrue(validator.isValid("0 0 12 ? * SAT-SUN"));
+    }
 }

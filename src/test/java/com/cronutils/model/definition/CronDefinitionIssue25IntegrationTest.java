@@ -1,12 +1,14 @@
 package com.cronutils.model.definition;
 
 import com.cronutils.model.Cron;
+import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.time.ExecutionTime;
 import com.cronutils.parser.CronParser;
 import com.cronutils.validator.CronValidator;
 import org.junit.Before;
 import org.junit.Test;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 /*
@@ -45,13 +47,15 @@ public class CronDefinitionIssue25IntegrationTest {
     public void testParser(){
         CronParser parser = new CronParser(cronDefinition);
         Cron cron = parser.parse(CRON_EXPRESSION);
-        //TODO assert
+        assertEquals("0", cron.retrieve(CronFieldName.MINUTE).getExpression().asString());
+        assertEquals("18", cron.retrieve(CronFieldName.HOUR).getExpression().asString());
+        assertEquals("1", cron.retrieve(CronFieldName.DAY_OF_WEEK).getExpression().asString());
     }
 
     /**
      * Issue #25: next execution time produces NullPointerException for custom cron definitions.
      */
-    //TODO
+    @Test
     public void testExecutionTime(){
         CronParser parser = new CronParser(cronDefinition);
         Cron cron = parser.parse(CRON_EXPRESSION);

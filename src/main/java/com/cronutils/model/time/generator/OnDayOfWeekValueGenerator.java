@@ -38,7 +38,7 @@ class OnDayOfWeekValueGenerator extends FieldValueGenerator {
     @Override
     public int generateNextValue(int reference) throws NoSuchValueException{
         On on = ((On)expression);
-        int value = generateValue(on, year, month);
+        int value = generateValue(on, year, month, reference);
         if(value<=reference){
             throw new NoSuchValueException();
         }
@@ -48,7 +48,7 @@ class OnDayOfWeekValueGenerator extends FieldValueGenerator {
     @Override
     public int generatePreviousValue(int reference) throws NoSuchValueException {
         On on = ((On)expression);
-        int value = generateValue(on, year, month);
+        int value = generateValue(on, year, month, reference);
         if(value>=reference){
             throw new NoSuchValueException();
         }
@@ -72,7 +72,7 @@ class OnDayOfWeekValueGenerator extends FieldValueGenerator {
     public boolean isMatch(int value) {
         On on = ((On)expression);
         try {
-            return value == generateValue(on, year, month);
+            return value == generateValue(on, year, month, value);
         } catch (NoSuchValueException e) {}
         return false;
     }
@@ -82,12 +82,14 @@ class OnDayOfWeekValueGenerator extends FieldValueGenerator {
         return fieldExpression instanceof On;
     }
 
-    private int generateValue(On on, int year, int month) throws NoSuchValueException {
+    private int generateValue(On on, int year, int month, int reference) throws NoSuchValueException {
         switch (on.getSpecialChar().getValue()){
             case HASH:
                 return generateHashValues(on, year, month);
             case L:
                 return generateLValues(on, year, month);
+            case NONE:
+                return generateNoneValues(on, year, month, reference);
         }
         throw new NoSuchValueException();
     }
@@ -127,5 +129,22 @@ class OnDayOfWeekValueGenerator extends FieldValueGenerator {
             return lastDoMDateTime.minusDays(dowDiff).dayOfMonth().get();
         }
         throw new NoSuchValueException();
+    }
+
+    private int generateNoneValues(On on, int year, int month, int reference){
+        int dowForFirstDoM = new DateTime(year, month, 1, 1, 1).getDayOfWeek();//1-7
+        int requiredDoW = ConstantsMapper.weekDayMapping(mondayDoWValue, ConstantsMapper.JODATIME_WEEK_DAY, on.getTime().getValue());//to normalize to joda-time value
+        int baseDay = 1;//day 1 from given month
+        int diff = dowForFirstDoM - requiredDoW;
+        if(diff == 0){
+            //base day remains the same
+        }
+        if(diff < 0){
+            baseDay = baseDay+Math.abs(diff);
+        }
+        if(diff>0){
+            baseDay = baseDay+7-diff;
+        }
+        return baseDay + 7*(reference/7);
     }
 }

@@ -85,11 +85,11 @@ public class CronDescriptor {
      * @return description - String
      */
     private String describeDayOfMonth(Map<CronFieldName, CronField> fields) {
-        return String.format(
-                DescriptionStrategyFactory.daysOfMonthInstance(
-                        bundle,
-                        fields.containsKey(CronFieldName.DAY_OF_MONTH) ? fields.get(CronFieldName.DAY_OF_MONTH).getExpression() : null
-                ).describe(), bundle.getString("day"));
+        String description = DescriptionStrategyFactory.daysOfMonthInstance(
+                bundle,
+                fields.containsKey(CronFieldName.DAY_OF_MONTH) ? fields.get(CronFieldName.DAY_OF_MONTH).getExpression() : null
+        ).describe();
+        return addTimeExpressions(description, bundle.getString("day"), bundle.getString("days"));
     }
 
     /**
@@ -98,12 +98,18 @@ public class CronDescriptor {
      * @return description - String
      */
     private String describeMonth(Map<CronFieldName, CronField> fields) {
-        return String.format(
-                DescriptionStrategyFactory.monthsInstance(
-                        bundle,
-                        fields.containsKey(CronFieldName.MONTH) ? fields.get(CronFieldName.MONTH).getExpression() : null
-                ).describe(),
-                bundle.getString("month"));
+        String description = DescriptionStrategyFactory.monthsInstance(
+                bundle,
+                fields.containsKey(CronFieldName.MONTH) ? fields.get(CronFieldName.MONTH).getExpression() : null
+        ).describe();
+
+        return addTimeExpressions(description, bundle.getString("month"), bundle.getString("months"));
+    }
+
+    private String addTimeExpressions(String description, String singular, String plural){
+        return description
+                .replaceAll("%s", singular)
+                .replaceAll("%p", plural);
     }
 
     /**

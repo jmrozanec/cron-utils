@@ -3,16 +3,16 @@ package com.cronutils.parser;
 import com.cronutils.model.Cron;
 import com.cronutils.model.definition.CronDefinition;
 import com.cronutils.model.field.CronField;
+import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.field.definition.FieldDefinition;
+import com.cronutils.model.field.value.SpecialChar;
 import com.cronutils.parser.field.CronParserField;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /*
  * Copyright 2014 jmrozanec
@@ -79,17 +79,22 @@ public class CronParser {
             throw new IllegalArgumentException("Empty expression!");
         }
         expression = expression.toUpperCase();
-        expression = expression.replace("?", "*");
         String[] expressionParts = expression.split(" ");
-        if (expressions.containsKey(expressionParts.length)) {
-            List<CronField> results = new ArrayList<CronField>();
-            List<CronParserField> fields = expressions.get(expressionParts.length);
-            for (int j = 0; j < fields.size(); j++) {
-                results.add(fields.get(j).parse(expressionParts[j]));
-            }
-            return new Cron(cronDefinition, results);
-        } else {
-            throw new IllegalArgumentException(String.format("Cron expression contains %s parts but we expect one of %s", expressionParts.length, expressions.keySet()));
+        int expressionLength = expressionParts.length;
+        if(!expressions.containsKey(expressionLength)){
+            throw new IllegalArgumentException(
+                    String.format("Cron expression contains %s parts but we expect one of %s",
+                            expressionLength, expressions.keySet()
+                    )
+            );
         }
+        List<CronField> results = new ArrayList<CronField>();
+        List<CronParserField> fields = expressions.get(expressionLength);
+        CronParserField field;
+        for (int j = 0; j < fields.size(); j++) {
+            field = fields.get(j);
+            results.add(field.parse(expressionParts[j]));
+        }
+        return new Cron(cronDefinition, results);
     }
 }

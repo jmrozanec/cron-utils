@@ -61,4 +61,11 @@ public interface FieldExpressionVisitor {
      * @return On instance, never null
      */
     On visit(On on);
+
+    /**
+     * Performs action on QuestionMark instance
+     * @param questionMark - QuestionMark instance, never null
+     * @return QuestionMark instance, never null
+     */
+    QuestionMark visit(QuestionMark questionMark);
 }

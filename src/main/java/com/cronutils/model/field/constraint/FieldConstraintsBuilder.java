@@ -112,6 +112,15 @@ public class FieldConstraintsBuilder {
     }
 
     /**
+     * Adds question mark (?) support
+     * @return same FieldConstraintsBuilder instance
+     */
+    public FieldConstraintsBuilder addQuestionMarkSupport() {
+        specialChars.add(SpecialChar.QUESTION_MARK);
+        return this;
+    }
+
+    /**
      * Adds integer to integer mapping. Source should be greater than destination;
      * @param source - some int
      * @param dest - some int
