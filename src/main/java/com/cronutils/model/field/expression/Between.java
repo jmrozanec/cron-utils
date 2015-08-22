@@ -60,7 +60,7 @@ public class Between extends FieldExpression {
             int fromValue = ((IntegerFieldValue)from).getValue();
             int toValue = ((IntegerFieldValue)to).getValue();
             if (fromValue >= toValue) {
-                throw new IllegalArgumentException("Bad range defined! Defined range should satisfy from <= to, but was [%s, %s]");
+                throw new IllegalArgumentException(String.format("Bad range defined! Defined range should satisfy from <= to, but was [%s, %s]", fromValue, toValue));
             }
             if (every.getTime().getValue() > (toValue - fromValue)) {
                 throw new IllegalArgumentException("Every x time cannot exceed range length");

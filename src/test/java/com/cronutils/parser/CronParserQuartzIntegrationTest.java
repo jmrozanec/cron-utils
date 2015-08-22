@@ -122,4 +122,14 @@ public class CronParserQuartzIntegrationTest {
     public void testJulyMonthAsStringConsideredSpecialChar(){
         parser.parse("0 0 0 * JUL * *");
     }
+
+/**
+ * Issue #35: A>B in range considered invalid expression for Quartz.
+ */
+
+//    @Test
+    public void testSunToSat() {
+    // FAILS SUN-SAT: SUN = 7 and SAT = 6
+        parser.parse("0 0 12 ? * SUN-SAT");
+    }
 }
