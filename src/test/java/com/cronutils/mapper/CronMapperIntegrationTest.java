@@ -3,9 +3,12 @@ package com.cronutils.mapper;
 import com.cronutils.model.CronType;
 import com.cronutils.model.definition.CronDefinitionBuilder;
 import com.cronutils.parser.CronParser;
+import com.google.common.collect.Sets;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 /*
  * Copyright 2015 jmrozanec
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -67,6 +70,22 @@ public class CronMapperIntegrationTest {
         String input = "* * * * 3,5-6";
         String expected = "0 * * * * 4,6-7 *";
         assertEquals(expected, createFromUnixToQuartz().map(unixParser().parse(input)).asString());
+    }
+
+    /**
+     * Issue #36: Unix to Quartz not accurately mapping every minute pattern
+     * or patterns that involve every day of month and every day of week
+     */
+    //TODO
+    public void testEveryMinuteUnixToQuartz(){
+        String input = "* * * * *";
+        String expected1 = "0 * * * * ? *";
+        String expected2 = "0 * * ? * * *";
+        String mapping = createFromUnixToQuartz().map(unixParser().parse(input)).asString();
+        assertTrue(
+                String.format("Expected [%s] or [%s] but got [%s]", expected1, expected2, mapping),
+                Sets.newHashSet(expected1, expected2).contains(mapping)
+        );
     }
 
     private CronParser cron4jParser(){
