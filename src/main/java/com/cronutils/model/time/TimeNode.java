@@ -1,5 +1,6 @@
 package com.cronutils.model.time;
 
+import com.google.common.annotations.VisibleForTesting;
 import org.apache.commons.lang3.Validate;
 
 import java.util.ArrayList;
@@ -48,7 +49,8 @@ class TimeNode {
      * @param shiftsToApply - shifts to apply
      * @return NearestValue instance, never null. Holds information on nearest (forward) value and shifts performed.
      */
-    private NearestValue getNearestForwardValue(int reference, int shiftsToApply){
+    @VisibleForTesting
+    NearestValue getNearestForwardValue(int reference, int shiftsToApply){
         List<Integer> values = new ArrayList<Integer>(this.values);
         int index=0;
         boolean foundGreater = false;
@@ -84,7 +86,8 @@ class TimeNode {
      * @param shiftsToApply - shifts to apply
      * @return NearestValue instance, never null. Holds information on nearest (backward) value and shifts performed.
      */
-    private NearestValue getNearestBackwardValue(int reference, int shiftsToApply){
+    @VisibleForTesting
+    NearestValue getNearestBackwardValue(int reference, int shiftsToApply){
         List<Integer> values = new ArrayList<Integer>(this.values);
         Collections.reverse(values);
         int index=0;
@@ -113,8 +116,8 @@ class TimeNode {
         return new NearestValue(value, shift.get());
     }
 
-
-    private int getValueFromList(List<Integer>values, int index, AtomicInteger shift){
+    @VisibleForTesting
+    int getValueFromList(List<Integer>values, int index, AtomicInteger shift){
         Validate.notEmpty(values, "List must not be empty");
         if(index<0){
             index=index+values.size();
