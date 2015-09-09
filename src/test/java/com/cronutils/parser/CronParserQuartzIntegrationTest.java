@@ -127,9 +127,17 @@ public class CronParserQuartzIntegrationTest {
  * Issue #35: A>B in range considered invalid expression for Quartz.
  */
 
-//    @Test
+//    @Test//TODO
     public void testSunToSat() {
     // FAILS SUN-SAT: SUN = 7 and SAT = 6
         parser.parse("0 0 12 ? * SUN-SAT");
+    }
+
+    /**
+     * Issue #39: reported issue about exception being raised on parse.
+     */
+    @Test
+    public void testExpressionWithQuestionMarkAndWeekdays(){
+        parser.parse("0 0 0 ? * MON,TUE *");
     }
 }
