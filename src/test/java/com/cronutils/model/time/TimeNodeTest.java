@@ -69,11 +69,24 @@ public class TimeNodeTest {
 
     @Test
     public void testGetValueFromListWhereIndexLessThanZero(){
+        int index = -1;
+        int expectedShifts = 1;
         AtomicInteger shift = new AtomicInteger(0);
         List<Integer> list = Lists.newArrayList(1, 2, 3, 4);
-        int value = timeNode.getValueFromList(list, -1, shift);
-        assertEquals(String.format("Shift was: %s; expected: 1", shift.get()), 1, shift.get());
-        assertEquals((int)list.get(list.size()-1), value);
+        int value = timeNode.getValueFromList(list, index, shift);
+        assertEquals(String.format("Shift was: %s; expected: %s", shift.get(), expectedShifts), expectedShifts, shift.get());
+        assertEquals((int)list.get(list.size()+index), value);
+    }
+
+    @Test
+    public void testGetValueFromListWhereIndexMoreThanZero(){
+        int index = 1;
+        int expectedShifts = 0;
+        AtomicInteger shift = new AtomicInteger(0);
+        List<Integer> list = Lists.newArrayList(1, 2, 3, 4);
+        int value = timeNode.getValueFromList(list, index, shift);
+        assertEquals(String.format("Shift was: %s; expected: %s", shift.get(), expectedShifts), expectedShifts, shift.get());
+        assertEquals((int)list.get(index), value);
     }
 
     private void assertResult(int value, int shift, NearestValue nearestValue){
