@@ -111,7 +111,7 @@ cron-utils is available on [Maven central](http://search.maven.org/#search%7Cga%
     DateTime lastExecution = executionTime.lastExecution(now));
 
     //Get date for next execution
-    DateTime nextExecution = executionTime.timeToNextExecution(now));
+    DateTime nextExecution = executionTime.nextExecution(now));
 
     //Time from last execution
     Duration timeFromLastExecution = executionTime.timeFromLastExecution(now);
