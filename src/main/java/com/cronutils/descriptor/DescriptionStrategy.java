@@ -130,7 +130,7 @@ abstract class DescriptionStrategy {
         StringBuilder builder = new StringBuilder();
         if(!onExpressions.isEmpty()) {
             builder.append(bundle.getString("at"));
-            createAndDescription(builder, onExpressions).append(" %p");
+            createAndDescription(builder, onExpressions).append(" %p");//TODO this causes bug #39
         }
         if(!expressions.isEmpty()){
             createAndDescription(builder, expressions);

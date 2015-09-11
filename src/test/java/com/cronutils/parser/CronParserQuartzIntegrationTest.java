@@ -1,9 +1,13 @@
 package com.cronutils.parser;
 
+import com.cronutils.descriptor.CronDescriptor;
+import com.cronutils.model.Cron;
 import com.cronutils.model.CronType;
 import com.cronutils.model.definition.CronDefinitionBuilder;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.util.Locale;
 
 /*
  * Copyright 2015 jmrozanec
@@ -137,7 +141,17 @@ public class CronParserQuartzIntegrationTest {
      * Issue #39: reported issue about exception being raised on parse.
      */
     @Test
-    public void testExpressionWithQuestionMarkAndWeekdays(){
+    public void testParseExpressionWithQuestionMarkAndWeekdays(){
         parser.parse("0 0 0 ? * MON,TUE *");
+    }
+
+    /**
+     * Issue #39: reported issue about exception being raised on parse.
+     */
+    //@Test TODO
+    public void testDescribeExpressionWithQuestionMarkAndWeekdays(){
+        Cron quartzCron = parser.parse("0 0 0 ? * MON,TUE *");
+        CronDescriptor descriptor = CronDescriptor.instance(Locale.ENGLISH);
+        String readableExpression = descriptor.describe(quartzCron);
     }
 }

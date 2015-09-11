@@ -62,9 +62,9 @@ class DescriptionStrategyFactory {
      * @return - DescriptionStrategy instance, never null
      */
     public static DescriptionStrategy daysOfMonthInstance(final ResourceBundle bundle, final FieldExpression expression) {
-        NominalDescriptionStrategy dow = new NominalDescriptionStrategy(bundle, null, expression);
+        NominalDescriptionStrategy dom = new NominalDescriptionStrategy(bundle, null, expression);
 
-        dow.addDescription(new Function<FieldExpression, String>() {
+        dom.addDescription(new Function<FieldExpression, String>() {
             @Override
             public String apply(FieldExpression fieldExpression) {
                 if (fieldExpression instanceof On) {
@@ -83,7 +83,7 @@ class DescriptionStrategyFactory {
                 return "";
             }
         });
-        return dow;
+        return dom;
     }
 
     /**
