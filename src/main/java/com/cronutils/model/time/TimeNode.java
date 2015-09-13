@@ -115,6 +115,13 @@ class TimeNode {
         return new NearestValue(value, shift.get());
     }
 
+    /**
+     * Obtain value from list considering specified index and required shifts
+     * @param values - possible values
+     * @param index - index to be considered
+     * @param shift - shifts that should be applied
+     * @return int - required value from values list
+     */
     @VisibleForTesting
     int getValueFromList(List<Integer>values, int index, AtomicInteger shift){
         Validate.notEmpty(values, "List must not be empty");
