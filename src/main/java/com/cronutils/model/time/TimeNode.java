@@ -24,8 +24,7 @@ class TimeNode {
     protected List<Integer> values;
 
     public TimeNode(List<Integer> values){
-        Validate.notEmpty(values, "Values must not be empty");
-        this.values = values;
+        this.values = Validate.notEmpty(values, "Values must not be empty");
         Collections.sort(this.values);
     }
 

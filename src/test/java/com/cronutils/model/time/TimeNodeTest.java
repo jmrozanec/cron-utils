@@ -89,6 +89,11 @@ public class TimeNodeTest {
         assertEquals((int)list.get(index), value);
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void testGetValueFromListWithEmptyList(){
+        timeNode.getValueFromList(Lists.<Integer>newArrayList(), 0, new AtomicInteger(0));
+    }
+
     private void assertResult(int value, int shift, NearestValue nearestValue){
         assertEquals(String.format("Values do not match! Expected: %s Found: %s", value, nearestValue.getValue()), value, nearestValue.getValue());
         assertEquals(String.format("Shifts do not match! Expected: %s Found: %s", shift, nearestValue.getShifts()), shift, nearestValue.getShifts());
