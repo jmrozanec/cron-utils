@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+<log4j:configuration debug="false">
+    
+    <!-- Console appender. -->
+    <appender name="CONSOLE" class="org.apache.log4j.ConsoleAppender">
+        <param name="Target" value="System.out"/>
+        <param name="ImmediateFlush" value="true"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern"
+                value="%d{ISO8601} - %5p - %l - %m%n"/>
+        </layout>
+    </appender>
+    
+    <!-- Log file for test output module logging -->
+    <appender name="TESTER" class="org.apache.log4j.RollingFileAppender">
+        <param name="File" value="./unit-tests.log"/>
+        <param name="MaxFileSize" value="10MB"/>
+        <param name="MaxBackupIndex" value="10"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern"
+                value="%d{ISO8601} - %5p - %l - %m%n"/>
+        </layout>
+    </appender>
+    
+    <logger name="com.cronutils" additivity="false">
+    	<level value="debug"/>
+    	<appender-ref ref="TESTER"/>
+    </logger>
+
+    <root>
+        <priority value ="error" />
+        <appender-ref ref="CONSOLE"/>
+    </root>
+
+</log4j:configuration>

@@ -1,5 +1,8 @@
 package com.cronutils.model.time.generator;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.cronutils.mapper.WeekDay;
 import com.cronutils.model.field.CronField;
 import com.cronutils.model.field.expression.*;
@@ -18,6 +21,7 @@ import com.cronutils.model.field.value.SpecialChar;
  * limitations under the License.
  */
 public class FieldValueGeneratorFactory {
+	private static final Logger log = LoggerFactory.getLogger(FieldValueGeneratorFactory.class);
     private static FieldValueGeneratorFactory factory = new FieldValueGeneratorFactory();
     private FieldValueGeneratorFactory(){}
 
@@ -62,11 +66,17 @@ public class FieldValueGeneratorFactory {
 
     public static FieldValueGenerator createDayOfWeekValueGeneratorInstance(CronField cronField, int year, int month, WeekDay mondayDoWValue){
         FieldExpression fieldExpression = cronField.getExpression();
-        if(fieldExpression instanceof On){
-            On on = (On) fieldExpression;
+        if (fieldExpression instanceof On) {
+            //On on = (On) fieldExpression;
             //if(!SpecialChar.NONE.equals(on.getSpecialChar().getValue())){
                 return new OnDayOfWeekValueGenerator(cronField, year, month, mondayDoWValue);
             //}
+        }
+        // handle a range expression for day of week special
+        if (fieldExpression instanceof Between) {
+        	log.debug("Got Between type DayOfWeek expression.");
+        	log.debug("cronField = [{}]", cronField.getField().toString());
+        	return new BetweenDayOfWeekValueGenerator(cronField, year, month, mondayDoWValue);
         }
         return forCronField(cronField);
     }

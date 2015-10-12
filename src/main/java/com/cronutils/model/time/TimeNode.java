@@ -1,7 +1,10 @@
 package com.cronutils.model.time;
 
 import com.google.common.annotations.VisibleForTesting;
+
 import org.apache.commons.lang3.Validate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -21,6 +24,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * limitations under the License.
  */
 class TimeNode {
+	private static final Logger log = LoggerFactory.getLogger(TimeNode.class);
     protected List<Integer> values;
 
     public TimeNode(List<Integer> values){
@@ -53,9 +57,14 @@ class TimeNode {
         List<Integer> values = new ArrayList<Integer>(this.values);
         int index=0;
         boolean foundGreater = false;
+        AtomicInteger shift = new AtomicInteger(0);
+        log.debug(" *** reference = [{}]  shiftsToApply = [{}]", reference, shiftsToApply);
         if (!values.contains(reference)) {
+        	log.debug("List of values does not contain reference value of [{}]", reference);
             for(Integer value : values){
+            	log.debug("  checking value [{}] > reference [{}]", value, reference);
                 if(value>reference){
+                	log.debug("  found greater reference value");
                     index = values.indexOf(value);
                     shiftsToApply--;//we just moved a position!
                     foundGreater = true;
@@ -63,16 +72,20 @@ class TimeNode {
                 }
             }
             if(!foundGreater){
-                shiftsToApply++;
+            	log.debug("No value found in list greater than reference");
+                shift.incrementAndGet();
             }
         }else{
+        	log.debug("Reference value of [{}] in list", reference);
             index = values.indexOf(reference);
         }
-        AtomicInteger shift = new AtomicInteger(0);
         int value = values.get(index);
+        log.debug("chosen value is [{}]", value);
+        log.debug("shiftsToApply = [{}]", shiftsToApply);
         for(int j=0;j<shiftsToApply;j++){
             value = getValueFromList(values, index+1, shift);
             index = values.indexOf(value);
+            log.debug("[shift] value is [{}]  index = [{}]", value, index);
         }
         return new NearestValue(value, shift.get());
     }
