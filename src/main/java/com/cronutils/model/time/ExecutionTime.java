@@ -17,6 +17,7 @@ import com.google.common.collect.Sets;
 
 import org.apache.commons.lang3.Validate;
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.joda.time.Duration;
 import org.joda.time.Interval;
 import org.slf4j.Logger;
@@ -172,7 +173,7 @@ public class ExecutionTime {
         NearestValue nearestValue;
         DateTime newDate;
         if(year.isEmpty()){
-            return initDateTime(yearsValueGenerator.generateNextValue(date.getYear()), lowestMonth, lowestDay, lowestHour, lowestMinute, lowestSecond);
+            return initDateTime(yearsValueGenerator.generateNextValue(date.getYear()), lowestMonth, lowestDay, lowestHour, lowestMinute, lowestSecond, date.getZone());
         }
         if(!months.getValues().contains(date.getMonthOfYear())) {
             log.debug(" == checking months ==");
@@ -180,7 +181,7 @@ public class ExecutionTime {
             int nextMonths = nearestValue.getValue();
             if(nearestValue.getShifts()>0){
                 newDate =
-                        new DateTime(date.getYear(), 1, 1, 0, 0, 0).plusYears(nearestValue.getShifts());
+                        new DateTime(date.getYear(), 1, 1, 0, 0, 0, date.getZone()).plusYears(nearestValue.getShifts());
                 return nextClosestMatch(newDate);
             }
             if (nearestValue.getValue() < date.getMonthOfYear()) {
@@ -188,7 +189,7 @@ public class ExecutionTime {
             	date = date.plusYears(1);
             }
             log.debug(" == months ==");
-            return initDateTime(date.getYear(), nextMonths, lowestDay, lowestHour, lowestMinute, lowestSecond);
+            return initDateTime(date.getYear(), nextMonths, lowestDay, lowestHour, lowestMinute, lowestSecond, date.getZone());
         }
         if(!days.getValues().contains(date.getDayOfMonth())) {
             log.debug(" == checking days ==");
@@ -202,7 +203,7 @@ public class ExecutionTime {
             	date = date.plusMonths(1);
             }
             log.debug(" == days ==");
-            return initDateTime(date.getYear(), date.getMonthOfYear(), nearestValue.getValue(), lowestHour, lowestMinute, lowestSecond);
+            return initDateTime(date.getYear(), date.getMonthOfYear(), nearestValue.getValue(), lowestHour, lowestMinute, lowestSecond, date.getZone());
         }
         if(!hours.getValues().contains(date.getHourOfDay())) {
             log.debug(" == checking hours ==");
@@ -222,7 +223,7 @@ public class ExecutionTime {
             	date = date.plusDays(1);
             }
             log.debug(" == returning hours ==");
-            return initDateTime(date.getYear(), date.getMonthOfYear(), date.getDayOfMonth(), nextHours, lowestMinute, lowestSecond);
+            return initDateTime(date.getYear(), date.getMonthOfYear(), date.getDayOfMonth(), nextHours, lowestMinute, lowestSecond, date.getZone());
         }
         if(!minutes.getValues().contains(date.getMinuteOfHour())) {
             log.debug(" == checking minutes ==");
@@ -242,7 +243,7 @@ public class ExecutionTime {
             	date = date.plusHours(1);
             }
             log.debug(" == returning minutes ==");
-            return initDateTime(date.getYear(), date.getMonthOfYear(), date.getDayOfMonth(), date.getHourOfDay(), nextMinutes, lowestSecond);
+            return initDateTime(date.getYear(), date.getMonthOfYear(), date.getDayOfMonth(), date.getHourOfDay(), nextMinutes, lowestSecond, date.getZone());
         }
         if(!seconds.getValues().contains(date.getSecondOfMinute())) {
             log.debug(" == checking seconds ==");
@@ -263,7 +264,7 @@ public class ExecutionTime {
             	date = date.plusMinutes(1);
             }
             log.debug(" == returning seconds ==");
-            return initDateTime(date.getYear(), date.getMonthOfYear(), date.getDayOfMonth(), date.getHourOfDay(), date.getMinuteOfHour(), nextSeconds);
+            return initDateTime(date.getYear(), date.getMonthOfYear(), date.getDayOfMonth(), date.getHourOfDay(), date.getMinuteOfHour(), nextSeconds, date.getZone());
         }
         return date;
     }
@@ -287,7 +288,7 @@ public class ExecutionTime {
         NearestValue nearestValue;
         DateTime newDate;
         if(year.isEmpty()){
-            return initDateTime(yearsValueGenerator.generatePreviousValue(date.getYear()), highestMonth, highestDay, highestHour, highestMinute, highestSecond);
+            return initDateTime(yearsValueGenerator.generatePreviousValue(date.getYear()), highestMonth, highestDay, highestHour, highestMinute, highestSecond, date.getZone());
         }
         if(!months.getValues().contains(date.getMonthOfYear())){
             nearestValue = months.getPreviousValue(date.getMonthOfYear(), 0);
@@ -297,7 +298,7 @@ public class ExecutionTime {
                         new DateTime(date.getYear(), 12, 31, 23, 59, 59).minusYears(nearestValue.getShifts());
                 return previousClosestMatch(newDate);
             }
-            return initDateTime(date.getYear(), previousMonths, highestDay, highestHour, highestMinute, highestSecond);
+            return initDateTime(date.getYear(), previousMonths, highestDay, highestHour, highestMinute, highestSecond, date.getZone());
         }
         if(!days.getValues().contains(date.getDayOfMonth())){
             nearestValue = days.getPreviousValue(date.getDayOfMonth(), 0);
@@ -306,7 +307,7 @@ public class ExecutionTime {
                         .minusMonths(nearestValue.getShifts()).dayOfMonth().withMaximumValue();
                 return previousClosestMatch(newDate);
             }
-            return initDateTime(date.getYear(), date.getMonthOfYear(), nearestValue.getValue(), highestHour, highestMinute, highestSecond);
+            return initDateTime(date.getYear(), date.getMonthOfYear(), nearestValue.getValue(), highestHour, highestMinute, highestSecond, date.getZone());
         }
         if(!hours.getValues().contains(date.getHourOfDay())){
             nearestValue = hours.getPreviousValue(date.getHourOfDay(), 0);
@@ -316,7 +317,7 @@ public class ExecutionTime {
                                 date.getDayOfMonth(), 23, 59, 59).minusDays(nearestValue.getShifts());
                 return previousClosestMatch(newDate);
             }
-            return initDateTime(date.getYear(), date.getMonthOfYear(), date.getDayOfMonth(), nearestValue.getValue(), highestMinute, highestSecond);
+            return initDateTime(date.getYear(), date.getMonthOfYear(), date.getDayOfMonth(), nearestValue.getValue(), highestMinute, highestSecond, date.getZone());
         }
         if(!minutes.getValues().contains(date.getMinuteOfHour())){
             nearestValue = minutes.getPreviousValue(date.getMinuteOfHour(), 0);
@@ -326,7 +327,7 @@ public class ExecutionTime {
                                 date.getDayOfMonth(), date.getHourOfDay(), 59, 59).minusHours(nearestValue.getShifts());
                 return previousClosestMatch(newDate);
             }
-            return initDateTime(date.getYear(), date.getMonthOfYear(), date.getDayOfMonth(), date.getHourOfDay(), nearestValue.getValue(), highestSecond);
+            return initDateTime(date.getYear(), date.getMonthOfYear(), date.getDayOfMonth(), date.getHourOfDay(), nearestValue.getValue(), highestSecond, date.getZone());
         }
         if(!seconds.getValues().contains(date.getSecondOfMinute())){
             nearestValue = seconds.getPreviousValue(date.getSecondOfMinute(), 0);
@@ -338,7 +339,7 @@ public class ExecutionTime {
                                 date.getMinuteOfHour(), 59).minusMinutes(nearestValue.getShifts());
                 return previousClosestMatch(newDate);
             }
-            return initDateTime(date.getYear(), date.getMonthOfYear(), date.getDayOfMonth(), date.getHourOfDay(), date.getMinuteOfHour(), previousSeconds);
+            return initDateTime(date.getYear(), date.getMonthOfYear(), date.getDayOfMonth(), date.getHourOfDay(), date.getMinuteOfHour(), previousSeconds, date.getZone());
         }
         return date;
     }
@@ -459,8 +460,8 @@ public class ExecutionTime {
     }
 
     private DateTime initDateTime(int years, int monthsOfYear, int dayOfMonth,
-                                  int hoursOfDay, int minutesOfHour, int secondsOfMinute) {
-        return new DateTime(0, 1, 1, 0, 0, 0)
+                                  int hoursOfDay, int minutesOfHour, int secondsOfMinute, DateTimeZone timeZone) {
+        return new DateTime(0, 1, 1, 0, 0, 0, timeZone)
                 .plusYears(years)
                 .plusMonths(monthsOfYear - 1)
                 .plusDays(dayOfMonth - 1)
