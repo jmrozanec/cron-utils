@@ -105,21 +105,18 @@ class BetweenDayOfWeekValueGenerator extends FieldValueGenerator {
 
 	@Override
 	public int generateNextValue(int reference) throws NoSuchValueException {
-		// TODO Auto-generated method stub
 		// This method does not logically work.
 		return 0;
 	}
 
 	@Override
 	public int generatePreviousValue(int reference) throws NoSuchValueException {
-		// TODO Auto-generated method stub
 		// This method does not logically work.
 		return 0;
 	}
 
 	@Override
 	public boolean isMatch(int value) {
-		// TODO Auto-generated method stub
 		// This method does not logically work.
 		return false;
 	}

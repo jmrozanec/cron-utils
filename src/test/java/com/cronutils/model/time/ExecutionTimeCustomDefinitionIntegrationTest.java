@@ -12,7 +12,7 @@ import static org.junit.Assert.assertEquals;
 
 public class ExecutionTimeCustomDefinitionIntegrationTest {
 
-    //TODO
+    @Test
     public void testCronExpressionAfterHalf() {
         CronDefinition cronDefinition = CronDefinitionBuilder.defineCron()
                 .withSeconds().and()
