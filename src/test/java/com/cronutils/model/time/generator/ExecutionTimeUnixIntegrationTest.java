@@ -31,6 +31,30 @@ public class ExecutionTimeUnixIntegrationTest {
     }
 
     /**
+     * Issue #41: for everything other than a dayOfWeek value == 1, nextExecution and lastExecution do not return correct results
+     */
+    @Test
+    public void testEveryTuesdayAtThirdHourOfDayNextExecution(){
+        CronDefinition cronDefinition = CronDefinitionBuilder.instanceDefinitionFor(CronType.UNIX);
+        CronParser parser = new CronParser(cronDefinition);
+        Cron myCron = parser.parse("0 3 * * 3");
+        DateTime time = DateTime.parse("2015-09-17T00:00:00.000-07:00");
+        assertEquals(DateTime.parse("2015-09-23T03:00:00.000-07:00"), ExecutionTime.forCron(myCron).nextExecution(time));
+    }
+
+    /**
+     * Issue #41: for everything other than a dayOfWeek value == 1, nextExecution and lastExecution do not return correct results
+     */
+    @Test
+    public void testEveryTuesdayAtThirdHourOfDayLastExecution(){
+        CronDefinition cronDefinition = CronDefinitionBuilder.instanceDefinitionFor(CronType.UNIX);
+        CronParser parser = new CronParser(cronDefinition);
+        Cron myCron = parser.parse("0 3 * * 3");
+        DateTime time = DateTime.parse("2015-09-17T00:00:00.000-07:00");
+        assertEquals(DateTime.parse("2015-09-16T03:00:00.000-07:00"), ExecutionTime.forCron(myCron).lastExecution(time));
+    }
+
+    /**
      * Issue #45: last execution does not match expected date. Result is not in same timezone as reference date.
      */
     @Test
