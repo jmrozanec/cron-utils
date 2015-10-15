@@ -9,6 +9,7 @@ import org.joda.time.MutableDateTime;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class ExecutionTimeCustomDefinitionIntegrationTest {
 
@@ -64,5 +65,53 @@ public class ExecutionTimeCustomDefinitionIntegrationTest {
 
         DateTime nextExecutionDateTime = executionTime.nextExecution(startDateTime);
         assertEquals(expectedDateTime, nextExecutionDateTime);
+    }
+
+    /**
+     * Test for issue #38
+     * https://github.com/jmrozanec/cron-utils/issues/38
+     * Reported case: lastExecution and nextExecution do not work properly
+     * Expected: should return expected date
+     */
+    @Test
+    public void testCronExpressionEveryTwoHoursAsteriskSlash2() {
+        CronDefinition cronDefinition = CronDefinitionBuilder.defineCron()
+                .withSeconds().and()
+                .withMinutes().and()
+                .withHours().and()
+                .withDayOfMonth().and()
+                .withMonth().and()
+                .withDayOfWeek().withValidRange(0, 7).withMondayDoWValue(1).withIntMapping(7, 0).and()
+                .instance();
+
+        CronParser parser = new CronParser(cronDefinition);
+        Cron cron = parser.parse("0 0 */2 * * *");
+        DateTime startDateTime = DateTime.parse("2015-08-28T12:05:14.000-03:00");
+
+        assertTrue(DateTime.parse("2015-08-28T14:00:00.000-03:00").compareTo(ExecutionTime.forCron(cron).nextExecution(startDateTime)) == 0);
+    }
+
+    /**
+     * Test for issue #38
+     * https://github.com/jmrozanec/cron-utils/issues/38
+     * Reported case: lastExecution and nextExecution do not work properly
+     * Expected: should return expected date
+     */
+    @Test
+    public void testCronExpressionEveryTwoHoursSlash2() {
+        CronDefinition cronDefinition = CronDefinitionBuilder.defineCron()
+                .withSeconds().and()
+                .withMinutes().and()
+                .withHours().and()
+                .withDayOfMonth().and()
+                .withMonth().and()
+                .withDayOfWeek().withValidRange(0, 7).withMondayDoWValue(1).withIntMapping(7, 0).and()
+                .instance();
+
+        CronParser parser = new CronParser(cronDefinition);
+        Cron cron = parser.parse("0 0 /2 * * *");
+        DateTime startDateTime = DateTime.parse("2015-08-28T12:05:14.000-03:00");
+
+        assertTrue(DateTime.parse("2015-08-28T14:00:00.000-03:00").compareTo(ExecutionTime.forCron(cron).nextExecution(startDateTime)) == 0);
     }
 }
