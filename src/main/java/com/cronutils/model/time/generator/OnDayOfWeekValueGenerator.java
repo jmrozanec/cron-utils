@@ -27,6 +27,7 @@ class OnDayOfWeekValueGenerator extends FieldValueGenerator {
     private int year;
     private int month;
     private WeekDay mondayDoWValue;
+    
     public OnDayOfWeekValueGenerator(CronField cronField, int year, int month, WeekDay mondayDoWValue) {
         super(cronField.getExpression());
         Validate.isTrue(CronFieldName.DAY_OF_WEEK.equals(cronField.getField()), "CronField does not belong to day of week");
@@ -131,20 +132,38 @@ class OnDayOfWeekValueGenerator extends FieldValueGenerator {
         throw new NoSuchValueException();
     }
 
-    private int generateNoneValues(On on, int year, int month, int reference){
-        int dowForFirstDoM = new DateTime(year, month, 1, 1, 1).getDayOfWeek();//1-7
-        int requiredDoW = ConstantsMapper.weekDayMapping(mondayDoWValue, ConstantsMapper.JODATIME_WEEK_DAY, on.getTime().getValue());//to normalize to joda-time value
-        int baseDay = 1;//day 1 from given month
-        int diff = dowForFirstDoM - requiredDoW;
-        if(diff == 0){
-            //base day remains the same
-        }
-        if(diff < 0){
-            baseDay = baseDay+Math.abs(diff);
-        }
-        if(diff>0){
-            baseDay = baseDay+7-diff;
-        }
-        return baseDay + 7*(reference/7);
-    }
+    /**
+     * Generate valid days of the month for the days of week expression. This method requires that you 
+     * pass it a -1 for the reference value when starting to generate a sequence of day values. That allows
+     * it to handle the special case of which day of the month is the initial matching value.
+     * 
+     * @param on The expression object giving us the particular day of week we need.
+     * @param year The year for the calculation.
+     * @param month The month for the calculation.
+     * @param reference This value must either be -1 indicating you are starting the sequence generation or an actual day of month that meets the day of week criteria. So a value previously returned by this method.
+     * @return
+     */
+	private int generateNoneValues(On on, int year, int month, int reference) {
+		// the day of week the first of the month is on
+		int dowForFirstDoM = new DateTime(year, month, 1, 1, 1).getDayOfWeek();// 1-7
+		// the day of week we need, normalize to jodatime
+		int requiredDoW = ConstantsMapper.weekDayMapping(mondayDoWValue, ConstantsMapper.JODATIME_WEEK_DAY, on.getTime().getValue());
+		// the first day of the month
+		int baseDay = 1;// day 1 from given month
+		// the difference between the days of week
+		int diff = dowForFirstDoM - requiredDoW;
+		// //base day remains the same if diff is zero
+		if (diff < 0) {
+			baseDay = baseDay + Math.abs(diff);
+		}
+		if (diff > 0) {
+			baseDay = baseDay + 7 - diff;
+		}
+		// if baseDay is greater than the reference, we are returning the initial matching day value
+		if (baseDay > reference) {
+			return baseDay;
+		}
+
+		return reference + 7;
+	}
 }

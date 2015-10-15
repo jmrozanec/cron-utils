@@ -99,6 +99,15 @@ public class CronDescriptorQuartzIntegrationTest {
         assertExpression("0 0/5 14,18 * * ?", "every 5 minutes at 14 and 18 hours");
     }
 
+    /**
+     * Issue #43: getting bad description for expression
+     * @throws Exception
+     */
+    //TODO
+    public void testEveryDayEveryFourHoursFromHour2() throws Exception {
+        assertExpression("0 0 2/4 * * ?", "");
+    }
+
     private void assertExpression(String cron, String description){
         assertEquals(description, descriptor.describe(parser.parse(cron)));
     }

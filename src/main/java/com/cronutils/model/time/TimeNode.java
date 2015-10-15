@@ -1,7 +1,10 @@
 package com.cronutils.model.time;
 
 import com.google.common.annotations.VisibleForTesting;
+
 import org.apache.commons.lang3.Validate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -21,6 +24,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * limitations under the License.
  */
 class TimeNode {
+	private static final Logger log = LoggerFactory.getLogger(TimeNode.class);
     protected List<Integer> values;
 
     public TimeNode(List<Integer> values){
@@ -53,6 +57,7 @@ class TimeNode {
         List<Integer> values = new ArrayList<Integer>(this.values);
         int index=0;
         boolean foundGreater = false;
+        AtomicInteger shift = new AtomicInteger(0);
         if (!values.contains(reference)) {
             for(Integer value : values){
                 if(value>reference){
@@ -63,12 +68,11 @@ class TimeNode {
                 }
             }
             if(!foundGreater){
-                shiftsToApply++;
+                shift.incrementAndGet();
             }
         }else{
             index = values.indexOf(reference);
         }
-        AtomicInteger shift = new AtomicInteger(0);
         int value = values.get(index);
         for(int j=0;j<shiftsToApply;j++){
             value = getValueFromList(values, index+1, shift);
