@@ -11,8 +11,20 @@ import org.junit.Test;
 
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 
 public class ExecutionTimeUnixIntegrationTest {
+
+    /**
+     * Issue #37: for pattern "every 10 minutes", nextExecution returns a date from past.
+     */
+    @Test
+    public void testEveryTenMinutesNextExecution(){
+        CronParser parser = new CronParser(CronDefinitionBuilder.instanceDefinitionFor(CronType.UNIX));
+        ExecutionTime executionTime = ExecutionTime.forCron(parser.parse("*/10 * * * *"));
+        DateTime time = DateTime.parse("2015-09-05T13:43:00.000-07:00");
+        assertEquals(DateTime.parse("2015-09-05T13:50:00.000-07:00"), executionTime.nextExecution(time));
+    }
 
     /**
      * Issue #38: every 2 min schedule doesn't roll over to next hour
@@ -23,7 +35,6 @@ public class ExecutionTimeUnixIntegrationTest {
         Cron cron = new CronParser(cronDefinition).parse("*/2 * * * *");
         ExecutionTime executionTime = ExecutionTime.forCron(cron);
         DateTime time = DateTime.parse("2015-09-05T13:56:00.000-07:00");
-        time = time.toDateTime(DateTime.now().getZone());
         DateTime next = executionTime.nextExecution(time);
         DateTime shouldBeInNextHour = executionTime.nextExecution(next);
 
