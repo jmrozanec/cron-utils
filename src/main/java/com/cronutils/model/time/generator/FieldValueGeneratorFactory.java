@@ -67,15 +67,10 @@ public class FieldValueGeneratorFactory {
     public static FieldValueGenerator createDayOfWeekValueGeneratorInstance(CronField cronField, int year, int month, WeekDay mondayDoWValue){
         FieldExpression fieldExpression = cronField.getExpression();
         if (fieldExpression instanceof On) {
-            //On on = (On) fieldExpression;
-            //if(!SpecialChar.NONE.equals(on.getSpecialChar().getValue())){
-                return new OnDayOfWeekValueGenerator(cronField, year, month, mondayDoWValue);
-            //}
+            return new OnDayOfWeekValueGenerator(cronField, year, month, mondayDoWValue);
         }
         // handle a range expression for day of week special
         if (fieldExpression instanceof Between) {
-        	log.debug("Got Between type DayOfWeek expression.");
-        	log.debug("cronField = [{}]", cronField.getField().toString());
         	return new BetweenDayOfWeekValueGenerator(cronField, year, month, mondayDoWValue);
         }
         return forCronField(cronField);

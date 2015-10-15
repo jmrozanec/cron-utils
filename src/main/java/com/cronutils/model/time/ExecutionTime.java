@@ -95,7 +95,6 @@ public class ExecutionTime {
                         executionTimeBuilder.forHoursMatching(fields.get(name));
                         break;
                     case DAY_OF_WEEK:
-                    	log.debug("day of week value = [{}]", fields.get(name).getExpression().asString());
                         executionTimeBuilder.forDaysOfWeekMatching(fields.get(name));
                         break;
                     case DAY_OF_MONTH:
@@ -123,7 +122,6 @@ public class ExecutionTime {
         try {
             DateTime nextMatch = nextClosestMatch(date);
             if(nextMatch.equals(date)){
-                log.debug("nextMatch equals date");
                 nextMatch = nextClosestMatch(date.plusSeconds(1));
             }
             return nextMatch;
@@ -148,35 +146,12 @@ public class ExecutionTime {
         int lowestMinute = minutes.getValues().get(0);
         int lowestSecond = seconds.getValues().get(0);
 
-        log.debug("");
-        log.debug(" Date = [{}]", date.toString());
-
-//        for (Integer i: year) {
-//        	log.debug("Year [{}]", i);
-//        }
-        for (Integer i: days.values) {
-        	log.debug("Days [{}]", i);
-        }
-        for (Integer i: hours.values) {
-        	log.debug("Hours [{}]", i);
-        }
-//        for (Integer i: minutes.values) {
-//        	log.debug("Minutes [{}]", i);
-//        }
-//        log.debug("lowestMonth = [{}]", lowestMonth);
-//        log.debug("lowestDay = [{}]", lowestDay);
-//        log.debug("lowestHour = [{}]", lowestHour);
-//        log.debug("lowestMinute = [{}]", lowestMinute);
-//        log.debug("lowestSecond = [{}]", lowestSecond);
-//        log.debug("");
-        
         NearestValue nearestValue;
         DateTime newDate;
         if(year.isEmpty()){
             return initDateTime(yearsValueGenerator.generateNextValue(date.getYear()), lowestMonth, lowestDay, lowestHour, lowestMinute, lowestSecond, date.getZone());
         }
         if(!months.getValues().contains(date.getMonthOfYear())) {
-            log.debug(" == checking months ==");
             nearestValue = months.getNextValue(date.getMonthOfYear(), 0);
             int nextMonths = nearestValue.getValue();
             if(nearestValue.getShifts()>0){
@@ -185,85 +160,62 @@ public class ExecutionTime {
                 return nextClosestMatch(newDate);
             }
             if (nearestValue.getValue() < date.getMonthOfYear()) {
-            	log.debug("Adding 1 year. near = [" + nearestValue.getValue() + "]" );
             	date = date.plusYears(1);
             }
-            log.debug(" == months ==");
             return initDateTime(date.getYear(), nextMonths, lowestDay, lowestHour, lowestMinute, lowestSecond, date.getZone());
         }
         if(!days.getValues().contains(date.getDayOfMonth())) {
-            log.debug(" == checking days ==");
             nearestValue = days.getNextValue(date.getDayOfMonth(), 0);
             if(nearestValue.getShifts()>0){
-                newDate = new DateTime(date.getYear(), date.getMonthOfYear(), 1, 0, 0, 0).plusMonths(nearestValue.getShifts());
+                newDate = new DateTime(date.getYear(), date.getMonthOfYear(), 1, 0, 0, 0, date.getZone()).plusMonths(nearestValue.getShifts());
                 return nextClosestMatch(newDate);
             }
             if (nearestValue.getValue() < date.getDayOfMonth()) {
-            	log.debug("Adding 1 month. near = [" + nearestValue.getValue() + "]" );
             	date = date.plusMonths(1);
             }
-            log.debug(" == days ==");
             return initDateTime(date.getYear(), date.getMonthOfYear(), nearestValue.getValue(), lowestHour, lowestMinute, lowestSecond, date.getZone());
         }
         if(!hours.getValues().contains(date.getHourOfDay())) {
-            log.debug(" == checking hours ==");
             nearestValue = hours.getNextValue(date.getHourOfDay(), 0);
-            log.debug("  nearestValue.getShifts = [{}]", nearestValue.getShifts());
             int nextHours = nearestValue.getValue();
-            log.debug("  nextHours = [{}]", nextHours);
             if(nearestValue.getShifts()>0){
                 newDate =
                         new DateTime(date.getYear(), date.getMonthOfYear(),
-                                date.getDayOfMonth(), 0, 0, 0).plusDays(nearestValue.getShifts());
-                log.debug(" recursing with newDate of [{}]", newDate.toString());
+                                date.getDayOfMonth(), 0, 0, 0, date.getZone()).plusDays(nearestValue.getShifts());
                 return nextClosestMatch(newDate);
             }
             if (nearestValue.getValue() < date.getHourOfDay()) {
-            	log.debug("Adding 1 day. near = [" + nearestValue.getValue() + "]" );
             	date = date.plusDays(1);
             }
-            log.debug(" == returning hours ==");
             return initDateTime(date.getYear(), date.getMonthOfYear(), date.getDayOfMonth(), nextHours, lowestMinute, lowestSecond, date.getZone());
         }
         if(!minutes.getValues().contains(date.getMinuteOfHour())) {
-            log.debug(" == checking minutes ==");
             nearestValue = minutes.getNextValue(date.getMinuteOfHour(), 0);
-            log.debug("  nearestValue.getShifts = [{}]", nearestValue.getShifts());
             int nextMinutes = nearestValue.getValue();
-            log.debug("  nextMinutes = [{}]", nextMinutes);
             if(nearestValue.getShifts()>0){
                 newDate =
-                        new DateTime(date.getYear(), date.getMonthOfYear(),
-                                date.getDayOfMonth(), date.getHourOfDay(), 0, 0).plusHours(nearestValue.getShifts());
-                log.debug(" recursing with newDate of [{}]", newDate.toString());
+                        new DateTime(date.getYear(), date.getMonthOfYear(), date.getDayOfMonth(), date.getHourOfDay(),
+                                0, 0, date.getZone()).plusHours(nearestValue.getShifts());
                 return nextClosestMatch(newDate);
             }
             if (nearestValue.getValue() < date.getMinuteOfHour()) {
-            	log.debug("Adding 1 hour. near = [" + nearestValue.getValue() + "]" );
             	date = date.plusHours(1);
             }
-            log.debug(" == returning minutes ==");
             return initDateTime(date.getYear(), date.getMonthOfYear(), date.getDayOfMonth(), date.getHourOfDay(), nextMinutes, lowestSecond, date.getZone());
         }
         if(!seconds.getValues().contains(date.getSecondOfMinute())) {
-            log.debug(" == checking seconds ==");
             nearestValue = seconds.getNextValue(date.getSecondOfMinute(), 0);
-            log.debug("  nearestValue.getShifts = [{}]", nearestValue.getShifts());
             int nextSeconds = nearestValue.getValue();
-            log.debug("  nextSeconds = [{}]", nextSeconds);
             if(nearestValue.getShifts()>0){
                 newDate =
                         new DateTime(date.getYear(), date.getMonthOfYear(),
                                 date.getDayOfMonth(), date.getHourOfDay(),
-                                date.getMinuteOfHour(),0).plusMinutes(nearestValue.getShifts());
-                log.debug(" recursing with newDate of [{}]", newDate.toString());
+                                date.getMinuteOfHour(),0, date.getZone()).plusMinutes(nearestValue.getShifts());
                 return nextClosestMatch(newDate);
             }
             if (nearestValue.getValue() < date.getSecondOfMinute()) {
-            	log.debug("Adding 1 minute. near = [" + nearestValue.getValue() + "]" );
             	date = date.plusMinutes(1);
             }
-            log.debug(" == returning seconds ==");
             return initDateTime(date.getYear(), date.getMonthOfYear(), date.getDayOfMonth(), date.getHourOfDay(), date.getMinuteOfHour(), nextSeconds, date.getZone());
         }
         return date;

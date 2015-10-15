@@ -58,13 +58,9 @@ class TimeNode {
         int index=0;
         boolean foundGreater = false;
         AtomicInteger shift = new AtomicInteger(0);
-        log.debug(" *** reference = [{}]  shiftsToApply = [{}]", reference, shiftsToApply);
         if (!values.contains(reference)) {
-        	log.debug("List of values does not contain reference value of [{}]", reference);
             for(Integer value : values){
-            	log.debug("  checking value [{}] > reference [{}]", value, reference);
                 if(value>reference){
-                	log.debug("  found greater reference value");
                     index = values.indexOf(value);
                     shiftsToApply--;//we just moved a position!
                     foundGreater = true;
@@ -72,20 +68,15 @@ class TimeNode {
                 }
             }
             if(!foundGreater){
-            	log.debug("No value found in list greater than reference");
                 shift.incrementAndGet();
             }
         }else{
-        	log.debug("Reference value of [{}] in list", reference);
             index = values.indexOf(reference);
         }
         int value = values.get(index);
-        log.debug("chosen value is [{}]", value);
-        log.debug("shiftsToApply = [{}]", shiftsToApply);
         for(int j=0;j<shiftsToApply;j++){
             value = getValueFromList(values, index+1, shift);
             index = values.indexOf(value);
-            log.debug("[shift] value is [{}]  index = [{}]", value, index);
         }
         return new NearestValue(value, shift.get());
     }
