@@ -14,10 +14,14 @@ import com.cronutils.model.time.generator.NoSuchValueException;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+
 import org.apache.commons.lang3.Validate;
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.joda.time.Duration;
 import org.joda.time.Interval;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Collections;
 import java.util.List;
@@ -44,7 +48,9 @@ import static com.cronutils.model.field.value.SpecialChar.QUESTION_MARK;
  * Calculates execution time given a cron pattern
  */
 public class ExecutionTime {
-    private CronDefinition cronDefinition;
+	private static final Logger log = LoggerFactory.getLogger(ExecutionTime.class);
+
+	private CronDefinition cronDefinition;
     private FieldValueGenerator yearsValueGenerator;
     private CronField daysOfWeekCronField;
     private CronField daysOfMonthCronField;
@@ -143,25 +149,31 @@ public class ExecutionTime {
         NearestValue nearestValue;
         DateTime newDate;
         if(year.isEmpty()){
-            return initDateTime(yearsValueGenerator.generateNextValue(date.getYear()), lowestMonth, lowestDay, lowestHour, lowestMinute, lowestSecond);
+            return initDateTime(yearsValueGenerator.generateNextValue(date.getYear()), lowestMonth, lowestDay, lowestHour, lowestMinute, lowestSecond, date.getZone());
         }
         if(!months.getValues().contains(date.getMonthOfYear())) {
             nearestValue = months.getNextValue(date.getMonthOfYear(), 0);
             int nextMonths = nearestValue.getValue();
             if(nearestValue.getShifts()>0){
                 newDate =
-                        new DateTime(date.getYear(), 1, 1, 0, 0, 0).plusYears(nearestValue.getShifts());
+                        new DateTime(date.getYear(), 1, 1, 0, 0, 0, date.getZone()).plusYears(nearestValue.getShifts());
                 return nextClosestMatch(newDate);
             }
-            return initDateTime(date.getYear(), nextMonths, lowestDay, lowestHour, lowestMinute, lowestSecond);
+            if (nearestValue.getValue() < date.getMonthOfYear()) {
+            	date = date.plusYears(1);
+            }
+            return initDateTime(date.getYear(), nextMonths, lowestDay, lowestHour, lowestMinute, lowestSecond, date.getZone());
         }
         if(!days.getValues().contains(date.getDayOfMonth())) {
             nearestValue = days.getNextValue(date.getDayOfMonth(), 0);
             if(nearestValue.getShifts()>0){
-                newDate = new DateTime(date.getYear(), date.getMonthOfYear(), 1, 0, 0, 0).plusMonths(nearestValue.getShifts());
+                newDate = new DateTime(date.getYear(), date.getMonthOfYear(), 1, 0, 0, 0, date.getZone()).plusMonths(nearestValue.getShifts());
                 return nextClosestMatch(newDate);
             }
-            return initDateTime(date.getYear(), date.getMonthOfYear(), nearestValue.getValue(), lowestHour, lowestMinute, lowestSecond);
+            if (nearestValue.getValue() < date.getDayOfMonth()) {
+            	date = date.plusMonths(1);
+            }
+            return initDateTime(date.getYear(), date.getMonthOfYear(), nearestValue.getValue(), lowestHour, lowestMinute, lowestSecond, date.getZone());
         }
         if(!hours.getValues().contains(date.getHourOfDay())) {
             nearestValue = hours.getNextValue(date.getHourOfDay(), 0);
@@ -169,21 +181,27 @@ public class ExecutionTime {
             if(nearestValue.getShifts()>0){
                 newDate =
                         new DateTime(date.getYear(), date.getMonthOfYear(),
-                                date.getDayOfMonth(), 0, 0, 0).plusDays(nearestValue.getShifts());
+                                date.getDayOfMonth(), 0, 0, 0, date.getZone()).plusDays(nearestValue.getShifts());
                 return nextClosestMatch(newDate);
             }
-            return initDateTime(date.getYear(), date.getMonthOfYear(), date.getDayOfMonth(), nextHours, lowestMinute, lowestSecond);
+            if (nearestValue.getValue() < date.getHourOfDay()) {
+            	date = date.plusDays(1);
+            }
+            return initDateTime(date.getYear(), date.getMonthOfYear(), date.getDayOfMonth(), nextHours, lowestMinute, lowestSecond, date.getZone());
         }
         if(!minutes.getValues().contains(date.getMinuteOfHour())) {
             nearestValue = minutes.getNextValue(date.getMinuteOfHour(), 0);
             int nextMinutes = nearestValue.getValue();
             if(nearestValue.getShifts()>0){
                 newDate =
-                        new DateTime(date.getYear(), date.getMonthOfYear(),
-                                date.getDayOfMonth(), date.getHourOfDay(), 0, 0).plusHours(nearestValue.getShifts());
+                        new DateTime(date.getYear(), date.getMonthOfYear(), date.getDayOfMonth(), date.getHourOfDay(),
+                                0, 0, date.getZone()).plusHours(nearestValue.getShifts());
                 return nextClosestMatch(newDate);
             }
-            return initDateTime(date.getYear(), date.getMonthOfYear(), date.getDayOfMonth(), date.getHourOfDay(), nextMinutes, lowestSecond);
+            if (nearestValue.getValue() < date.getMinuteOfHour()) {
+            	date = date.plusHours(1);
+            }
+            return initDateTime(date.getYear(), date.getMonthOfYear(), date.getDayOfMonth(), date.getHourOfDay(), nextMinutes, lowestSecond, date.getZone());
         }
         if(!seconds.getValues().contains(date.getSecondOfMinute())) {
             nearestValue = seconds.getNextValue(date.getSecondOfMinute(), 0);
@@ -192,10 +210,13 @@ public class ExecutionTime {
                 newDate =
                         new DateTime(date.getYear(), date.getMonthOfYear(),
                                 date.getDayOfMonth(), date.getHourOfDay(),
-                                date.getMinuteOfHour(),0).plusMinutes(nearestValue.getShifts());
+                                date.getMinuteOfHour(),0, date.getZone()).plusMinutes(nearestValue.getShifts());
                 return nextClosestMatch(newDate);
             }
-            return initDateTime(date.getYear(), date.getMonthOfYear(), date.getDayOfMonth(), date.getHourOfDay(), date.getMinuteOfHour(), nextSeconds);
+            if (nearestValue.getValue() < date.getSecondOfMinute()) {
+            	date = date.plusMinutes(1);
+            }
+            return initDateTime(date.getYear(), date.getMonthOfYear(), date.getDayOfMonth(), date.getHourOfDay(), date.getMinuteOfHour(), nextSeconds, date.getZone());
         }
         return date;
     }
@@ -219,7 +240,7 @@ public class ExecutionTime {
         NearestValue nearestValue;
         DateTime newDate;
         if(year.isEmpty()){
-            return initDateTime(yearsValueGenerator.generatePreviousValue(date.getYear()), highestMonth, highestDay, highestHour, highestMinute, highestSecond);
+            return initDateTime(yearsValueGenerator.generatePreviousValue(date.getYear()), highestMonth, highestDay, highestHour, highestMinute, highestSecond, date.getZone());
         }
         if(!months.getValues().contains(date.getMonthOfYear())){
             nearestValue = months.getPreviousValue(date.getMonthOfYear(), 0);
@@ -229,7 +250,7 @@ public class ExecutionTime {
                         new DateTime(date.getYear(), 12, 31, 23, 59, 59).minusYears(nearestValue.getShifts());
                 return previousClosestMatch(newDate);
             }
-            return initDateTime(date.getYear(), previousMonths, highestDay, highestHour, highestMinute, highestSecond);
+            return initDateTime(date.getYear(), previousMonths, highestDay, highestHour, highestMinute, highestSecond, date.getZone());
         }
         if(!days.getValues().contains(date.getDayOfMonth())){
             nearestValue = days.getPreviousValue(date.getDayOfMonth(), 0);
@@ -238,7 +259,7 @@ public class ExecutionTime {
                         .minusMonths(nearestValue.getShifts()).dayOfMonth().withMaximumValue();
                 return previousClosestMatch(newDate);
             }
-            return initDateTime(date.getYear(), date.getMonthOfYear(), nearestValue.getValue(), highestHour, highestMinute, highestSecond);
+            return initDateTime(date.getYear(), date.getMonthOfYear(), nearestValue.getValue(), highestHour, highestMinute, highestSecond, date.getZone());
         }
         if(!hours.getValues().contains(date.getHourOfDay())){
             nearestValue = hours.getPreviousValue(date.getHourOfDay(), 0);
@@ -248,7 +269,7 @@ public class ExecutionTime {
                                 date.getDayOfMonth(), 23, 59, 59).minusDays(nearestValue.getShifts());
                 return previousClosestMatch(newDate);
             }
-            return initDateTime(date.getYear(), date.getMonthOfYear(), date.getDayOfMonth(), nearestValue.getValue(), highestMinute, highestSecond);
+            return initDateTime(date.getYear(), date.getMonthOfYear(), date.getDayOfMonth(), nearestValue.getValue(), highestMinute, highestSecond, date.getZone());
         }
         if(!minutes.getValues().contains(date.getMinuteOfHour())){
             nearestValue = minutes.getPreviousValue(date.getMinuteOfHour(), 0);
@@ -258,7 +279,7 @@ public class ExecutionTime {
                                 date.getDayOfMonth(), date.getHourOfDay(), 59, 59).minusHours(nearestValue.getShifts());
                 return previousClosestMatch(newDate);
             }
-            return initDateTime(date.getYear(), date.getMonthOfYear(), date.getDayOfMonth(), date.getHourOfDay(), nearestValue.getValue(), highestSecond);
+            return initDateTime(date.getYear(), date.getMonthOfYear(), date.getDayOfMonth(), date.getHourOfDay(), nearestValue.getValue(), highestSecond, date.getZone());
         }
         if(!seconds.getValues().contains(date.getSecondOfMinute())){
             nearestValue = seconds.getPreviousValue(date.getSecondOfMinute(), 0);
@@ -270,7 +291,7 @@ public class ExecutionTime {
                                 date.getMinuteOfHour(), 59).minusMinutes(nearestValue.getShifts());
                 return previousClosestMatch(newDate);
             }
-            return initDateTime(date.getYear(), date.getMonthOfYear(), date.getDayOfMonth(), date.getHourOfDay(), date.getMinuteOfHour(), previousSeconds);
+            return initDateTime(date.getYear(), date.getMonthOfYear(), date.getDayOfMonth(), date.getHourOfDay(), date.getMinuteOfHour(), previousSeconds, date.getZone());
         }
         return date;
     }
@@ -335,27 +356,37 @@ public class ExecutionTime {
         return new Interval(lastExecution(date), date).toDuration();
     }
 
-    private List<Integer> generateDayCandidatesQuestionMarkNotSupported(int year, int month, WeekDay mondayDoWValue){
-        DateTime date = new DateTime(year, month, 1,1,1);
-        Set<Integer> candidates = Sets.newHashSet();
-            if(daysOfMonthCronField.getExpression() instanceof Always && daysOfWeekCronField.getExpression() instanceof Always){
-                candidates.addAll(FieldValueGeneratorFactory.createDayOfMonthValueGeneratorInstance(daysOfMonthCronField, year, month).generateCandidates(1, date.dayOfMonth().getMaximumValue()));
-            } else {
-                if(daysOfMonthCronField.getExpression() instanceof Always){
-                    candidates.addAll(FieldValueGeneratorFactory.createDayOfWeekValueGeneratorInstance(daysOfWeekCronField, year, month, mondayDoWValue).generateCandidates(1, date.dayOfMonth().getMaximumValue()));
-                }else{
-                    if(daysOfWeekCronField.getExpression() instanceof Always){
-                        candidates.addAll(FieldValueGeneratorFactory.createDayOfMonthValueGeneratorInstance(daysOfMonthCronField, year, month).generateCandidates(1, date.dayOfMonth().getMaximumValue()));
-                    }else{
-                        candidates.addAll(FieldValueGeneratorFactory.createDayOfWeekValueGeneratorInstance(daysOfWeekCronField, year, month, mondayDoWValue).generateCandidates(1, date.dayOfMonth().getMaximumValue()));
-                        candidates.addAll(FieldValueGeneratorFactory.createDayOfMonthValueGeneratorInstance(daysOfMonthCronField, year, month).generateCandidates(1, date.dayOfMonth().getMaximumValue()));
-                    }
-                }
-        }
-        List<Integer> candidatesList = Lists.newArrayList(candidates);
-        Collections.sort(candidatesList);
-        return candidatesList;
-    }
+	private List<Integer> generateDayCandidatesQuestionMarkNotSupported(int year, int month, WeekDay mondayDoWValue) {
+		DateTime date = new DateTime(year, month, 1, 1, 1);
+		Set<Integer> candidates = Sets.newHashSet();
+		log.debug(" computing days for [{}]", daysOfWeekCronField.getExpression().getClass().toString());
+		if (daysOfMonthCronField.getExpression() instanceof Always && daysOfWeekCronField.getExpression() instanceof Always) {
+			log.debug(" computing days 1");
+			candidates.addAll(FieldValueGeneratorFactory.createDayOfMonthValueGeneratorInstance(daysOfMonthCronField, year, month).generateCandidates(1,
+					date.dayOfMonth().getMaximumValue()));
+		} else {
+			if (daysOfMonthCronField.getExpression() instanceof Always) {
+				log.debug(" computing days 2");
+				candidates.addAll(FieldValueGeneratorFactory.createDayOfWeekValueGeneratorInstance(daysOfWeekCronField, year, month, mondayDoWValue)
+						.generateCandidates(1, date.dayOfMonth().getMaximumValue()));
+			} else {
+				if (daysOfWeekCronField.getExpression() instanceof Always) {
+					log.debug(" computing days 3");
+					candidates.addAll(FieldValueGeneratorFactory.createDayOfMonthValueGeneratorInstance(daysOfMonthCronField, year, month).generateCandidates(
+							1, date.dayOfMonth().getMaximumValue()));
+				} else {
+					log.debug(" computing days 4");
+					candidates.addAll(FieldValueGeneratorFactory.createDayOfWeekValueGeneratorInstance(daysOfWeekCronField, year, month, mondayDoWValue)
+							.generateCandidates(1, date.dayOfMonth().getMaximumValue()));
+					candidates.addAll(FieldValueGeneratorFactory.createDayOfMonthValueGeneratorInstance(daysOfMonthCronField, year, month).generateCandidates(
+							1, date.dayOfMonth().getMaximumValue()));
+				}
+			}
+		}
+		List<Integer> candidatesList = Lists.newArrayList(candidates);
+		Collections.sort(candidatesList);
+		return candidatesList;
+	}
 
     private List<Integer> generateDayCandidatesQuestionMarkSupported(int year, int month, WeekDay mondayDoWValue){
         DateTime date = new DateTime(year, month, 1,1,1);
@@ -364,7 +395,8 @@ public class ExecutionTime {
             candidates.addAll(FieldValueGeneratorFactory.createDayOfMonthValueGeneratorInstance(daysOfMonthCronField, year, month).generateCandidates(1, date.dayOfMonth().getMaximumValue()));
         } else {
             if(daysOfMonthCronField.getExpression() instanceof QuestionMark){
-                candidates.addAll(FieldValueGeneratorFactory.createDayOfWeekValueGeneratorInstance(daysOfWeekCronField, year, month, mondayDoWValue).generateCandidates(1, date.dayOfMonth().getMaximumValue()));
+            	// the day of week calculator must get a -1 value to indicate its generating the first value of the month
+                candidates.addAll(FieldValueGeneratorFactory.createDayOfWeekValueGeneratorInstance(daysOfWeekCronField, year, month, mondayDoWValue).generateCandidates(-1, date.dayOfMonth().getMaximumValue()));
             }else{
                 if(daysOfWeekCronField.getExpression() instanceof QuestionMark){
                     candidates.addAll(FieldValueGeneratorFactory.createDayOfMonthValueGeneratorInstance(daysOfMonthCronField, year, month).generateCandidates(1, date.dayOfMonth().getMaximumValue()));
@@ -380,8 +412,8 @@ public class ExecutionTime {
     }
 
     private DateTime initDateTime(int years, int monthsOfYear, int dayOfMonth,
-                                  int hoursOfDay, int minutesOfHour, int secondsOfMinute) {
-        return new DateTime(0, 1, 1, 0, 0, 0)
+                                  int hoursOfDay, int minutesOfHour, int secondsOfMinute, DateTimeZone timeZone) {
+        return new DateTime(0, 1, 1, 0, 0, 0, timeZone)
                 .plusYears(years)
                 .plusMonths(monthsOfYear - 1)
                 .plusDays(dayOfMonth - 1)
