@@ -1,6 +1,7 @@
 package com.cronutils.descriptor.refactor;
 
 import com.cronutils.model.field.expression.*;
+import com.cronutils.model.field.expression.visitor.FieldExpressionVisitor;
 import com.cronutils.model.field.value.FieldValue;
 import com.cronutils.model.field.value.IntegerFieldValue;
 import com.google.common.annotations.VisibleForTesting;
@@ -12,7 +13,7 @@ import java.text.MessageFormat;
 import java.util.List;
 import java.util.ResourceBundle;
 
-class SecondsDescriptor {
+class SecondsDescriptor implements FieldExpressionVisitor {
     protected ResourceBundle bundle;
 
     SecondsDescriptor(ResourceBundle bundle) {
@@ -148,19 +149,9 @@ class SecondsDescriptor {
                 .append(" ").toString();
     }
 
-    /**
-     * Provide a human readable description for Every instance
-     * @param every - Every
-     * @return human readable description - String
-     */
+
     protected String describe(Every every, boolean and) {
-        String description;
-        if (every.getTime().getValue() > 1) {
-            description = String.format("%s %s ", bundle.getString("every"), nominalValue(every.getTime())) + " %p ";
-        } else {
-            description = bundle.getString("every")+" %s ";
-        }
-        return description;
+
     }
 
     /**
@@ -173,5 +164,52 @@ class SecondsDescriptor {
             return nominalValue(on.getTime());
         }
         return String.format("%s %s ", bundle.getString("at"), nominalValue(on.getTime())) + "%s";
+    }
+
+    @Override
+    public FieldExpression visit(FieldExpression expression) {
+        return null;
+    }
+
+    @Override
+    public Always visit(Always always) {
+        return null;
+    }
+
+    @Override
+    public And visit(And and) {
+        return null;
+    }
+
+    @Override
+    public Between visit(Between between) {
+        return null;
+    }
+
+    /**
+     * Provide a human readable description for Every instance
+     * @param every - Every
+     * @return human readable description - String
+     */
+    @Override
+    public Every visit(Every every) {
+        String description;
+        if (every.getTime().getValue() > 1) {
+            description = String.format("%s %s ", bundle.getString("every"), nominalValue(every.getTime())) + " %p ";
+        } else {
+            description = bundle.getString("every")+" %s ";
+        }
+        //TODO save the description?
+        return every;
+    }
+
+    @Override
+    public On visit(On on) {
+        return null;
+    }
+
+    @Override
+    public QuestionMark visit(QuestionMark questionMark) {
+        return null;
     }
 }
