@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 
-  <head>
+<head>
     <meta charset='utf-8'>
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
     <meta name="description" content="Cron-utils : Cron utils for parsing, validations and human readable descriptions.">
@@ -9,121 +9,121 @@
     <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
 
     <title>Cron-utils</title>
-  </head>
+</head>
 
-  <body>
+<body>
 
-    <!-- HEADER -->
-    <div id="header_wrap" class="outer">
-        <header class="inner">
-          <a id="forkme_banner" href="https://github.com/jmrozanec/cron-utils">View on GitHub</a>
+<!-- HEADER -->
+<div id="header_wrap" class="outer">
+    <header class="inner">
+        <a id="forkme_banner" href="https://github.com/jmrozanec/cron-utils">View on GitHub</a>
 
-          <h1 id="project_title">Cron-utils</h1>
-          <h2 id="project_tagline">Cron utils for parsing, validations and human readable descriptions.</h2>
+        <h1 id="project_title">Cron-utils</h1>
+        <h2 id="project_tagline">Cron utils for parsing, validations and human readable descriptions.</h2>
 
-            <section id="downloads">
-              <a class="zip_download_link" href="https://github.com/jmrozanec/cron-utils/zipball/master">Download this project as a .zip file</a>
-              <a class="tar_download_link" href="https://github.com/jmrozanec/cron-utils/tarball/master">Download this project as a tar.gz file</a>
-            </section>
-        </header>
-    </div>
+        <section id="downloads">
+            <a class="zip_download_link" href="https://github.com/jmrozanec/cron-utils/zipball/master">Download this project as a .zip file</a>
+            <a class="tar_download_link" href="https://github.com/jmrozanec/cron-utils/tarball/master">Download this project as a tar.gz file</a>
+        </section>
+    </header>
+</div>
 
-    <!-- MAIN CONTENT -->
-    <div id="main_content_wrap" class="outer">
-      <section id="main_content" class="inner">
+<!-- MAIN CONTENT -->
+<div id="main_content_wrap" class="outer">
+    <section id="main_content" class="inner">
         <h1>
-<a name="cron-utils" class="anchor" href="#cron-utils"><span class="octicon octicon-link"></span></a>cron-utils</h1>
+            <a name="cron-utils" class="anchor" href="#cron-utils"><span class="octicon octicon-link"></span></a>cron-utils</h1>
 
-<p>A Java library to parse, validate, migrate crons as well as get human readable descriptions for them. The project follows the <a href="http://semver.org/">Semantic Versioning Convention</a> and uses Apache 2.0 license</p>
+        <p>A Java library to parse, validate, migrate crons as well as get human readable descriptions for them. The project follows the <a href="http://semver.org/">Semantic Versioning Convention</a> and uses Apache 2.0 license</p>
 
-<p>
-<a href="https://gitter.im/jmrozanec/cron-utils"><img src="http://img.shields.io/badge/chat-online-brightgreen.svg" alt="Gitter Chat"></a>
-<a href="https://travis-ci.org/jmrozanec/cron-utils"><img src="https://travis-ci.org/jmrozanec/cron-utils.png?branch=master" alt="Build Status"></a>
-<a href="https://coveralls.io/r/jmrozanec/cron-utils"><img src="https://coveralls.io/repos/jmrozanec/cron-utils/badge.png" alt="Coverage Status"></a>
-</p>
+        <p>
+            <a href="https://gitter.im/jmrozanec/cron-utils"><img src="http://img.shields.io/badge/chat-online-brightgreen.svg" alt="Gitter Chat"></a>
+            <a href="https://travis-ci.org/jmrozanec/cron-utils"><img src="https://travis-ci.org/jmrozanec/cron-utils.png?branch=master" alt="Build Status"></a>
+            <a href="https://coveralls.io/r/jmrozanec/cron-utils"><img src="https://coveralls.io/repos/jmrozanec/cron-utils/badge.png" alt="Coverage Status"></a>
+        </p>
 
-<p><a href="https://www.openhub.net/p/cron-utils/"><img src="https://www.openhub.net/p/cron-utils/widgets/project_thin_badge.gif" alt="Project stats by OpenHub"></a></p>
+        <p><a href="https://www.openhub.net/p/cron-utils/"><img src="https://www.openhub.net/p/cron-utils/widgets/project_thin_badge.gif" alt="Project stats by OpenHub"></a></p>
 
-<p><strong>Download</strong></p>
+        <p><strong>Download</strong></p>
 
-<p>cron-utils is available on Maven central repository.</p>
+        <p>cron-utils is available on Maven central repository.</p>
 
 <pre><code>&lt;dependency&gt;
     &lt;groupId&gt;com.cronutils&lt;/groupId&gt;
     &lt;artifactId&gt;cron-utils&lt;/artifactId&gt;
     &lt;version&gt;3.1.1&lt;/version&gt;
-&lt;/dependency&gt;
+    &lt;/dependency&gt;
 </code></pre>
 
-<p><strong>Features</strong></p>
+        <p><strong>Features</strong></p>
 
-<ul>
-<li>Create arbitrary cron expressions: you can define your own cron format! Supported fields are: second, minute, hour, day of month, month, day of week, year.</li>
-<li>You can flag last field as optional!</li>
-<li>Supports all cron special characters: * / , -
+        <ul>
+            <li>Create arbitrary cron expressions: you can define your own cron format! Supported fields are: second, minute, hour, day of month, month, day of week, year.</li>
+            <li>You can flag last field as optional!</li>
+            <li>Supports all cron special characters: * / , -
 
-<ul>
-<li>Non-standard characters L, W, # are supported as well!</li>
-<li>Question mark (?) is currently replaced for an asterisk (*). Enhanced support will be provided in a future.</li>
-</ul>
-</li>
-<li>Print to locale specific human readable format (English, Dutch, French, Italian, Portuguese and Spanish so far...).</li>
-<li>Parse and Description process are decoupled: parse once and operate with the result!</li>
-<li>Validate if cron string expressions match a cron definition using CronValidator</li>
-<li>Convert crons between different cron definitions: if you need to migrate expressions, CronMapper may help you!</li>
-<li>Pre-defined definitions for the following cron libraries are provided:
+                <ul>
+                    <li>Non-standard characters L, W, # are supported as well!</li>
+                    <li>Question mark (?) is currently replaced for an asterisk (*). Enhanced support will be provided in a future.</li>
+                </ul>
+            </li>
+            <li>Print to locale specific human readable format (English, Dutch, French, Italian, Portuguese and Spanish so far...).</li>
+            <li>Parse and Description process are decoupled: parse once and operate with the result!</li>
+            <li>Validate if cron string expressions match a cron definition using CronValidator</li>
+            <li>Convert crons between different cron definitions: if you need to migrate expressions, CronMapper may help you!</li>
+            <li>Pre-defined definitions for the following cron libraries are provided:
 
-<ul>
-<li><a href="http://www.unix.com/man-page/linux/5/crontab/">Unix</a></li>
-<li><a href="http://www.sauronsoftware.it/projects/cron4j/">Cron4j</a></li>
-<li><a href="http://quartz-scheduler.org/">Quartz</a></li>
-</ul>
-</li>
-</ul><p><strong>Quick example</strong></p>
+                <ul>
+                    <li><a href="http://www.unix.com/man-page/linux/5/crontab/">Unix</a></li>
+                    <li><a href="http://www.sauronsoftware.it/projects/cron4j/">Cron4j</a></li>
+                    <li><a href="http://quartz-scheduler.org/">Quartz</a></li>
+                </ul>
+            </li>
+        </ul><p><strong>Quick example</strong></p>
 
 <pre><code>//get a predefined instance
-CronDefinition cronDefinition = 
-        CronDefinitionRegistry.instance().retrieve(QUARTZ);
+    CronDefinition cronDefinition =
+    CronDefinitionRegistry.instance().retrieve(QUARTZ);
 
-//create a parser based on provided definition
-CronParser parser = new CronParser(cronDefinition);
-Cron quartzCron = parser.parse("0 23 ? * * 1-5 *");
+    //create a parser based on provided definition
+    CronParser parser = new CronParser(cronDefinition);
+    Cron quartzCron = parser.parse("0 23 ? * * 1-5 *");
 
-//create a descriptor for a specific Locale
-CronDescriptor descriptor = CronDescriptor.instance(Locale.UK);
+    //create a descriptor for a specific Locale
+    CronDescriptor descriptor = CronDescriptor.instance(Locale.UK);
 
-//parse some expression and ask descriptor for description
-String description = descriptor.describe(parser.parse("*/45 * * * * *"));
-//description will be: "every 45 seconds"
+    //parse some expression and ask descriptor for description
+    String description = descriptor.describe(parser.parse("*/45 * * * * *"));
+    //description will be: "every 45 seconds"
 
-//Validate if a string expression matches a cron definition:
-CronValidator quartzValidator = new CronValidator(cronDefinition);
+    //Validate if a string expression matches a cron definition:
+    CronValidator quartzValidator = new CronValidator(cronDefinition);
 
-//getting a boolean result:
-quartzValidator.isValid("0 23 ? * * MON-FRI *");
+    //getting a boolean result:
+    quartzValidator.isValid("0 23 ? * * MON-FRI *");
 
-//or returning same string if valid and raising an exception if invalid
-quartzValidator.validate("0 23 ? * * MON-FRI *");
+    //or returning same string if valid and raising an exception if invalid
+    quartzValidator.validate("0 23 ? * * MON-FRI *");
 </code></pre>
 
-<p>For more examples, check our <a href="https://github.com/jmrozanec/cron-utils">README</a></p>
+        <p>For more examples, check our <a href="https://github.com/jmrozanec/cron-utils">README</a></p>
 
-<p>For stats about the project, you can visit our <a href="https://www.openhub.net/p/cron-utils">OpenHUB profile</a></p>
-      </section>
-    </div>
+        <p>For stats about the project, you can visit our <a href="https://www.openhub.net/p/cron-utils">OpenHUB profile</a></p>
+    </section>
+</div>
 
-    <!-- FOOTER  -->
-    <div id="footer_wrap" class="outer">
-      <footer class="inner">
+<!-- FOOTER  -->
+<div id="footer_wrap" class="outer">
+    <footer class="inner">
         <p class="copyright">Cron-utils maintained by <a href="https://github.com/jmrozanec">jmrozanec</a></p>
-      </footer>
-    </div>
+    </footer>
+</div>
 
-              <script type="text/javascript">
+<script type="text/javascript">
             var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
             document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
           </script>
-          <script type="text/javascript">
+<script type="text/javascript">
             try {
               var pageTracker = _gat._getTracker("UA-54023800-1");
             pageTracker._trackPageview();
@@ -137,5 +137,5 @@ quartzValidator.validate("0 23 ? * * MON-FRI *");
 </script>
 <script src="https://sidecar.gitter.im/dist/sidecar.v1.js" async defer></script>
 
-  </body>
+</body>
 </html>
