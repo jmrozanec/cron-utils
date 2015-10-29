@@ -151,7 +151,7 @@ class SecondsDescriptor implements FieldExpressionVisitor {
 
 
     protected String describe(Every every, boolean and) {
-
+	return null;
     }
 
     /**
