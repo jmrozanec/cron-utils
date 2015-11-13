@@ -391,7 +391,7 @@ public class ExecutionTime {
     private List<Integer> generateDayCandidatesQuestionMarkSupported(int year, int month, WeekDay mondayDoWValue){
         DateTime date = new DateTime(year, month, 1,1,1);
         Set<Integer> candidates = Sets.newHashSet();
-        if(daysOfMonthCronField.getExpression() instanceof Always || daysOfWeekCronField.getExpression() instanceof Always){
+        if(daysOfMonthCronField.getExpression() instanceof Always && daysOfWeekCronField.getExpression() instanceof Always){
             candidates.addAll(FieldValueGeneratorFactory.createDayOfMonthValueGeneratorInstance(daysOfMonthCronField, year, month).generateCandidates(1, date.dayOfMonth().getMaximumValue()));
         } else {
             if(daysOfMonthCronField.getExpression() instanceof QuestionMark){
