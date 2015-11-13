@@ -177,7 +177,18 @@ public class ExecutionTimeQuartzIntegrationTest {
         DateTime next = executionTime.nextExecution(now);
         assertNotEquals(last, next);
     }
-
+    /**
+     * Issue: execution time properly calculated
+     */
+    @Test
+    public void testWeekdayExecutionTime(){
+        DateTime now = DateTime.now();
+        CronParser parser = new CronParser(CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ));
+        ExecutionTime executionTime = ExecutionTime.forCron(parser.parse("0 0 3 ? * *"));
+        DateTime last = executionTime.lastExecution(now);
+        DateTime next = executionTime.nextExecution(now);
+        assertNotEquals(last, next);
+    }
     private DateTime truncateToSeconds(DateTime dateTime){
         return new DateTime(
                 dateTime.getYear(),
