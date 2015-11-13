@@ -44,14 +44,14 @@
 
 	<distributionManagement>
 		<repository>
-			<id>ossrh</id>
+			<id>devbuilds</id>
 			<name>Release Repository</name>
-			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+			<url>http://nexus.neuroten.com:8081/nexus/content/repositories/devbuilds/</url>
 		</repository>
 		<snapshotRepository>
-			<id>ossrh</id>
+			<id>snapshots</id>
 			<name>Snapshots Repository</name>
-			<url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+			<url>http://nexus.neuroten.com:8081/nexus/content/repositories/snapshots/</url>
 		</snapshotRepository>
 	</distributionManagement>
 
