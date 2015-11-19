@@ -92,4 +92,18 @@ public class ExecutionTimeUnixIntegrationTest {
         ExecutionTime executionTime = ExecutionTime.forCron(cron);
         assertEquals(DateTime.parse("2015-10-19T00:00:00.000-07:00"), executionTime.nextExecution(date));
     }
+
+    /**
+     * Issue #50: last execution does not match expected date when cron specifies day of week and last execution is in previous month.
+     */
+    @Test
+    public void testLastExecutionDaysOfWeekOverMonthBoundary(){
+        String crontab = "0 11 * * 1";
+        CronDefinition cronDefinition = CronDefinitionBuilder.instanceDefinitionFor(CronType.UNIX);
+        CronParser parser = new CronParser(cronDefinition);
+        Cron cron = parser.parse(crontab);
+        DateTime date = DateTime.parse("2015-11-02T00:10:00.000");
+        ExecutionTime executionTime = ExecutionTime.forCron(cron);
+        assertEquals(DateTime.parse("2015-10-26T11:00:00.000"), executionTime.lastExecution(date));
+    }
 }

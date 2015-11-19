@@ -95,6 +95,7 @@ class TimeNode {
         Collections.reverse(values);
         int index=0;
         boolean foundSmaller=false;
+        AtomicInteger shift = new AtomicInteger(0);
         if (!values.contains(reference)) {
             for(Integer value : values){
                 if(value<reference){
@@ -105,12 +106,11 @@ class TimeNode {
                 }
             }
             if(!foundSmaller){
-                shiftsToApply++;
+                shift.incrementAndGet();
             }
         }else{
             index = values.indexOf(reference);
         }
-        AtomicInteger shift = new AtomicInteger(0);
         int value = values.get(index);
         for(int j=0;j<shiftsToApply;j++){
             value = getValueFromList(values, index+1, shift);
