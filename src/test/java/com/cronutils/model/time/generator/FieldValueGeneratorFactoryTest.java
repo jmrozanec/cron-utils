@@ -157,6 +157,26 @@ public class FieldValueGeneratorFactoryTest {
         );
     }
 
+    @Test
+    public void testCreateDayOfWeekValueGeneratorInstance_Between() throws Exception {
+        when(mockCronField.getField()).thenReturn(CronFieldName.DAY_OF_WEEK);
+        when(mockCronField.getExpression()).thenReturn(mock(Between.class));
+        assertEquals(
+                BetweenDayOfWeekValueGenerator.class,
+                FieldValueGeneratorFactory.createDayOfWeekValueGeneratorInstance(mockCronField, 2015, 1, new WeekDay(1, false)).getClass()
+        );
+    }
+
+    @Test
+    public void testCreateDayOfWeekValueGeneratorInstance_And() throws Exception {
+        when(mockCronField.getField()).thenReturn(CronFieldName.DAY_OF_WEEK);
+        when(mockCronField.getExpression()).thenReturn(mock(And.class));
+        assertEquals(
+                AndDayOfWeekValueGenerator.class,
+                FieldValueGeneratorFactory.createDayOfWeekValueGeneratorInstance(mockCronField, 2015, 1, new WeekDay(1, false)).getClass()
+        );
+    }
+
     @Test(expected = IllegalArgumentException.class)
     public void testCreateDayOfWeekValueGeneratorInstanceBadCronFieldName() throws Exception {
         when(mockCronField.getField()).thenReturn(CronFieldName.YEAR);

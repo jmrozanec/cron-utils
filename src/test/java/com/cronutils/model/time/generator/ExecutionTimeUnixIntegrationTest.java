@@ -106,4 +106,34 @@ public class ExecutionTimeUnixIntegrationTest {
         ExecutionTime executionTime = ExecutionTime.forCron(cron);
         assertEquals(DateTime.parse("2015-10-26T11:00:00.000"), executionTime.lastExecution(date));
     }
+
+    /**
+      * Issue #52: "And" doesn't work for day of the week
+      * 1,2 should be Monday and Tuesday, but instead it is treated as 1st/2nd of month.
+      */
+    @Test
+    public void testWeekdayAndLastExecution() {
+        String crontab = "* * * * 1,2";
+        CronDefinition cronDefinition = CronDefinitionBuilder.instanceDefinitionFor(CronType.UNIX);
+        CronParser parser = new CronParser(cronDefinition);
+        Cron cron = parser.parse(crontab);
+        DateTime date = DateTime.parse("2015-11-10T17:01:00Z");
+        ExecutionTime executionTime = ExecutionTime.forCron(cron);
+        assertEquals(DateTime.parse("2015-11-10T17:00:00Z"), executionTime.lastExecution(date));
+    }
+
+    /**
+     * Isue #52: Additional test to ensure after fix that "And" and "Between" can both be used
+     * 1,2-3 should be Monday, Tuesday and Wednesday.
+     */
+    @Test
+    public void testWeekdayAndWithMixOfOnAndBetweenLastExecution() {
+        String crontab = "* * * * 1,2-3";
+        CronDefinition cronDefinition = CronDefinitionBuilder.instanceDefinitionFor(CronType.UNIX);
+        CronParser parser = new CronParser(cronDefinition);
+        Cron cron = parser.parse(crontab);
+        DateTime date = DateTime.parse("2015-11-10T17:01:00Z");
+        ExecutionTime executionTime = ExecutionTime.forCron(cron);
+        assertEquals(DateTime.parse("2015-11-10T17:00:00Z"), executionTime.lastExecution(date));
+    }
 }
