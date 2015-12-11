@@ -136,4 +136,35 @@ public class ExecutionTimeUnixIntegrationTest {
         ExecutionTime executionTime = ExecutionTime.forCron(cron);
         assertEquals(DateTime.parse("2015-11-10T17:00:00Z"), executionTime.lastExecution(date));
     }
+
+    /**
+     * Issue #59: Incorrect next execution time for "month" and "day of week"
+     * Considers Month in range 0-11 instead of 1-12
+     */
+    public void testCorrectMonthScaleForNextExecution(){
+        CronDefinition cronDefinition = CronDefinitionBuilder.instanceDefinitionFor(CronType.UNIX);
+        CronParser parser = new CronParser(cronDefinition);
+        String crontab = "* * */3 */4 */5";//m,h,dom,M,dow
+        Cron cron = parser.parse(crontab);
+        ExecutionTime executionTime = ExecutionTime.forCron(cron);
+        DateTime scanTime = DateTime.parse("2015-12-10T16:32:56.586-08:00");
+        DateTime nextExecutionTime = executionTime.nextExecution(scanTime);
+        System.out.println(String.format("Scan time %s, next execution time: %s", scanTime, nextExecutionTime));
+    }
+
+    /**
+     * Issue #59: Incorrect next execution time for "month" and "day of week"
+     * Considers bad DoW
+     */
+    public void testCorrectNextExecutionDoW(){
+        CronDefinition cronDefinition = CronDefinitionBuilder.instanceDefinitionFor(CronType.UNIX);
+        CronParser parser = new CronParser(cronDefinition);
+        String crontab = "* * */3 */4 */5";
+        Cron cron = parser.parse(crontab);
+        ExecutionTime executionTime = ExecutionTime.forCron(cron);
+        DateTime scanTime = DateTime.parse("2015-12-10T16:32:56.586-08:00");
+        DateTime nextExecutionTime = executionTime.nextExecution(scanTime);
+        System.out.println(String.format("Scan time %s, next execution time: %s", scanTime, nextExecutionTime));
+    }
+
 }
