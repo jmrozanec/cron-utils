@@ -73,6 +73,10 @@ public class FieldValueGeneratorFactory {
         if (fieldExpression instanceof Between) {
         	return new BetweenDayOfWeekValueGenerator(cronField, year, month, mondayDoWValue);
         }
+        // handle And expression for day of the week as a special case
+        if (fieldExpression instanceof And) {
+            return new AndDayOfWeekValueGenerator(cronField, year, month, mondayDoWValue);
+        }
         return forCronField(cronField);
     }
 

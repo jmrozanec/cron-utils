@@ -21,9 +21,11 @@ import static org.junit.Assert.assertEquals;
  * limitations under the License.
  */
 public class TimeNodeTest {
-    private static final int LIST_START_VALUE = 1;
-    private static final int LIST_MEDIUM_VALUE = 3;
-    private static final int LIST_END_VALUE = 5;
+    private static final int LIST_START_VALUE = 2;
+    private static final int LIST_MEDIUM_VALUE = 4;
+    private static final int LIST_END_VALUE = 6;
+    private static final int LOW_INTERMEDIATE_VALUE = 1;
+    private static final int HIGH_INTERMEDIATE_VALUE = 5;
     private List<Integer> values;
     private TimeNode timeNode;
 
@@ -65,6 +67,9 @@ public class TimeNodeTest {
         assertResult(LIST_MEDIUM_VALUE, 0, timeNode.getPreviousValue(LIST_END_VALUE, 1));
 
         assertResult(LIST_END_VALUE, 1, timeNode.getPreviousValue(LIST_MEDIUM_VALUE, 2));
+
+        assertResult(LIST_MEDIUM_VALUE, 0, timeNode.getPreviousValue(HIGH_INTERMEDIATE_VALUE, 1));
+        assertResult(LIST_END_VALUE, 1, timeNode.getPreviousValue(LOW_INTERMEDIATE_VALUE, 0));
     }
 
     @Test
