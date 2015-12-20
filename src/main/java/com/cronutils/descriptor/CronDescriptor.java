@@ -118,14 +118,19 @@ public class CronDescriptor {
      * @return description - String
      */
     private String describeDayOfWeek(Map<CronFieldName, CronField> fields) {
-        return String.format(
-                DescriptionStrategyFactory.daysOfWeekInstance(
-                        bundle,
-                        fields.containsKey(CronFieldName.DAY_OF_WEEK) ? fields.get(CronFieldName.DAY_OF_WEEK).getExpression() : null
-                ).describe(),
-                bundle.getString("day"));
+        String description = DescriptionStrategyFactory.daysOfWeekInstance(
+		        bundle,
+		        fields.containsKey(CronFieldName.DAY_OF_WEEK) ? fields.get(CronFieldName.DAY_OF_WEEK).getExpression() : null
+		).describe();
+		return this.addExpressions(description, bundle.getString("day"), bundle.getString("days"));
     }
 
+    private String addExpressions(String description, String singular, String plural){
+        return description
+                .replaceAll("%s", singular)
+                .replaceAll("%p", plural);
+    }
+    
     /**
      * Provide description for a year
      * @param fields - fields to describe;
