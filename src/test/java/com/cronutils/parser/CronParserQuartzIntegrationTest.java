@@ -3,7 +3,9 @@ package com.cronutils.parser;
 import com.cronutils.descriptor.CronDescriptor;
 import com.cronutils.model.Cron;
 import com.cronutils.model.CronType;
+import com.cronutils.model.definition.CronDefinition;
 import com.cronutils.model.definition.CronDefinitionBuilder;
+import com.cronutils.validator.CronValidator;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -127,11 +129,10 @@ public class CronParserQuartzIntegrationTest {
         parser.parse("0 0 0 * JUL * *");
     }
 
-/**
- * Issue #35: A>B in range considered invalid expression for Quartz.
- */
-
-//    @Test//TODO
+    /**
+     * Issue #35: A>B in range considered invalid expression for Quartz.
+     */
+    //@Test//TODO
     public void testSunToSat() {
     // FAILS SUN-SAT: SUN = 7 and SAT = 6
         parser.parse("0 0 12 ? * SUN-SAT");
@@ -148,10 +149,24 @@ public class CronParserQuartzIntegrationTest {
     /**
      * Issue #39: reported issue about exception being raised on parse.
      */
-    //@Test TODO
+    @Test
     public void testDescribeExpressionWithQuestionMarkAndWeekdays(){
         Cron quartzCron = parser.parse("0 0 0 ? * MON,TUE *");
         CronDescriptor descriptor = CronDescriptor.instance(Locale.ENGLISH);
-        String readableExpression = descriptor.describe(quartzCron);
+        descriptor.describe(quartzCron);
+    }
+
+    /**
+     * Issue #60: Parser exception when parsing cron:
+     */
+    @Test
+    public void testDescribeExpression(){
+        String expression = "0 * * ? * 1,5";
+        CronDefinition definition = CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ);
+        CronParser parser = new CronParser(definition);
+        CronValidator validator = new CronValidator(definition);
+        Cron c = parser.parse(expression);
+        CronDescriptor.instance(Locale.GERMAN).describe(c);
+        validator.validate(expression);
     }
 }
