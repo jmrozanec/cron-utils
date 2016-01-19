@@ -68,9 +68,16 @@ public class FieldParser {
                 if (array.length > 1) {
                     return parseBetween(array);
                 } else {
-                    String value = expression.split("/")[1];
-                    constraints.validateAllCharsValid(value);
-                    return new Every(constraints, new IntegerFieldValue(Integer.parseInt(value)));
+                    String[] values = expression.split("/");
+                    if(values.length == 2) {
+                        String value = values[1];
+                        constraints.validateAllCharsValid(value);
+                        return new Every(constraints, new IntegerFieldValue(Integer.parseInt(value)));
+                    }else if(values.length == 1){
+                        throw new IllegalArgumentException("Missing steps for expression: " + expression);
+                    }else {
+                        throw new IllegalArgumentException("Invalid expression: " + expression);
+                    }
                 }
             }
         }

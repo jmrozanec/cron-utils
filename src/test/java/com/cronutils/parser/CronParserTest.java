@@ -6,7 +6,9 @@ import com.cronutils.model.field.constraint.FieldConstraintsBuilder;
 import com.cronutils.model.field.definition.FieldDefinition;
 import com.google.common.collect.Sets;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
@@ -26,6 +28,10 @@ import static org.mockito.Mockito.when;
  * limitations under the License.
  */
 public class CronParserTest {
+
+    @Rule
+    public ExpectedException expectedException = ExpectedException.none();
+
     @Mock
     private CronDefinition definition;
 
@@ -53,6 +59,19 @@ public class CronParserTest {
         parser = new CronParser(definition);
 
         parser.parse("* *");
+    }
+
+    @Test
+    public void testParseIncompleteEvery() throws Exception {
+        Set<FieldDefinition> set = Sets.newHashSet();
+        set.add(new FieldDefinition(CronFieldName.SECOND, FieldConstraintsBuilder.instance().createConstraintsInstance()));
+        when(definition.getFieldDefinitions()).thenReturn(set);
+        parser = new CronParser(definition);
+
+        expectedException.expect(IllegalArgumentException.class);
+        expectedException.expectMessage("Missing steps for expression: */");
+
+        parser.parse("*/");
     }
 
 
