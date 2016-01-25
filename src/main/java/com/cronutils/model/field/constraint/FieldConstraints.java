@@ -153,6 +153,14 @@ public class FieldConstraints {
         }
     }
 
+    public int getStartRange() {
+        return startRange;
+    }
+
+    public int getEndRange() {
+        return endRange;
+    }
+
     String removeValidChars(String exp){
         Matcher numsAndCharsMatcher = numsAndCharsPattern.matcher(exp);
         Matcher stringToIntKeysMatcher = stringToIntKeysPattern.matcher(numsAndCharsMatcher.replaceAll(""));

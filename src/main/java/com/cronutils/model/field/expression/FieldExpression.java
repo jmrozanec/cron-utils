@@ -32,7 +32,7 @@ public abstract class FieldExpression {
         return new And().and(this).and(exp);
     }
 
-    protected FieldConstraints getConstraints() {
+    public FieldConstraints getConstraints() {
         return constraints;
     }
 

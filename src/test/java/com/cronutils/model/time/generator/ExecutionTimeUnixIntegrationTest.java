@@ -9,9 +9,7 @@ import com.cronutils.parser.CronParser;
 import org.joda.time.DateTime;
 import org.junit.Test;
 
-
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
 
 public class ExecutionTimeUnixIntegrationTest {
 
@@ -138,18 +136,19 @@ public class ExecutionTimeUnixIntegrationTest {
     }
 
     /**
-     * Issue #59: Incorrect next execution time for "month" and "day of week"
-     * Considers Month in range 0-11 instead of 1-12
+     * Issue #59: Incorrect next execution time for "day of month" in "time" situation
+     * dom "* / 4" should means 1, 5, 9, 13, 17th... of month instead of 4, 8, 12, 16th...
      */
+    @Test
     public void testCorrectMonthScaleForNextExecution(){
         CronDefinition cronDefinition = CronDefinitionBuilder.instanceDefinitionFor(CronType.UNIX);
         CronParser parser = new CronParser(cronDefinition);
-        String crontab = "* * */3 */4 */5";//m,h,dom,M,dow
+        String crontab = "* * */4 * *";//m,h,dom,M,dow
         Cron cron = parser.parse(crontab);
         ExecutionTime executionTime = ExecutionTime.forCron(cron);
         DateTime scanTime = DateTime.parse("2015-12-10T16:32:56.586-08:00");
         DateTime nextExecutionTime = executionTime.nextExecution(scanTime);
-        System.out.println(String.format("Scan time %s, next execution time: %s", scanTime, nextExecutionTime));
+        assertEquals(DateTime.parse("2015-12-13T00:00:00.000-08:00"), nextExecutionTime);
     }
 
     /**
@@ -159,10 +158,10 @@ public class ExecutionTimeUnixIntegrationTest {
     public void testCorrectNextExecutionDoW(){
         CronDefinition cronDefinition = CronDefinitionBuilder.instanceDefinitionFor(CronType.UNIX);
         CronParser parser = new CronParser(cronDefinition);
-        String crontab = "* * */3 */4 */5";
+        String crontab = "* * * * */4";
         Cron cron = parser.parse(crontab);
         ExecutionTime executionTime = ExecutionTime.forCron(cron);
-        DateTime scanTime = DateTime.parse("2015-12-10T16:32:56.586-08:00");
+        DateTime scanTime = DateTime.parse("2016-01-28T16:32:56.586-08:00");
         DateTime nextExecutionTime = executionTime.nextExecution(scanTime);
         System.out.println(String.format("Scan time %s, next execution time: %s", scanTime, nextExecutionTime));
     }
