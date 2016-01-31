@@ -38,29 +38,41 @@ public class EveryFieldValueGeneratorTest {
     @Test()
     public void testGenerateNextValue() throws Exception {
         for(int j=1; j<=10; j++){
-            int value = time*j-1-((int)(2*Math.random()));
-            assertEquals(j*time, fieldValueGenerator.generateNextValue(value));
+            int value = time*j-(2+((int)(2*Math.random())));
+            int expected = j*time-1;
+            int calculated = fieldValueGenerator.generateNextValue(value);
+            assertEquals(String.format("Next value for %s was expected %s, but got %s", value, expected, calculated), expected, calculated);
         }
+    }
+
+    @Test(expected = NoSuchValueException.class)
+    public void testGenerateNextValueNoNextValue() throws Exception {
+        fieldValueGenerator.generateNextValue(Integer.MAX_VALUE);
     }
 
     @Test
     public void testGeneratePreviousValue() throws Exception {
-        for(int j=0; j<10; j++){
+        for(int j=1; j<10; j++){
             int value = time*j+1+((int)(2*Math.random()));
-            assertEquals(j*time, fieldValueGenerator.generatePreviousValue(value));
+            assertEquals(j*time-1, fieldValueGenerator.generatePreviousValue(value));
         }
+    }
+
+    @Test(expected = NoSuchValueException.class)
+    public void testGeneratePreviousValueNoPreviousValue() throws Exception {
+        fieldValueGenerator.generatePreviousValue(0);
     }
 
     @Test
     public void testGenerateCandidatesNotIncludingIntervalExtremes() throws Exception {
         int candidatesQty = 7;
         List<Integer> candidates = fieldValueGenerator.generateCandidatesNotIncludingIntervalExtremes(0, time*candidatesQty);
-        assertEquals(candidatesQty-1, candidates.size());
+        assertEquals(candidatesQty, candidates.size());
     }
 
     @Test
     public void testIsMatch() throws Exception {
-        assertTrue(fieldValueGenerator.isMatch(time));
+        assertTrue(fieldValueGenerator.isMatch(time-1));
         assertFalse(fieldValueGenerator.isMatch(time + 1));
     }
 
