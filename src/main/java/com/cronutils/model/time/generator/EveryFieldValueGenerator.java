@@ -2,7 +2,6 @@ package com.cronutils.model.time.generator;
 
 import com.cronutils.model.field.expression.Every;
 import com.cronutils.model.field.expression.FieldExpression;
-import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
 
 import java.util.List;
@@ -26,45 +25,21 @@ class EveryFieldValueGenerator extends FieldValueGenerator {
 
     @Override
     public int generateNextValue(int reference) throws NoSuchValueException {
-        if(reference>=expression.getConstraints().getEndRange()){
-            throw new NoSuchValueException();
-        }
         Every every = (Every)expression;
-        int referenceWithOffset = reference+offset();
         int period = every.getTime().getValue();
-        int remainder = referenceWithOffset % period;
-        int next = reference+(period-remainder);//same as referenceWithOffset+(period-remainder)-offset
-        if(next<expression.getConstraints().getStartRange()){
-            return expression.getConstraints().getStartRange();
-        }
-        if(next>expression.getConstraints().getEndRange()){
-            throw new NoSuchValueException();
-        }
-        return next;
+        return reference + period;
     }
 
     @Override
     public int generatePreviousValue(int reference) throws NoSuchValueException {
-        if(reference<expression.getConstraints().getStartRange()){
-            throw new NoSuchValueException();
-        }
         Every every = (Every)expression;
-        int referenceWithOffset = reference+offset();
         int period = every.getTime().getValue();
-        int remainder = referenceWithOffset % period;
-        int previous;
+        int remainder = reference % period;
         if(remainder == 0){
-            previous = reference-period;
+            return reference-period;
         }else{
-            previous = reference-remainder;
+            return reference-remainder;
         }
-        if(previous<expression.getConstraints().getStartRange()){
-            throw new NoSuchValueException();
-        }
-        if(previous>expression.getConstraints().getEndRange()){
-            return expression.getConstraints().getEndRange();
-        }
-        return previous;
     }
 
     @Override
@@ -85,16 +60,12 @@ class EveryFieldValueGenerator extends FieldValueGenerator {
     @Override
     public boolean isMatch(int value) {
         Every every = (Every)expression;
-        return ((value+offset()) % every.getTime().getValue()) == 0;
+        int start = every.getConstraints().getStartRange();
+        return ((value-start) % every.getTime().getValue()) == 0;
     }
 
     @Override
     protected boolean matchesFieldExpressionClass(FieldExpression fieldExpression) {
         return fieldExpression instanceof Every;
-    }
-
-    @VisibleForTesting
-    int offset(){
-        return 1-expression.getConstraints().getStartRange();
     }
 }

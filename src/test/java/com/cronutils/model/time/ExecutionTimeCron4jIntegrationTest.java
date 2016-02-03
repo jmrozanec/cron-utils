@@ -84,7 +84,7 @@ public class ExecutionTimeCron4jIntegrationTest {
 			log.debug("LastRun = [{}]", lastRun);
 			log.debug("NextRun = [{}]", nextRun);
 
-			assertTrue((nextRun.getHourOfDay()+1) % 2 == 0);
+			assertTrue(nextRun.getHourOfDay() % 2 == 0);
 			assertTrue(lastRun.isBefore(nextRun));
             lastRun = lastRun.plusHours(1);
 		}
@@ -106,7 +106,7 @@ public class ExecutionTimeCron4jIntegrationTest {
 			log.debug("LastRun = [{}]", lastRun);
 			log.debug("NextRun = [{}]", nextRun);
 
-			assertTrue((nextRun.getMinuteOfHour()+1) % 15 == 0);
+			assertTrue(nextRun.getMinuteOfHour() % 15 == 0);
 			assertTrue(lastRun.isBefore(nextRun));
             lastRun = lastRun.plusMinutes(1);
 		}
