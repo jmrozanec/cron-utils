@@ -38,7 +38,8 @@ public class EveryFieldValueGeneratorTest {
     @Test()
     public void testGenerateNextValue() throws Exception {
         for(int j=1; j<=10; j++){
-            int value = time*j-1-((int)(2*Math.random()));
+            int value = time*j-(1+((int)(2*Math.random())));
+            System.out.println(String.format("%s : %s vs %s", value, j*time, fieldValueGenerator.generateNextValue(value)));//TODO delete
             assertEquals(j*time, fieldValueGenerator.generateNextValue(value));
         }
     }

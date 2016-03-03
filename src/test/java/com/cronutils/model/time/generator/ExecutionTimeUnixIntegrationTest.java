@@ -149,13 +149,15 @@ public class ExecutionTimeUnixIntegrationTest {
         ExecutionTime executionTime = ExecutionTime.forCron(cron);
         DateTime scanTime = DateTime.parse("2015-12-10T16:32:56.586-08:00");
         DateTime nextExecutionTime = executionTime.nextExecution(scanTime);
-        System.out.println(String.format("Scan time %s, next execution time: %s", scanTime, nextExecutionTime));
-        assertNotNull(null);
+        //DoW: 0-6 -> 0, 5 (sunday, friday)
+        //DoM: 1-31 -> 1, 4, 7, 10, 13, 16, 19, 22, 25, 28, 31
+        //M: 1-12 -> 1, 5, 9
+        assertEquals(DateTime.parse("2016-01-01T00:00:00.000-08:00"), nextExecutionTime);
     }
 
     /**
      * Issue #59: Incorrect next execution time for "day of month" in "time" situation
-     * dom "* / 4" should means 1, 5, 9, 13, 17th... of month instead of 4, 8, 12, 16th...
+     * dom "* / 4" should mean 1, 5, 9, 13, 17th... of month instead of 4, 8, 12, 16th...
      */
     @Test
     public void testCorrectMonthScaleForNextExecution2(){
@@ -173,31 +175,16 @@ public class ExecutionTimeUnixIntegrationTest {
      * Issue #59: Incorrect next execution time for "month" and "day of week"
      * Considers bad DoW
      */
-    public void testCorrectNextExecutionDoW1(){
+    @Test
+    public void testCorrectNextExecutionDoW(){
         CronDefinition cronDefinition = CronDefinitionBuilder.instanceDefinitionFor(CronType.UNIX);
         CronParser parser = new CronParser(cronDefinition);
-        String crontab = "* * */3 */4 */5";
-        Cron cron = parser.parse(crontab);
-        ExecutionTime executionTime = ExecutionTime.forCron(cron);
-        DateTime scanTime = DateTime.parse("2015-12-10T16:32:56.586-08:00");
-        DateTime nextExecutionTime = executionTime.nextExecution(scanTime);
-        System.out.println(String.format("Scan time %s, next execution time: %s", scanTime, nextExecutionTime));
-        assertNotNull(null);
-    }
-
-    /**
-     * Issue #59: Incorrect next execution time for "month" and "day of week"
-     * Considers bad DoW
-     */
-    public void testCorrectNextExecutionDoW2(){
-        CronDefinition cronDefinition = CronDefinitionBuilder.instanceDefinitionFor(CronType.UNIX);
-        CronParser parser = new CronParser(cronDefinition);
-        String crontab = "* * * * */4";
+        String crontab = "* * * * */4";//m,h,dom,M,dow
+        //DoW: 0-6 -> 0, 4 (sunday, thursday)
         Cron cron = parser.parse(crontab);
         ExecutionTime executionTime = ExecutionTime.forCron(cron);
         DateTime scanTime = DateTime.parse("2016-01-28T16:32:56.586-08:00");
         DateTime nextExecutionTime = executionTime.nextExecution(scanTime);
-        System.out.println(String.format("Scan time %s, next execution time: %s", scanTime, nextExecutionTime));
-        assertNotNull(null);
+        assertEquals(DateTime.parse("2016-02-04T00:00:00.000-08:00"), nextExecutionTime);
     }
 }
