@@ -187,4 +187,18 @@ public class ExecutionTimeUnixIntegrationTest {
         DateTime nextExecutionTime = executionTime.nextExecution(scanTime);
         assertEquals(DateTime.parse("2016-02-04T00:00:00.000-08:00"), nextExecutionTime);
     }
+
+    /**
+     * Issue #69: Getting next execution fails on leap-year when using day-of-week
+     */
+    public void testCorrectNextExecutionDoWForLeapYear(){
+        CronParser parser = new CronParser(CronDefinitionBuilder.instanceDefinitionFor(CronType.UNIX));
+        String crontab = "0 * * * 1-5";//m,h,dom,M,dow
+        //DoW: 0-6 -> 1, 2, 3, 4, 5 -> in this year:
+        Cron cron = parser.parse(crontab);
+        ExecutionTime executionTime = ExecutionTime.forCron(cron);
+        DateTime scanTime = DateTime.parse("2016-02-29T11:00:00.000-06:00");
+        DateTime nextExecutionTime = executionTime.nextExecution(scanTime);
+        assertEquals(DateTime.parse("2016-02-29T12:00:00.000-06:00"), nextExecutionTime);
+    }
 }
