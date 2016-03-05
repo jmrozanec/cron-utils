@@ -65,6 +65,9 @@ class BetweenFieldValueGenerator extends FieldValueGenerator {
                 rangestart=expressionStart;
             }
             try {
+                if(rangestart!=start){
+                    values.add(rangestart);
+                }
                 int reference = generateNextValue(rangestart);
                 while(reference<rangeend){
                     values.add(reference);

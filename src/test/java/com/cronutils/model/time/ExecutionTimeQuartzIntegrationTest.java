@@ -177,6 +177,7 @@ public class ExecutionTimeQuartzIntegrationTest {
         DateTime next = executionTime.nextExecution(now);
         assertNotEquals(last, next);
     }
+
     /**
      * Issue: execution time properly calculated
      */
@@ -189,6 +190,22 @@ public class ExecutionTimeQuartzIntegrationTest {
         DateTime next = executionTime.nextExecution(now);
         assertNotEquals(last, next);
     }
+
+    /**
+     * Issue #64: Incorrect next execution time for ranges
+     */
+    @Test
+    public void testExecutionTimeForRanges(){
+        final CronParser quartzParser = new CronParser(CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ));
+        ExecutionTime executionTime = ExecutionTime.forCron(quartzParser.parse("* 10-20 * * * * 2099"));
+        DateTime scanTime = DateTime.parse("2016-02-29T11:00:00.000-06:00");
+        DateTime nextTime = executionTime.nextExecution(scanTime);
+        System.out.println(nextTime);
+        assertNotNull(nextTime);
+        assertEquals(10, nextTime.getMinuteOfHour());
+    }
+
+
     private DateTime truncateToSeconds(DateTime dateTime){
         return new DateTime(
                 dateTime.getYear(),
