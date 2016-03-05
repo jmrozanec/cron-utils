@@ -10,9 +10,29 @@ import org.joda.time.DateTime;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 public class ExecutionTimeUnixIntegrationTest {
+
+    @Test
+    public void testIsMatchForUnix01(){
+        CronParser parser = new CronParser(CronDefinitionBuilder.instanceDefinitionFor(CronType.UNIX));
+        String crontab = "* * * * *";//m,h,dom,M,dow
+        Cron cron = parser.parse(crontab);
+        ExecutionTime executionTime = ExecutionTime.forCron(cron);
+        DateTime scanTime = DateTime.parse("2016-02-29T11:00:00.000-06:00");
+        assertTrue(executionTime.isMatch(scanTime));
+    }
+
+    @Test
+    public void testIsMatchForUnix02(){
+        CronParser parser = new CronParser(CronDefinitionBuilder.instanceDefinitionFor(CronType.UNIX));
+        String crontab = "0 * * * 1-5";//m,h,dom,M,dow
+        Cron cron = parser.parse(crontab);
+        ExecutionTime executionTime = ExecutionTime.forCron(cron);
+        DateTime scanTime = DateTime.parse("2016-03-04T11:00:00.000-06:00");
+        assertTrue(executionTime.isMatch(scanTime));
+    }
 
     /**
      * Issue #37: for pattern "every 10 minutes", nextExecution returns a date from past.

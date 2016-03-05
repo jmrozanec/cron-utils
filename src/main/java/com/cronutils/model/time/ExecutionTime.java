@@ -356,6 +356,15 @@ public class ExecutionTime {
         return new Interval(lastExecution(date), date).toDuration();
     }
 
+    /**
+     * Provide feedback if a given date matches the cron expression.
+     * @param date - jodatime DateTime instance. If null, a NullPointerException will be raised.
+     * @return true if date matches cron expression requirements, false otherwise.
+     */
+    public boolean isMatch(DateTime date){
+        return nextExecution(lastExecution(date)).equals(date);
+    }
+
 	private List<Integer> generateDayCandidatesQuestionMarkNotSupported(int year, int month, WeekDay mondayDoWValue) {
 		DateTime date = new DateTime(year, month, 1, 1, 1);
 		Set<Integer> candidates = Sets.newHashSet();
