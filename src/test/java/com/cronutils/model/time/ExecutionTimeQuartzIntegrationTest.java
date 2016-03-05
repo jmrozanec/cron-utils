@@ -200,11 +200,21 @@ public class ExecutionTimeQuartzIntegrationTest {
         ExecutionTime executionTime = ExecutionTime.forCron(quartzParser.parse("* 10-20 * * * * 2099"));
         DateTime scanTime = DateTime.parse("2016-02-29T11:00:00.000-06:00");
         DateTime nextTime = executionTime.nextExecution(scanTime);
-        System.out.println(nextTime);
         assertNotNull(nextTime);
         assertEquals(10, nextTime.getMinuteOfHour());
     }
 
+    /**
+     * Issue #65: Incorrect last execution time for fixed month
+     */
+    public void testLastExecutionTimeForFixedMonth(){
+        final CronParser quartzParser = new CronParser(CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ));
+        ExecutionTime executionTime = ExecutionTime.forCron(quartzParser.parse("0 30 12 1 9 * 2010"));
+        DateTime scanTime = DateTime.parse("2016-01-08T11:00:00.000-06:00");
+        DateTime lastTime = executionTime.lastExecution(scanTime);
+        assertNotNull(lastTime);
+        assertEquals(9, lastTime.getMonthOfYear());
+    }
 
     private DateTime truncateToSeconds(DateTime dateTime){
         return new DateTime(
