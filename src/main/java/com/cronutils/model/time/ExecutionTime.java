@@ -240,7 +240,21 @@ public class ExecutionTime {
         NearestValue nearestValue;
         DateTime newDate;
         if(year.isEmpty()){
-            return initDateTime(yearsValueGenerator.generatePreviousValue(date.getYear()), highestMonth, highestDay, highestHour, highestMinute, highestSecond, date.getZone());
+            int previousYear = yearsValueGenerator.generatePreviousValue(date.getYear());
+            if(highestDay>28){
+                int highestDayOfMonth = new DateTime(previousYear, highestMonth, 1,0,0).dayOfMonth().getMaximumValue();
+                if(highestDay>highestDayOfMonth){
+                    nearestValue = days.getPreviousValue(highestDay, 1);
+                    if(nearestValue.getShifts()>0){
+                        newDate = new DateTime(previousYear, highestMonth, 1, 23, 59, 59)
+                                .minusMonths(nearestValue.getShifts()).dayOfMonth().withMaximumValue();
+                        return previousClosestMatch(newDate);
+                    }else{
+                        highestDay = nearestValue.getValue();
+                    }
+                }
+            }
+            return initDateTime(previousYear, highestMonth, highestDay, highestHour, highestMinute, highestSecond, date.getZone());
         }
         if(!months.getValues().contains(date.getMonthOfYear())){
             nearestValue = months.getPreviousValue(date.getMonthOfYear(), 0);

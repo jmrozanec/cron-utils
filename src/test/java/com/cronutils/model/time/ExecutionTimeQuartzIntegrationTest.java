@@ -207,6 +207,7 @@ public class ExecutionTimeQuartzIntegrationTest {
     /**
      * Issue #65: Incorrect last execution time for fixed month
      */
+    @Test
     public void testLastExecutionTimeForFixedMonth(){
         final CronParser quartzParser = new CronParser(CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ));
         ExecutionTime executionTime = ExecutionTime.forCron(quartzParser.parse("0 30 12 1 9 * 2010"));
