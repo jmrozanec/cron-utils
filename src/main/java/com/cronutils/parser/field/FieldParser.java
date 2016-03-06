@@ -51,7 +51,11 @@ public class FieldParser {
                 return new Always(constraints);
             } else {
                 if("?".equals(expression)){
-                    return new QuestionMark(constraints);
+                    if(constraints.isSpecialCharAllowed(SpecialChar.QUESTION_MARK)){
+                        return new QuestionMark(constraints);
+                    } else {
+                        throw new IllegalArgumentException("Invalid expression: " + expression);
+                    }
                 }
                 return parseOn(expression);
             }

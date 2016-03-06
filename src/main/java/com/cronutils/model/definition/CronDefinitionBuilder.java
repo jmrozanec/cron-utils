@@ -141,7 +141,6 @@ public class CronDefinitionBuilder {
                 .withMonth().and()
                 .withDayOfWeek().withValidRange(0,6).withMondayDoWValue(1).and()
                 .instance();
-
     }
 
     /**

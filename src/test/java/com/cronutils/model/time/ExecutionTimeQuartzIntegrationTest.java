@@ -216,6 +216,15 @@ public class ExecutionTimeQuartzIntegrationTest {
         assertEquals(9, lastTime.getMonthOfYear());
     }
 
+    /**
+     * Issue #70: Illegal question mark value on cron pattern assumed valid.
+     */
+    @Test(expected = IllegalArgumentException.class)
+    public void testIllegalQuestionMarkValue(){
+        final CronParser quartzParser = new CronParser(CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ));
+        ExecutionTime.forCron(quartzParser.parse("0 0 12 1W ? *"));//s,m,H,DoM,M,DoW
+    }
+
     private DateTime truncateToSeconds(DateTime dateTime){
         return new DateTime(
                 dateTime.getYear(),

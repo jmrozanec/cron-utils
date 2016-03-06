@@ -94,6 +94,6 @@ public class CronParserTest {
         when(definition.getFieldDefinitions()).thenReturn(set);
         parser = new CronParser(definition);
 
-        parser.parse("* *   * * ?");
+        parser.parse("* *   * * *");
     }
 }
