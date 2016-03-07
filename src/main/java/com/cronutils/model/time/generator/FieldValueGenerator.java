@@ -3,6 +3,8 @@ package com.cronutils.model.time.generator;
 import com.cronutils.model.field.expression.FieldExpression;
 import org.apache.commons.lang3.Validate;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 /*
  * Copyright 2015 jmrozanec
@@ -57,6 +59,7 @@ public abstract class FieldValueGenerator {
         if(isMatch(end)){
             candidates.add(end);
         }
+        Collections.sort(candidates);
         return candidates;
     }
 

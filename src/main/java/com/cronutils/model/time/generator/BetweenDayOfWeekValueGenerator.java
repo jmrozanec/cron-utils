@@ -13,10 +13,13 @@ import com.cronutils.model.field.value.IntegerFieldValue;
 import com.cronutils.parser.field.CronParserField;
 import com.google.common.collect.Lists;
 
+import com.google.common.collect.Sets;
 import org.apache.commons.lang3.Validate;
 import org.joda.time.DateTime;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 /*
  * Copyright 2015 jmrozanec
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -38,8 +41,7 @@ import java.util.List;
  * 
  * The methods:
  *   generateNextValue()
- *   generatePreviousValue
- *   isMatch()
+ *   generatePreviousValue()
  *   
  * are not implemented and WILL FAIL logically when called.
  * 
@@ -50,6 +52,7 @@ class BetweenDayOfWeekValueGenerator extends FieldValueGenerator {
     private int year;
     private int month;
     private WeekDay mondayDoWValue;
+    private Set<Integer> dowValidValues;
     
     public BetweenDayOfWeekValueGenerator(CronField cronField, int year, int month, WeekDay mondayDoWValue) {
         super(cronField.getExpression());
@@ -57,6 +60,14 @@ class BetweenDayOfWeekValueGenerator extends FieldValueGenerator {
         this.year = year;
         this.month = month;
         this.mondayDoWValue = mondayDoWValue;
+        dowValidValues = Sets.newHashSet();
+        Between between = (Between) expression;
+        int from = (Integer) between.getFrom().getValue();
+        int to = (Integer) between.getTo().getValue();
+        while(from<=to){
+            dowValidValues.add(from);
+            from += between.getEvery().getTime().getValue();
+        }
     }
 
     @Override
@@ -82,7 +93,7 @@ class BetweenDayOfWeekValueGenerator extends FieldValueGenerator {
         	// Build a CronField representing a single day of the week
         	FieldConstraintsBuilder fcb = FieldConstraintsBuilder.instance().forField(CronFieldName.DAY_OF_WEEK);
         	CronParserField parser = new CronParserField(CronFieldName.DAY_OF_WEEK, fcb.createConstraintsInstance());
-        	CronField cronField =  parser.parse( Integer.toString(i) );
+        	CronField cronField =  parser.parse(Integer.toString(i));
         	
         	// now a generator for matching days
         	OnDayOfWeekValueGenerator odow = new OnDayOfWeekValueGenerator(cronField,  year, month, mondayDoWValue);
@@ -95,6 +106,7 @@ class BetweenDayOfWeekValueGenerator extends FieldValueGenerator {
         		values.addAll(candidatesList);
         	}
         }
+        Collections.sort(values);
         return values;
     }
 
@@ -117,8 +129,6 @@ class BetweenDayOfWeekValueGenerator extends FieldValueGenerator {
 
 	@Override
 	public boolean isMatch(int value) {
-		// This method does not logically work.
-		return false;
+        return dowValidValues.contains(new DateTime(year, month, value, 0, 0).getDayOfWeek());
 	}
-
 }

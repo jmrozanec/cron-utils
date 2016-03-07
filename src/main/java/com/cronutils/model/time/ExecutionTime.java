@@ -139,9 +139,8 @@ public class ExecutionTime {
      */
     DateTime nextClosestMatch(DateTime date) throws NoSuchValueException {
         List<Integer> year = yearsValueGenerator.generateCandidates(date.getYear(), date.getYear());
-        TimeNode days = generateDays(cronDefinition, date);
+        TimeNode days = null;
         int lowestMonth = months.getValues().get(0);
-        int lowestDay = days.getValues().get(0);
         int lowestHour = hours.getValues().get(0);
         int lowestMinute = minutes.getValues().get(0);
         int lowestSecond = seconds.getValues().get(0);
@@ -167,6 +166,7 @@ public class ExecutionTime {
             days = generateDays(cronDefinition, new DateTime(date.getYear(), nextMonths, 1, 0, 0));
             return initDateTime(date.getYear(), nextMonths, days.getValues().get(0), lowestHour, lowestMinute, lowestSecond, date.getZone());
         }
+        days = generateDays(cronDefinition, date);
         if(!days.getValues().contains(date.getDayOfMonth())) {
             nearestValue = days.getNextValue(date.getDayOfMonth(), 0);
             if(nearestValue.getShifts()>0){
@@ -385,23 +385,18 @@ public class ExecutionTime {
 	private List<Integer> generateDayCandidatesQuestionMarkNotSupported(int year, int month, WeekDay mondayDoWValue) {
 		DateTime date = new DateTime(year, month, 1, 1, 1);
 		Set<Integer> candidates = Sets.newHashSet();
-		log.debug(" computing days for [{}]", daysOfWeekCronField.getExpression().getClass().toString());
 		if (daysOfMonthCronField.getExpression() instanceof Always && daysOfWeekCronField.getExpression() instanceof Always) {
-			log.debug(" computing days 1");
 			candidates.addAll(FieldValueGeneratorFactory.createDayOfMonthValueGeneratorInstance(daysOfMonthCronField, year, month).generateCandidates(1,
 					date.dayOfMonth().getMaximumValue()));
 		} else {
 			if (daysOfMonthCronField.getExpression() instanceof Always) {
-				log.debug(" computing days 2");
 				candidates.addAll(FieldValueGeneratorFactory.createDayOfWeekValueGeneratorInstance(daysOfWeekCronField, year, month, mondayDoWValue)
 						.generateCandidates(1, date.dayOfMonth().getMaximumValue()));
 			} else {
 				if (daysOfWeekCronField.getExpression() instanceof Always) {
-					log.debug(" computing days 3");
 					candidates.addAll(FieldValueGeneratorFactory.createDayOfMonthValueGeneratorInstance(daysOfMonthCronField, year, month).generateCandidates(
 							1, date.dayOfMonth().getMaximumValue()));
 				} else {
-					log.debug(" computing days 4");
 					candidates.addAll(FieldValueGeneratorFactory.createDayOfWeekValueGeneratorInstance(daysOfWeekCronField, year, month, mondayDoWValue)
 							.generateCandidates(1, date.dayOfMonth().getMaximumValue()));
 					candidates.addAll(FieldValueGeneratorFactory.createDayOfMonthValueGeneratorInstance(daysOfMonthCronField, year, month).generateCandidates(
