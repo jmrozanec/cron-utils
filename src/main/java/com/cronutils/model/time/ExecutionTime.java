@@ -149,7 +149,9 @@ public class ExecutionTime {
         NearestValue nearestValue;
         DateTime newDate;
         if(year.isEmpty()){
-            return initDateTime(yearsValueGenerator.generateNextValue(date.getYear()), lowestMonth, lowestDay, lowestHour, lowestMinute, lowestSecond, date.getZone());
+            int newYear = yearsValueGenerator.generateNextValue(date.getYear());
+            days = generateDays(cronDefinition, new DateTime(newYear, lowestMonth, 1, 0, 0));
+            return initDateTime(yearsValueGenerator.generateNextValue(date.getYear()), lowestMonth, days.getValues().get(0), lowestHour, lowestMinute, lowestSecond, date.getZone());
         }
         if(!months.getValues().contains(date.getMonthOfYear())) {
             nearestValue = months.getNextValue(date.getMonthOfYear(), 0);
@@ -162,7 +164,8 @@ public class ExecutionTime {
             if (nearestValue.getValue() < date.getMonthOfYear()) {
             	date = date.plusYears(1);
             }
-            return initDateTime(date.getYear(), nextMonths, lowestDay, lowestHour, lowestMinute, lowestSecond, date.getZone());
+            days = generateDays(cronDefinition, new DateTime(date.getYear(), nextMonths, 1, 0, 0));
+            return initDateTime(date.getYear(), nextMonths, days.getValues().get(0), lowestHour, lowestMinute, lowestSecond, date.getZone());
         }
         if(!days.getValues().contains(date.getDayOfMonth())) {
             nearestValue = days.getNextValue(date.getDayOfMonth(), 0);

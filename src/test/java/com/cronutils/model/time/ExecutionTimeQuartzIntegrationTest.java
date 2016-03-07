@@ -5,6 +5,7 @@ import com.cronutils.model.definition.CronDefinition;
 import com.cronutils.model.definition.CronDefinitionBuilder;
 import com.cronutils.parser.CronParser;
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeConstants;
 import org.joda.time.Interval;
 import org.junit.Before;
 import org.junit.Test;
@@ -215,6 +216,36 @@ public class ExecutionTimeQuartzIntegrationTest {
         DateTime lastTime = executionTime.lastExecution(scanTime);
         assertNotNull(lastTime);
         assertEquals(9, lastTime.getMonthOfYear());
+    }
+
+    /**
+     * Issue #66: Incorrect Day Of Week processing for Quartz when Month or Year isn't '*'.
+     */
+    @Test
+    public void testNextExecutionRightDoWForFixedMonth(){
+        //cron format: s,m,H,DoM,M,DoW,Y
+        final CronType cronType = CronType.QUARTZ;
+        final CronParser quartzParser = new CronParser(CronDefinitionBuilder.instanceDefinitionFor(cronType));
+        ExecutionTime executionTime = ExecutionTime.forCron(quartzParser.parse("0 * * ? 5 1 *"));
+        DateTime scanTime = DateTime.parse("2016-03-06T20:17:28.000-03:00");
+        DateTime nextTime = executionTime.nextExecution(scanTime);
+        assertNotNull(nextTime);
+        assertEquals(DateTimeConstants.SUNDAY, nextTime.getDayOfWeek());
+    }
+
+    /**
+     * Issue #66: Incorrect Day Of Week processing for Quartz when Month or Year isn't '*'.
+     */
+    @Test
+    public void testNextExecutionRightDoWForFixedYear(){
+        //cron format: s,m,H,DoM,M,DoW,Y
+        final CronType cronType = CronType.QUARTZ;
+        final CronParser quartzParser = new CronParser(CronDefinitionBuilder.instanceDefinitionFor(cronType));
+        ExecutionTime executionTime = ExecutionTime.forCron(quartzParser.parse("0 * * ? * 1 2099"));
+        DateTime scanTime = DateTime.parse("2016-03-06T20:17:28.000-03:00");
+        DateTime nextTime = executionTime.nextExecution(scanTime);
+        assertNotNull(nextTime);
+        assertEquals(DateTimeConstants.SUNDAY, nextTime.getDayOfWeek());
     }
 
     /**
