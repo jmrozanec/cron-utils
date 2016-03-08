@@ -3,6 +3,7 @@ package com.cronutils.model.field;
 import com.cronutils.model.field.constraint.FieldConstraintsBuilder;
 import com.cronutils.model.field.expression.*;
 import com.cronutils.model.field.value.IntegerFieldValue;
+import com.cronutils.model.field.value.SpecialChar;
 import com.cronutils.parser.field.FieldParser;
 import org.junit.Before;
 import org.junit.Test;
@@ -43,6 +44,16 @@ public class FieldParserTest {
     public void testParseOn() throws Exception {
         int on = 5;
         assertEquals(on, (int)((On) parser.parse("" + on)).getTime().getValue());
+    }
+
+    @Test
+    public void testParseOnWithHash01() throws Exception {
+        int on = 5;
+        int hashValue = 3;
+        On onExpression = (On) parser.parse(String.format("%s#%s", on, hashValue));
+        assertEquals(on, (int)(onExpression.getTime().getValue()));
+        assertEquals(hashValue, onExpression.getNth().getValue().intValue());
+        assertEquals(SpecialChar.HASH, onExpression.getSpecialChar().getValue());
     }
 
     @Test

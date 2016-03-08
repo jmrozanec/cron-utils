@@ -6,6 +6,7 @@ import com.cronutils.model.field.value.FieldValue;
 import com.cronutils.model.field.value.IntegerFieldValue;
 import com.cronutils.model.field.value.SpecialChar;
 import com.cronutils.model.field.value.SpecialCharFieldValue;
+import com.google.common.annotations.VisibleForTesting;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
 
@@ -87,7 +88,8 @@ public class FieldParser {
         }
     }
 
-    private Between parseBetween(String[]array){
+    @VisibleForTesting
+    Between parseBetween(String[]array){
         if (array[1].contains("/")) {
             String[] every = array[1].split("/");
 
@@ -110,7 +112,8 @@ public class FieldParser {
         }
     }
 
-    private On parseOn(String exp){
+    @VisibleForTesting
+    On parseOn(String exp){
         constraints.validateAllCharsValid(exp);
         if (exp.contains("#")) {
             return parseOnWithHash(exp);
@@ -132,7 +135,8 @@ public class FieldParser {
         );
     }
 
-    private On parseOnWithHash(String exp){
+    @VisibleForTesting
+    On parseOnWithHash(String exp){
         SpecialCharFieldValue specialChar = new SpecialCharFieldValue(SpecialChar.HASH);
         String[] array = exp.split("#");
         IntegerFieldValue nth = mapToIntegerFieldValue(array[1]);
@@ -142,7 +146,8 @@ public class FieldParser {
         return new On(constraints, mapToIntegerFieldValue(array[0]), specialChar, nth);
     }
 
-    private On parseOnWithQuestionMark(String exp){
+    @VisibleForTesting
+    On parseOnWithQuestionMark(String exp){
         SpecialCharFieldValue specialChar = new SpecialCharFieldValue(SpecialChar.QUESTION_MARK);
         exp = exp.replace("?", "");
         if("".equals(exp)){
@@ -152,7 +157,8 @@ public class FieldParser {
         }
     }
 
-    private On parseOnWithLW(String exp){
+    @VisibleForTesting
+    On parseOnWithLW(String exp){
         SpecialCharFieldValue specialChar = new SpecialCharFieldValue(SpecialChar.LW);
         exp = exp.replace("LW", "");
         if("".equals(exp)){
@@ -162,7 +168,8 @@ public class FieldParser {
         }
     }
 
-    private On parseOnWithL(String exp){
+    @VisibleForTesting
+    On parseOnWithL(String exp){
         SpecialCharFieldValue specialChar = new SpecialCharFieldValue(SpecialChar.L);
         exp = exp.replace("L", "");
         IntegerFieldValue time = new IntegerFieldValue(-1);
@@ -172,7 +179,8 @@ public class FieldParser {
         return new On(constraints, time, specialChar, new IntegerFieldValue(-1));
     }
 
-    private On parseOnWithW(String exp){
+    @VisibleForTesting
+    On parseOnWithW(String exp){
         return new On(
                 constraints,
                 mapToIntegerFieldValue(exp.replace("W", "")),
@@ -181,7 +189,8 @@ public class FieldParser {
         );
     }
 
-    private IntegerFieldValue mapToIntegerFieldValue(String string){
+    @VisibleForTesting
+    IntegerFieldValue mapToIntegerFieldValue(String string){
         constraints.validateAllCharsValid(string);
         try{
             return new IntegerFieldValue(constraints.stringToInt(string));
@@ -190,7 +199,8 @@ public class FieldParser {
         }
     }
 
-    private FieldValue map(FieldConstraints constraints, String string){
+    @VisibleForTesting
+    FieldValue map(FieldConstraints constraints, String string){
         constraints.validateAllCharsValid(string);
         for(SpecialChar sc : SpecialChar.values()){
             if(sc.toString().equals(string)){
