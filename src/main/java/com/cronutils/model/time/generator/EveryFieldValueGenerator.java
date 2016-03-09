@@ -4,6 +4,8 @@ import com.cronutils.model.field.expression.Every;
 import com.cronutils.model.field.expression.FieldExpression;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 /*
@@ -19,9 +21,11 @@ import java.util.List;
  * limitations under the License.
  */
 class EveryFieldValueGenerator extends FieldValueGenerator {
+    private static final Logger log = LoggerFactory.getLogger(EveryFieldValueGenerator.class);
 
     public EveryFieldValueGenerator(FieldExpression expression) {
         super(expression);
+        log.info("Strting");
     }
 
     @Override
@@ -67,7 +71,7 @@ class EveryFieldValueGenerator extends FieldValueGenerator {
                 reference=generateNextValue(reference);
             }
         } catch (NoSuchValueException e) {
-            e.printStackTrace();
+            log.warn("Failed to generate candidates", e);
         }
         return values;
     }
