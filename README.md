@@ -147,7 +147,7 @@ Despite this functionality is not bundled in the same jar, is a cron-utils proje
 **Contribute & Support!**
 
 Contributions are welcome! You can contribute by
- * star and/or Flattr this repo!
+ * starring and/or Flattring this repo!
  * requesting or adding new features. Check our [roadmap](https://github.com/jmrozanec/cron-utils/wiki/Roadmap)!
  * enhancing existing code: ex.: provide more accurate description cases
  * testing
@@ -164,5 +164,6 @@ Support us donating once or by subscription through Flattr!
 [![Flattr this!](https://api.flattr.com/button/flattr-badge-large.png)](https://flattr.com/submit/auto?user_id=jmrozanec&url=https://github.com/jmrozanec/cron-utils)
 
 **Other cron-utils projects**
+You are welcome to visit and use the following cron-utils projects:
  * [htime](https://github.com/jmrozanec/htime): A Java library to make it easy for humans format a date. You no longer need to remember date time formatting chars: just write an example, and you will get the appropiate formatter.
  * [cron-utils-spring](https://github.com/jmrozanec/cron-utils-spring): A Java library to describe cron expressions in human readable language at Spring framework, using cron-utils.
