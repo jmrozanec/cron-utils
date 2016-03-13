@@ -1,9 +1,11 @@
 package com.cronutils.model.time;
 
+import com.cronutils.model.Cron;
 import com.cronutils.model.CronType;
 import com.cronutils.model.definition.CronDefinition;
 import com.cronutils.model.definition.CronDefinitionBuilder;
 import com.cronutils.parser.CronParser;
+import com.cronutils.validator.CronValidator;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeConstants;
 import org.joda.time.Interval;
@@ -255,6 +257,21 @@ public class ExecutionTimeQuartzIntegrationTest {
     public void testIllegalQuestionMarkValue(){
         final CronParser quartzParser = new CronParser(CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ));
         ExecutionTime.forCron(quartzParser.parse("0 0 12 1W ? *"));//s,m,H,DoM,M,DoW
+    }
+
+    /**
+     * Issue #72: Stacktrace printed.
+     * TODO: Although test is passing, there is some stacktrace printed indicating there may be something wrong.
+     * TODO: We should analyze it and fix the eventual issue.
+     */
+    @Test//TODO
+    public void testNextExecutionProducingInvalidPrintln(){
+        String cronText = "0 0/15 * * * ?";
+        CronParser parser = new CronParser(CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ));
+        Cron cron = parser.parse(cronText);
+        CronValidator validator = new CronValidator(CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ));
+        validator.isValid(cronText);
+        final ExecutionTime executionTime = ExecutionTime.forCron(cron);
     }
 
     private DateTime truncateToSeconds(DateTime dateTime){
