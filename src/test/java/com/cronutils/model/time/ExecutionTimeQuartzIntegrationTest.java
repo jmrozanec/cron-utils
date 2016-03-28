@@ -14,6 +14,8 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
+import java.text.SimpleDateFormat;
+
 /*
  * Copyright 2015 jmrozanec
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -272,6 +274,40 @@ public class ExecutionTimeQuartzIntegrationTest {
         CronValidator validator = new CronValidator(CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ));
         validator.isValid(cronText);
         final ExecutionTime executionTime = ExecutionTime.forCron(cron);
+    }
+    
+    @Test
+    public void testDayLightSavingsSwitch() {
+        try {
+            // every 2 minutes
+            String expression = "* 0/2 * * * ?";
+            CronParser parser = new CronParser(CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ));
+            Cron cron = parser.parse(expression);
+
+            // SIMULATE SCHEDULE JUST PRIOR TO DST
+            DateTime prevRun = new DateTime(new SimpleDateFormat("yyyy MM dd HH:mm:ss").parseObject("2016 03 13 01:59:59"));
+            ExecutionTime executionTime = ExecutionTime.forCron(cron);          
+            DateTime nextRun = executionTime.nextExecution(prevRun);
+            // Assert we got 3:00am
+            assertEquals("Incorrect Hour", 3, nextRun.getHourOfDay());
+            assertEquals("Incorrect Minute", 0, nextRun.getMinuteOfHour());         
+
+            // SIMULATE SCHEDULE POST DST - simulate a schedule after DST 3:01 with the same cron, expect 3:02
+            nextRun = nextRun.plusMinutes(1);
+            nextRun = executionTime.nextExecution(nextRun);
+            assertEquals("Incorrect Hour",3,nextRun.getHourOfDay());
+            assertEquals("Incorrect Minute", 2, nextRun.getMinuteOfHour());
+
+            // SIMULATE SCHEDULE NEXT DAY DST - verify after midnight on DST switch things still work as expected
+            prevRun = new DateTime(new SimpleDateFormat("yyyy MM dd HH:mm:ss").parseObject("2016 03 14 00:00:59"));
+            nextRun = executionTime.nextExecution(prevRun);
+            assertEquals("incorrect hour", nextRun.getHourOfDay(), 0);
+            assertEquals("incorrect minute", nextRun.getMinuteOfHour(), 2);
+        }
+        catch(Exception e) {
+            fail("Exception Received: " +e.getMessage());
+
+        }
     }
 
     private DateTime truncateToSeconds(DateTime dateTime){
