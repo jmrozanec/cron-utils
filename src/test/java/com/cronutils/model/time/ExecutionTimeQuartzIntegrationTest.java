@@ -306,8 +306,24 @@ public class ExecutionTimeQuartzIntegrationTest {
         }
         catch(Exception e) {
             fail("Exception Received: " +e.getMessage());
-
         }
+    }
+    
+    @Test
+    public void testCronWithFirstWorkDayOfWeek() {
+        try {
+            String cronText = "0 0 12 1W * ? *";
+            CronParser parser = new CronParser(CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ));
+            Cron cron = parser.parse(cronText);
+            DateTime dt = new DateTime(new SimpleDateFormat("yyyy MM dd HH:mm:ss").parseObject("2016 03 29 00:00:59"));
+
+            ExecutionTime executionTime = ExecutionTime.forCron(cron);          
+            DateTime nextRun = executionTime.nextExecution(dt);
+            assertEquals("incorrect Day", nextRun.getDayOfMonth(), 1); // should be April 1st (Friday)            
+        }
+        catch(Exception e) {        
+            fail("Exception Received: "+e.getMessage());
+        }        
     }
 
     private DateTime truncateToSeconds(DateTime dateTime){
