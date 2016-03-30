@@ -84,7 +84,7 @@ class OnDayOfMonthValueGenerator extends FieldValueGenerator {
         switch (on.getSpecialChar().getValue()){
             case L:
                 return new DateTime(year, month, 1, 1, 1).dayOfMonth().getMaximumValue();
-            case W:
+            case W: // First work day of the week
                 DateTime doM = new DateTime(year, month, time, 1, 1);
                 if(doM.getDayOfWeek()==6){//dayOfWeek is Saturday!
                     if(time==1){//first day in month is Saturday! We execute on Monday
@@ -92,12 +92,12 @@ class OnDayOfMonthValueGenerator extends FieldValueGenerator {
                     }
                     return time-1;
                 }
-                if(doM.getDayOfWeek()==7){
+                if(doM.getDayOfWeek()==7){ // dayOfWeek is Sunday
                     if((time+1)<=doM.dayOfMonth().getMaximumValue()){
                         return time+1;
                     }
                 }
-                break;
+                return time;  // first day of week is a weekday            
             case LW:
                 DateTime lastDayOfMonth =
                         new DateTime(year, month, new DateTime(year, month, 1, 1, 1)
