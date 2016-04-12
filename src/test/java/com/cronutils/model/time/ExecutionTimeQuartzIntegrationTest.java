@@ -8,7 +8,10 @@ import com.cronutils.parser.CronParser;
 import com.cronutils.validator.CronValidator;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeConstants;
+import org.joda.time.DateTimeZone;
 import org.joda.time.Interval;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -285,7 +288,9 @@ public class ExecutionTimeQuartzIntegrationTest {
             Cron cron = parser.parse(expression);
 
             // SIMULATE SCHEDULE JUST PRIOR TO DST
-            DateTime prevRun = new DateTime(new SimpleDateFormat("yyyy MM dd HH:mm:ss").parseObject("2016 03 13 01:59:59"));
+            DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy MM dd HH:mm:ss").withZone(DateTimeZone.forID("America/Denver"));
+            DateTime prevRun = new DateTime(formatter.parseDateTime("2016 03 13 01:59:59"));
+
             ExecutionTime executionTime = ExecutionTime.forCron(cron);          
             DateTime nextRun = executionTime.nextExecution(prevRun);
             // Assert we got 3:00am
@@ -295,7 +300,7 @@ public class ExecutionTimeQuartzIntegrationTest {
             // SIMULATE SCHEDULE POST DST - simulate a schedule after DST 3:01 with the same cron, expect 3:02
             nextRun = nextRun.plusMinutes(1);
             nextRun = executionTime.nextExecution(nextRun);
-            assertEquals("Incorrect Hour",3,nextRun.getHourOfDay());
+            assertEquals("Incorrect Hour", 3, nextRun.getHourOfDay());
             assertEquals("Incorrect Minute", 2, nextRun.getMinuteOfHour());
 
             // SIMULATE SCHEDULE NEXT DAY DST - verify after midnight on DST switch things still work as expected

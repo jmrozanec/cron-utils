@@ -434,12 +434,32 @@ public class ExecutionTime {
 
     private DateTime initDateTime(int years, int monthsOfYear, int dayOfMonth,
                                   int hoursOfDay, int minutesOfHour, int secondsOfMinute, DateTimeZone timeZone) {
-        return new DateTime(0, 1, 1, 0, 0, 0, timeZone)
-                .plusYears(years)
-                .plusMonths(monthsOfYear - 1)
-                .plusDays(dayOfMonth - 1)
-                .plusHours(hoursOfDay)
-                .plusMinutes(minutesOfHour)
-                .plusSeconds(secondsOfMinute);
+        DateTime date =
+                new DateTime(0, 1, 1, 0, 0, 0, timeZone)
+                        .plusYears(years)
+                        .plusMonths(monthsOfYear - 1)
+                        .plusDays(dayOfMonth - 1)
+                        .plusHours(hoursOfDay)
+                        .plusMinutes(minutesOfHour)
+                        .plusSeconds(secondsOfMinute);
+        if(date.getSecondOfMinute()!=secondsOfMinute){
+            date = date.plusSeconds(secondsOfMinute-date.getSecondOfMinute());
+        }
+        if(date.getMinuteOfHour()!=minutesOfHour){
+            date = date.plusMinutes(minutesOfHour-date.getMinuteOfHour());
+        }
+        if(date.getHourOfDay()!=hoursOfDay){
+            date = date.plusHours(hoursOfDay-date.getHourOfDay());
+        }
+        if(date.getDayOfMonth()!=dayOfMonth){
+            date = date.plusDays(dayOfMonth-date.getDayOfMonth());
+        }
+        if(date.getMonthOfYear()!=monthsOfYear){
+            date = date.plusMonths(monthsOfYear-date.getMonthOfYear());
+        }
+        if(date.getYear()!=years){
+            date = date.plusYears(years-date.getYear());
+        }
+        return date;
     }
 }
