@@ -313,7 +313,10 @@ public class ExecutionTimeQuartzIntegrationTest {
             fail("Exception Received: " +e.getMessage());
         }
     }
-    
+
+    /**
+     * Issue #75: W flag not behaving as expected: did not return first workday of month, but an exception
+     */
     @Test
     public void testCronWithFirstWorkDayOfWeek() {
         try {
