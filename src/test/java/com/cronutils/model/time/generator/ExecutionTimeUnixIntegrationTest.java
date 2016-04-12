@@ -221,4 +221,18 @@ public class ExecutionTimeUnixIntegrationTest {
         DateTime nextExecutionTime = executionTime.nextExecution(scanTime);
         assertEquals(DateTime.parse("2016-02-29T12:00:00.000-06:00"), nextExecutionTime);
     }
+
+    /**
+     * Issue #79
+     */
+    @Test
+    public void testNextExecution2014() {
+        String crontab = "0 8 * * 1";
+        CronDefinition cronDefinition = CronDefinitionBuilder.instanceDefinitionFor(CronType.UNIX);
+        CronParser parser = new CronParser(cronDefinition);
+        Cron cron = parser.parse(crontab);
+        DateTime date = DateTime.parse("2014-11-30T00:00:00Z");
+        ExecutionTime executionTime = ExecutionTime.forCron(cron);
+        assertEquals(DateTime.parse("2014-12-01T08:00:00Z"), executionTime.nextExecution(date));
+    }
 }
