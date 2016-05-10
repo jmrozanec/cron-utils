@@ -64,22 +64,12 @@ public class WeekDay {
             @Override
             public Integer apply(Integer integer) {
                 int diff = target.getMondayDoWValue() - source.getMondayDoWValue();
-                int result = integer;
-                if(diff == 0){
-                    return integer;
+                int result = integer + diff;
+                if(result < startRange) {
+                    result -= (startRange - endRange + 1);
                 }
-                if(diff < 0){
-                    result = integer + diff;
-                    int distanceToStartRange = startRange - result;
-                    if(result < startRange){
-                        result = endRange + 1 - distanceToStartRange;
-                    }
-                }
-                if(diff > 0){
-                    result = integer + diff;
-                    if(result > endRange){
-                        result -= endRange;
-                    }
+                if(result > endRange) {
+                    result -= endRange;
                 }
                 return result;
             }
