@@ -336,6 +336,9 @@ public class ExecutionTimeQuartzIntegrationTest {
 
     /**
      * Issue #81: MON-SUN flags are not mapped correctly to 1-7 number representations 
+     * Fixed by adding shifting function when changing monday position.
+     * Fixed by adding shifting function when changing monday position.
+     * Fixed by adding shifting function when changing monday position.
      */
     @Test
     public void testDayOfWeekMapping() {
@@ -348,15 +351,6 @@ public class ExecutionTimeQuartzIntegrationTest {
                 numberExec.nextExecution(fridayMorning),
                 nameExec.nextExecution(fridayMorning)
         );
-    }
-
-    @Test
-    public void tempTest() {
-        CronDefinition cronDefinition = CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ);
-        CronParser parser = new CronParser(cronDefinition);
-        DateTime fridayMorning = new DateTime(2016, 4, 22, 0, 0, 0, DateTimeZone.UTC);
-        ExecutionTime nameExec = ExecutionTime.forCron(parser.parse("0 0 12 ? * MON,TUE,WED,THU,FRI *"));
-        nameExec.nextExecution(fridayMorning);
     }
 
     private DateTime truncateToSeconds(DateTime dateTime){

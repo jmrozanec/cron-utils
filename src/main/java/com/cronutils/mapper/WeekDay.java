@@ -66,7 +66,7 @@ public class WeekDay {
                 int diff = target.getMondayDoWValue() - source.getMondayDoWValue();
                 int result = integer + diff;
                 if(result < startRange) {
-                    result -= (startRange - endRange + 1);
+                    result -= (startRange - endRange - 1);
                 }
                 if(result > endRange) {
                     result -= endRange;
