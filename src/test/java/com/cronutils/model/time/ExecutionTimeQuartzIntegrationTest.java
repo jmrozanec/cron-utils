@@ -337,8 +337,6 @@ public class ExecutionTimeQuartzIntegrationTest {
     /**
      * Issue #81: MON-SUN flags are not mapped correctly to 1-7 number representations 
      * Fixed by adding shifting function when changing monday position.
-     * Fixed by adding shifting function when changing monday position.
-     * Fixed by adding shifting function when changing monday position.
      */
     @Test
     public void testDayOfWeekMapping() {
