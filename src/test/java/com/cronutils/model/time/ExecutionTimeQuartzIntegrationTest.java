@@ -114,38 +114,6 @@ public class ExecutionTimeQuartzIntegrationTest {
     }
 
     /**
-     * Test for issue #83
-     * 
-     * @throws Exception
-     */
-    @Test
-    public void testMultipleMinuteIntervalTimeFromLastExecution() throws Exception {
-        String expression = "* 8-10,23-25,38-40,53-55 * * * * *"; // every second for intervals of minutes
-        ExecutionTime executionTime = ExecutionTime.forCron(quartzCronParser.parse(expression));
-
-        assertEquals(301, executionTime.timeFromLastExecution(new DateTime().withTime(3, 1, 0, 0)).getStandardSeconds());
-        assertEquals(1, executionTime.timeFromLastExecution(new DateTime().withTime(13, 8, 4, 0)).getStandardSeconds());
-        assertEquals(1, executionTime.timeFromLastExecution(new DateTime().withTime(13, 11, 0, 0)).getStandardSeconds());
-        assertEquals(63, executionTime.timeFromLastExecution(new DateTime().withTime(13, 12, 2, 0)).getStandardSeconds());
-    }
-
-    /**
-     * Test for issue #83
-     * 
-     * @throws Exception
-     */
-    @Test
-    public void testMultipleMinuteIntervalMatch() throws Exception {
-        CronParser cronParser = new CronParser(CronDefinitionBuilder.instanceDefinitionFor(com.cronutils.model.CronType.QUARTZ));
-
-        assertEquals(ExecutionTime.forCron(cronParser.parse("* * 21-23,0-4 * * *")).isMatch(new DateTime(2014, 9, 20, 20, 0, 0)), false);
-        assertEquals(ExecutionTime.forCron(cronParser.parse("* * 21-23,0-4 * * *")).isMatch(new DateTime(2014, 9, 20, 21, 0, 0)), true);
-        assertEquals(ExecutionTime.forCron(cronParser.parse("* * 21-23,0-4 * * *")).isMatch(new DateTime(2014, 9, 20, 0, 0, 0)), true);
-        assertEquals(ExecutionTime.forCron(cronParser.parse("* * 21-23,0-4 * * *")).isMatch(new DateTime(2014, 9, 20, 4, 0, 0)), true);
-        assertEquals(ExecutionTime.forCron(cronParser.parse("* * 21-23,0-4 * * *")).isMatch(new DateTime(2014, 9, 20, 5, 0, 0)), false);
-    }
-
-    /**
      * Test for issue #19
      * https://github.com/jmrozanec/cron-utils/issues/19
      * Reported case: When nextExecution shifts to the 24th hour (e.g. 23:59:59 + 00:00:01), JodaTime will throw an exception
@@ -309,6 +277,42 @@ public class ExecutionTimeQuartzIntegrationTest {
         CronValidator validator = new CronValidator(CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ));
         validator.isValid(cronText);
         final ExecutionTime executionTime = ExecutionTime.forCron(cron);
+    }
+
+    /**
+     * Test for issue #83
+     * https://github.com/jmrozanec/cron-utils/issues/83
+     * Reported case: Candidate values are false when combining range and multiple patterns
+     * Expected: Candidate values should be correctly identified
+     * @throws Exception
+     */
+    @Test
+    public void testMultipleMinuteIntervalTimeFromLastExecution() throws Exception {
+        String expression = "* 8-10,23-25,38-40,53-55 * * * * *"; // every second for intervals of minutes
+        ExecutionTime executionTime = ExecutionTime.forCron(quartzCronParser.parse(expression));
+
+        assertEquals(301, executionTime.timeFromLastExecution(new DateTime().withTime(3, 1, 0, 0)).getStandardSeconds());
+        assertEquals(1, executionTime.timeFromLastExecution(new DateTime().withTime(13, 8, 4, 0)).getStandardSeconds());
+        assertEquals(1, executionTime.timeFromLastExecution(new DateTime().withTime(13, 11, 0, 0)).getStandardSeconds());
+        assertEquals(63, executionTime.timeFromLastExecution(new DateTime().withTime(13, 12, 2, 0)).getStandardSeconds());
+    }
+
+    /**
+     * Test for issue #83
+     * https://github.com/jmrozanec/cron-utils/issues/83
+     * Reported case: Candidate values are false when combining range and multiple patterns
+     * Expected: Candidate values should be correctly identified
+     * @throws Exception
+     */
+    @Test
+    public void testMultipleMinuteIntervalMatch() throws Exception {
+        CronParser cronParser = new CronParser(CronDefinitionBuilder.instanceDefinitionFor(com.cronutils.model.CronType.QUARTZ));
+
+        assertEquals(ExecutionTime.forCron(cronParser.parse("* * 21-23,0-4 * * *")).isMatch(new DateTime(2014, 9, 20, 20, 0, 0)), false);
+        assertEquals(ExecutionTime.forCron(cronParser.parse("* * 21-23,0-4 * * *")).isMatch(new DateTime(2014, 9, 20, 21, 0, 0)), true);
+        assertEquals(ExecutionTime.forCron(cronParser.parse("* * 21-23,0-4 * * *")).isMatch(new DateTime(2014, 9, 20, 0, 0, 0)), true);
+        assertEquals(ExecutionTime.forCron(cronParser.parse("* * 21-23,0-4 * * *")).isMatch(new DateTime(2014, 9, 20, 4, 0, 0)), true);
+        assertEquals(ExecutionTime.forCron(cronParser.parse("* * 21-23,0-4 * * *")).isMatch(new DateTime(2014, 9, 20, 5, 0, 0)), false);
     }
     
     @Test
