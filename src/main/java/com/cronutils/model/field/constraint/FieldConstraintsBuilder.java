@@ -5,6 +5,7 @@ import com.cronutils.model.field.value.SpecialChar;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -140,6 +141,26 @@ public class FieldConstraintsBuilder {
     public FieldConstraintsBuilder withValidRange(int startRange, int endRange){
         this.startRange = startRange;
         this.endRange = endRange;
+        return this;
+    }
+
+    /**
+     * Shifts integer representation of weekday/month names
+     * @param shiftSize - size of the shift
+     * @return same FieldConstraintsBuilder instance
+     */
+    public FieldConstraintsBuilder withShiftedStringMapping(int shiftSize){
+        for(String key : this.stringMapping.keySet()) {
+            Integer value = this.stringMapping.get(key);
+            value += shiftSize;
+            if(value > endRange) {
+                value -= endRange;
+            }
+            if(value < startRange) {
+                value += (startRange - endRange);
+            }
+            this.stringMapping.put(key, value);
+        }
         return this;
     }
 

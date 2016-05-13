@@ -442,6 +442,12 @@ public class ExecutionTime {
                         .plusHours(hoursOfDay)
                         .plusMinutes(minutesOfHour)
                         .plusSeconds(secondsOfMinute);
+        return ensureSameDate(date, years, monthsOfYear, dayOfMonth,
+                hoursOfDay, minutesOfHour, secondsOfMinute, timeZone);
+    }
+
+    private DateTime ensureSameDate(DateTime date, int years, int monthsOfYear, int dayOfMonth,
+                                    int hoursOfDay, int minutesOfHour, int secondsOfMinute, DateTimeZone timeZone){
         if(date.getSecondOfMinute()!=secondsOfMinute){
             date = date.plusSeconds(secondsOfMinute-date.getSecondOfMinute());
         }
