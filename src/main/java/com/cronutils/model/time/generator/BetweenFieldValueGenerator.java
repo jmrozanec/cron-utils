@@ -28,7 +28,10 @@ class BetweenFieldValueGenerator extends FieldValueGenerator {
     @Override
     public int generateNextValue(int reference) throws NoSuchValueException {
         Between between = (Between)expression;
-        int candidate = new EveryFieldValueGenerator(between.getEvery()).generateNextValue(reference);
+        int candidate = reference + 1;
+        while (candidate < map(between.getFrom())) {
+            candidate = new EveryFieldValueGenerator(between.getEvery()).generateNextValue(candidate);
+        }
 
         if(candidate > map(between.getTo())){
             throw new NoSuchValueException();
@@ -40,7 +43,10 @@ class BetweenFieldValueGenerator extends FieldValueGenerator {
     @Override
     public int generatePreviousValue(int reference) throws NoSuchValueException {
         Between between = (Between)expression;
-        int candidate = new EveryFieldValueGenerator(between.getEvery()).generatePreviousValue(reference);
+        int candidate = reference - 1;
+        while (candidate > map(between.getTo())) {
+            candidate = new EveryFieldValueGenerator(between.getEvery()).generatePreviousValue(candidate);
+        }
 
         if(candidate < map(between.getFrom())){
             throw new NoSuchValueException();
