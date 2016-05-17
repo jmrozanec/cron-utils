@@ -88,6 +88,7 @@ public class FieldParser {
         }
     }
 
+    //TODO issue #81: https://github.com/jmrozanec/cron-utils/issues/81
     @VisibleForTesting
     Between parseBetween(String[]array){
         if (array[1].contains("/")) {
