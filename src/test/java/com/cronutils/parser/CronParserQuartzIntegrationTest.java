@@ -169,4 +169,12 @@ public class CronParserQuartzIntegrationTest {
         CronDescriptor.instance(Locale.GERMAN).describe(c);
         validator.validate(expression);
     }
+
+    /**
+     * Issue #78: ExecutionTime.forCron fails on intervals
+     */
+    @Test
+    public void testIntervalSeconds() {
+        parser.parse("0/2 * * * * ?");
+    }
 }

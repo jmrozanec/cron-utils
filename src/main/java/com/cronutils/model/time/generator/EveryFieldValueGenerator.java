@@ -4,6 +4,7 @@ import com.cronutils.model.field.expression.Every;
 import com.cronutils.model.field.expression.FieldExpression;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
+import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,7 +26,10 @@ class EveryFieldValueGenerator extends FieldValueGenerator {
 
     public EveryFieldValueGenerator(FieldExpression expression) {
         super(expression);
-        log.info("Strting");
+        log.debug(String.format(
+                "processing \"%s\" at %s",
+                expression.asString(), DateTime.now()
+        ));
     }
 
     @Override
@@ -71,7 +75,8 @@ class EveryFieldValueGenerator extends FieldValueGenerator {
                 reference=generateNextValue(reference);
             }
         } catch (NoSuchValueException e) {
-            log.warn("Failed to generate candidates", e);
+            // log.warn("Failed to generate candidates", e);
+            // unnecessary logging of expected parsing situation
         }
         return values;
     }
