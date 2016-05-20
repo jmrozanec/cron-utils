@@ -1,6 +1,6 @@
-package com.cronutils.builder.model;
+package com.cronutils.builder.model.expression;
 
-import com.cronutils.builder.model.expression.FieldExpression;
+import com.cronutils.model.field.CronFieldName;
 
 import java.util.Comparator;
 
@@ -42,4 +42,3 @@ public class CronField {
         };
     }
 }
-

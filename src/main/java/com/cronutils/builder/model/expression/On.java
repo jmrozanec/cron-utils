@@ -1,6 +1,5 @@
-package com.cronutils.builder.model;
+package com.cronutils.builder.model.expression;
 
-import com.cronutils.model.field.constraint.FieldConstraints;
 import com.cronutils.model.field.value.IntegerFieldValue;
 import com.cronutils.model.field.value.SpecialChar;
 import com.cronutils.model.field.value.SpecialCharFieldValue;

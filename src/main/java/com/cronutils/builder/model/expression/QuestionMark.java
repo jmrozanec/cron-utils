@@ -1,15 +1,11 @@
-package com.cronutils.builder.model;
+package com.cronutils.builder.model.expression;
 
 /**
  * Represents a question mark (?) value on cron expression field
  */
 public class QuestionMark extends FieldExpression {
 
-    private QuestionMark(){}
-
-    private QuestionMark(QuestionMark questionMark) {
-        this();
-    }
+    public QuestionMark(){}
 
     @Override
     public String asString() {

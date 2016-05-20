@@ -1,4 +1,4 @@
-package com.cronutils.builder.model;
+package com.cronutils.builder.model.expression;
 
 /*
  * Copyright 2014 jmrozanec
@@ -13,11 +13,8 @@ package com.cronutils.builder.model;
  * limitations under the License.
  */
 
-import com.cronutils.model.field.constraint.FieldConstraints;
 import com.cronutils.model.field.value.FieldValue;
 import com.cronutils.model.field.value.IntegerFieldValue;
-import com.cronutils.model.field.value.SpecialChar;
-import com.cronutils.model.field.value.SpecialCharFieldValue;
 
 /**
  * Represents a range in a cron expression.

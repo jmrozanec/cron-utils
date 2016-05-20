@@ -13,7 +13,7 @@ package com.cronutils.builder.model.visitor;
  * limitations under the License.
  */
 
-import com.cronutils.builder.model.*;
+import com.cronutils.builder.model.expression.*;
 
 /**
  * Visitor for custom actions performed on FieldExpression instances

@@ -1,4 +1,4 @@
-package com.cronutils.builder.model;
+package com.cronutils.builder.model.expression;
 
 import com.cronutils.builder.model.visitor.FieldExpressionVisitor;
 import org.apache.commons.lang3.Validate;

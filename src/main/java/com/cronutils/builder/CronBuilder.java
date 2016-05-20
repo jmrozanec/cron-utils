@@ -1,9 +1,9 @@
 package com.cronutils.builder;
 
-import com.cronutils.builder.model.CronField;
-import com.cronutils.builder.model.Every;
-import com.cronutils.builder.model.FieldExpression;
-import com.cronutils.builder.model.On;
+import com.cronutils.builder.model.expression.CronField;
+import com.cronutils.builder.model.expression.Every;
+import com.cronutils.builder.model.expression.FieldExpression;
+import com.cronutils.builder.model.expression.On;
 import com.cronutils.model.field.CronFieldName;
 
 import com.cronutils.model.field.value.IntegerFieldValue;

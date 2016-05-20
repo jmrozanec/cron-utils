@@ -1,4 +1,4 @@
-package com.cronutils.builder.model;
+package com.cronutils.builder.model.expression;
 
 /*
  * Copyright 2014 jmrozanec
@@ -13,7 +13,6 @@ package com.cronutils.builder.model;
  * limitations under the License.
  */
 
-import com.cronutils.model.field.constraint.FieldConstraints;
 import com.cronutils.model.field.value.IntegerFieldValue;
 
 /**

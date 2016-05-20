@@ -1,4 +1,4 @@
-package com.cronutils.builder.model;
+package com.cronutils.builder.model.expression;
 
 import com.google.common.collect.Lists;
 
