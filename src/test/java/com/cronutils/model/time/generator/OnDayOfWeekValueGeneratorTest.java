@@ -28,17 +28,17 @@ import static org.mockito.Mockito.mock;
  * limitations under the License.
  */
 public class OnDayOfWeekValueGeneratorTest {
-
     private OnDayOfWeekValueGenerator fieldValueGenerator;
+    private FieldConstraints constraints;
     private WeekDay mondayDoWValue;
     private int year = 2015;
     private int month = 2;
 
     @Before
     public void setUp(){
-        FieldConstraints constraints = FieldConstraintsBuilder.instance().createConstraintsInstance();
+        constraints = FieldConstraintsBuilder.instance().createConstraintsInstance();
         mondayDoWValue = new WeekDay(1, false);
-        fieldValueGenerator = new OnDayOfWeekValueGenerator(new CronField(CronFieldName.DAY_OF_WEEK, new On(constraints, new IntegerFieldValue(3))), year, month, mondayDoWValue);
+        fieldValueGenerator = new OnDayOfWeekValueGenerator(new CronField(CronFieldName.DAY_OF_WEEK, new On(new IntegerFieldValue(3)), constraints), year, month, mondayDoWValue);
     }
 
     @Test
@@ -49,6 +49,6 @@ public class OnDayOfWeekValueGeneratorTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void testConstructorNotMatchesOnDayOfWeekValueGenerator() throws Exception {
-        new OnDayOfWeekValueGenerator(new CronField(CronFieldName.YEAR, mock(FieldExpression.class)), year, month, mondayDoWValue);
+        new OnDayOfWeekValueGenerator(new CronField(CronFieldName.YEAR, mock(FieldExpression.class), constraints), year, month, mondayDoWValue);
     }
 }

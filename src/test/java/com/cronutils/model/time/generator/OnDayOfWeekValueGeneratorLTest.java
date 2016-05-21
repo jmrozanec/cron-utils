@@ -137,14 +137,14 @@ public class OnDayOfWeekValueGeneratorLTest {
     }
 
     private OnDayOfWeekValueGenerator createFieldValueGeneratorInstanceLastDayDoWGreaterThanRequestedDoW() {
-        return new OnDayOfWeekValueGenerator(new CronField(CronFieldName.DAY_OF_WEEK, new On(constraints, new IntegerFieldValue(lastDayDoWGreaterThanRequestedDoW_Value), new SpecialCharFieldValue(SpecialChar.L))), year, lastDayDoWGreaterThanRequestedDoW_Month, mondayDoWValue);
+        return new OnDayOfWeekValueGenerator(new CronField(CronFieldName.DAY_OF_WEEK, new On(new IntegerFieldValue(lastDayDoWGreaterThanRequestedDoW_Value), new SpecialCharFieldValue(SpecialChar.L)), constraints), year, lastDayDoWGreaterThanRequestedDoW_Month, mondayDoWValue);
     }
 
     private OnDayOfWeekValueGenerator createFieldValueGeneratorInstanceLastDayDoWLessThanRequestedDoW() {
-        return new OnDayOfWeekValueGenerator(new CronField(CronFieldName.DAY_OF_WEEK, new On(constraints, new IntegerFieldValue(lastDayDoWLessThanRequestedDoW_Value), new SpecialCharFieldValue(SpecialChar.L))), year, lastDayDoWLessThanRequestedDoW_Month, mondayDoWValue);
+        return new OnDayOfWeekValueGenerator(new CronField(CronFieldName.DAY_OF_WEEK, new On(new IntegerFieldValue(lastDayDoWLessThanRequestedDoW_Value), new SpecialCharFieldValue(SpecialChar.L)), constraints), year, lastDayDoWLessThanRequestedDoW_Month, mondayDoWValue);
     }
 
     private OnDayOfWeekValueGenerator createFieldValueGeneratorInstanceLastDayDoWEqualToRequestedDoW() {
-        return new OnDayOfWeekValueGenerator(new CronField(CronFieldName.DAY_OF_WEEK, new On(constraints, new IntegerFieldValue(lastDayDoWEqualToRequestedDoW_Value), new SpecialCharFieldValue(SpecialChar.L))), year, lastDayDoWEqualToRequestedDoW_Month, mondayDoWValue);
+        return new OnDayOfWeekValueGenerator(new CronField(CronFieldName.DAY_OF_WEEK, new On(new IntegerFieldValue(lastDayDoWEqualToRequestedDoW_Value), new SpecialCharFieldValue(SpecialChar.L)), constraints), year, lastDayDoWEqualToRequestedDoW_Month, mondayDoWValue);
     }
 }

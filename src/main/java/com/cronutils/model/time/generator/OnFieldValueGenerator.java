@@ -1,5 +1,6 @@
 package com.cronutils.model.time.generator;
 
+import com.cronutils.model.field.CronField;
 import com.cronutils.model.field.expression.FieldExpression;
 import com.cronutils.model.field.expression.On;
 import com.google.common.collect.Lists;
@@ -18,13 +19,13 @@ import java.util.List;
  * limitations under the License.
  */
 class OnFieldValueGenerator extends FieldValueGenerator {
-    public OnFieldValueGenerator(FieldExpression expression) {
-        super(expression);
+    public OnFieldValueGenerator(CronField cronField) {
+        super(cronField);
     }
 
     @Override
     public int generateNextValue(int reference) throws NoSuchValueException {
-        int time = ((On) expression).getTime().getValue();
+        int time = ((On) cronField.getExpression()).getTime().getValue();
         if(time<=reference){
             throw new NoSuchValueException();
         }
@@ -33,7 +34,7 @@ class OnFieldValueGenerator extends FieldValueGenerator {
 
     @Override
     public int generatePreviousValue(int reference) throws NoSuchValueException {
-        int time = ((On) expression).getTime().getValue();
+        int time = ((On) cronField.getExpression()).getTime().getValue();
         if(time>=reference){
             throw new NoSuchValueException();
         }
@@ -43,7 +44,7 @@ class OnFieldValueGenerator extends FieldValueGenerator {
     @Override
     protected List<Integer> generateCandidatesNotIncludingIntervalExtremes(int start, int end) {
         List<Integer> values = Lists.newArrayList();
-        int time = ((On) expression).getTime().getValue();
+        int time = ((On) cronField.getExpression()).getTime().getValue();
         if(time>start && time<end){
             values.add(time);
         }
@@ -52,7 +53,7 @@ class OnFieldValueGenerator extends FieldValueGenerator {
 
     @Override
     public boolean isMatch(int value) {
-        return ((On) expression).getTime().getValue()==value;
+        return ((On) cronField.getExpression()).getTime().getValue()==value;
     }
 
     @Override

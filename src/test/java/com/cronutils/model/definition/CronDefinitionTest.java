@@ -3,6 +3,7 @@ package com.cronutils.model.definition;
 import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.field.definition.FieldDefinition;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -48,12 +49,17 @@ public class CronDefinitionTest {
 
     @Test(expected = NullPointerException.class)
     public void testConstructorNullFieldsParameter() throws Exception {
-        new CronDefinition(null, lastFieldOptional);
+        new CronDefinition(null, Sets.<CronConstraint>newHashSet(), lastFieldOptional);
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void testConstructorNullConstraintsParameter() throws Exception {
+        new CronDefinition(Lists.<FieldDefinition>newArrayList(), null, lastFieldOptional);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testConstructorEmptyFieldsParameter() throws Exception {
-        new CronDefinition(new ArrayList<FieldDefinition>(), lastFieldOptional);
+        new CronDefinition(new ArrayList<FieldDefinition>(), Sets.<CronConstraint>newHashSet(), lastFieldOptional);
     }
 
     @Test
@@ -62,7 +68,7 @@ public class CronDefinitionTest {
         List<FieldDefinition> fields = Lists.newArrayList();
         fields.add(mockFieldDefinition1);
         fields.add(mockFieldDefinition2);
-        assertEquals(lastFieldOptional, new CronDefinition(fields, lastFieldOptional).isLastFieldOptional());
+        assertEquals(lastFieldOptional, new CronDefinition(fields, Sets.<CronConstraint>newHashSet(), lastFieldOptional).isLastFieldOptional());
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -70,14 +76,14 @@ public class CronDefinitionTest {
         lastFieldOptional = true;
         List<FieldDefinition> fields = Lists.newArrayList();
         fields.add(mockFieldDefinition1);
-        new CronDefinition(fields, lastFieldOptional).isLastFieldOptional();
+        new CronDefinition(fields, Sets.<CronConstraint>newHashSet(), lastFieldOptional).isLastFieldOptional();
     }
 
     @Test
     public void testGetFieldDefinitions() throws Exception {
         List<FieldDefinition> fields = Lists.newArrayList();
         fields.add(mockFieldDefinition1);
-        CronDefinition cronDefinition = new CronDefinition(fields, lastFieldOptional);
+        CronDefinition cronDefinition = new CronDefinition(fields, Sets.<CronConstraint>newHashSet(), lastFieldOptional);
         assertNotNull(cronDefinition.getFieldDefinitions());
         assertEquals(1, cronDefinition.getFieldDefinitions().size());
         assertTrue(cronDefinition.getFieldDefinitions().contains(mockFieldDefinition1));

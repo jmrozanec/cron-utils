@@ -1,7 +1,5 @@
-package com.cronutils.zrefactor.model.field.value;
-
 /*
- * Copyright 2015 jmrozanec
+ * Copyright 2014 jmrozanec
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -12,25 +10,20 @@ package com.cronutils.zrefactor.model.field.value;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.cronutils.model.definition;
 
-/**
- * Encapsulates a field value, allowing us to
- * manipulate different types of values in a homogeneous way
- * @param <T>
- */
-public abstract class FieldValue<T> {
-    /**
-     * Allows to obtain the value
-     * @return some value, never null
-     */
-    public abstract T getValue();
+import com.cronutils.model.Cron;
 
-    /**
-     * String representation of encapsulated value.
-     * @return String, never null
-     */
-    public final String toString(){
-        return String.format("%s", getValue());
+public abstract class CronConstraint {
+    private String description;
+
+    public CronConstraint(String description){
+        this.description = description;
+    }
+
+    public abstract boolean validate(Cron cron);
+
+    public String getDescription() {
+        return description;
     }
 }
-

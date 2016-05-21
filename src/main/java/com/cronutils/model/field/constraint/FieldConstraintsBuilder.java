@@ -5,7 +5,6 @@ import com.cronutils.model.field.value.SpecialChar;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -219,3 +218,4 @@ public class FieldConstraintsBuilder {
         return new FieldConstraintsBuilder();
     }
 }
+

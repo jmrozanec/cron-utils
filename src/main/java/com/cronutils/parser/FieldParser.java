@@ -10,10 +10,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cronutils.zrefactor.parser;
+package com.cronutils.parser;
 
-import com.cronutils.zrefactor.model.field.constraint.FieldConstraints;
-import com.cronutils.zrefactor.model.field.expression.*;
+import com.cronutils.model.field.constraint.FieldConstraints;
+import com.cronutils.model.field.expression.*;
 import com.cronutils.model.field.value.FieldValue;
 import com.cronutils.model.field.value.IntegerFieldValue;
 import com.cronutils.model.field.value.SpecialChar;

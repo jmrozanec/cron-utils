@@ -1,8 +1,3 @@
-package com.cronutils.zrefactor.model.field.value;
-
-import com.cronutils.model.field.value.*;
-import org.apache.commons.lang3.Validate;
-
 /*
  * Copyright 2015 jmrozanec
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,17 +10,8 @@ import org.apache.commons.lang3.Validate;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-public class SpecialCharFieldValue extends FieldValue<SpecialChar> {
-    private SpecialChar specialChar = SpecialChar.NONE;
+package com.cronutils.model.field.expression;
 
-    public SpecialCharFieldValue(SpecialChar specialChar){
-        Validate.notNull(specialChar, "special char must not be null");
-        this.specialChar = specialChar;
-    }
-
-    @Override
-    public SpecialChar getValue() {
-        return specialChar;
-    }
+public enum Weekdays {
+    MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY;
 }
-

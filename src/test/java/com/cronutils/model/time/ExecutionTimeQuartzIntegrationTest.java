@@ -5,7 +5,6 @@ import com.cronutils.model.CronType;
 import com.cronutils.model.definition.CronDefinition;
 import com.cronutils.model.definition.CronDefinitionBuilder;
 import com.cronutils.parser.CronParser;
-import com.cronutils.validator.CronValidator;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeConstants;
 import org.joda.time.DateTimeZone;
@@ -274,8 +273,6 @@ public class ExecutionTimeQuartzIntegrationTest {
         String cronText = "0 0/15 * * * ?";
         CronParser parser = new CronParser(CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ));
         Cron cron = parser.parse(cronText);
-        CronValidator validator = new CronValidator(CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ));
-        validator.isValid(cronText);
         final ExecutionTime executionTime = ExecutionTime.forCron(cron);
     }
 

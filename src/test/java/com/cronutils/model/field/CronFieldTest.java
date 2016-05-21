@@ -1,5 +1,6 @@
 package com.cronutils.model.field;
 
+import com.cronutils.model.field.constraint.FieldConstraintsBuilder;
 import com.cronutils.model.field.expression.FieldExpression;
 import org.junit.Before;
 import org.junit.Test;
@@ -34,7 +35,7 @@ public class CronFieldTest {
     public void setUp(){
         MockitoAnnotations.initMocks(this);
         cronFieldName = CronFieldName.SECOND;
-        result = new CronField(cronFieldName, mockFieldExpression);
+        result = new CronField(cronFieldName, mockFieldExpression, FieldConstraintsBuilder.instance().createConstraintsInstance());
     }
 
     @Test

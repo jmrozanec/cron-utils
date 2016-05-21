@@ -5,7 +5,6 @@ import com.cronutils.model.Cron;
 import com.cronutils.model.CronType;
 import com.cronutils.model.definition.CronDefinition;
 import com.cronutils.model.definition.CronDefinitionBuilder;
-import com.cronutils.validator.CronValidator;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -164,9 +163,7 @@ public class CronParserQuartzIntegrationTest {
         String expression = "0 * * ? * 1,5";
         CronDefinition definition = CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ);
         CronParser parser = new CronParser(definition);
-        CronValidator validator = new CronValidator(definition);
         Cron c = parser.parse(expression);
         CronDescriptor.instance(Locale.GERMAN).describe(c);
-        validator.validate(expression);
     }
 }

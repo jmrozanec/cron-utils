@@ -1,6 +1,8 @@
 package com.cronutils.model.field;
 
+import com.cronutils.model.field.constraint.FieldConstraints;
 import com.cronutils.model.field.expression.FieldExpression;
+import org.apache.commons.lang3.Validate;
 
 import java.util.Comparator;
 
@@ -19,10 +21,12 @@ import java.util.Comparator;
 public class CronField {
     private CronFieldName field;
     private FieldExpression expression;
+    private FieldConstraints constraints;
 
-    public CronField(CronFieldName field, FieldExpression expression) {
+    public CronField(CronFieldName field, FieldExpression expression, FieldConstraints constraints) {
         this.field = field;
-        this.expression = expression;
+        this.expression = Validate.notNull(expression, "FieldExpression must not be null");
+        this.constraints = Validate.notNull(constraints, "FieldConstraints must not be null");
     }
 
     public CronFieldName getField() {
@@ -31,6 +35,10 @@ public class CronField {
 
     public FieldExpression getExpression() {
         return expression;
+    }
+
+    public FieldConstraints getConstraints() {
+        return constraints;
     }
 
     public static Comparator<CronField> createFieldComparator() {
@@ -42,3 +50,4 @@ public class CronField {
         };
     }
 }
+

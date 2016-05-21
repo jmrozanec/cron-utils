@@ -137,9 +137,13 @@ public class OnDayOfMonthValueGeneratorWTest {
 
     private OnDayOfMonthValueGenerator createFieldValueGeneratorInstance(int month, int day) {
         return new OnDayOfMonthValueGenerator(
-                new CronField(CronFieldName.DAY_OF_MONTH,
-                        new On(constraints, new IntegerFieldValue(day),
-                                new SpecialCharFieldValue(SpecialChar.W), new IntegerFieldValue(-1))
+                new CronField(
+                        CronFieldName.DAY_OF_MONTH,
+                        new On(
+                                new IntegerFieldValue(day),
+                                new SpecialCharFieldValue(SpecialChar.W), new IntegerFieldValue(-1)
+                        ),
+                        constraints
                 ),YEAR, month);
     }
 }

@@ -1,10 +1,3 @@
-package com.cronutils.model.field.expression.visitor;
-
-import com.cronutils.model.field.constraint.FieldConstraints;
-import com.cronutils.model.field.expression.*;
-import com.cronutils.model.field.value.FieldValue;
-import com.cronutils.model.field.value.IntegerFieldValue;
-import com.google.common.base.Function;
 /*
  * Copyright 2015 jmrozanec
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,17 +10,22 @@ import com.google.common.base.Function;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.cronutils.model.field.expression.visitor;
+
+import com.cronutils.model.field.expression.*;
+import com.cronutils.model.field.value.FieldValue;
+import com.cronutils.model.field.value.IntegerFieldValue;
+import com.google.common.base.Function;
+
 /**
  * Performs a transformation on FieldExpression values.
  * Returns a new FieldExpression instance considering a possible change
  * in new FieldExpression instance constraints.
  */
 public class ValueMappingFieldExpressionVisitor implements FieldExpressionVisitor {
-    private FieldConstraints destinationConstraint;
     private Function<FieldValue, FieldValue> transform;
 
-    public ValueMappingFieldExpressionVisitor(FieldConstraints destinationConstraint, Function<FieldValue, FieldValue> transform){
-        this.destinationConstraint = destinationConstraint;
+    public ValueMappingFieldExpressionVisitor(Function<FieldValue, FieldValue> transform){
         this.transform = transform;
     }
 
@@ -49,22 +47,22 @@ public class ValueMappingFieldExpressionVisitor implements FieldExpressionVisito
     public Between visit(Between between) {
         FieldValue from = transform.apply(between.getFrom());
         FieldValue to = transform.apply(between.getTo());
-        return new Between(destinationConstraint, from, to, between.getEvery().getTime());
+        return new Between(from, to, between.getEvery().getTime());
     }
 
     @Override
     public Every visit(Every every) {
-        return new Every(destinationConstraint, (IntegerFieldValue)transform.apply(every.getTime()));
+        return new Every((IntegerFieldValue)transform.apply(every.getTime()));
     }
 
     @Override
     public On visit(On on) {
-        return new On(destinationConstraint, (IntegerFieldValue)transform.apply(on.getTime()), on.getSpecialChar(), on.getNth());
+        return new On((IntegerFieldValue)transform.apply(on.getTime()), on.getSpecialChar(), on.getNth());
     }
 
     @Override
     public QuestionMark visit(QuestionMark questionMark) {
-        return new QuestionMark(destinationConstraint);
+        return new QuestionMark();
     }
 
     @Override
@@ -90,3 +88,4 @@ public class ValueMappingFieldExpressionVisitor implements FieldExpressionVisito
         return expression;
     }
 }
+

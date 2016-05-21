@@ -143,7 +143,7 @@ public class CronMapper {
             @Override
             public CronField apply(CronField field) {
                 FieldConstraints constraints = FieldConstraintsBuilder.instance().forField(name).createConstraintsInstance();
-                return new CronField(name, new On(constraints, new IntegerFieldValue(0)));
+                return new CronField(name, new On(new IntegerFieldValue(0)), constraints);
             }
         };
     }
@@ -158,7 +158,7 @@ public class CronMapper {
         return new Function<CronField, CronField>() {
             @Override
             public CronField apply(CronField field) {
-                return new CronField(name, new Always(FieldConstraintsBuilder.instance().forField(name).createConstraintsInstance()));
+                return new CronField(name, new Always(), FieldConstraintsBuilder.instance().forField(name).createConstraintsInstance());
             }
         };
     }
@@ -171,7 +171,6 @@ public class CronMapper {
             public CronField apply(final CronField field) {
                 FieldExpression expression = field.getExpression().accept(
                         new ValueMappingFieldExpressionVisitor(
-                                targetDef.getConstraints(),
                                 new Function<FieldValue, FieldValue>() {
                                     @Override
                                     public FieldValue apply(FieldValue fieldValue) {
@@ -190,7 +189,7 @@ public class CronMapper {
                                 }
                         )
                 );
-                return new CronField(CronFieldName.DAY_OF_WEEK, expression);
+                return new CronField(CronFieldName.DAY_OF_WEEK, expression, targetDef.getConstraints());
             }
         };
     }

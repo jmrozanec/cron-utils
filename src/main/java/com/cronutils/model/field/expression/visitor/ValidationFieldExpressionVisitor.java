@@ -1,19 +1,5 @@
-package com.cronutils.zrefactor.model.field.expression.visitor;
-
-import com.cronutils.model.field.value.FieldValue;
-import com.cronutils.model.field.value.IntegerFieldValue;
-import com.cronutils.model.field.value.SpecialChar;
-import com.cronutils.zrefactor.model.field.constraint.FieldConstraints;
-import com.cronutils.zrefactor.model.field.expression.*;
-import com.google.common.annotations.VisibleForTesting;
-import com.google.common.collect.Sets;
-
-import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 /*
- * Copyright 2015 jmrozanec
+ * Copyright 2014 jmrozanec
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -24,6 +10,20 @@ import java.util.regex.Pattern;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.cronutils.model.field.expression.visitor;
+
+import com.cronutils.model.field.value.FieldValue;
+import com.cronutils.model.field.value.IntegerFieldValue;
+import com.cronutils.model.field.value.SpecialChar;
+import com.cronutils.model.field.constraint.FieldConstraints;
+import com.cronutils.model.field.expression.*;
+import com.google.common.annotations.VisibleForTesting;
+import com.google.common.collect.Sets;
+
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public class ValidationFieldExpressionVisitor implements FieldExpressionVisitor {
     private static final String OORANGE = "Value %s not in range [%s, %s]";
     private FieldConstraints constraints;
@@ -89,7 +89,9 @@ public class ValidationFieldExpressionVisitor implements FieldExpressionVisitor 
 
     @Override
     public On visit(On on) {
-        isInRange(on.getTime());
+        if(!isDefault(on.getTime())){
+            isInRange(on.getTime());
+        }
         if(!isDefault(on.getNth())){
             isInRange(on.getNth());
         }

@@ -13,7 +13,6 @@ package com.cronutils.model.field.expression;
  * limitations under the License.
  */
 
-import com.cronutils.model.field.constraint.FieldConstraints;
 import com.cronutils.model.field.value.IntegerFieldValue;
 
 /**
@@ -22,8 +21,7 @@ import com.cronutils.model.field.value.IntegerFieldValue;
 public class Every extends FieldExpression {
     private IntegerFieldValue time;
 
-    public Every(FieldConstraints constraints, IntegerFieldValue time) {
-        super(constraints);
+    public Every(IntegerFieldValue time) {
         if (time == null) {
             time = new IntegerFieldValue(1);
         }
@@ -31,7 +29,7 @@ public class Every extends FieldExpression {
     }
 
     private Every(Every every){
-        this(every.constraints, every.time);
+        this(every.getTime());
     }
 
     public IntegerFieldValue getTime() {

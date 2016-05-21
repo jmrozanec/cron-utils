@@ -1,15 +1,18 @@
 package com.cronutils.model.definition;
 
-import com.cronutils.model.CronType;
+import com.cronutils.model.Cron;
 import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.field.definition.FieldDayOfWeekDefinitionBuilder;
 import com.cronutils.model.field.definition.FieldDefinition;
 import com.cronutils.model.field.definition.FieldDefinitionBuilder;
 import com.cronutils.model.field.definition.FieldSpecialCharsDefinitionBuilder;
+import com.cronutils.model.CronType;
+import com.cronutils.model.field.expression.QuestionMark;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 
-import java.util.ArrayList;
-import java.util.Map;
+import java.util.*;
 
 /*
  * Copyright 2014 jmrozanec
@@ -29,6 +32,7 @@ import java.util.Map;
  */
 public class CronDefinitionBuilder {
     private Map<CronFieldName, FieldDefinition> fields;
+    private Set<CronConstraint> cronConstraints;
     private boolean lastFieldOptional;
 
     /**
@@ -37,6 +41,7 @@ public class CronDefinitionBuilder {
      */
     private CronDefinitionBuilder() {
         fields = Maps.newHashMap();
+        cronConstraints = Sets.newHashSet();
         lastFieldOptional = false;
     }
 
@@ -114,6 +119,15 @@ public class CronDefinitionBuilder {
     }
 
     /**
+     * Adds a cron validation
+     * @return this CronDefinitionBuilder instance
+     */
+    public CronDefinitionBuilder withCronValidation(CronConstraint validation) {
+        this.cronConstraints.add(validation);
+        return this;
+    }
+
+    /**
      * Registers a certain FieldDefinition
      * @param definition - FieldDefinition  instance, never null
      */
@@ -126,7 +140,9 @@ public class CronDefinitionBuilder {
      * @return returns CronDefinition instance, never null
      */
     public CronDefinition instance() {
-        return new CronDefinition(new ArrayList<FieldDefinition>(this.fields.values()), lastFieldOptional);
+        Set<CronConstraint> validations = new HashSet<CronConstraint>();
+        validations.addAll(cronConstraints);
+        return new CronDefinition(Lists.newArrayList(this.fields.values()), validations, lastFieldOptional);
     }
 
     /**
@@ -157,6 +173,19 @@ public class CronDefinitionBuilder {
                 .withDayOfWeek().withValidRange(1, 7).withMondayDoWValue(2).supportsHash().supportsL().supportsW().supportsQuestionMark().and()
                 .withYear().withValidRange(1970, 2099).and()
                 .lastFieldOptional()
+                .withCronValidation(
+                        //Solves issue #63: https://github.com/jmrozanec/cron-utils/issues/63
+                        //both a day-of-week AND a day-of-month parameter should fail for QUARTZ
+                        new CronConstraint("Both, a day-of-week AND a day-of-month parameter, are not supported.") {
+                            @Override
+                            public boolean validate(Cron cron) {
+                                if(!(cron.retrieve(CronFieldName.DAY_OF_MONTH).getExpression() instanceof QuestionMark)){
+                                    return cron.retrieve(CronFieldName.DAY_OF_WEEK).getExpression() instanceof QuestionMark;
+                                } else {
+                                    return !(cron.retrieve(CronFieldName.DAY_OF_WEEK).getExpression() instanceof QuestionMark);
+                                }
+                            }
+                        })
                 .instance();
     }
 
@@ -192,3 +221,4 @@ public class CronDefinitionBuilder {
         }
     }
 }
+

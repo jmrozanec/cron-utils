@@ -35,7 +35,7 @@ public class OnDayOfMonthValueGeneratorLTest {
     @Before
     public void setUp(){
         FieldConstraints constraints = FieldConstraintsBuilder.instance().addLSupport().createConstraintsInstance();
-        fieldValueGenerator = new OnDayOfMonthValueGenerator(new CronField(CronFieldName.DAY_OF_MONTH, new On(constraints, new SpecialCharFieldValue(SpecialChar.L))), year, month);
+        fieldValueGenerator = new OnDayOfMonthValueGenerator(new CronField(CronFieldName.DAY_OF_MONTH, new On(new SpecialCharFieldValue(SpecialChar.L)), constraints), year, month);
     }
 
     @Test(expected = NoSuchValueException.class)

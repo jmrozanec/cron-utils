@@ -315,7 +315,7 @@ public class ExecutionTime {
 
     TimeNode generateDays(CronDefinition cronDefinition, DateTime date){
         boolean questionMarkSupported =
-                cronDefinition.getFieldDefinition(DAY_OF_WEEK).getConstraints().isSpecialCharAllowed(QUESTION_MARK);
+                cronDefinition.getFieldDefinition(DAY_OF_WEEK).getConstraints().getSpecialChars().contains(QUESTION_MARK);
         if(questionMarkSupported){
             return new TimeNode(
                     generateDayCandidatesQuestionMarkSupported(

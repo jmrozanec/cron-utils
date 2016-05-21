@@ -1,6 +1,5 @@
 package com.cronutils.model.field.expression.visitor;
 
-import com.cronutils.model.field.expression.*;
 /*
  * Copyright 2015 jmrozanec
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,6 +12,9 @@ import com.cronutils.model.field.expression.*;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+import com.cronutils.model.field.expression.*;
+
 /**
  * Visitor for custom actions performed on FieldExpression instances
  */
@@ -69,3 +71,4 @@ public interface FieldExpressionVisitor {
      */
     QuestionMark visit(QuestionMark questionMark);
 }
+

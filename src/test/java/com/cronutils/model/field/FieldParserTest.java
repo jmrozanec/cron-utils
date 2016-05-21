@@ -4,7 +4,7 @@ import com.cronutils.model.field.constraint.FieldConstraintsBuilder;
 import com.cronutils.model.field.expression.*;
 import com.cronutils.model.field.value.IntegerFieldValue;
 import com.cronutils.model.field.value.SpecialChar;
-import com.cronutils.parser.field.FieldParser;
+import com.cronutils.parser.FieldParser;
 import org.junit.Before;
 import org.junit.Test;
 

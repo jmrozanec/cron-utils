@@ -47,7 +47,7 @@ class NominalDescriptionStrategy extends DescriptionStrategy {
         if (expression != null) {
             this.expression = expression;
         } else {
-            this.expression = new Always(FieldConstraintsBuilder.instance().createConstraintsInstance());
+            this.expression = new Always();
         }
     }
 

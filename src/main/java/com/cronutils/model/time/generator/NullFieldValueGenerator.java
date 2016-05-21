@@ -1,5 +1,6 @@
 package com.cronutils.model.time.generator;
 
+import com.cronutils.model.field.CronField;
 import com.cronutils.model.field.expression.FieldExpression;
 import com.google.common.collect.Lists;
 
@@ -17,8 +18,8 @@ import java.util.List;
  * limitations under the License.
  */
 class NullFieldValueGenerator extends FieldValueGenerator {
-    public NullFieldValueGenerator(FieldExpression expression) {
-        super(expression);
+    public NullFieldValueGenerator(CronField cronField) {
+        super(cronField);
     }
 
     @Override
