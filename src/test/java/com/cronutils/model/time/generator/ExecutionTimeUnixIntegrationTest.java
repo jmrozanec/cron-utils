@@ -226,7 +226,7 @@ public class ExecutionTimeUnixIntegrationTest {
      * Issue #79: Next execution skipping valid date: 
      */
     public void testNextExecution2014() {
-        String crontab = "0 8 * * 1";
+        String crontab = "0 8 * * 1";//m,h,dom,m,dow ; every monday at 8AM
         CronDefinition cronDefinition = CronDefinitionBuilder.instanceDefinitionFor(CronType.UNIX);
         CronParser parser = new CronParser(cronDefinition);
         Cron cron = parser.parse(crontab);
