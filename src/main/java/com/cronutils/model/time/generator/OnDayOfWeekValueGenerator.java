@@ -29,7 +29,7 @@ class OnDayOfWeekValueGenerator extends FieldValueGenerator {
     private WeekDay mondayDoWValue;
     
     public OnDayOfWeekValueGenerator(CronField cronField, int year, int month, WeekDay mondayDoWValue) {
-        super(cronField.getExpression());
+        super(cronField);
         Validate.isTrue(CronFieldName.DAY_OF_WEEK.equals(cronField.getField()), "CronField does not belong to day of week");
         this.year = year;
         this.month = month;
@@ -38,7 +38,7 @@ class OnDayOfWeekValueGenerator extends FieldValueGenerator {
 
     @Override
     public int generateNextValue(int reference) throws NoSuchValueException{
-        On on = ((On)expression);
+        On on = ((On)cronField.getExpression());
         int value = generateValue(on, year, month, reference);
         if(value<=reference){
             throw new NoSuchValueException();
@@ -48,7 +48,7 @@ class OnDayOfWeekValueGenerator extends FieldValueGenerator {
 
     @Override
     public int generatePreviousValue(int reference) throws NoSuchValueException {
-        On on = ((On)expression);
+        On on = ((On)cronField.getExpression());
         int value = generateValue(on, year, month, reference);
         if(value>=reference){
             throw new NoSuchValueException();
@@ -71,7 +71,7 @@ class OnDayOfWeekValueGenerator extends FieldValueGenerator {
 
     @Override
     public boolean isMatch(int value) {
-        On on = ((On)expression);
+        On on = ((On)cronField.getExpression());
         try {
             return value == generateValue(on, year, month, value);
         } catch (NoSuchValueException e) {}

@@ -16,7 +16,7 @@ class AndDayOfWeekValueGenerator extends FieldValueGenerator {
     private WeekDay mondayDoWValue;
 
     public AndDayOfWeekValueGenerator(CronField cronField, int year, int month, WeekDay mondayDoWValue) {
-        super(cronField.getExpression());
+        super(cronField);
         Validate.isTrue(CronFieldName.DAY_OF_WEEK.equals(cronField.getField()), "CronField does not belong to day of week");
         this.year = year;
         this.month = month;
@@ -25,10 +25,10 @@ class AndDayOfWeekValueGenerator extends FieldValueGenerator {
 
     protected List<Integer> generateCandidatesNotIncludingIntervalExtremes(int start, int end) {
         List<Integer> values = Lists.newArrayList();
-        And and = (And) expression;
+        And and = (And) cronField.getExpression();
 
         for(FieldExpression expression : and.getExpressions()) {
-            CronField cronField = new CronField(CronFieldName.DAY_OF_WEEK, expression);
+            CronField cronField = new CronField(CronFieldName.DAY_OF_WEEK, expression, this.cronField.getConstraints());
             List<Integer> candidatesList = FieldValueGeneratorFactory.createDayOfWeekValueGeneratorInstance(cronField, year, month, mondayDoWValue).generateCandidates(start, end);
 
             // add them to the master list

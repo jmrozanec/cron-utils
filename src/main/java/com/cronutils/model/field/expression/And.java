@@ -1,6 +1,5 @@
 package com.cronutils.model.field.expression;
 
-import com.cronutils.model.field.constraint.FieldConstraintsBuilder;
 import com.google.common.collect.Lists;
 
 import java.util.Collections;
@@ -26,13 +25,11 @@ public class And extends FieldExpression {
     private List<FieldExpression> expressions;
 
     public And() {
-        super(FieldConstraintsBuilder.instance().createConstraintsInstance());
         expressions = Lists.newArrayList();
     }
 
     private And(And and) {
-        super(and.getConstraints());
-        expressions = Lists.newArrayList(and.expressions);
+        expressions = Lists.newArrayList(and.getExpressions());
     }
 
     @Override
@@ -57,3 +54,4 @@ public class And extends FieldExpression {
         return Collections.unmodifiableList(expressions);
     }
 }
+

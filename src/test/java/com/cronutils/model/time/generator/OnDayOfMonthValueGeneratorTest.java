@@ -27,17 +27,18 @@ import static org.mockito.Mockito.mock;
  */
 public class OnDayOfMonthValueGeneratorTest {
     private OnDayOfMonthValueGenerator fieldValueGenerator;
+    private FieldConstraints constraints;
     private int year = 2015;
     private int month = 2;
 
     @Before
     public void setUp(){
-        FieldConstraints constraints = FieldConstraintsBuilder.instance().createConstraintsInstance();
+        constraints = FieldConstraintsBuilder.instance().createConstraintsInstance();
         fieldValueGenerator =
                 new OnDayOfMonthValueGenerator(
                         new CronField(
                                 CronFieldName.DAY_OF_MONTH,
-                                new On(constraints, new IntegerFieldValue(3))),
+                                new On(new IntegerFieldValue(3)), constraints),
                         year, month);
     }
 
@@ -59,7 +60,7 @@ public class OnDayOfMonthValueGeneratorTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void testConstructorNotMatchesOn() throws Exception {
-        new OnDayOfMonthValueGenerator(new CronField(CronFieldName.YEAR, mock(FieldExpression.class)), year, month);
+        new OnDayOfMonthValueGenerator(new CronField(CronFieldName.YEAR, mock(FieldExpression.class), constraints), year, month);
     }
 
     private int randomNumber(){

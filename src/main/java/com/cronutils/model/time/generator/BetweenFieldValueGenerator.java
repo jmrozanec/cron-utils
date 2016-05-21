@@ -1,5 +1,7 @@
 package com.cronutils.model.time.generator;
 
+import com.cronutils.model.field.CronField;
+import com.cronutils.model.field.constraint.FieldConstraints;
 import com.cronutils.model.field.expression.Between;
 import com.cronutils.model.field.expression.FieldExpression;
 import com.cronutils.model.field.value.FieldValue;
@@ -21,16 +23,16 @@ import java.util.List;
  */
 class BetweenFieldValueGenerator extends FieldValueGenerator {
 
-    public BetweenFieldValueGenerator(FieldExpression expression) {
-        super(expression);
+    public BetweenFieldValueGenerator(CronField cronField) {
+        super(cronField);
     }
 
     @Override
     public int generateNextValue(int reference) throws NoSuchValueException {
-        Between between = (Between)expression;
+        Between between = (Between)cronField.getExpression();
         int candidate = reference + 1;
         while (candidate < map(between.getFrom())) {
-            candidate = new EveryFieldValueGenerator(between.getEvery()).generateNextValue(candidate);
+            candidate = new EveryFieldValueGenerator(new CronField(cronField.getField(), between.getEvery(), cronField.getConstraints())).generateNextValue(candidate);
         }
 
         if(candidate > map(between.getTo())){
@@ -42,10 +44,10 @@ class BetweenFieldValueGenerator extends FieldValueGenerator {
 
     @Override
     public int generatePreviousValue(int reference) throws NoSuchValueException {
-        Between between = (Between)expression;
+        Between between = (Between)cronField.getExpression();
         int candidate = reference - 1;
         while (candidate > map(between.getTo())) {
-            candidate = new EveryFieldValueGenerator(between.getEvery()).generatePreviousValue(candidate);
+            candidate = new EveryFieldValueGenerator(new CronField(cronField.getField(), between.getEvery(), cronField.getConstraints())).generatePreviousValue(candidate);
         }
 
         if(candidate < map(between.getFrom())){
@@ -58,7 +60,7 @@ class BetweenFieldValueGenerator extends FieldValueGenerator {
     protected List<Integer> generateCandidatesNotIncludingIntervalExtremes(int start, int end) {
         List<Integer> values = Lists.newArrayList();
         //check overlapping ranges: x1 <= y2 && y1 <= x2
-        Between between = (Between)expression;
+        Between between = (Between)cronField.getExpression();
         int expressionStart = map(between.getFrom());
         int expressionEnd = map(between.getTo());
         int rangestart=start;
@@ -89,9 +91,9 @@ class BetweenFieldValueGenerator extends FieldValueGenerator {
 
     @Override
     public boolean isMatch(int value) {
-        Between between = (Between)expression;
+        Between between = (Between)cronField.getExpression();
         if(value >= map(between.getFrom()) && value <= map(between.getTo())){
-            return new EveryFieldValueGenerator(between.getEvery()).isMatch(value);
+            return new EveryFieldValueGenerator(new CronField(cronField.getField(), between.getEvery(), cronField.getConstraints())).isMatch(value);
         }
         return false;
     }

@@ -5,7 +5,6 @@ import com.cronutils.model.CronType;
 import com.cronutils.model.definition.CronDefinition;
 import com.cronutils.model.definition.CronDefinitionBuilder;
 import com.cronutils.parser.CronParser;
-import com.cronutils.validator.CronValidator;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeConstants;
 import org.joda.time.DateTimeZone;
@@ -33,7 +32,7 @@ import java.text.SimpleDateFormat;
  */
 public class ExecutionTimeQuartzIntegrationTest {
     private CronParser quartzCronParser;
-    private static final String EVERY_SECOND = "* * * * * * *";
+    private static final String EVERY_SECOND = "* * * * * ? *";
 
     @Before
     public void setUp(){
@@ -154,7 +153,7 @@ public class ExecutionTimeQuartzIntegrationTest {
      */
     @Test
     public void testTimeShiftingProperlyDone() throws Exception {
-        ExecutionTime executionTime = ExecutionTime.forCron(quartzCronParser.parse("0 0/10 22 * * *"));
+        ExecutionTime executionTime = ExecutionTime.forCron(quartzCronParser.parse("0 0/10 22 ? * *"));
         DateTime nextExecution =
                 executionTime.nextExecution(
                         DateTime.now()
@@ -170,7 +169,7 @@ public class ExecutionTimeQuartzIntegrationTest {
      */
     @Test
     public void testMonthRangeExecutionTime(){
-        ExecutionTime.forCron(quartzCronParser.parse("0 0 0 * JUL-AUG * *"));
+        ExecutionTime.forCron(quartzCronParser.parse("0 0 0 * JUL-AUG ? *"));
     }
 
     /**
@@ -205,7 +204,7 @@ public class ExecutionTimeQuartzIntegrationTest {
     @Test
     public void testExecutionTimeForRanges(){
         final CronParser quartzParser = new CronParser(CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ));
-        ExecutionTime executionTime = ExecutionTime.forCron(quartzParser.parse("* 10-20 * * * * 2099"));
+        ExecutionTime executionTime = ExecutionTime.forCron(quartzParser.parse("* 10-20 * * * ? 2099"));
         DateTime scanTime = DateTime.parse("2016-02-29T11:00:00.000-06:00");
         DateTime nextTime = executionTime.nextExecution(scanTime);
         assertNotNull(nextTime);
@@ -218,7 +217,7 @@ public class ExecutionTimeQuartzIntegrationTest {
     @Test
     public void testLastExecutionTimeForFixedMonth(){
         final CronParser quartzParser = new CronParser(CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ));
-        ExecutionTime executionTime = ExecutionTime.forCron(quartzParser.parse("0 30 12 1 9 * 2010"));
+        ExecutionTime executionTime = ExecutionTime.forCron(quartzParser.parse("0 30 12 1 9 ? 2010"));
         DateTime scanTime = DateTime.parse("2016-01-08T11:00:00.000-06:00");
         DateTime lastTime = executionTime.lastExecution(scanTime);
         assertNotNull(lastTime);
@@ -274,8 +273,6 @@ public class ExecutionTimeQuartzIntegrationTest {
         String cronText = "0 0/15 * * * ?";
         CronParser parser = new CronParser(CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ));
         Cron cron = parser.parse(cronText);
-        CronValidator validator = new CronValidator(CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ));
-        validator.isValid(cronText);
         final ExecutionTime executionTime = ExecutionTime.forCron(cron);
     }
 
@@ -288,7 +285,7 @@ public class ExecutionTimeQuartzIntegrationTest {
      */
     @Test
     public void testMultipleMinuteIntervalTimeFromLastExecution() throws Exception {
-        String expression = "* 8-10,23-25,38-40,53-55 * * * * *"; // every second for intervals of minutes
+        String expression = "* 8-10,23-25,38-40,53-55 * * * ? *"; // every second for intervals of minutes
         ExecutionTime executionTime = ExecutionTime.forCron(quartzCronParser.parse(expression));
 
         assertEquals(301, executionTime.timeFromLastExecution(new DateTime().withTime(3, 1, 0, 0)).getStandardSeconds());
@@ -308,11 +305,11 @@ public class ExecutionTimeQuartzIntegrationTest {
     public void testMultipleMinuteIntervalMatch() throws Exception {
         CronParser cronParser = new CronParser(CronDefinitionBuilder.instanceDefinitionFor(com.cronutils.model.CronType.QUARTZ));
 
-        assertEquals(ExecutionTime.forCron(cronParser.parse("* * 21-23,0-4 * * *")).isMatch(new DateTime(2014, 9, 20, 20, 0, 0)), false);
-        assertEquals(ExecutionTime.forCron(cronParser.parse("* * 21-23,0-4 * * *")).isMatch(new DateTime(2014, 9, 20, 21, 0, 0)), true);
-        assertEquals(ExecutionTime.forCron(cronParser.parse("* * 21-23,0-4 * * *")).isMatch(new DateTime(2014, 9, 20, 0, 0, 0)), true);
-        assertEquals(ExecutionTime.forCron(cronParser.parse("* * 21-23,0-4 * * *")).isMatch(new DateTime(2014, 9, 20, 4, 0, 0)), true);
-        assertEquals(ExecutionTime.forCron(cronParser.parse("* * 21-23,0-4 * * *")).isMatch(new DateTime(2014, 9, 20, 5, 0, 0)), false);
+        assertEquals(ExecutionTime.forCron(cronParser.parse("* * 21-23,0-4 * * ?")).isMatch(new DateTime(2014, 9, 20, 20, 0, 0)), false);
+        assertEquals(ExecutionTime.forCron(cronParser.parse("* * 21-23,0-4 * * ?")).isMatch(new DateTime(2014, 9, 20, 21, 0, 0)), true);
+        assertEquals(ExecutionTime.forCron(cronParser.parse("* * 21-23,0-4 * * ?")).isMatch(new DateTime(2014, 9, 20, 0, 0, 0)), true);
+        assertEquals(ExecutionTime.forCron(cronParser.parse("* * 21-23,0-4 * * ?")).isMatch(new DateTime(2014, 9, 20, 4, 0, 0)), true);
+        assertEquals(ExecutionTime.forCron(cronParser.parse("* * 21-23,0-4 * * ?")).isMatch(new DateTime(2014, 9, 20, 5, 0, 0)), false);
     }
     
     @Test

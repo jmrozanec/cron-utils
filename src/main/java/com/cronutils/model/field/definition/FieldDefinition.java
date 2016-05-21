@@ -1,11 +1,5 @@
 package com.cronutils.model.field.definition;
 
-import com.cronutils.model.field.CronFieldName;
-import com.cronutils.model.field.constraint.FieldConstraints;
-import org.apache.commons.lang3.Validate;
-
-import java.util.Comparator;
-
 /*
  * Copyright 2014 jmrozanec
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,6 +12,12 @@ import java.util.Comparator;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+import com.cronutils.model.field.CronFieldName;
+import com.cronutils.model.field.constraint.FieldConstraints;
+import org.apache.commons.lang3.Validate;
+
+import java.util.Comparator;
 
 /**
  * Represents a definition of allowed values for a cron field.
@@ -67,3 +67,4 @@ public class FieldDefinition {
         };
     }
 }
+

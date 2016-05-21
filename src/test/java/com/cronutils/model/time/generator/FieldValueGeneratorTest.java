@@ -1,5 +1,8 @@
 package com.cronutils.model.time.generator;
 
+import com.cronutils.model.field.CronField;
+import com.cronutils.model.field.CronFieldName;
+import com.cronutils.model.field.constraint.FieldConstraints;
 import com.cronutils.model.field.expression.FieldExpression;
 import org.junit.Before;
 import org.junit.Test;
@@ -21,12 +24,11 @@ import static org.mockito.Mockito.mock;
  * limitations under the License.
  */
 public class FieldValueGeneratorTest {
-
     private FieldValueGenerator fieldValueGenerator;
 
     @Before
     public void setUp(){
-        fieldValueGenerator = new MockFieldValueGenerator(mock(FieldExpression.class));
+        fieldValueGenerator = new MockFieldValueGenerator(new CronField(CronFieldName.HOUR, mock(FieldExpression.class), mock(FieldConstraints.class)));
     }
 
     @Test

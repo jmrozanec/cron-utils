@@ -45,24 +45,9 @@ class TimeDescriptionStrategy extends DescriptionStrategy {
     TimeDescriptionStrategy(ResourceBundle bundle, FieldExpression hours,
                             FieldExpression minutes, FieldExpression seconds) {
         super(bundle);
-        this.hours = ensureInstance(hours,
-                new Always(
-                        FieldConstraintsBuilder.instance()
-                                .forField(CronFieldName.HOUR).createConstraintsInstance()
-                )
-        );
-        this.minutes = ensureInstance(minutes,
-                new Always(
-                        FieldConstraintsBuilder.instance()
-                                .forField(CronFieldName.MINUTE).createConstraintsInstance()
-                )
-        );
-        this.seconds = ensureInstance(seconds,
-                new On(
-                        FieldConstraintsBuilder.instance()
-                                .forField(CronFieldName.SECOND).createConstraintsInstance(),
-                        new IntegerFieldValue(defaultSeconds))
-        );
+        this.hours = ensureInstance(hours, new Always());
+        this.minutes = ensureInstance(minutes, new Always());
+        this.seconds = ensureInstance(seconds, new On(new IntegerFieldValue(defaultSeconds)));
         descriptions = Sets.newHashSet();
         registerFunctions();
     }

@@ -1,5 +1,6 @@
 package com.cronutils.mapper;
 
+import com.cronutils.model.Cron;
 import com.cronutils.model.definition.CronDefinition;
 import com.cronutils.model.field.CronField;
 import com.cronutils.model.field.CronFieldName;
@@ -30,6 +31,7 @@ public class CronMapperTest {
     @Mock
     private CronField mockCronField;
     private CronMapper mapper;
+    private Function<Cron, Cron> cronMapping;
 
     @Before
     public void setUp(){
@@ -39,12 +41,12 @@ public class CronMapperTest {
 
     @Test(expected = NullPointerException.class)
     public void testConstructorSourceDefinitionNull() throws Exception {
-        new CronMapper(mock(CronDefinition.class), null);
+        new CronMapper(mock(CronDefinition.class), null, cronMapping);
     }
 
     @Test(expected = NullPointerException.class)
     public void testConstructorTargetDefinitionNull() throws Exception {
-        new CronMapper(null, mock(CronDefinition.class));
+        new CronMapper(null, mock(CronDefinition.class), cronMapping);
     }
 
     @Test

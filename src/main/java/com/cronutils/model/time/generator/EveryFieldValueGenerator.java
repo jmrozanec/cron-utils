@@ -1,9 +1,12 @@
 package com.cronutils.model.time.generator;
 
+import com.cronutils.model.field.CronField;
+import com.cronutils.model.field.constraint.FieldConstraints;
 import com.cronutils.model.field.expression.Every;
 import com.cronutils.model.field.expression.FieldExpression;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
+import org.apache.commons.lang3.Validate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,27 +26,26 @@ import java.util.List;
 class EveryFieldValueGenerator extends FieldValueGenerator {
     private static final Logger log = LoggerFactory.getLogger(EveryFieldValueGenerator.class);
 
-    public EveryFieldValueGenerator(FieldExpression expression) {
-        super(expression);
-        log.info("Strting");
+    public EveryFieldValueGenerator(CronField cronField) {
+        super(cronField);
     }
 
     @Override
     public int generateNextValue(int reference) throws NoSuchValueException {
         //intuition: for valid values, we have: offset+period*i
-        if(reference>=expression.getConstraints().getEndRange()){
+        if(reference>=cronField.getConstraints().getEndRange()){
             throw new NoSuchValueException();
         }
-        Every every = (Every)expression;
+        Every every = (Every)cronField.getExpression();
         int referenceWithoutOffset = reference-offset();
         int period = every.getTime().getValue();
         int remainder = referenceWithoutOffset % period;
 
         int next = reference+(period-remainder);
-        if(next<expression.getConstraints().getStartRange()){
-            return expression.getConstraints().getStartRange();
+        if(next<cronField.getConstraints().getStartRange()){
+            return cronField.getConstraints().getStartRange();
         }
-        if(next>expression.getConstraints().getEndRange()){
+        if(next>cronField.getConstraints().getEndRange()){
             throw new NoSuchValueException();
         }
         return next;
@@ -51,7 +53,7 @@ class EveryFieldValueGenerator extends FieldValueGenerator {
 
     @Override
     public int generatePreviousValue(int reference) throws NoSuchValueException {
-        Every every = (Every)expression;
+        Every every = (Every)cronField.getExpression();
         int period = every.getTime().getValue();
         int remainder = reference % period;
         if(remainder == 0){
@@ -78,8 +80,8 @@ class EveryFieldValueGenerator extends FieldValueGenerator {
 
     @Override
     public boolean isMatch(int value) {
-        Every every = (Every)expression;
-        int start = every.getConstraints().getStartRange();
+        Every every = (Every)cronField.getExpression();
+        int start = cronField.getConstraints().getStartRange();
         return ((value-start) % every.getTime().getValue()) == 0;
     }
 
@@ -90,6 +92,6 @@ class EveryFieldValueGenerator extends FieldValueGenerator {
 
     @VisibleForTesting
     int offset(){
-        return expression.getConstraints().getStartRange();
+        return cronField.getConstraints().getStartRange();
     }
 }

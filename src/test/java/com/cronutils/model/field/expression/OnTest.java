@@ -40,35 +40,35 @@ public class OnTest {
 
     @Test
     public void testGetTime() throws Exception {
-        assertEquals(time, (int)new On(nullFieldConstraints, new IntegerFieldValue(time)).getTime().getValue());
+        assertEquals(time, (int)new On(new IntegerFieldValue(time)).getTime().getValue());
     }
 
     @Test
     public void testGetNth() throws Exception {
-        assertEquals(nth, (int)new On(nullFieldConstraints, new IntegerFieldValue(time), new SpecialCharFieldValue(SpecialChar.HASH), new IntegerFieldValue(nth)).getNth().getValue());
+        assertEquals(nth, (int)new On(new IntegerFieldValue(time), new SpecialCharFieldValue(SpecialChar.HASH), new IntegerFieldValue(nth)).getNth().getValue());
     }
 
     @Test(expected = RuntimeException.class)
     public void testOnlyNthFails() throws Exception {
-        new On(nullFieldConstraints, null, new SpecialCharFieldValue(SpecialChar.HASH), new IntegerFieldValue(nth));
+        new On(null, new SpecialCharFieldValue(SpecialChar.HASH), new IntegerFieldValue(nth));
     }
 
     @Test
     public void testAsStringJustNumber(){
         int expression = 3;
-        assertEquals(String.format("%s", expression), new On(nullFieldConstraints, new IntegerFieldValue(expression)).asString());
+        assertEquals(String.format("%s", expression), new On(new IntegerFieldValue(expression)).asString());
     }
 
     @Test
     public void testAsStringSpecialCharW(){
         String expression = "1W";
-        assertEquals(expression, new On(nullFieldConstraints, new IntegerFieldValue(1), new SpecialCharFieldValue(SpecialChar.W)).asString());
+        assertEquals(expression, new On(new IntegerFieldValue(1), new SpecialCharFieldValue(SpecialChar.W)).asString());
     }
 
     @Test
     public void testAsStringSpecialCharL(){
         String expression = "L";
-        assertEquals(expression, new On(nullFieldConstraints, new SpecialCharFieldValue(SpecialChar.L)).asString());
+        assertEquals(expression, new On(new SpecialCharFieldValue(SpecialChar.L)).asString());
     }
 
     @Test
@@ -77,7 +77,6 @@ public class OnTest {
         int second = 4;
         String expression = String.format("%s#%s", first, second);
         assertEquals(expression,
-                new On(nullFieldConstraints, new IntegerFieldValue(first),
-                        new SpecialCharFieldValue(SpecialChar.HASH), new IntegerFieldValue(second)).asString());
+                new On(new IntegerFieldValue(first), new SpecialCharFieldValue(SpecialChar.HASH), new IntegerFieldValue(second)).asString());
     }
 }
