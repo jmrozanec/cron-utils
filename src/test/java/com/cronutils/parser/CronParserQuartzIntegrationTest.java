@@ -92,8 +92,8 @@ public class CronParserQuartzIntegrationTest {
      */
     @Test
     public void testMonthRangeStringMapping(){
-        parser.parse("0 0 0 * JUL-AUG * *");
-        parser.parse("0 0 0 * JAN-FEB * *");
+        parser.parse("0 0 0 * JUL-AUG ? *");
+        parser.parse("0 0 0 * JAN-FEB ? *");
     }
 
     /**
@@ -101,7 +101,7 @@ public class CronParserQuartzIntegrationTest {
      */
     @Test
     public void testSingleMonthStringMapping(){
-        parser.parse("0 0 0 * JAN * *");
+        parser.parse("0 0 0 * JAN ? *");
     }
 
     /**
@@ -109,7 +109,7 @@ public class CronParserQuartzIntegrationTest {
      */
     @Test
     public void testDoWRangeStringMapping(){
-        parser.parse("0 0 0 * * MON-FRI *");
+        parser.parse("0 0 0 ? * MON-FRI *");
     }
 
     /**
@@ -117,7 +117,7 @@ public class CronParserQuartzIntegrationTest {
      */
     @Test
     public void testSingleDoWStringMapping(){
-        parser.parse("0 0 0 * * MON *");
+        parser.parse("0 0 0 ? * MON *");
     }
 
     /**
@@ -125,13 +125,13 @@ public class CronParserQuartzIntegrationTest {
      */
     @Test
     public void testJulyMonthAsStringConsideredSpecialChar(){
-        parser.parse("0 0 0 * JUL * *");
+        parser.parse("0 0 0 * JUL ? *");
     }
 
     /**
      * Issue #35: A>B in range considered invalid expression for Quartz.
      */
-    //@Test//TODO
+    @Test
     public void testSunToSat() {
     // FAILS SUN-SAT: SUN = 7 and SAT = 6
         parser.parse("0 0 12 ? * SUN-SAT");
@@ -165,5 +165,13 @@ public class CronParserQuartzIntegrationTest {
         CronParser parser = new CronParser(definition);
         Cron c = parser.parse(expression);
         CronDescriptor.instance(Locale.GERMAN).describe(c);
+    }
+
+    /**
+     * Issue #63: Parser exception when parsing cron:
+     */
+    @Test(expected = IllegalArgumentException.class)
+    public void testDoMAndDoWParametersInvalidForQuartz(){
+        parser.parse("0 30 17 4 1 * 2016");
     }
 }

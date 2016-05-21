@@ -79,14 +79,16 @@ public class Cron {
     }
 
     public Cron validate(){
-        for(CronConstraint constraint : getCronDefinition().getCronConstraints()){
-            if(!constraint.validate(this)){
-                throw new RuntimeException(String.format("Invalid cron expression: %s. %s", asString(), constraint.getDescription()));
-            }
-        }
         for(Map.Entry<CronFieldName, CronField> field : retrieveFieldsAsMap().entrySet()){
             CronFieldName fieldName = field.getKey();
-            field.getValue().getExpression().accept(new ValidationFieldExpressionVisitor(getCronDefinition().getFieldDefinition(fieldName).getConstraints()));
+            field.getValue().getExpression().accept(
+                    new ValidationFieldExpressionVisitor(getCronDefinition().getFieldDefinition(fieldName).getConstraints(), cronDefinition.isStrictRanges())
+            );
+        }
+        for(CronConstraint constraint : getCronDefinition().getCronConstraints()){
+            if(!constraint.validate(this)){
+                throw new IllegalArgumentException(String.format("Invalid cron expression: %s. %s", asString(), constraint.getDescription()));
+            }
         }
         return this;
     }

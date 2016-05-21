@@ -17,6 +17,7 @@ import com.cronutils.model.field.value.IntegerFieldValue;
 import com.cronutils.model.field.value.SpecialChar;
 import com.cronutils.model.field.constraint.FieldConstraints;
 import com.cronutils.model.field.expression.*;
+import com.cronutils.model.field.value.SpecialCharFieldValue;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Sets;
 
@@ -30,12 +31,14 @@ public class ValidationFieldExpressionVisitor implements FieldExpressionVisitor 
     private Pattern stringToIntKeysPattern;
     private Pattern numsAndCharsPattern;
     private Pattern lwPattern;
+    private boolean strictRanges;
 
-    public ValidationFieldExpressionVisitor(FieldConstraints constraints){
+    public ValidationFieldExpressionVisitor(FieldConstraints constraints, boolean strictRanges){
         this.constraints = constraints;
         this.lwPattern = buildLWPattern(constraints.getSpecialChars());
         this.stringToIntKeysPattern = buildStringToIntPattern(constraints.getStringMapping().keySet());
         this.numsAndCharsPattern = Pattern.compile("[#\\?/\\*0-9]");
+        this.strictRanges = strictRanges;
     }
 
     @Override
@@ -78,6 +81,19 @@ public class ValidationFieldExpressionVisitor implements FieldExpressionVisitor 
     public Between visit(Between between) {
         isInRange(between.getFrom());
         isInRange(between.getTo());
+        isInRange(between.getEvery().getTime());
+        if(isSpecialCharNotL(between.getFrom()) || isSpecialCharNotL(between.getTo())){
+            throw new IllegalArgumentException("No special characters allowed in range, except for 'L'");
+        }
+        if(strictRanges){
+            if(between.getFrom() instanceof IntegerFieldValue && between.getTo() instanceof IntegerFieldValue){
+                int from = ((IntegerFieldValue)between.getFrom()).getValue();
+                int to = ((IntegerFieldValue)between.getTo()).getValue();
+                if(from>to){
+                    throw new IllegalArgumentException(String.format("Invalid range! [%s,%s]", from, to));
+                }
+            }
+        }
         return between;
     }
 
@@ -153,7 +169,7 @@ public class ValidationFieldExpressionVisitor implements FieldExpressionVisitor 
         if(fieldValue instanceof IntegerFieldValue){
             int value = ((IntegerFieldValue)fieldValue).getValue();
             if (!constraints.isInRange(value)) {
-                throw new RuntimeException(String.format(OORANGE, value, constraints.getStartRange(), constraints.getEndRange()));
+                throw new IllegalArgumentException(String.format(OORANGE, value, constraints.getStartRange(), constraints.getEndRange()));
             }
         }
     }
@@ -162,6 +178,13 @@ public class ValidationFieldExpressionVisitor implements FieldExpressionVisitor 
     boolean isDefault(FieldValue fieldValue) {
         if(fieldValue instanceof IntegerFieldValue){
             return ((IntegerFieldValue)fieldValue).getValue()==-1;
+        }
+        return false;
+    }
+
+    boolean isSpecialCharNotL(FieldValue fieldValue){
+        if(fieldValue instanceof SpecialCharFieldValue){
+            return !SpecialChar.L.equals(fieldValue.getValue());
         }
         return false;
     }

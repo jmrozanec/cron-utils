@@ -32,43 +32,43 @@ public interface FieldExpressionVisitor {
     /**
      * Performs action on Always instance
      * @param always - Always instance, never null
-     * @return Always instance, never null
+     * @return FieldExpression instance, never null
      */
-    Always visit(Always always);
+    FieldExpression visit(Always always);
 
     /**
      * Performs action on And instance
      * @param and - And instance, never null
-     * @return And instance, never null
+     * @return FieldExpression instance, never null
      */
-    And visit(And and);
+    FieldExpression visit(And and);
 
     /**
      * Performs action on Between instance
      * @param between - Between instance, never null
-     * @return Between instance, never null
+     * @return FieldExpression instance, never null
      */
-    Between visit(Between between);
+    FieldExpression visit(Between between);
 
     /**
      * Performs action on Every instance
      * @param every - Every instance, never null
-     * @return Every instance, never null
+     * @return FieldExpression instance, never null
      */
-    Every visit(Every every);
+    FieldExpression visit(Every every);
 
     /**
      * Performs action on On instance
      * @param on - On instance, never null
-     * @return On instance, never null
+     * @return FieldExpression instance, never null
      */
-    On visit(On on);
+    FieldExpression visit(On on);
 
     /**
      * Performs action on QuestionMark instance
      * @param questionMark - QuestionMark instance, never null
-     * @return QuestionMark instance, never null
+     * @return FieldExpression instance, never null
      */
-    QuestionMark visit(QuestionMark questionMark);
+    FieldExpression visit(QuestionMark questionMark);
 }
 

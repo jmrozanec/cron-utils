@@ -20,6 +20,8 @@ import com.cronutils.model.field.value.SpecialChar;
 import com.cronutils.model.field.value.SpecialCharFieldValue;
 import com.google.common.annotations.VisibleForTesting;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Validate;
+
 import java.util.regex.Pattern;
 
 /**
@@ -32,7 +34,7 @@ public class FieldParser {
     private FieldConstraints fieldConstraints;
 
     public FieldParser(FieldConstraints constraints) {
-        this.fieldConstraints = constraints;
+        this.fieldConstraints = Validate.notNull(constraints, "FieldConstraints must not be null");
     }
 
     /**

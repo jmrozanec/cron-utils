@@ -28,6 +28,7 @@ import static org.mockito.Mockito.when;
  */
 public class CronDefinitionTest {
     private boolean lastFieldOptional;
+    private boolean enforceStrictRange;
     private CronFieldName testFieldName1;
     private CronFieldName testFieldName2;
     @Mock
@@ -44,22 +45,23 @@ public class CronDefinitionTest {
         when(mockFieldDefinition2.getFieldName()).thenReturn(testFieldName2);
 
         lastFieldOptional = false;
+        enforceStrictRange = false;
     }
 
 
     @Test(expected = NullPointerException.class)
     public void testConstructorNullFieldsParameter() throws Exception {
-        new CronDefinition(null, Sets.<CronConstraint>newHashSet(), lastFieldOptional);
+        new CronDefinition(null, Sets.<CronConstraint>newHashSet(), lastFieldOptional, enforceStrictRange);
     }
 
     @Test(expected = NullPointerException.class)
     public void testConstructorNullConstraintsParameter() throws Exception {
-        new CronDefinition(Lists.<FieldDefinition>newArrayList(), null, lastFieldOptional);
+        new CronDefinition(Lists.<FieldDefinition>newArrayList(), null, lastFieldOptional, enforceStrictRange);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testConstructorEmptyFieldsParameter() throws Exception {
-        new CronDefinition(new ArrayList<FieldDefinition>(), Sets.<CronConstraint>newHashSet(), lastFieldOptional);
+        new CronDefinition(new ArrayList<FieldDefinition>(), Sets.<CronConstraint>newHashSet(), lastFieldOptional, enforceStrictRange);
     }
 
     @Test
@@ -68,7 +70,7 @@ public class CronDefinitionTest {
         List<FieldDefinition> fields = Lists.newArrayList();
         fields.add(mockFieldDefinition1);
         fields.add(mockFieldDefinition2);
-        assertEquals(lastFieldOptional, new CronDefinition(fields, Sets.<CronConstraint>newHashSet(), lastFieldOptional).isLastFieldOptional());
+        assertEquals(lastFieldOptional, new CronDefinition(fields, Sets.<CronConstraint>newHashSet(), lastFieldOptional, enforceStrictRange).isLastFieldOptional());
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -76,14 +78,14 @@ public class CronDefinitionTest {
         lastFieldOptional = true;
         List<FieldDefinition> fields = Lists.newArrayList();
         fields.add(mockFieldDefinition1);
-        new CronDefinition(fields, Sets.<CronConstraint>newHashSet(), lastFieldOptional).isLastFieldOptional();
+        new CronDefinition(fields, Sets.<CronConstraint>newHashSet(), lastFieldOptional, enforceStrictRange).isLastFieldOptional();
     }
 
     @Test
     public void testGetFieldDefinitions() throws Exception {
         List<FieldDefinition> fields = Lists.newArrayList();
         fields.add(mockFieldDefinition1);
-        CronDefinition cronDefinition = new CronDefinition(fields, Sets.<CronConstraint>newHashSet(), lastFieldOptional);
+        CronDefinition cronDefinition = new CronDefinition(fields, Sets.<CronConstraint>newHashSet(), lastFieldOptional, enforceStrictRange);
         assertNotNull(cronDefinition.getFieldDefinitions());
         assertEquals(1, cronDefinition.getFieldDefinitions().size());
         assertTrue(cronDefinition.getFieldDefinitions().contains(mockFieldDefinition1));

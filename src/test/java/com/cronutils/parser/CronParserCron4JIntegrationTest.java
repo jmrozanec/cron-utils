@@ -26,4 +26,16 @@ public class CronParserCron4JIntegrationTest {
         String cronExpr = "* 1 1,2 * 4";
         cron4jParser.parse(cronExpr);
     }
+
+    @Test
+    public void testParseStrictRangeEnforced01() throws Exception {
+        String cronExpr = "* 1 1-2 * 4";
+        cron4jParser.parse(cronExpr);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testParseStrictRangeEnforced02() throws Exception {
+        String cronExpr = "* 1 5-2 * 4";
+        cron4jParser.parse(cronExpr);
+    }
 }

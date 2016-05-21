@@ -35,7 +35,7 @@ public class CronValidatorQuartzIntegrationTest {
      */
     @Test
     public void testMonthRangeMappingIsValid(){
-        parser.parse("0 0 0 * JUL-AUG * *").validate();
+        parser.parse("0 0 0 * JUL-AUG ? *").validate();
     }
 
     /**
@@ -45,7 +45,7 @@ public class CronValidatorQuartzIntegrationTest {
     public void testSingleMonthMappingIsValid(){
         DateTime date = new DateTime(2015, 1, 1, 1, 1);
         for(int j=0;j<12;j++){
-            String expression = String.format("0 0 0 * %s * *", date.plusMonths(j).toString("MMM", Locale.US).toUpperCase());
+            String expression = String.format("0 0 0 * %s ? *", date.plusMonths(j).toString("MMM", Locale.US).toUpperCase());
             parser.parse(expression);
         }
     }
@@ -55,7 +55,7 @@ public class CronValidatorQuartzIntegrationTest {
      */
     @Test
     public void testDayOfWeekRangeMappingIsValid(){
-        parser.parse("0 0 0 * * MON-FRI *");
+        parser.parse("0 0 0 ? * MON-FRI *");
     }
 
     /**
@@ -64,7 +64,7 @@ public class CronValidatorQuartzIntegrationTest {
     @Test
     public void testDayOfWeekMappingIsValid(){
         for(String dow : new String[]{"MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"}){
-            parser.parse(String.format("0 0 0 * * %s *", dow));
+            parser.parse(String.format("0 0 0 ? * %s *", dow));
         }
 
     }

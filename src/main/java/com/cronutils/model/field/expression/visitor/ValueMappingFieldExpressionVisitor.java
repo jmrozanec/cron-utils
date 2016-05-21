@@ -30,12 +30,12 @@ public class ValueMappingFieldExpressionVisitor implements FieldExpressionVisito
     }
 
     @Override
-    public Always visit(Always always) {
+    public FieldExpression visit(Always always) {
         return always;
     }
 
     @Override
-    public And visit(And and) {
+    public FieldExpression visit(And and) {
         And clone = new And();
         for(FieldExpression expression : and.getExpressions()){
             clone.and(visit(expression));
@@ -44,24 +44,24 @@ public class ValueMappingFieldExpressionVisitor implements FieldExpressionVisito
     }
 
     @Override
-    public Between visit(Between between) {
+    public FieldExpression visit(Between between) {
         FieldValue from = transform.apply(between.getFrom());
         FieldValue to = transform.apply(between.getTo());
         return new Between(from, to, between.getEvery().getTime());
     }
 
     @Override
-    public Every visit(Every every) {
+    public FieldExpression visit(Every every) {
         return new Every((IntegerFieldValue)transform.apply(every.getTime()));
     }
 
     @Override
-    public On visit(On on) {
+    public FieldExpression visit(On on) {
         return new On((IntegerFieldValue)transform.apply(on.getTime()), on.getSpecialChar(), on.getNth());
     }
 
     @Override
-    public QuestionMark visit(QuestionMark questionMark) {
+    public FieldExpression visit(QuestionMark questionMark) {
         return new QuestionMark();
     }
 

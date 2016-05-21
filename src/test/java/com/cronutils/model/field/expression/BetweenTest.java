@@ -54,16 +54,6 @@ public class BetweenTest {
         assertEquals(String.format("%s-%s", specialChar, to), between.asString());
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void testFromGreaterThanTo() throws Exception {
-        new Between(new IntegerFieldValue(to), new IntegerFieldValue(from));
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void testFromEqualThanTo() throws Exception {
-        new Between(new IntegerFieldValue(from), new IntegerFieldValue(from));
-    }
-
     @Test
     public void testGetEveryDefault() throws Exception {
         assertEquals(1, (int)new Between(new IntegerFieldValue(from), new IntegerFieldValue(to)).getEvery().getTime().getValue());
@@ -72,10 +62,5 @@ public class BetweenTest {
     @Test
     public void testGetEveryX() throws Exception {
         assertEquals(every, (int)new Between(new IntegerFieldValue(from), new IntegerFieldValue(to), new IntegerFieldValue(every)).getEvery().getTime().getValue());
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void testGetEveryXBiggerThanRange() throws Exception {
-        assertEquals(1, (int)new Between(new IntegerFieldValue(from), new IntegerFieldValue(to), new IntegerFieldValue(2 * to)).getEvery().getTime().getValue());
     }
 }

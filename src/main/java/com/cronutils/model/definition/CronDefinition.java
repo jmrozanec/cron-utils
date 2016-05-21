@@ -27,6 +27,7 @@ public class CronDefinition {
     private Map<CronFieldName, FieldDefinition> fieldDefinitions;
     private Set<CronConstraint> cronConstraints;
     private boolean lastFieldOptional;
+    private boolean strictRanges;
 
     /**
      * Constructor
@@ -35,7 +36,7 @@ public class CronDefinition {
      *                         Throws an IllegalArgumentException if an empty list is received
      * @param lastFieldOptional - boolean, value stating if last field is optional
      */
-    public CronDefinition(List<FieldDefinition> fieldDefinitions, Set<CronConstraint> cronConstraints, boolean lastFieldOptional){
+    public CronDefinition(List<FieldDefinition> fieldDefinitions, Set<CronConstraint> cronConstraints, boolean lastFieldOptional, boolean strictRanges){
         Validate.notNull(fieldDefinitions, "Field definitions must not be null");
         Validate.notNull(cronConstraints, "Cron validations must not be null");
         Validate.notEmpty(fieldDefinitions, "Field definitions must not be empty");
@@ -48,6 +49,7 @@ public class CronDefinition {
         }
         this.cronConstraints = Collections.unmodifiableSet(cronConstraints);
         this.lastFieldOptional = lastFieldOptional;
+        this.strictRanges = strictRanges;
     }
 
     /**
@@ -56,6 +58,14 @@ public class CronDefinition {
      */
     public boolean isLastFieldOptional() {
         return lastFieldOptional;
+    }
+
+    /**
+     * If ranges for field values should be strictly enforced (from < to)
+     * @return true if should be enforced, false otherwise.
+     */
+    public boolean isStrictRanges() {
+        return strictRanges;
     }
 
     /**

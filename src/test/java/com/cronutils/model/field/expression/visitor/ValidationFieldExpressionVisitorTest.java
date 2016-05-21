@@ -71,5 +71,10 @@ public class ValidationFieldExpressionVisitorTest {
         assertFalse(specialCharSet.contains(specialChar));
         fieldConstraints.validateSpecialCharAllowed(specialChar);
     }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testGetEveryXBiggerThanRange() throws Exception {
+        assertEquals(1, (int)new Between(new IntegerFieldValue(from), new IntegerFieldValue(to), new IntegerFieldValue(2 * to)).getEvery().getTime().getValue());
+    }
     */
 }

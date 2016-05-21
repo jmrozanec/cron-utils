@@ -55,7 +55,7 @@ public class ValueMappingFieldExpressionVisitorTest {
     @Test
     public void testVisitQuestionMark() throws Exception {
         QuestionMark param = new QuestionMark();
-        QuestionMark questionMark = valueMappingFieldExpressionVisitor.visit(param);
+        QuestionMark questionMark = (QuestionMark) valueMappingFieldExpressionVisitor.visit(param);
         assertTrue(param!=questionMark);//not same instance
     }
 }
