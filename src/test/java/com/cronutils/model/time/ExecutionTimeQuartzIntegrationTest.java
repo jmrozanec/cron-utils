@@ -277,6 +277,24 @@ public class ExecutionTimeQuartzIntegrationTest {
     }
 
     /**
+     * Issue #73: NextExecution not working as expected
+     */
+    @Test
+    public void testNextExecutionProducingInvalidValues(){
+        String cronText = "0 0 18 ? * MON";
+        CronParser parser = new CronParser(CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ));
+        Cron cron = parser.parse(cronText);
+        final ExecutionTime executionTime = ExecutionTime.forCron(cron);
+        DateTime now = DateTime.parse("2016-03-18T19:02:51.424+09:00");
+        DateTime next = executionTime.nextExecution(now);
+        DateTime nextNext = executionTime.nextExecution(next);
+        assertEquals(DateTimeConstants.MONDAY, next.getDayOfWeek());
+        assertEquals(DateTimeConstants.MONDAY, nextNext.getDayOfWeek());
+        assertEquals(18, next.getHourOfDay());
+        assertEquals(18, nextNext.getHourOfDay());
+    }
+
+    /**
      * Test for issue #83
      * https://github.com/jmrozanec/cron-utils/issues/83
      * Reported case: Candidate values are false when combining range and multiple patterns
