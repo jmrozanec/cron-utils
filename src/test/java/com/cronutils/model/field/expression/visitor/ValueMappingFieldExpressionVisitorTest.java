@@ -5,7 +5,6 @@ import com.cronutils.model.field.constraint.FieldConstraintsBuilder;
 import com.cronutils.model.field.expression.QuestionMark;
 import com.cronutils.model.field.value.FieldValue;
 import com.google.common.base.Function;
-import com.sun.tools.hat.internal.server.QueryListener;
 import org.junit.Before;
 import org.junit.Test;
 

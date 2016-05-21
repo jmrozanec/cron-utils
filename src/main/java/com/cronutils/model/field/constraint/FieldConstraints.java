@@ -71,9 +71,7 @@ public class FieldConstraints {
     /**
      * Check if given number is greater or equal to start range and minor or equal to end range
      * @param value - to be checked
-     * @throws - RuntimeException if not in range
      */
-    @VisibleForTesting
     public boolean isInRange(int value) {
         return value >= getStartRange() && value <= getEndRange();
     }

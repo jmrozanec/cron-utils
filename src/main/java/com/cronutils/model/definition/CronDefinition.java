@@ -61,7 +61,7 @@ public class CronDefinition {
     }
 
     /**
-     * If ranges for field values should be strictly enforced (from < to)
+     * If ranges for field values should be strictly enforced ('from' greater than 'to')
      * @return true if should be enforced, false otherwise.
      */
     public boolean isStrictRanges() {
