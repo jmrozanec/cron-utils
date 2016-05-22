@@ -69,7 +69,7 @@ public class FieldParser {
                     if(values.length == 2) {
                         String start = values[0];
                         String value = values[1];
-                        if("*".equals(start.trim())){
+                        if("*".equals(start.trim()) || "".equals(start.trim())){
                             return new Always(new IntegerFieldValue(Integer.parseInt(value)));
                         }else{
                             return new Every(

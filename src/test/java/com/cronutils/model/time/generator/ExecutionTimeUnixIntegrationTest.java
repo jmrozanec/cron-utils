@@ -57,7 +57,6 @@ public class ExecutionTimeUnixIntegrationTest {
         DateTime time = DateTime.parse("2015-09-05T13:56:00.000-07:00");
         DateTime next = executionTime.nextExecution(time);
         DateTime shouldBeInNextHour = executionTime.nextExecution(next);
-
         assertEquals(next.plusMinutes(2), shouldBeInNextHour);
     }
 

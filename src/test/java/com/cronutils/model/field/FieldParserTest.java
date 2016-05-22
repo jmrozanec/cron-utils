@@ -37,7 +37,7 @@ public class FieldParserTest {
     @Test
     public void testParseAlwaysEveryX() throws Exception {
         int every = 5;
-        assertEquals(every, (int)((Every) parser.parse("*/" + every)).getTime().getValue());
+        assertEquals(every, (int)((Always) parser.parse("*/" + every)).getEvery().getTime().getValue());
     }
 
     @Test
