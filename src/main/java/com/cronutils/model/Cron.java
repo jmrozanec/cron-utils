@@ -17,6 +17,8 @@ import com.cronutils.model.definition.CronConstraint;
 import com.cronutils.model.definition.CronDefinition;
 import com.cronutils.model.field.CronField;
 import com.cronutils.model.field.CronFieldName;
+import com.cronutils.model.field.expression.Every;
+import com.cronutils.model.field.expression.FieldExpression;
 import com.cronutils.model.field.expression.visitor.ValidationFieldExpressionVisitor;
 import com.google.common.collect.Maps;
 import org.apache.commons.lang3.Validate;

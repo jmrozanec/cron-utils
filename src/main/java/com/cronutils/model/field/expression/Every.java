@@ -13,15 +13,23 @@ package com.cronutils.model.field.expression;
  * limitations under the License.
  */
 
+import com.cronutils.model.field.value.FieldValue;
 import com.cronutils.model.field.value.IntegerFieldValue;
+import org.apache.commons.lang3.Validate;
 
 /**
  * Represents every x time on a cron field.
  */
 public class Every extends FieldExpression {
+    private FieldValue startValue;
     private IntegerFieldValue time;
 
     public Every(IntegerFieldValue time) {
+        this(null, time);
+    }
+
+    public Every(FieldValue startValue, IntegerFieldValue time) {
+        this.startValue = startValue;
         if (time == null) {
             time = new IntegerFieldValue(1);
         }
@@ -29,7 +37,7 @@ public class Every extends FieldExpression {
     }
 
     private Every(Every every){
-        this(every.getTime());
+        this(every.getStartValue(), every.getTime());
     }
 
     public IntegerFieldValue getTime() {
@@ -39,8 +47,12 @@ public class Every extends FieldExpression {
     @Override
     public String asString() {
         if(time.getValue()==1){
-            return "";
+            return startValue!=null?"*":"";
         }
-        return String.format("/%s", getTime());
+        return String.format("%s/%s", this.startValue!=null?this.startValue.toString():"", getTime());
+    }
+
+    public FieldValue getStartValue() {
+        return startValue;
     }
 }

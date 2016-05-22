@@ -67,8 +67,16 @@ public class FieldParser {
                 } else {
                     String[] values = expression.split("/");
                     if(values.length == 2) {
+                        String start = values[0];
                         String value = values[1];
-                        return new Every(new IntegerFieldValue(Integer.parseInt(value)));
+                        if("*".equals(start.trim())){
+                            return new Always(new IntegerFieldValue(Integer.parseInt(value)));
+                        }else{
+                            return new Every(
+                                    new IntegerFieldValue(Integer.parseInt(start)),
+                                    new IntegerFieldValue(Integer.parseInt(value))
+                            );
+                        }
                     }else if(values.length == 1){
                         throw new IllegalArgumentException("Missing steps for expression: " + expression);
                     }else {
@@ -79,7 +87,6 @@ public class FieldParser {
         }
     }
 
-    //TODO issue #86: https://github.com/jmrozanec/cron-utils/issues/86
     @VisibleForTesting
     Between parseBetween(String[]array){
         if (array[1].contains("/")) {
