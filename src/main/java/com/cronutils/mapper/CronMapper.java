@@ -75,6 +75,7 @@ public class CronMapper {
         return cronRules.apply(new Cron(to, fields)).validate();
     }
 
+
     public static CronMapper fromCron4jToQuartz(){
         return new CronMapper(
                 CronDefinitionBuilder.instanceDefinitionFor(CronType.CRON4J),
@@ -91,6 +92,14 @@ public class CronMapper {
         );
     }
 
+    public static CronMapper fromQuartzToUnix(){
+        return new CronMapper(
+                CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ),
+                CronDefinitionBuilder.instanceDefinitionFor(CronType.UNIX),
+                sameCron()
+        );
+    }
+
     public static CronMapper fromUnixToQuartz(){
         return new CronMapper(
                 CronDefinitionBuilder.instanceDefinitionFor(CronType.UNIX),
@@ -98,6 +107,11 @@ public class CronMapper {
                 setQuestionMark()
         );
     }
+
+    public static CronMapper samecron(CronDefinition cronDefinition){
+        return new CronMapper(cronDefinition, cronDefinition, sameCron());
+    }
+
 
     private static Function<Cron, Cron> sameCron(){
         return new Function<Cron, Cron>() {
