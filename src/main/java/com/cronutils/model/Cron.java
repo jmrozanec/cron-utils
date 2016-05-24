@@ -13,12 +13,11 @@
 
 package com.cronutils.model;
 
+import com.cronutils.mapper.CronMapper;
 import com.cronutils.model.definition.CronConstraint;
 import com.cronutils.model.definition.CronDefinition;
 import com.cronutils.model.field.CronField;
 import com.cronutils.model.field.CronFieldName;
-import com.cronutils.model.field.expression.Every;
-import com.cronutils.model.field.expression.FieldExpression;
 import com.cronutils.model.field.expression.visitor.ValidationFieldExpressionVisitor;
 import com.google.common.collect.Maps;
 import org.apache.commons.lang3.Validate;
@@ -93,6 +92,17 @@ public class Cron {
             }
         }
         return this;
+    }
+
+    /**
+     * Provides means to compare if two cron expressions are equivalent.
+     * Requested as issue #87
+     * @param cronMapper - maps 'cron' parameter to this instance definition;
+     * @param cron - any cron instance, never null
+     * @return boolean - true if equivalent; false otherwise.
+     */
+    public boolean equivalent(CronMapper cronMapper, Cron cron){
+        return asString().equals(cronMapper.map(cron).asString());
     }
 }
 
