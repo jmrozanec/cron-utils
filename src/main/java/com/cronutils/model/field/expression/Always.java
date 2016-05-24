@@ -13,34 +13,17 @@ package com.cronutils.model.field.expression;
  * limitations under the License.
  */
 
-import com.cronutils.model.field.value.IntegerFieldValue;
-import org.apache.commons.lang3.Validate;
-
 /**
  * Represents a star (*) value on cron expression field
  */
 public class Always extends FieldExpression {
-    private Every every;
-
+    public Always(){}
     private Always(Always always) {
-        this(always.getEvery().getTime());
-    }
-
-    public Always() {
-        this.every = new Every(new IntegerFieldValue(1));
-    }
-
-    public Always(IntegerFieldValue every) {
-        Validate.notNull(every, "'Every' value cannot be null.");
-        this.every = new Every(every);
+        this();
     }
 
     @Override
     public String asString() {
-        return String.format("*%s", every.asString());
-    }
-
-    public Every getEvery() {
-        return every;
+        return "*";
     }
 }

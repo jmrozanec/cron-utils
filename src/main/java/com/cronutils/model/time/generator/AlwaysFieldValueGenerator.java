@@ -19,28 +19,34 @@ import java.util.List;
  * limitations under the License.
  */
 class AlwaysFieldValueGenerator extends FieldValueGenerator {
-    private Always always;
     public AlwaysFieldValueGenerator(CronField cronField) {
         super(cronField);
-        always = (Always)cronField.getExpression();
     }
 
     @Override
     public int generateNextValue(int reference) throws NoSuchValueException{
-        return new EveryFieldValueGenerator(new CronField(cronField.getField(), always.getEvery(), cronField.getConstraints())).generateNextValue(reference);
+        int newvalue = reference+1;
+        if(newvalue<=cronField.getConstraints().getEndRange()){
+            return newvalue;
+        }else {
+            throw new NoSuchValueException();
+        }
     }
 
     @Override
     public int generatePreviousValue(int reference) throws NoSuchValueException {
-        return new EveryFieldValueGenerator(new CronField(cronField.getField(), always.getEvery(), cronField.getConstraints())).generatePreviousValue(reference);
+        int newvalue = reference-1;
+        if(newvalue>=cronField.getConstraints().getStartRange()){
+            return newvalue;
+        }else {
+            throw new NoSuchValueException();
+        }
     }
 
     @Override
     protected List<Integer> generateCandidatesNotIncludingIntervalExtremes(int start, int end) {
         List<Integer> values = Lists.newArrayList();
-        Always always = (Always)cronField.getExpression();
-        int interval = always.getEvery().getTime().getValue();
-        for(int j = start+interval; j<end; j+=interval){
+        for(int j = start+1; j<end; j++){
             values.add(j);
         }
         return values;
@@ -48,7 +54,7 @@ class AlwaysFieldValueGenerator extends FieldValueGenerator {
 
     @Override
     public boolean isMatch(int value) {
-        return value%always.getEvery().getTime().getValue()==0;
+        return cronField.getConstraints().isInRange(value);
     }
 
     @Override

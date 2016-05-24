@@ -12,10 +12,6 @@ public class FieldExpressionFactory {
         return new Always();
     }
 
-    public static Always always(int period){
-        return new Always(new IntegerFieldValue(period));
-    }
-
     public static Between between(int from, int to){
         return new Between(new IntegerFieldValue(from), new IntegerFieldValue(to));
     }
@@ -24,20 +20,12 @@ public class FieldExpressionFactory {
         return new Between(new SpecialCharFieldValue(from), new IntegerFieldValue(to));
     }
 
-    public static Between between(int from, int to, int period){
-        return new Between(new IntegerFieldValue(from), new IntegerFieldValue(to), new IntegerFieldValue(period));
-    }
-
-    public static Between between(SpecialChar from, int to, int period){
-        return new Between(new SpecialCharFieldValue(from), new IntegerFieldValue(to), new IntegerFieldValue(period));
-    }
-
     public static Every every(int time){
         return new Every(new IntegerFieldValue(time));
     }
 
-    public static Every every(int start, int time){
-        return new Every(new IntegerFieldValue(start), new IntegerFieldValue(time));
+    public static Every every(FieldExpression expression, int time){
+        return new Every(expression, new IntegerFieldValue(time));
     }
 
     public static On on(SpecialChar specialChar){

@@ -106,10 +106,7 @@ abstract class DescriptionStrategy {
      * @return human readable description - String
      */
     protected String describe(Always always, boolean and) {
-        if (always.getEvery().getTime().getValue() <= 1) {
-            return "";
-        }
-        return describe(always.getEvery(), and);
+        return bundle.getString("every");
     }
 
     /**
@@ -164,7 +161,6 @@ abstract class DescriptionStrategy {
      */
     protected String describe(Between between, boolean and) {
         return new StringBuilder()
-                .append(describe(between.getEvery(), and))
                 .append(
                         MessageFormat.format(
                                 bundle.getString("between_x_and_y"),
@@ -182,8 +178,8 @@ abstract class DescriptionStrategy {
      */
     protected String describe(Every every, boolean and) {
         String description;
-        if (every.getTime().getValue() > 1) {
-            description = String.format("%s %s ", bundle.getString("every"), nominalValue(every.getTime())) + " %p ";
+        if (every.getPeriod().getValue() > 1) {
+            description = String.format("%s %s ", bundle.getString("every"), nominalValue(every.getPeriod())) + " %p ";
         } else {
             description = bundle.getString("every")+" %s ";
         }

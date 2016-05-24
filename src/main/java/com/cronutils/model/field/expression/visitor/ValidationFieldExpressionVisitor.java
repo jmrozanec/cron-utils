@@ -81,7 +81,6 @@ public class ValidationFieldExpressionVisitor implements FieldExpressionVisitor 
     public Between visit(Between between) {
         isInRange(between.getFrom());
         isInRange(between.getTo());
-        isInRange(between.getEvery().getTime());
         if(isSpecialCharNotL(between.getFrom()) || isSpecialCharNotL(between.getTo())){
             throw new IllegalArgumentException("No special characters allowed in range, except for 'L'");
         }
@@ -99,7 +98,13 @@ public class ValidationFieldExpressionVisitor implements FieldExpressionVisitor 
 
     @Override
     public Every visit(Every every) {
-        isInRange(every.getTime());
+        if(every.getExpression() instanceof Between){
+            visit((Between)every.getExpression());
+        }
+        if(every.getExpression() instanceof On){
+            visit((On)every.getExpression());
+        }
+        isInRange(every.getPeriod());
         return every;
     }
 

@@ -74,7 +74,7 @@ public class ValidationFieldExpressionVisitorTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void testGetEveryXBiggerThanRange() throws Exception {
-        assertEquals(1, (int)new Between(new IntegerFieldValue(from), new IntegerFieldValue(to), new IntegerFieldValue(2 * to)).getEvery().getTime().getValue());
+        assertEquals(1, (int)new Between(new IntegerFieldValue(from), new IntegerFieldValue(to), new IntegerFieldValue(2 * to)).getEvery().getPeriod().getValue());
     }
     */
 }

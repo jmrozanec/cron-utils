@@ -70,10 +70,10 @@ public class FieldParser {
                         String start = values[0];
                         String value = values[1];
                         if("*".equals(start.trim()) || "".equals(start.trim())){
-                            return new Always(new IntegerFieldValue(Integer.parseInt(value)));
+                            return new Every(new IntegerFieldValue(Integer.parseInt(value)));
                         }else{
                             return new Every(
-                                    new IntegerFieldValue(Integer.parseInt(start)),
+                                    new On(new IntegerFieldValue(Integer.parseInt(start))),
                                     new IntegerFieldValue(Integer.parseInt(value))
                             );
                         }
@@ -88,24 +88,12 @@ public class FieldParser {
     }
 
     @VisibleForTesting
-    Between parseBetween(String[]array){
+    FieldExpression parseBetween(String[]array){
         if (array[1].contains("/")) {
             String[] every = array[1].split("/");
-
-            return
-                    new Between(
-                            map(array[0]),
-                            map(every[0]),
-                            mapToIntegerFieldValue(every[1])
-                    );
+            return new Every(new Between(map(array[0]), map(every[0])), mapToIntegerFieldValue(every[1]));
         } else {
-            String from = array[0];
-            String to = array[1];
-            return
-                    new Between(
-                            map(from),
-                            map(to)
-                    );
+            return new Between(map(array[0]), map(array[1]));
         }
     }
 

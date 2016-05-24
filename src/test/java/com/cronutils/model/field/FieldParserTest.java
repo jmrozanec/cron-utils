@@ -9,6 +9,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 /*
  * Copyright 2015 jmrozanec
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -31,13 +33,15 @@ public class FieldParserTest {
 
     @Test
     public void testParseAlways() throws Exception {
-        assertEquals(1, (int)((Always) parser.parse("*")).getEvery().getTime().getValue());
+        assertTrue(parser.parse("*") instanceof Always);
     }
 
     @Test
     public void testParseAlwaysEveryX() throws Exception {
         int every = 5;
-        assertEquals(every, (int)((Always) parser.parse("*/" + every)).getEvery().getTime().getValue());
+        Every expression = (Every) parser.parse("*/" + every);
+        assertEquals(every, (int)(expression).getPeriod().getValue());
+        assertTrue(expression.getExpression() instanceof Always);
     }
 
     @Test
@@ -80,10 +84,11 @@ public class FieldParserTest {
         int from = 10;
         int to = 40;
         int every = 5;
-        Between between = (Between) parser.parse(String.format("%s-%s/%s", from, to, every));
+        Every expression = (Every) parser.parse(String.format("%s-%s/%s", from, to, every));
+        Between between = (Between) expression.getExpression();
         assertEquals(from, (int)((IntegerFieldValue)between.getFrom()).getValue());
         assertEquals(to, (int)((IntegerFieldValue)between.getTo()).getValue());
-        assertEquals(every, (int)(between.getEvery().getTime()).getValue());
+        assertEquals(every, (int)(expression.getPeriod()).getValue());
     }
 
     @Test(expected = NullPointerException.class)

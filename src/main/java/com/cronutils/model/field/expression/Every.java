@@ -21,38 +21,38 @@ import org.apache.commons.lang3.Validate;
  * Represents every x time on a cron field.
  */
 public class Every extends FieldExpression {
-    private FieldValue startValue;
-    private IntegerFieldValue time;
+    private FieldExpression expression;
+    private IntegerFieldValue period;
 
     public Every(IntegerFieldValue time) {
-        this(null, time);
+        this(new Always(), time);
     }
 
-    public Every(FieldValue startValue, IntegerFieldValue time) {
-        this.startValue = startValue;
-        if (time == null) {
-            time = new IntegerFieldValue(1);
+    public Every(FieldExpression expression, IntegerFieldValue period) {
+        this.expression = Validate.notNull(expression, "Expression must not be null");
+        if (period == null) {
+            period = new IntegerFieldValue(1);
         }
-        this.time = time;
+        this.period = period;
     }
 
     private Every(Every every){
-        this(every.getStartValue(), every.getTime());
+        this(every.getExpression(), every.getPeriod());
     }
 
-    public IntegerFieldValue getTime() {
-        return time;
+    public IntegerFieldValue getPeriod() {
+        return period;
+    }
+
+    public FieldExpression getExpression(){
+        return expression;
     }
 
     @Override
     public String asString() {
-        if(time.getValue()==1){
-            return startValue!=null?"*":"";
+        if(period.getValue()==1){
+            return expression.asString()!=null?"*":"";
         }
-        return String.format("%s/%s", this.startValue!=null?this.startValue.toString():"", getTime());
-    }
-
-    public FieldValue getStartValue() {
-        return startValue;
+        return String.format("%s/%s", this.expression.asString(), getPeriod());
     }
 }

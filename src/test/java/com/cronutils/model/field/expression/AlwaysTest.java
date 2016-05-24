@@ -20,18 +20,7 @@ import static org.junit.Assert.assertEquals;
 public class AlwaysTest {
 
     @Test
-    public void testGetEveryDefault() throws Exception {
-        assertEquals(1, (int)new Always().getEvery().getTime().getValue());
-    }
-
-    @Test
-    public void testGetEveryX() throws Exception {
-        int value = 11;
-        assertEquals(value, (int)new Always(new IntegerFieldValue(value)).getEvery().getTime().getValue());
-    }
-
-    @Test(expected = NullPointerException.class)
-    public void testNullConstraints() {
-        new Always(null);
+    public void testAsString(){
+        assertEquals("*", new Always().asString());
     }
 }
