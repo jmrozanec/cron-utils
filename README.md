@@ -59,6 +59,23 @@ cron-utils is available on [Maven central](http://search.maven.org/#search%7Cga%
     //or get a predefined instance
     cronDefinition = CronDefinitionBuilder.instanceDefinitionFor(QUARTZ);
 
+***Build a cron expression***
+    
+    //Create a cron expression. CronMigrator will ensure you remain cron provider agnostic
+    import static com.cronutils.model.field.expression.FieldExpressionFactory.*;
+    Cron cron = CronBuilder.cron(CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ))
+        .withYear(always())
+        .withDoM(between(SpecialChar.L, 3))
+        .withMonth(always())
+        .withDoW(questionMark())
+        .withHour(always())
+        .withMinute(always())
+        .withSecond(on(0))
+        .instance();
+    //Obtain the string expression
+    String cronAsString = cron.asString();//0 * * L-3 * ? *
+    
+
 ***Parse***
 
     //create a parser based on provided definition

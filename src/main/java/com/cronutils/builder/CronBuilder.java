@@ -1,25 +1,29 @@
+/*
+ * Copyright 2015 jmrozanec
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.cronutils.builder;
 
 import com.cronutils.model.Cron;
-import com.cronutils.model.CronType;
 import com.cronutils.model.definition.CronDefinition;
-import com.cronutils.model.definition.CronDefinitionBuilder;
 import com.cronutils.model.field.CronField;
 import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.field.constraint.FieldConstraints;
-import com.cronutils.model.field.expression.Always;
 import com.cronutils.model.field.expression.FieldExpression;
-import com.cronutils.model.field.expression.On;
-import com.cronutils.model.field.expression.QuestionMark;
 import com.cronutils.model.field.expression.visitor.ValidationFieldExpressionVisitor;
-import com.cronutils.model.field.value.SpecialChar;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 import java.util.Map;
-
-import static com.cronutils.model.field.expression.FieldExpressionFactory.*;
 
 public class CronBuilder {
     private CronDefinition definition;
@@ -72,19 +76,5 @@ public class CronBuilder {
         expression.accept(new ValidationFieldExpressionVisitor(constraints, definition.isStrictRanges()));
         fields.put(name, new CronField(name, expression, constraints));
         return this;
-    }
-
-    public static void main(String[] args) {
-        Cron cron =
-                CronBuilder.cron(CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ))
-                        .withYear(always())
-                        .withDoM(between(SpecialChar.L, 3))
-                        .withMonth(always())
-                        .withDoW(questionMark())
-                        .withHour(always())
-                        .withMinute(always())
-                        .withSecond(on(0))
-                        .instance();
-        System.out.println(cron.asString());
     }
 }
