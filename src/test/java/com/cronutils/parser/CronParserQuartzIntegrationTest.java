@@ -5,6 +5,11 @@ import com.cronutils.model.Cron;
 import com.cronutils.model.CronType;
 import com.cronutils.model.definition.CronDefinition;
 import com.cronutils.model.definition.CronDefinitionBuilder;
+import com.cronutils.model.time.ExecutionTime;
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -23,6 +28,9 @@ import java.util.Locale;
  * limitations under the License.
  */
 public class CronParserQuartzIntegrationTest {
+
+    private final static DateTimeFormatter formatter = DateTimeFormat.forPattern("YYYY-MM-DD HH:mm:ss");
+
     private CronParser parser;
 
     @Before
@@ -180,6 +188,22 @@ public class CronParserQuartzIntegrationTest {
      */
     @Test
     public void testIntervalSeconds() {
-        parser.parse("0/2 * * * * ?");
+        ExecutionTime executionTime = ExecutionTime.forCron(parser.parse("0/20 * * * * ?"));
+        DateTime now = DateTime.parse("2005-08-09 18:32:42", formatter);
+        DateTime lastExecution = executionTime.lastExecution(now);
+        DateTime assertDate = DateTime.parse("2005-01-09 18:32:40", formatter);
+        Assert.assertEquals(assertDate, lastExecution);
+    }
+
+    /**
+     * Issue #78: ExecutionTime.forCron fails on intervals
+     */
+    @Test
+    public void testIntervalMinutes() {
+        ExecutionTime executionTime = ExecutionTime.forCron(parser.parse("0 0/7 * * * ?"));
+        DateTime now = DateTime.parse("2005-08-09 18:32:42", formatter);
+        DateTime lastExecution = executionTime.lastExecution(now);
+        DateTime assertDate = DateTime.parse("2005-01-09 18:28:00", formatter);
+        Assert.assertEquals(assertDate, lastExecution);
     }
 }

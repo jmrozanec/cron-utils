@@ -27,9 +27,9 @@ class EveryFieldValueGenerator extends FieldValueGenerator {
 
     public EveryFieldValueGenerator(CronField cronField) {
         super(cronField);
-        log.debug(String.format(
+        log.trace(String.format(
                 "processing \"%s\" at %s",
-                expression.asString(), DateTime.now()
+                cronField.getExpression().asString(), DateTime.now()
         ));
     }
 
@@ -76,8 +76,7 @@ class EveryFieldValueGenerator extends FieldValueGenerator {
                 reference=generateNextValue(reference);
             }
         } catch (NoSuchValueException e) {
-            // log.warn("Failed to generate candidates", e);
-            // unnecessary logging of expected parsing situation
+            log.debug("Failed to generate candidates", e);
         }
         return values;
     }
