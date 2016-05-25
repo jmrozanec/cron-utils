@@ -234,6 +234,7 @@ public class ExecutionTimeUnixIntegrationTest {
         DateTime next = executionTime.nextExecution(last);
         long millis = next.getMillis() - last.getMillis();
         assertEquals(23, (millis / 3600000));
+        assertEquals(last.getZone(), next.getZone());
     }
 
     /**
@@ -246,10 +247,9 @@ public class ExecutionTimeUnixIntegrationTest {
         // Daylight savings for New York 2016 is Mar 13 at 2am
         DateTime now = new DateTime(2016, 3, 12, 17, 0, DateTimeZone.forID("America/Phoenix"));
         DateTime last = executionTime.lastExecution(now);
-        System.out.println(last);
         long millis = now.getMillis() - last.getMillis();
-        System.out.println((millis / 3600000));
-        //TODO check same timezone in result
+        assertEquals(24, (millis / 3600000));
+        assertEquals(now.getZone(), last.getZone());
     }
 
     /**
