@@ -27,7 +27,11 @@ cron-utils is available on [Maven central](http://search.maven.org/#search%7Cga%
     * Non-standard characters L, W, LW, '?' and # are supported as well!
  * Print to locale specific human readable format (English, German, Korean and Spanish are fully supported. Dutch, French, Italian and Portuguese have basic support).
  * Parse and Description process are decoupled: parse once and operate with the result!
- * Validate if cron string expressions match a cron definition using CronValidator
+ * Build cron expressions using CronBuilder: 
+    * no need to remember fields and constraints for each cron provider
+    * crons become decoupled from cron provider: anytime you can export to another format.
+ * Check if cron expressions are equivalent
+ * Validate if cron string expressions match a cron definition
  * Convert crons between different cron definitions: if you need to migrate expressions, CronMapper may help you!
  * Pre-defined definitions for the following cron libraries are provided:
     * [Unix](http://www.unix.com/man-page/linux/5/crontab/)
