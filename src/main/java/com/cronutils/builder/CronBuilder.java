@@ -19,11 +19,14 @@ import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.field.constraint.FieldConstraints;
 import com.cronutils.model.field.expression.FieldExpression;
 import com.cronutils.model.field.expression.visitor.ValidationFieldExpressionVisitor;
+
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 import java.util.Map;
+
+import static com.cronutils.model.field.expression.FieldExpressionFactory.*;
 
 public class CronBuilder {
     private CronDefinition definition;

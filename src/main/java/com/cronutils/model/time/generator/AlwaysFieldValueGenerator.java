@@ -25,14 +25,22 @@ class AlwaysFieldValueGenerator extends FieldValueGenerator {
 
     @Override
     public int generateNextValue(int reference) throws NoSuchValueException{
-        Always always = (Always)cronField.getExpression();
-        return new EveryFieldValueGenerator(new CronField(cronField.getField(), always.getEvery(), cronField.getConstraints())).generateNextValue(reference);
+        int newvalue = reference+1;
+        if(newvalue<=cronField.getConstraints().getEndRange()){
+            return newvalue;
+        }else {
+            throw new NoSuchValueException();
+        }
     }
 
     @Override
     public int generatePreviousValue(int reference) throws NoSuchValueException {
-        Always always = (Always)cronField.getExpression();
-        return new EveryFieldValueGenerator(new CronField(cronField.getField(), always.getEvery(), cronField.getConstraints())).generatePreviousValue(reference);
+        int newvalue = reference-1;
+        if(newvalue>=cronField.getConstraints().getStartRange()){
+            return newvalue;
+        }else {
+            throw new NoSuchValueException();
+        }
     }
 
     @Override
@@ -46,7 +54,7 @@ class AlwaysFieldValueGenerator extends FieldValueGenerator {
 
     @Override
     public boolean isMatch(int value) {
-        return true;
+        return cronField.getConstraints().isInRange(value);
     }
 
     @Override

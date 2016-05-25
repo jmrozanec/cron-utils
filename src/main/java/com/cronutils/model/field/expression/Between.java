@@ -22,20 +22,14 @@ import com.cronutils.model.field.value.IntegerFieldValue;
 public class Between extends FieldExpression {
     private FieldValue from;
     private FieldValue to;
-    private Every every;
 
     public Between(FieldValue from, FieldValue to) {
-        this(from, to, new IntegerFieldValue(1));
-    }
-
-    public Between(FieldValue from, FieldValue to, IntegerFieldValue every) {
         this.from = from;
         this.to = to;
-        this.every = new Every(every);
     }
 
     public Between(Between between) {
-        this(between.getFrom(), between.getTo(), between.getEvery().getTime());
+        this(between.getFrom(), between.getTo());
     }
 
     public FieldValue getFrom() {
@@ -46,12 +40,8 @@ public class Between extends FieldExpression {
         return to;
     }
 
-    public Every getEvery() {
-        return every;
-    }
-
     @Override
     public String asString() {
-        return String.format("%s-%s%s", from, to, every.asString());
+        return String.format("%s-%s", from, to);
     }
 }

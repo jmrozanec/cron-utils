@@ -53,14 +53,4 @@ public class BetweenTest {
         assertEquals(to, between.getTo().getValue());
         assertEquals(String.format("%s-%s", specialChar, to), between.asString());
     }
-
-    @Test
-    public void testGetEveryDefault() throws Exception {
-        assertEquals(1, (int)new Between(new IntegerFieldValue(from), new IntegerFieldValue(to)).getEvery().getTime().getValue());
-    }
-
-    @Test
-    public void testGetEveryX() throws Exception {
-        assertEquals(every, (int)new Between(new IntegerFieldValue(from), new IntegerFieldValue(to), new IntegerFieldValue(every)).getEvery().getTime().getValue());
-    }
 }

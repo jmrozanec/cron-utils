@@ -79,6 +79,6 @@ public class CronValidatorQuartzIntegrationTest {
     public void testQuestionMarkSupport(){
         parser.parse("0 10,44 14 ? 3 WED");
         parser.parse("0 0 12 ? * FRI-SAT");
-        //assertTrue(validator.isValid("0 0 12 ? * SAT-SUN"));//TODO support this ranges: Issue #86
+        parser.parse("0 0 12 ? * SAT-SUN");
     }
 }

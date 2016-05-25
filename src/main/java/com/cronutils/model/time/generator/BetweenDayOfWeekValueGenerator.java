@@ -62,7 +62,7 @@ class BetweenDayOfWeekValueGenerator extends FieldValueGenerator {
         int to = (Integer) between.getTo().getValue();
         while(from<=to){
             dowValidValues.add(from);
-            from += between.getEvery().getTime().getValue();
+            from += 1;
         }
     }
 

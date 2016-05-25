@@ -108,9 +108,11 @@ public class CronMapper {
         );
     }
 
-    public static CronMapper samecron(CronDefinition cronDefinition){
+    public static CronMapper sameCron(CronDefinition cronDefinition){
         return new CronMapper(cronDefinition, cronDefinition, sameCron());
     }
+
+
 
 
     private static Function<Cron, Cron> sameCron(){

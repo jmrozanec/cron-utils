@@ -1,12 +1,10 @@
 package com.cronutils.model.time.generator;
 
 import com.cronutils.model.field.CronField;
-import com.cronutils.model.field.constraint.FieldConstraints;
 import com.cronutils.model.field.expression.Every;
 import com.cronutils.model.field.expression.FieldExpression;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
-import org.apache.commons.lang3.Validate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,7 +36,7 @@ class EveryFieldValueGenerator extends FieldValueGenerator {
         }
         Every every = (Every)cronField.getExpression();
         int referenceWithoutOffset = reference-offset();
-        int period = every.getTime().getValue();
+        int period = every.getPeriod().getValue();
         int remainder = referenceWithoutOffset % period;
 
         int next = reference+(period-remainder);
@@ -54,7 +52,7 @@ class EveryFieldValueGenerator extends FieldValueGenerator {
     @Override
     public int generatePreviousValue(int reference) throws NoSuchValueException {
         Every every = (Every)cronField.getExpression();
-        int period = every.getTime().getValue();
+        int period = every.getPeriod().getValue();
         int remainder = reference % period;
         if(remainder == 0){
             return reference-period;
@@ -82,7 +80,7 @@ class EveryFieldValueGenerator extends FieldValueGenerator {
     public boolean isMatch(int value) {
         Every every = (Every)cronField.getExpression();
         int start = cronField.getConstraints().getStartRange();
-        return ((value-start) % every.getTime().getValue()) == 0;
+        return ((value-start) % every.getPeriod().getValue()) == 0;
     }
 
     @Override

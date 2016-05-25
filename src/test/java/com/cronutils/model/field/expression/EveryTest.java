@@ -30,11 +30,11 @@ public class EveryTest {
     @Test
     public void testGetTime() throws Exception {
         int every = 5;
-        assertEquals(every, (int)new Every(new IntegerFieldValue(every)).getTime().getValue());
+        assertEquals(every, (int)new Every(new IntegerFieldValue(every)).getPeriod().getValue());
     }
 
     @Test
     public void testGetTimeNull() throws Exception {
-        assertEquals(1, (int)new Every(null).getTime().getValue());
+        assertEquals(1, (int)new Every(null).getPeriod().getValue());
     }
 }

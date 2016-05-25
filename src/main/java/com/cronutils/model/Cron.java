@@ -95,5 +95,16 @@ public class Cron {
         }
         return this;
     }
+
+    /**
+     * Provides means to compare if two cron expressions are equivalent.
+     * Requested as issue #87
+     * @param cronMapper - maps 'cron' parameter to this instance definition;
+     * @param cron - any cron instance, never null
+     * @return boolean - true if equivalent; false otherwise.
+     */
+    public boolean equivalent(CronMapper cronMapper, Cron cron){
+        return asString().equals(cronMapper.map(cron).asString());
+    }
 }
 

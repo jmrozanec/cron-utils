@@ -67,8 +67,16 @@ public class FieldParser {
                 } else {
                     String[] values = expression.split("/");
                     if(values.length == 2) {
+                        String start = values[0];
                         String value = values[1];
-                        return new Every(new IntegerFieldValue(Integer.parseInt(value)));
+                        if("*".equals(start.trim()) || "".equals(start.trim())){
+                            return new Every(new IntegerFieldValue(Integer.parseInt(value)));
+                        }else{
+                            return new Every(
+                                    new On(new IntegerFieldValue(Integer.parseInt(start))),
+                                    new IntegerFieldValue(Integer.parseInt(value))
+                            );
+                        }
                     }else if(values.length == 1){
                         throw new IllegalArgumentException("Missing steps for expression: " + expression);
                     }else {
@@ -79,26 +87,13 @@ public class FieldParser {
         }
     }
 
-    //TODO issue #86: https://github.com/jmrozanec/cron-utils/issues/86
     @VisibleForTesting
-    Between parseBetween(String[]array){
+    FieldExpression parseBetween(String[]array){
         if (array[1].contains("/")) {
             String[] every = array[1].split("/");
-
-            return
-                    new Between(
-                            map(array[0]),
-                            map(every[0]),
-                            mapToIntegerFieldValue(every[1])
-                    );
+            return new Every(new Between(map(array[0]), map(every[0])), mapToIntegerFieldValue(every[1]));
         } else {
-            String from = array[0];
-            String to = array[1];
-            return
-                    new Between(
-                            map(from),
-                            map(to)
-                    );
+            return new Between(map(array[0]), map(array[1]));
         }
     }
 
