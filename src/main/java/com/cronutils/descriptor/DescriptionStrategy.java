@@ -106,7 +106,7 @@ abstract class DescriptionStrategy {
      * @return human readable description - String
      */
     protected String describe(Always always, boolean and) {
-        return bundle.getString("every");
+        return "";
     }
 
     /**
@@ -160,15 +160,12 @@ abstract class DescriptionStrategy {
      * @return human readable description - String
      */
     protected String describe(Between between, boolean and) {
-        return new StringBuilder()
-                .append(
-                        MessageFormat.format(
-                                bundle.getString("between_x_and_y"),
-                                nominalValue(between.getFrom()),
-                                nominalValue(between.getTo())
-                        )
-                )
-                .append(" ").toString();
+        return bundle.getString("every")+" %s "+
+                MessageFormat.format(
+                        bundle.getString("between_x_and_y"),
+                        nominalValue(between.getFrom()),
+                        nominalValue(between.getTo())
+                )+" ";
     }
 
     /**
@@ -182,6 +179,14 @@ abstract class DescriptionStrategy {
             description = String.format("%s %s ", bundle.getString("every"), nominalValue(every.getPeriod())) + " %p ";
         } else {
             description = bundle.getString("every")+" %s ";
+        }
+        if(every.getExpression() instanceof Between){
+            Between between = (Between) every.getExpression();
+            description += MessageFormat.format(
+                    bundle.getString("between_x_and_y"),
+                    nominalValue(between.getFrom()),
+                    nominalValue(between.getTo())
+            )+" ";
         }
         return description;
     }

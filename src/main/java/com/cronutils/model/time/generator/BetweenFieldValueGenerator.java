@@ -33,7 +33,7 @@ class BetweenFieldValueGenerator extends FieldValueGenerator {
         //TODO validate from/to logic
         int candidate = reference;
         do{
-            ++reference;
+            ++candidate;
         }while(candidate < map(between.getFrom()));
 
         if(candidate > map(between.getTo())){
@@ -48,7 +48,7 @@ class BetweenFieldValueGenerator extends FieldValueGenerator {
         //TODO deal with from/to logic, to ensure correct values are assumed
         int candidate = reference;
         do{
-            --reference;
+            --candidate;
         }while(candidate > map(between.getTo()));
 
         if(candidate < map(between.getFrom())){

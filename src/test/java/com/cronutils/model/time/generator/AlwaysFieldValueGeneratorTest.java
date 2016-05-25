@@ -41,7 +41,7 @@ public class AlwaysFieldValueGeneratorTest {
 
     @Test
     public void testGeneratePreviousValue() throws Exception {
-        for(int j=0; j<10; j++){
+        for(int j=1; j<10; j++){
             assertEquals(j-1, fieldValueGenerator.generatePreviousValue(j));
         }
     }

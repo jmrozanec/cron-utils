@@ -244,13 +244,18 @@ class TimeDescriptionStrategy extends DescriptionStrategy {
                                 timeFields.minutes instanceof Every  &&
                                 timeFields.seconds instanceof On) {
                             Every minute = (Every) timeFields.minutes;
-
+                            String desc;
                             if (minute.getPeriod().getValue()==1 &&
                                     isDefault((On) timeFields.seconds)) {
-                                return String.format("%s %s", bundle.getString("every"), bundle.getString("minute"));
+                                desc = String.format("%s %s", bundle.getString("every"), bundle.getString("minute"));
+                            }else{
+                                desc = String.format("%s %s %s ", bundle.getString("every"),
+                                        minute.getPeriod().getValue(), bundle.getString("minutes"));
                             }
-                            return String.format("%s %s %s ", bundle.getString("every"),
-                                    minute.getPeriod().getValue(), bundle.getString("minutes"));
+                            if(minute.getExpression() instanceof Between){
+                                desc = String.format("%s %s", desc, describe((minute.getExpression())));
+                            }
+                            return desc;
                         }
                         return "";
                     }
