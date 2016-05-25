@@ -3,7 +3,6 @@ package com.cronutils.model.field.expression;
 import com.cronutils.model.field.value.IntegerFieldValue;
 import com.cronutils.model.field.value.SpecialChar;
 import com.cronutils.model.field.value.SpecialCharFieldValue;
-import com.sun.tools.hat.internal.server.QueryListener;
 
 import java.util.List;
 
