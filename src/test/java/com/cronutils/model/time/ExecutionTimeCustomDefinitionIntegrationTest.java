@@ -121,6 +121,7 @@ public class ExecutionTimeCustomDefinitionIntegrationTest {
      * Reported case: BetweenDayOfWeekValueGenerator does not work for the first day of a month in some cases.
      * Expected: first day of month should be returned ok
      */
+    @Test
     public void testCronExpressionBetweenDayOfWeekValueGeneratorCorrectFirstDayOfMonth() {
         CronDefinition cronDefinition = CronDefinitionBuilder.defineCron()
                 .withMinutes().and()

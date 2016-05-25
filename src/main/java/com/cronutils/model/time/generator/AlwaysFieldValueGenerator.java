@@ -1,5 +1,6 @@
 package com.cronutils.model.time.generator;
 
+import com.cronutils.model.field.CronField;
 import com.cronutils.model.field.expression.Always;
 import com.cronutils.model.field.expression.FieldExpression;
 import com.google.common.collect.Lists;
@@ -18,20 +19,28 @@ import java.util.List;
  * limitations under the License.
  */
 class AlwaysFieldValueGenerator extends FieldValueGenerator {
-    public AlwaysFieldValueGenerator(FieldExpression expression) {
-        super(expression);
+    public AlwaysFieldValueGenerator(CronField cronField) {
+        super(cronField);
     }
 
     @Override
     public int generateNextValue(int reference) throws NoSuchValueException{
-        Always always = (Always)expression;
-        return new EveryFieldValueGenerator(always.getEvery()).generateNextValue(reference);
+        int newvalue = reference+1;
+        if(newvalue<=cronField.getConstraints().getEndRange()){
+            return newvalue;
+        }else {
+            throw new NoSuchValueException();
+        }
     }
 
     @Override
     public int generatePreviousValue(int reference) throws NoSuchValueException {
-        Always always = (Always)expression;
-        return new EveryFieldValueGenerator(always.getEvery()).generatePreviousValue(reference);
+        int newvalue = reference-1;
+        if(newvalue>=cronField.getConstraints().getStartRange()){
+            return newvalue;
+        }else {
+            throw new NoSuchValueException();
+        }
     }
 
     @Override
@@ -45,7 +54,7 @@ class AlwaysFieldValueGenerator extends FieldValueGenerator {
 
     @Override
     public boolean isMatch(int value) {
-        return true;
+        return cronField.getConstraints().isInRange(value);
     }
 
     @Override

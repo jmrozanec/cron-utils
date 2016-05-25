@@ -59,11 +59,28 @@ cron-utils is available on [Maven central](http://search.maven.org/#search%7Cga%
     //or get a predefined instance
     cronDefinition = CronDefinitionBuilder.instanceDefinitionFor(QUARTZ);
 
+***Build a cron expression***
+    
+    //Create a cron expression. CronMigrator will ensure you remain cron provider agnostic
+    import static com.cronutils.model.field.expression.FieldExpressionFactory.*;
+    Cron cron = CronBuilder.cron(CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ))
+        .withYear(always())
+        .withDoM(between(SpecialChar.L, 3))
+        .withMonth(always())
+        .withDoW(questionMark())
+        .withHour(always())
+        .withMinute(always())
+        .withSecond(on(0))
+        .instance();
+    //Obtain the string expression
+    String cronAsString = cron.asString();//0 * * L-3 * ? *
+    
+
 ***Parse***
 
     //create a parser based on provided definition
     CronParser parser = new CronParser(cronDefinition);
-    Cron quartzCron = parser.parse("0 23 ? * * 1-5 *");
+    Cron quartzCron = parser.parse("0 23 * ? * 1-5 *");
 
 ***Describe***
 
@@ -71,37 +88,27 @@ cron-utils is available on [Maven central](http://search.maven.org/#search%7Cga%
     CronDescriptor descriptor = CronDescriptor.instance(Locale.UK);
 
     //parse some expression and ask descriptor for description
-    String description = descriptor.describe(parser.parse("*/45 * * * * *"));
+    String description = descriptor.describe(parser.parse("*/45 * * * * ?"));
     //description will be: "every 45 seconds"
 
     description = descriptor.describe(quartzCron);
     //description will be: "every hour at minute 23 every day between Monday and Friday"
     //which is the same description we get for the cron below:
-    descriptor.describe(parser.parse("0 23 ? * * MON-FRI *"));
+    descriptor.describe(parser.parse("0 23 * ? * MON-FRI *"));
 
 ***Migrate***
 
-    //Migration between cron libraries is easy!
+    //Migration between cron libraries has never been so easy!
     //Turn cron expressions into another format by using CronMapper:
-    CronMapper cronMapper =
-            new CronMapper(
-                    cronDefinition,
-                    CronDefinitionBuilder.instanceDefinitionFor(CRON4J)
-            );
+    CronMapper cronMapper = CronMapper.fromQuartzToCron4j();
+   
     Cron cron4jCron = cronMapper.map(quartzCron);
     //and to get a String representation of it, we can use
     cron4jCron.asString();//will return: 23 * * * 1-5
 
 ***Validate***
 
-    //Validate if a string expression matches a cron definition:
-    CronValidator quartzValidator = new CronValidator(cronDefinition);
-
-    //getting a boolean result:
-    quartzValidator.isValid("0 23 ? * * MON-FRI *");
-
-    //or returning same string if valid and raising an exception if invalid
-    quartzValidator.validate("0 23 ? * * MON-FRI *");
+    cron4jCron.validate()
 
 ***Calculate time from/to execution***
 

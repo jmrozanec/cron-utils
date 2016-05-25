@@ -25,7 +25,7 @@ class OnDayOfMonthValueGenerator extends FieldValueGenerator {
     private int year;
     private int month;
     public OnDayOfMonthValueGenerator(CronField cronField, int year, int month) {
-        super(cronField.getExpression());
+        super(cronField);
         Validate.isTrue(CronFieldName.DAY_OF_MONTH.equals(cronField.getField()), "CronField does not belong to day of month");
         this.year = year;
         this.month = month;
@@ -33,7 +33,7 @@ class OnDayOfMonthValueGenerator extends FieldValueGenerator {
 
     @Override
     public int generateNextValue(int reference) throws NoSuchValueException {
-        On on = ((On)expression);
+        On on = ((On)cronField.getExpression());
         int value = generateValue(on, year, month);
 
         if(value<=reference){
@@ -44,7 +44,7 @@ class OnDayOfMonthValueGenerator extends FieldValueGenerator {
 
     @Override
     public int generatePreviousValue(int reference) throws NoSuchValueException {
-        On on = ((On)expression);
+        On on = ((On)cronField.getExpression());
         int value = generateValue(on, year, month);
         if(value>=reference){
             throw new NoSuchValueException();
@@ -67,7 +67,7 @@ class OnDayOfMonthValueGenerator extends FieldValueGenerator {
 
     @Override
     public boolean isMatch(int value) {
-        On on = ((On)expression);
+        On on = ((On)cronField.getExpression());
         try {
             return value == generateValue(on, year, month);
         } catch (NoSuchValueException e) {}

@@ -1,16 +1,3 @@
-package com.cronutils.model;
-
-import com.cronutils.model.definition.CronDefinition;
-import com.cronutils.model.field.CronField;
-import com.cronutils.model.field.CronFieldName;
-import com.google.common.collect.Maps;
-import org.apache.commons.lang3.Validate;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-
 /*
  * Copyright 2014 jmrozanec
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,6 +10,24 @@ import java.util.Map;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+package com.cronutils.model;
+
+import com.cronutils.mapper.CronMapper;
+import com.cronutils.model.definition.CronConstraint;
+import com.cronutils.model.definition.CronDefinition;
+import com.cronutils.model.definition.CronDefinitionBuilder;
+import com.cronutils.model.field.CronField;
+import com.cronutils.model.field.CronFieldName;
+import com.cronutils.model.field.expression.visitor.ValidationFieldExpressionVisitor;
+import com.cronutils.parser.CronParser;
+import com.google.common.collect.Maps;
+import org.apache.commons.lang3.Validate;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Represents a cron expression
@@ -75,4 +80,40 @@ public class Cron {
     public CronDefinition getCronDefinition() {
         return cronDefinition;
     }
+
+    public Cron validate(){
+        for(Map.Entry<CronFieldName, CronField> field : retrieveFieldsAsMap().entrySet()){
+            CronFieldName fieldName = field.getKey();
+            field.getValue().getExpression().accept(
+                    new ValidationFieldExpressionVisitor(getCronDefinition().getFieldDefinition(fieldName).getConstraints(), cronDefinition.isStrictRanges())
+            );
+        }
+        for(CronConstraint constraint : getCronDefinition().getCronConstraints()){
+            if(!constraint.validate(this)){
+                throw new IllegalArgumentException(String.format("Invalid cron expression: %s. %s", asString(), constraint.getDescription()));
+            }
+        }
+        return this;
+    }
+
+    /**
+     * Provides means to compare if two cron expressions are equivalent.
+     * @param cronMapper - maps 'cron' parameter to this instance definition;
+     * @param cron - any cron instance, never null
+     * @return boolean - true if equivalent; false otherwise.
+     */
+    public boolean equivalent(CronMapper cronMapper, Cron cron){
+        return asString().equals(cronMapper.map(cron).asString());
+    }
+
+    /**
+     * Provides means to compare if two cron expressions are equivalent.
+     * Assumes same cron definition.
+     * @param cron - any cron instance, never null
+     * @return boolean - true if equivalent; false otherwise.
+     */
+    public boolean equivalent(Cron cron){
+        return asString().equals(cron.asString());
+    }
 }
+

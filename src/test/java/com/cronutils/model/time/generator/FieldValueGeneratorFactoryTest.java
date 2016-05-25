@@ -161,7 +161,7 @@ public class FieldValueGeneratorFactoryTest {
 
     @Test
     public void testCreateDayOfWeekValueGeneratorInstance_Between() throws Exception {
-        Between between = new Between(mock(FieldConstraints.class), new IntegerFieldValue(1), new IntegerFieldValue(7));
+        Between between = new Between(new IntegerFieldValue(1), new IntegerFieldValue(7));
         when(mockCronField.getField()).thenReturn(CronFieldName.DAY_OF_WEEK);
         when(mockCronField.getExpression()).thenReturn(between);
         assertEquals(

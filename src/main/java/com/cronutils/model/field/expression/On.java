@@ -1,6 +1,5 @@
 package com.cronutils.model.field.expression;
 
-import com.cronutils.model.field.constraint.FieldConstraints;
 import com.cronutils.model.field.value.IntegerFieldValue;
 import com.cronutils.model.field.value.SpecialChar;
 import com.cronutils.model.field.value.SpecialCharFieldValue;
@@ -25,36 +24,31 @@ public class On extends FieldExpression {
     private SpecialCharFieldValue specialChar;
 
     private On(On on){
-        this(on.constraints, on.time, on.specialChar, on.nth);
+        this(on.time, on.specialChar, on.nth);
     }
 
-    public On(FieldConstraints constraints, SpecialCharFieldValue specialChar) {
-        this(constraints, new IntegerFieldValue(DEFAULT_NTH_VALUE), specialChar);
+    public On(SpecialCharFieldValue specialChar) {
+        this(new IntegerFieldValue(DEFAULT_NTH_VALUE), specialChar);
     }
 
-    public On(FieldConstraints constraints, IntegerFieldValue time) {
-        this(constraints, time, new SpecialCharFieldValue(SpecialChar.NONE));
+    public On(IntegerFieldValue time) {
+        this(time, new SpecialCharFieldValue(SpecialChar.NONE));
     }
 
-    public On(FieldConstraints constraints, IntegerFieldValue time, SpecialCharFieldValue specialChar) {
-        this(constraints, time, specialChar, new IntegerFieldValue(-1));
+    public On(IntegerFieldValue time, SpecialCharFieldValue specialChar) {
+        this(time, specialChar, new IntegerFieldValue(-1));
         if(specialChar.getValue().equals(SpecialChar.HASH)){
             throw new IllegalArgumentException("value missing for a#b cron expression");
         }
     }
 
-    public On(FieldConstraints constraints, IntegerFieldValue time, SpecialCharFieldValue specialChar, IntegerFieldValue nth) {
-        super(constraints);
+    public On(IntegerFieldValue time, SpecialCharFieldValue specialChar, IntegerFieldValue nth) {
         Validate.notNull(time, "time must not be null");
         Validate.notNull(specialChar, "special char must not null");
         Validate.notNull(nth, "nth value must not be null");
-        if(!specialChar.getValue().equals(SpecialChar.HASH) && !specialChar.getValue().equals(SpecialChar.NONE)){
-            this.time = (time.getValue()!=-1)?(IntegerFieldValue)validate(time):time;
-        } else {
-            this.time = (IntegerFieldValue)validate(time);
-        }
-        this.specialChar = (SpecialCharFieldValue)validate(specialChar);
-        this.nth = (nth.getValue()!=-1)?(IntegerFieldValue)validate(nth):nth;
+        this.time = time;
+        this.specialChar = specialChar;
+        this.nth = nth;
     }
 
     public IntegerFieldValue getTime() {

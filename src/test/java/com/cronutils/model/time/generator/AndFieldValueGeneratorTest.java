@@ -1,5 +1,7 @@
 package com.cronutils.model.time.generator;
 
+import com.cronutils.model.field.CronField;
+import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.field.constraint.FieldConstraints;
 import com.cronutils.model.field.constraint.FieldConstraintsBuilder;
 import com.cronutils.model.field.expression.And;
@@ -27,6 +29,7 @@ import static org.mockito.Mockito.mock;
  */
 public class AndFieldValueGeneratorTest {
     private AndFieldValueGenerator fieldValueGenerator;
+    private FieldConstraints constraints;
 
     private int value0 = 0;
     private int value1 = 1;
@@ -36,13 +39,16 @@ public class AndFieldValueGeneratorTest {
 
     @Before
     public void setUp(){
-        FieldConstraints constraints = FieldConstraintsBuilder.instance().createConstraintsInstance();
+        constraints = FieldConstraintsBuilder.instance().createConstraintsInstance();
         fieldValueGenerator =
                 new AndFieldValueGenerator(
-                        new And()
-                                .and(new On(constraints, new IntegerFieldValue(value0)))
-                                .and(new On(constraints, new IntegerFieldValue(value1)))
-                                .and(new On(constraints, new IntegerFieldValue(value2)))
+                        new CronField(
+                                CronFieldName.MONTH,
+                                new And()
+                                        .and(new On(new IntegerFieldValue(value0)))
+                                        .and(new On(new IntegerFieldValue(value1)))
+                                        .and(new On(new IntegerFieldValue(value2))),
+                                constraints)
                 );
     }
 
@@ -85,6 +91,6 @@ public class AndFieldValueGeneratorTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void testConstructorNotMatchesAnd() throws Exception {
-        new AndFieldValueGenerator(mock(FieldExpression.class));
+        new AndFieldValueGenerator(new CronField(CronFieldName.HOUR, mock(FieldExpression.class), constraints));
     }
 }

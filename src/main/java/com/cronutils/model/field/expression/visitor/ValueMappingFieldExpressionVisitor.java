@@ -1,10 +1,3 @@
-package com.cronutils.model.field.expression.visitor;
-
-import com.cronutils.model.field.constraint.FieldConstraints;
-import com.cronutils.model.field.expression.*;
-import com.cronutils.model.field.value.FieldValue;
-import com.cronutils.model.field.value.IntegerFieldValue;
-import com.google.common.base.Function;
 /*
  * Copyright 2015 jmrozanec
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,27 +10,32 @@ import com.google.common.base.Function;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.cronutils.model.field.expression.visitor;
+
+import com.cronutils.model.field.expression.*;
+import com.cronutils.model.field.value.FieldValue;
+import com.cronutils.model.field.value.IntegerFieldValue;
+import com.google.common.base.Function;
+
 /**
  * Performs a transformation on FieldExpression values.
  * Returns a new FieldExpression instance considering a possible change
  * in new FieldExpression instance constraints.
  */
 public class ValueMappingFieldExpressionVisitor implements FieldExpressionVisitor {
-    private FieldConstraints destinationConstraint;
     private Function<FieldValue, FieldValue> transform;
 
-    public ValueMappingFieldExpressionVisitor(FieldConstraints destinationConstraint, Function<FieldValue, FieldValue> transform){
-        this.destinationConstraint = destinationConstraint;
+    public ValueMappingFieldExpressionVisitor(Function<FieldValue, FieldValue> transform){
         this.transform = transform;
     }
 
     @Override
-    public Always visit(Always always) {
+    public FieldExpression visit(Always always) {
         return always;
     }
 
     @Override
-    public And visit(And and) {
+    public FieldExpression visit(And and) {
         And clone = new And();
         for(FieldExpression expression : and.getExpressions()){
             clone.and(visit(expression));
@@ -46,25 +44,25 @@ public class ValueMappingFieldExpressionVisitor implements FieldExpressionVisito
     }
 
     @Override
-    public Between visit(Between between) {
+    public FieldExpression visit(Between between) {
         FieldValue from = transform.apply(between.getFrom());
         FieldValue to = transform.apply(between.getTo());
-        return new Between(destinationConstraint, from, to, between.getEvery().getTime());
+        return new Between(from, to);
     }
 
     @Override
-    public Every visit(Every every) {
-        return new Every(destinationConstraint, (IntegerFieldValue)transform.apply(every.getTime()));
+    public FieldExpression visit(Every every) {
+        return new Every((IntegerFieldValue)transform.apply(every.getPeriod()));
     }
 
     @Override
-    public On visit(On on) {
-        return new On(destinationConstraint, (IntegerFieldValue)transform.apply(on.getTime()), on.getSpecialChar(), on.getNth());
+    public FieldExpression visit(On on) {
+        return new On((IntegerFieldValue)transform.apply(on.getTime()), on.getSpecialChar(), on.getNth());
     }
 
     @Override
-    public QuestionMark visit(QuestionMark questionMark) {
-        return new QuestionMark(destinationConstraint);
+    public FieldExpression visit(QuestionMark questionMark) {
+        return new QuestionMark();
     }
 
     @Override
@@ -90,3 +88,4 @@ public class ValueMappingFieldExpressionVisitor implements FieldExpressionVisito
         return expression;
     }
 }
+

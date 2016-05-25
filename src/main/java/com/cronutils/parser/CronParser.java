@@ -4,7 +4,6 @@ import com.cronutils.model.Cron;
 import com.cronutils.model.definition.CronDefinition;
 import com.cronutils.model.field.CronField;
 import com.cronutils.model.field.definition.FieldDefinition;
-import com.cronutils.parser.field.CronParserField;
 import com.google.common.collect.Maps;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
@@ -95,6 +94,7 @@ public class CronParser {
             field = fields.get(j);
             results.add(field.parse(expressionParts[j]));
         }
-        return new Cron(cronDefinition, results);
+        return new Cron(cronDefinition, results).validate();
     }
 }
+

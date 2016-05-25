@@ -4,7 +4,6 @@ import com.cronutils.model.Cron;
 import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.time.ExecutionTime;
 import com.cronutils.parser.CronParser;
-import com.cronutils.validator.CronValidator;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -35,12 +34,6 @@ public class CronDefinitionIssue25IntegrationTest {
                         .withHours().and()
                         .withDayOfWeek().and()
                         .instance();
-    }
-
-    @Test
-    public void testValidator(){
-        CronValidator validator = new CronValidator(cronDefinition);
-        assertTrue(validator.isValid(CRON_EXPRESSION));
     }
 
     @Test

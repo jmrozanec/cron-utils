@@ -1,6 +1,8 @@
 package com.cronutils.model.field.value;
 
+import com.cronutils.model.field.value.*;
 import org.apache.commons.lang3.Validate;
+
 /*
  * Copyright 2015 jmrozanec
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,7 +15,7 @@ import org.apache.commons.lang3.Validate;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-public class SpecialCharFieldValue extends  FieldValue<SpecialChar> {
+public class SpecialCharFieldValue extends FieldValue<SpecialChar> {
     private SpecialChar specialChar = SpecialChar.NONE;
 
     public SpecialCharFieldValue(SpecialChar specialChar){
@@ -26,3 +28,4 @@ public class SpecialCharFieldValue extends  FieldValue<SpecialChar> {
         return specialChar;
     }
 }
+

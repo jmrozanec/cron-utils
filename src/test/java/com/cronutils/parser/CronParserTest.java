@@ -14,6 +14,7 @@ import org.mockito.MockitoAnnotations;
 
 import java.util.Set;
 
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
 /*
  * Copyright 2015 jmrozanec
@@ -85,13 +86,23 @@ public class CronParserTest {
      */
     @Test
     public void testMultipleSpacesDoNotHurtParsingExpression() throws Exception {
+        FieldDefinition minute = new FieldDefinition(CronFieldName.MINUTE, FieldConstraintsBuilder.instance().createConstraintsInstance());
+        FieldDefinition hour = new FieldDefinition(CronFieldName.HOUR, FieldConstraintsBuilder.instance().createConstraintsInstance());
+        FieldDefinition dom = new FieldDefinition(CronFieldName.DAY_OF_MONTH, FieldConstraintsBuilder.instance().createConstraintsInstance());
+        FieldDefinition month = new FieldDefinition(CronFieldName.MONTH, FieldConstraintsBuilder.instance().createConstraintsInstance());
+        FieldDefinition dow = new FieldDefinition(CronFieldName.DAY_OF_WEEK, FieldConstraintsBuilder.instance().createConstraintsInstance());
         Set<FieldDefinition> set = Sets.newHashSet();
-        set.add(new FieldDefinition(CronFieldName.MINUTE, FieldConstraintsBuilder.instance().createConstraintsInstance()));
-        set.add(new FieldDefinition(CronFieldName.HOUR, FieldConstraintsBuilder.instance().createConstraintsInstance()));
-        set.add(new FieldDefinition(CronFieldName.DAY_OF_MONTH, FieldConstraintsBuilder.instance().createConstraintsInstance()));
-        set.add(new FieldDefinition(CronFieldName.MONTH, FieldConstraintsBuilder.instance().createConstraintsInstance()));
-        set.add(new FieldDefinition(CronFieldName.DAY_OF_WEEK, FieldConstraintsBuilder.instance().createConstraintsInstance()));
+        set.add(minute);
+        set.add(hour);
+        set.add(dom);
+        set.add(month);
+        set.add(dow);
         when(definition.getFieldDefinitions()).thenReturn(set);
+        when(definition.getFieldDefinition(CronFieldName.MINUTE)).thenReturn(minute);
+        when(definition.getFieldDefinition(CronFieldName.HOUR)).thenReturn(hour);
+        when(definition.getFieldDefinition(CronFieldName.DAY_OF_MONTH)).thenReturn(dom);
+        when(definition.getFieldDefinition(CronFieldName.MONTH)).thenReturn(month);
+        when(definition.getFieldDefinition(CronFieldName.DAY_OF_WEEK)).thenReturn(dow);
         parser = new CronParser(definition);
 
         parser.parse("* *   * * *");

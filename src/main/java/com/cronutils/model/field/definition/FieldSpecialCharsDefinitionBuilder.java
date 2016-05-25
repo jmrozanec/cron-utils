@@ -1,8 +1,5 @@
 package com.cronutils.model.field.definition;
 
-import com.cronutils.model.definition.CronDefinitionBuilder;
-import com.cronutils.model.field.CronFieldName;
-
 /*
  * Copyright 2014 jmrozanec
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,6 +12,10 @@ import com.cronutils.model.field.CronFieldName;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+import com.cronutils.model.definition.CronDefinitionBuilder;
+import com.cronutils.model.field.CronFieldName;
+
 /**
  * Builder that allows to specify properties for a cron field supporting non-standard characters
  */

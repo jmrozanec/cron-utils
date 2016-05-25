@@ -23,7 +23,7 @@ public class ValueMappingFieldExpressionVisitorTest {
                 return input;
             }
         };
-        this.valueMappingFieldExpressionVisitor = new ValueMappingFieldExpressionVisitor(destinationConstraints, transform);
+        this.valueMappingFieldExpressionVisitor = new ValueMappingFieldExpressionVisitor(transform);
     }
 
     @Test
@@ -53,7 +53,8 @@ public class ValueMappingFieldExpressionVisitorTest {
 
     @Test
     public void testVisitQuestionMark() throws Exception {
-        QuestionMark questionMark = valueMappingFieldExpressionVisitor.visit(new QuestionMark(FieldConstraintsBuilder.instance().createConstraintsInstance()));
-        assertEquals(destinationConstraints, questionMark.getConstraints());
+        QuestionMark param = new QuestionMark();
+        QuestionMark questionMark = (QuestionMark) valueMappingFieldExpressionVisitor.visit(param);
+        assertTrue(param!=questionMark);//not same instance
     }
 }

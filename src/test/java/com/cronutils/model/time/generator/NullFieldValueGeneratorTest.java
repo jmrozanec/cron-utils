@@ -1,5 +1,6 @@
 package com.cronutils.model.time.generator;
 
+import com.cronutils.model.field.CronField;
 import com.cronutils.model.field.expression.FieldExpression;
 import org.junit.Before;
 import org.junit.Test;
@@ -24,7 +25,7 @@ public class NullFieldValueGeneratorTest {
 
     @Before
     public void setUp(){
-        fieldValueGenerator = new NullFieldValueGenerator(mock(FieldExpression.class));
+        fieldValueGenerator = new NullFieldValueGenerator(mock(CronField.class));
     }
 
     @Test(expected = NoSuchValueException.class)
@@ -54,6 +55,6 @@ public class NullFieldValueGeneratorTest {
 
     @Test
     public void testConstructorNotMatchesNull() throws Exception {
-        new NullFieldValueGenerator(mock(FieldExpression.class));
+        new NullFieldValueGenerator(mock(CronField.class));
     }
 }

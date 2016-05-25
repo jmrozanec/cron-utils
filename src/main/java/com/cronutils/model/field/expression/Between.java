@@ -13,11 +13,8 @@ package com.cronutils.model.field.expression;
  * limitations under the License.
  */
 
-import com.cronutils.model.field.constraint.FieldConstraints;
 import com.cronutils.model.field.value.FieldValue;
 import com.cronutils.model.field.value.IntegerFieldValue;
-import com.cronutils.model.field.value.SpecialChar;
-import com.cronutils.model.field.value.SpecialCharFieldValue;
 
 /**
  * Represents a range in a cron expression.
@@ -25,22 +22,14 @@ import com.cronutils.model.field.value.SpecialCharFieldValue;
 public class Between extends FieldExpression {
     private FieldValue from;
     private FieldValue to;
-    private Every every;
 
-    public Between(FieldConstraints constraints, FieldValue from, FieldValue to) {
-        this(constraints, from, to, new IntegerFieldValue(1));
-    }
-
-    public Between(FieldConstraints constraints, FieldValue from, FieldValue to, IntegerFieldValue every) {
-        super(constraints);
-        this.from = validate(from);
-        this.to = validate(to);
-        this.every = new Every(getConstraints(), every);
-        validate();
+    public Between(FieldValue from, FieldValue to) {
+        this.from = from;
+        this.to = to;
     }
 
     public Between(Between between) {
-        this(between.getConstraints(), between.getFrom(), between.getTo(), between.getEvery().getTime());
+        this(between.getFrom(), between.getTo());
     }
 
     public FieldValue getFrom() {
@@ -51,35 +40,8 @@ public class Between extends FieldExpression {
         return to;
     }
 
-    public Every getEvery() {
-        return every;
-    }
-
-    private void validate() {
-        if(from instanceof IntegerFieldValue && to instanceof IntegerFieldValue){
-            int fromValue = ((IntegerFieldValue)from).getValue();
-            int toValue = ((IntegerFieldValue)to).getValue();
-            if (fromValue >= toValue) {
-                throw new IllegalArgumentException(String.format("Bad range defined! Defined range should satisfy from <= to, but was [%s, %s]", fromValue, toValue));
-            }
-            if (every.getTime().getValue() > (toValue - fromValue)) {
-                throw new IllegalArgumentException("Every x time cannot exceed range length");
-            }
-        }
-        validateSpecialCharValue(from);
-        validateSpecialCharValue(to);
-    }
-
-    private void validateSpecialCharValue(FieldValue fieldValue){
-        if(fieldValue instanceof SpecialCharFieldValue){
-            if(!SpecialChar.L.equals(fieldValue.getValue())){
-                throw new IllegalArgumentException(String.format("%s value not supported in ranges", fieldValue));
-            }
-        }
-    }
-
     @Override
     public String asString() {
-        return String.format("%s-%s%s", from, to, every.asString());
+        return String.format("%s-%s", from, to);
     }
 }

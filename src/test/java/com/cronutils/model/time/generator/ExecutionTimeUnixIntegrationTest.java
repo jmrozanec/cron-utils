@@ -7,6 +7,7 @@ import com.cronutils.model.definition.CronDefinitionBuilder;
 import com.cronutils.model.time.ExecutionTime;
 import com.cronutils.parser.CronParser;
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -56,7 +57,6 @@ public class ExecutionTimeUnixIntegrationTest {
         DateTime time = DateTime.parse("2015-09-05T13:56:00.000-07:00");
         DateTime next = executionTime.nextExecution(time);
         DateTime shouldBeInNextHour = executionTime.nextExecution(next);
-
         assertEquals(next.plusMinutes(2), shouldBeInNextHour);
     }
 
@@ -223,10 +223,40 @@ public class ExecutionTimeUnixIntegrationTest {
     }
 
     /**
-     * Issue #79: Next execution skipping valid date: 
+     * Issue #61: nextExecution over daylight savings is wrong
+     */
+    @Test
+    public void testNextExecutionDaylightSaving() {
+        CronParser parser = new CronParser(CronDefinitionBuilder.instanceDefinitionFor(CronType.UNIX));
+        ExecutionTime executionTime = ExecutionTime.forCron(parser.parse("0 17 * * *"));// daily at 17:00
+        // Daylight savings for New York 2016 is Mar 13 at 2am
+        DateTime last = new DateTime(2016, 3, 12, 17, 0, DateTimeZone.forID("America/New_York"));
+        DateTime next = executionTime.nextExecution(last);
+        long millis = next.getMillis() - last.getMillis();
+        assertEquals(23, (millis / 3600000));
+        assertEquals(last.getZone(), next.getZone());
+    }
+
+    /**
+     * Issue #61: lastExecution over daylight savings is wrong
+     */
+    @Test
+    public void testLastExecutionDaylightSaving(){
+        CronParser parser = new CronParser(CronDefinitionBuilder.instanceDefinitionFor(CronType.UNIX));
+        ExecutionTime executionTime = ExecutionTime.forCron(parser.parse("0 17 * * *"));// daily at 17:00
+        // Daylight savings for New York 2016 is Mar 13 at 2am
+        DateTime now = new DateTime(2016, 3, 12, 17, 0, DateTimeZone.forID("America/Phoenix"));
+        DateTime last = executionTime.lastExecution(now);
+        long millis = now.getMillis() - last.getMillis();
+        assertEquals(24, (millis / 3600000));
+        assertEquals(now.getZone(), last.getZone());
+    }
+
+    /**
+     * Issue #79: Next execution skipping valid date
      */
     public void testNextExecution2014() {
-        String crontab = "0 8 * * 1";
+        String crontab = "0 8 * * 1";//m,h,dom,m,dow ; every monday at 8AM
         CronDefinition cronDefinition = CronDefinitionBuilder.instanceDefinitionFor(CronType.UNIX);
         CronParser parser = new CronParser(cronDefinition);
         Cron cron = parser.parse(crontab);

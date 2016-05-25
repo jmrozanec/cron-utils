@@ -106,10 +106,7 @@ abstract class DescriptionStrategy {
      * @return human readable description - String
      */
     protected String describe(Always always, boolean and) {
-        if (always.getEvery().getTime().getValue() <= 1) {
-            return "";
-        }
-        return describe(always.getEvery(), and);
+        return "";
     }
 
     /**
@@ -163,16 +160,12 @@ abstract class DescriptionStrategy {
      * @return human readable description - String
      */
     protected String describe(Between between, boolean and) {
-        return new StringBuilder()
-                .append(describe(between.getEvery(), and))
-                .append(
-                        MessageFormat.format(
-                                bundle.getString("between_x_and_y"),
-                                nominalValue(between.getFrom()),
-                                nominalValue(between.getTo())
-                        )
-                )
-                .append(" ").toString();
+        return bundle.getString("every")+" %s "+
+                MessageFormat.format(
+                        bundle.getString("between_x_and_y"),
+                        nominalValue(between.getFrom()),
+                        nominalValue(between.getTo())
+                )+" ";
     }
 
     /**
@@ -182,10 +175,18 @@ abstract class DescriptionStrategy {
      */
     protected String describe(Every every, boolean and) {
         String description;
-        if (every.getTime().getValue() > 1) {
-            description = String.format("%s %s ", bundle.getString("every"), nominalValue(every.getTime())) + " %p ";
+        if (every.getPeriod().getValue() > 1) {
+            description = String.format("%s %s ", bundle.getString("every"), nominalValue(every.getPeriod())) + " %p ";
         } else {
             description = bundle.getString("every")+" %s ";
+        }
+        if(every.getExpression() instanceof Between){
+            Between between = (Between) every.getExpression();
+            description += MessageFormat.format(
+                    bundle.getString("between_x_and_y"),
+                    nominalValue(between.getFrom()),
+                    nominalValue(between.getTo())
+            )+" ";
         }
         return description;
     }

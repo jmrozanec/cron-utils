@@ -13,36 +13,46 @@ package com.cronutils.model.field.expression;
  * limitations under the License.
  */
 
-import com.cronutils.model.field.constraint.FieldConstraints;
+import com.cronutils.model.field.value.FieldValue;
 import com.cronutils.model.field.value.IntegerFieldValue;
+import org.apache.commons.lang3.Validate;
 
 /**
  * Represents every x time on a cron field.
  */
 public class Every extends FieldExpression {
-    private IntegerFieldValue time;
+    private FieldExpression expression;
+    private IntegerFieldValue period;
 
-    public Every(FieldConstraints constraints, IntegerFieldValue time) {
-        super(constraints);
-        if (time == null) {
-            time = new IntegerFieldValue(1);
+    public Every(IntegerFieldValue time) {
+        this(new Always(), time);
+    }
+
+    public Every(FieldExpression expression, IntegerFieldValue period) {
+        this.expression = Validate.notNull(expression, "Expression must not be null");
+        if (period == null) {
+            period = new IntegerFieldValue(1);
         }
-        this.time = time;
+        this.period = period;
     }
 
     private Every(Every every){
-        this(every.constraints, every.time);
+        this(every.getExpression(), every.getPeriod());
     }
 
-    public IntegerFieldValue getTime() {
-        return time;
+    public IntegerFieldValue getPeriod() {
+        return period;
+    }
+
+    public FieldExpression getExpression(){
+        return expression;
     }
 
     @Override
     public String asString() {
-        if(time.getValue()==1){
-            return "";
+        if(period.getValue()==1){
+            return expression.asString()!=null?"*":"";
         }
-        return String.format("/%s", getTime());
+        return String.format("%s/%s", this.expression.asString(), getPeriod());
     }
 }

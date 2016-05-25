@@ -1,5 +1,7 @@
 package com.cronutils.model.time.generator;
 
+import com.cronutils.model.field.CronField;
+import com.cronutils.model.field.constraint.FieldConstraints;
 import com.cronutils.model.field.expression.FieldExpression;
 import org.apache.commons.lang3.Validate;
 
@@ -25,12 +27,11 @@ import java.util.List;
  */
 public abstract class FieldValueGenerator {
     protected static int NO_VALUE = Integer.MIN_VALUE;
-    protected FieldExpression expression;
+    protected CronField cronField;
 
-    public FieldValueGenerator(FieldExpression expression){
-        Validate.notNull(expression);
-        Validate.isTrue(matchesFieldExpressionClass(expression), "FieldExpression does not match required class");
-        this.expression = expression;
+    public FieldValueGenerator(CronField cronField){
+        this.cronField = Validate.notNull(cronField, "CronField must not be null");
+        Validate.isTrue(matchesFieldExpressionClass(cronField.getExpression()), "FieldExpression does not match required class");
     }
 
     /**
