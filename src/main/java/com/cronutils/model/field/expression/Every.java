@@ -51,7 +51,7 @@ public class Every extends FieldExpression {
     @Override
     public String asString() {
         if(period.getValue()==1){
-            return expression.asString()!=null?"*":"";
+            return expression.asString()!=null?expression.asString():"";
         }
         return String.format("%s/%s", this.expression.asString(), getPeriod());
     }

@@ -15,6 +15,9 @@ import org.junit.Test;
 
 import java.util.Locale;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 /*
  * Copyright 2015 jmrozanec
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -205,5 +208,20 @@ public class CronParserQuartzIntegrationTest {
         DateTime lastExecution = executionTime.lastExecution(now);
         DateTime assertDate = DateTime.parse("2005-01-09 18:28:00", formatter);
         Assert.assertEquals(assertDate, lastExecution);
+    }
+
+    /**
+     * Issue #90: Reported error contains other expression than the one provided
+     */
+    @Test
+    public void testReportedErrorContainsSameExpressionAsProvided(){
+        boolean asserted = false;
+        try{
+            ExecutionTime.forCron(parser.parse("0/1 * * * * *"));
+        }catch (IllegalArgumentException e){
+            assertEquals("Invalid cron expression: 0 * * * * *. Both, a day-of-week AND a day-of-month parameter, are not supported.", e.getMessage());
+            asserted = true;
+        }
+        assertTrue(asserted);
     }
 }
