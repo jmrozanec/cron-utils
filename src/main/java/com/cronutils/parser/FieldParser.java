@@ -12,6 +12,7 @@
  */
 package com.cronutils.parser;
 
+import com.cronutils.StringValidations;
 import com.cronutils.model.field.constraint.FieldConstraints;
 import com.cronutils.model.field.expression.*;
 import com.cronutils.model.field.value.FieldValue;
@@ -206,7 +207,8 @@ public class FieldParser {
             try{
                 return Integer.parseInt(exp);
             }catch (NumberFormatException e){
-                throw new IllegalArgumentException(e);
+                String invalidChars = new StringValidations(fieldConstraints).removeValidChars(exp);
+                throw new IllegalArgumentException(String.format("Invalid chars in expression! Expression: %s Invalid chars: %s", exp, invalidChars));
             }
         }
     }

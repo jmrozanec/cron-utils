@@ -211,6 +211,21 @@ public class CronParserQuartzIntegrationTest {
     }
 
     /**
+     * Issue #89: regression - NumberFormatException: For input string: "$"
+     */
+    @Test
+    public void testRegressionDifferentMessageForException(){
+        boolean asserted = false;
+        try{
+            ExecutionTime.forCron(parser.parse("* * * * $ ?"));
+        }catch (IllegalArgumentException e){
+            assertEquals("Invalid chars in expression! Expression: $ Invalid chars: $", e.getMessage());
+            asserted = true;
+        }
+        assertTrue(asserted);
+    }
+
+    /**
      * Issue #90: Reported error contains other expression than the one provided
      */
     @Test
