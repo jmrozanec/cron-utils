@@ -24,7 +24,7 @@ public class Issue58UnixCronAsStringIntegrationTest {
     @Test
     public void everyEvenHourShouldBeParsedCorrectly() {
         Cron cron = cronParser.parse("0 0/1 * * *");
-        assertThat(cron.asString(), anyOf(is("0 0/1 * * *"), is("0 /1 * * *"), is("0 * * * *")));
+        assertThat(cron.asString(), anyOf(is("0 0/1 * * *"), is("0 /1 * * *"), is("0 0 * * *")));
     }
 
     @Test
@@ -36,7 +36,7 @@ public class Issue58UnixCronAsStringIntegrationTest {
     @Test
     public void everyEvenMinuteShouldBeParsedCorrectly() {
         Cron cron = cronParser.parse("0/1 * * * *");
-        assertThat(cron.asString(), anyOf(is("0/1 * * * *"), is("/1 * * * *"), is("* * * * *")));
+        assertThat(cron.asString(), anyOf(is("0/1 * * * *"), is("/1 * * * *"), is("0 * * * *")));
     }
 
     @Test
