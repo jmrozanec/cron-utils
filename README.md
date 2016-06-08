@@ -15,7 +15,7 @@ cron-utils is available on [Maven central](http://search.maven.org/#search%7Cga%
     <dependency>
         <groupId>com.cronutils</groupId>
         <artifactId>cron-utils</artifactId>
-        <version>4.0.1</version>
+        <version>4.1.0</version>
     </dependency>
 
 
@@ -25,7 +25,7 @@ cron-utils is available on [Maven central](http://search.maven.org/#search%7Cga%
  * You can flag last field as optional!
  * Supports all cron special characters: * / , -
     * Non-standard characters L, W, LW, '?' and # are supported as well!
- * Print to locale specific human readable format (English, German, Korean and Spanish are fully supported. Dutch, French, Italian and Portuguese have basic support).
+ * Print to locale specific human readable format (English, German, Korean and Spanish are fully supported. Dutch, French, Italian, Portuguese and Russian have basic support).
  * Parse and Description process are decoupled: parse once and operate with the result!
  * Build cron expressions using CronBuilder: 
     * no need to remember fields and constraints for each cron provider
