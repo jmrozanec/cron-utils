@@ -73,7 +73,7 @@ class OnDayOfWeekValueGenerator extends FieldValueGenerator {
     public boolean isMatch(int value) {
         On on = ((On)cronField.getExpression());
         try {
-            return value == generateValue(on, year, month, value);
+            return value == generateValue(on, year, month, value - 1);
         } catch (NoSuchValueException e) {}
         return false;
     }
