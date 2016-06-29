@@ -19,6 +19,8 @@ import com.cronutils.model.field.value.SpecialCharFieldValue;
 import java.util.List;
 
 public class FieldExpressionFactory {
+    private FieldExpressionFactory() {}
+    
     public static Always always(){
         return new Always();
     }

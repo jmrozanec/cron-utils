@@ -19,6 +19,9 @@ import java.util.ResourceBundle;
 * limitations under the License.
 */
 class DescriptionStrategyFactory {
+
+    private DescriptionStrategyFactory() {}
+
     /**
      * Creates description strategy for days of week
      * @param bundle - locale
