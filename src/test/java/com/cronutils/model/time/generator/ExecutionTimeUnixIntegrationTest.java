@@ -269,6 +269,7 @@ public class ExecutionTimeUnixIntegrationTest {
     /**
      * Issue #92: Next execution skipping valid date
      */
+    @Test
     public void testNextExecution2016() {
         CronParser parser = new CronParser(CronDefinitionBuilder.instanceDefinitionFor(CronType.UNIX));
         ExecutionTime executionTime = ExecutionTime.forCron(parser.parse("1 0 * * tue"));

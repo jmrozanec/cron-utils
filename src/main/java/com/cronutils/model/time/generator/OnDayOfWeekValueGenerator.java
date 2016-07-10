@@ -160,10 +160,13 @@ class OnDayOfWeekValueGenerator extends FieldValueGenerator {
 			baseDay = baseDay + 7 - diff;
 		}
 		// if baseDay is greater than the reference, we are returning the initial matching day value
-		if (baseDay > reference) {
-			return baseDay;
-		}
-
-		return reference + 7;
+        //Fix issue #92
+        if (reference < 1) {
+            return baseDay;
+        }
+        while (baseDay <= reference) {
+            baseDay += 7;
+        }
+        return baseDay;
 	}
 }

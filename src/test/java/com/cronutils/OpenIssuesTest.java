@@ -11,25 +11,64 @@ import org.joda.time.DateTimeZone;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import static org.hamcrest.core.AnyOf.anyOf;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
 public class OpenIssuesTest {
-    /**
-     * Issue #79: Next execution skipping valid date:
-     */
-    public void testNextExecution2014() {
-        String crontab = "0 8 * * 1";//m,h,dom,m,dow ; every monday at 8AM
-        CronDefinition cronDefinition = CronDefinitionBuilder.instanceDefinitionFor(CronType.UNIX);
-        CronParser parser = new CronParser(cronDefinition);
-        Cron cron = parser.parse(crontab);
-        DateTime date = DateTime.parse("2014-11-30T00:00:00Z");
-        ExecutionTime executionTime = ExecutionTime.forCron(cron);
-        assertEquals(DateTime.parse("2014-12-01T08:00:00Z"), executionTime.nextExecution(date));
+    DateFormat dfSimple = new SimpleDateFormat("hh:mm:ss MM/dd/yyyy a");
+    DateFormat df = new SimpleDateFormat("hh:mm:ss EEE, MMM dd yyyy a");
+
+    @Test
+    public void testBasicCron() throws ParseException
+    {
+        printDate("3:15:00 11/20/2015 PM");
+        printDate("3:15:00 11/27/2015 PM");
+// printDate("3:15:00 11/29/2015 PM");
+// printDate("3:15:00 11/30/2015 PM");
+// printDate("3:15:00 12/01/2015 PM");
+// printDate("3:15:00 12/02/2015 PM");
+// printDate("3:15:00 12/29/2015 PM");
+// printDate("3:15:00 12/30/2015 PM");
+// printDate("3:15:00 12/31/2015 PM");
     }
 
-    /*Issue #58*/
+    private void printDate(String startDate) throws ParseException
+    {
+        Date now = dfSimple.parse(startDate);
+        System.out.println("Starting: "+ df.format(now));
+        printNextDate(now, "0 6 * * 0");//Sunday
+        printNextDate(now, "0 6 * * 1");
+        printNextDate(now, "0 6 * * 2");
+        printNextDate(now, "0 6 * * 3");
+        printNextDate(now, "0 6 * * 4");
+        printNextDate(now, "0 6 * * 5");
+        printNextDate(now, "0 6 * * 6");
+    }
 
+    private void printNextDate(Date now, String cronString)
+    {
+        Date date = nextSchedule(cronString, now);
+        System.out.println("Next time: " + df.format(date));
+    }
+
+    public static Date nextSchedule(String cronString, Date lastExecution)
+    {
+        DateTime now = new DateTime(lastExecution);
+        CronParser cronParser =new CronParser(
+                CronDefinitionBuilder.instanceDefinitionFor(CronType.UNIX));
+        Cron cron = cronParser.parse(cronString);
+
+        ExecutionTime executionTime = ExecutionTime.forCron(cron);
+        DateTime nextExecution = executionTime.nextExecution(now);
+
+        return nextExecution.toDate();
+    }
 }
+
