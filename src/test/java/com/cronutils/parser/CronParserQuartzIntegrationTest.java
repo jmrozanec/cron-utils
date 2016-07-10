@@ -6,17 +6,17 @@ import com.cronutils.model.CronType;
 import com.cronutils.model.definition.CronDefinition;
 import com.cronutils.model.definition.CronDefinitionBuilder;
 import com.cronutils.model.time.ExecutionTime;
+
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 import java.util.Locale;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 /*
  * Copyright 2015 jmrozanec
@@ -35,6 +35,9 @@ public class CronParserQuartzIntegrationTest {
     private final static DateTimeFormatter formatter = DateTimeFormat.forPattern("YYYY-MM-DD HH:mm:ss");
 
     private CronParser parser;
+
+    @Rule
+    public ExpectedException thrown = ExpectedException.none();
 
     @Before
     public void setUp() throws Exception {
@@ -215,14 +218,9 @@ public class CronParserQuartzIntegrationTest {
      */
     @Test
     public void testRegressionDifferentMessageForException(){
-        boolean asserted = false;
-        try{
-            ExecutionTime.forCron(parser.parse("* * * * $ ?"));
-        }catch (IllegalArgumentException e){
-            assertEquals("Invalid chars in expression! Expression: $ Invalid chars: $", e.getMessage());
-            asserted = true;
-        }
-        assertTrue(asserted);
+        thrown.expect(IllegalArgumentException.class);
+        thrown.expectMessage("Invalid chars in expression! Expression: $ Invalid chars: $");
+        ExecutionTime.forCron(parser.parse("* * * * $ ?"));
     }
 
     /**
@@ -230,13 +228,24 @@ public class CronParserQuartzIntegrationTest {
      */
     @Test
     public void testReportedErrorContainsSameExpressionAsProvided(){
-        boolean asserted = false;
-        try{
-            ExecutionTime.forCron(parser.parse("0/1 * * * * *"));
-        }catch (IllegalArgumentException e){
-            assertEquals("Invalid cron expression: 0 * * * * *. Both, a day-of-week AND a day-of-month parameter, are not supported.", e.getMessage());
-            asserted = true;
-        }
-        assertTrue(asserted);
+        thrown.expect(IllegalArgumentException.class);
+        thrown.expectMessage(
+                "Invalid cron expression: 0 * * * * *. Both, a day-of-week AND a day-of-month parameter, are not supported.");
+        ExecutionTime.forCron(parser.parse("0/1 * * * * *"));
     }
+
+    @Test
+    public void testErrorAbout2Parts(){
+        thrown.expect(IllegalArgumentException.class);
+        thrown.expectMessage("Cron expression contains 2 parts but we expect one of [6, 7]");
+        ExecutionTime.forCron(parser.parse("* *"));
+    }
+
+    @Test
+    public void testErrorAboutMissingSteps(){
+        thrown.expect(IllegalArgumentException.class);
+        thrown.expectMessage("Missing steps for expression: */");
+        ExecutionTime.forCron(parser.parse("*/ * * * * ?"));
+    }
+
 }
