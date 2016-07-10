@@ -8,6 +8,7 @@ import com.cronutils.parser.CronParser;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeConstants;
 import org.joda.time.DateTimeZone;
+import org.joda.time.Duration;
 import org.joda.time.Interval;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
@@ -374,6 +375,36 @@ public class ExecutionTimeQuartzIntegrationTest {
         ExecutionTime nameExec = ExecutionTime.forCron(parser.parse("0 0 12 ? * MON,TUE,WED,THU,FRI *"));
         assertEquals("same generated dates", numberExec.nextExecution(fridayMorning),
                 nameExec.nextExecution(fridayMorning));
+    }
+
+    /**
+     * Issue #91: Calculating the minimum interval for a cron expression.
+     */
+    @Test
+    public void testMinimumInterval() {
+        Duration s1 = Duration.standardSeconds(1);
+        assertEquals(getMinimumInterval("* * * * * ?"), s1);
+        assertEquals("Should ignore whitespace", getMinimumInterval("*   *    *  *       * ?"), s1);
+        assertEquals(getMinimumInterval("0/1 * * * * ?"), s1);
+        assertEquals(getMinimumInterval("*/1 * * * * ?"), s1);
+
+        Duration s60 = Duration.standardSeconds(60);
+        assertEquals(getMinimumInterval("0 * * * * ?"), s60);
+        assertEquals(getMinimumInterval("0 */1 * * * ?"), s60);
+
+        assertEquals(getMinimumInterval("0 */5 * * * ?"), Duration.standardSeconds(300));
+        assertEquals(getMinimumInterval("0 0 * * * ?"), Duration.standardSeconds(3600));
+        assertEquals(getMinimumInterval("0 0 */3 * * ?"), Duration.standardSeconds(10800));
+        assertEquals(getMinimumInterval("0 0 0 * * ?"), Duration.standardSeconds(86400));
+    }
+
+    private Duration getMinimumInterval(String quartzPattern) {
+        ExecutionTime et = ExecutionTime.forCron(parser.parse(quartzPattern));
+        DateTime coolDay = new DateTime(2016, 1, 1, 0, 0, 0);
+        // Find next execution time #1
+        DateTime t1 = et.nextExecution(coolDay);
+        // Find next execution time #2 right after #1, the interval between them is minimum
+        return et.timeToNextExecution(t1);
     }
 
     private DateTime truncateToSeconds(DateTime dateTime){
