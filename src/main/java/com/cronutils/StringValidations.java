@@ -12,8 +12,6 @@
  */
 package com.cronutils;
 
-import static com.google.common.base.Preconditions.checkArgument;
-
 import java.util.Iterator;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -69,7 +67,10 @@ public class StringValidations {
 		StringBuilder builder = new StringBuilder(ESCAPED_START);
 		Iterator<String> iterator = words.iterator();
 
-		checkArgument(iterator.hasNext());
+		if (!iterator.hasNext()) {
+			builder.append(ESCAPED_END);
+			return Pattern.compile(builder.toString());
+		}
 		String next = iterator.next();
 		builder.append(next);
 		while (iterator.hasNext()) {
