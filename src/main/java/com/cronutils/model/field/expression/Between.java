@@ -14,7 +14,6 @@ package com.cronutils.model.field.expression;
  */
 
 import com.cronutils.model.field.value.FieldValue;
-import com.cronutils.model.field.value.IntegerFieldValue;
 
 /**
  * Represents a range in a cron expression.

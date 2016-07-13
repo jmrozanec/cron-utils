@@ -3,13 +3,13 @@ package com.cronutils.descriptor;
 import com.cronutils.model.field.expression.*;
 import com.cronutils.model.field.value.FieldValue;
 import com.cronutils.model.field.value.IntegerFieldValue;
-import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import org.apache.commons.lang3.Validate;
 
 import java.text.MessageFormat;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.function.Function;
 
 /*
  * Copyright 2014 jmrozanec
@@ -34,11 +34,7 @@ abstract class DescriptionStrategy {
 
     public DescriptionStrategy(ResourceBundle bundle) {
         this.bundle = bundle;
-        nominalValueFunction = new Function<Integer, String>() {
-            public String apply(Integer integer) {
-                return "" + integer;
-            }
-        };
+        nominalValueFunction = integer -> "" + integer;
     }
 
     /**

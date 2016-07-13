@@ -66,7 +66,6 @@
         <junit.version>4.12</junit.version>
         <mockito.version>1.10.19</mockito.version>
         <powermock.version>1.6.2</powermock.version>
-        <guava.version>18.0</guava.version>
         <htime.version>1.0.0</htime.version>
 
         <github.global.server>github</github.global.server>
@@ -91,11 +90,6 @@
             <version>${jodatime.version}</version>
         </dependency>
 
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <version>${guava.version}</version>
-        </dependency>
         <dependency>
             <groupId>com.cronutils</groupId>
             <artifactId>htime</artifactId>
@@ -147,8 +141,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.1</version>
                 <configuration>
-                    <source>1.7</source>
-                    <target>1.7</target>
+                    <source>1.8</source>
+                    <target>1.8</target>
                 </configuration>
             </plugin>
             <plugin>

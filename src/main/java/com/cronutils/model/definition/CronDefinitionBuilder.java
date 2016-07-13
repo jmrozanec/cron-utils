@@ -1,18 +1,20 @@
 package com.cronutils.model.definition;
 
 import com.cronutils.model.Cron;
+import com.cronutils.model.CronType;
 import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.field.definition.FieldDayOfWeekDefinitionBuilder;
 import com.cronutils.model.field.definition.FieldDefinition;
 import com.cronutils.model.field.definition.FieldDefinitionBuilder;
 import com.cronutils.model.field.definition.FieldSpecialCharsDefinitionBuilder;
-import com.cronutils.model.CronType;
 import com.cronutils.model.field.expression.QuestionMark;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 /*
  * Copyright 2014 jmrozanec

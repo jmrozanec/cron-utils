@@ -1,12 +1,11 @@
 package com.cronutils.model.time.generator;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.cronutils.mapper.WeekDay;
 import com.cronutils.model.field.CronField;
 import com.cronutils.model.field.expression.*;
 import com.cronutils.model.field.value.SpecialChar;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /*
  * Copyright 2015 jmrozanec
