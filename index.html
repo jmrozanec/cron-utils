@@ -51,7 +51,7 @@
 <pre><code>&lt;dependency&gt;
     &lt;groupId&gt;com.cronutils&lt;/groupId&gt;
     &lt;artifactId&gt;cron-utils&lt;/artifactId&gt;
-    &lt;version&gt;4.1.0&lt;/version&gt;
+    &lt;version&gt;4.1.1&lt;/version&gt;
 &lt;/dependency&gt;
 </code></pre>
 
@@ -96,14 +96,9 @@
     String description = descriptor.describe(parser.parse("*/45 * * * * *"));
     //description will be: "every 45 seconds"
 
-    //Validate if a string expression matches a cron definition:
-    CronValidator quartzValidator = new CronValidator(cronDefinition);
+    //validate expression
+    quartzCron.validate()
 
-    //getting a boolean result:
-    quartzValidator.isValid("0 23 ? * * MON-FRI *");
-
-    //or returning same string if valid and raising an exception if invalid
-    quartzValidator.validate("0 23 ? * * MON-FRI *");
 </code></pre>
 
         <p>For more examples, check our <a href="https://github.com/jmrozanec/cron-utils">README</a></p>
