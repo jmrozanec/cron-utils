@@ -12,6 +12,17 @@
  */
 package com.cronutils.builder;
 
+import static com.cronutils.model.field.CronFieldName.DAY_OF_MONTH;
+import static com.cronutils.model.field.CronFieldName.DAY_OF_WEEK;
+import static com.cronutils.model.field.CronFieldName.HOUR;
+import static com.cronutils.model.field.CronFieldName.MINUTE;
+import static com.cronutils.model.field.CronFieldName.MONTH;
+import static com.cronutils.model.field.CronFieldName.SECOND;
+import static com.cronutils.model.field.CronFieldName.YEAR;
+import static com.google.common.base.Preconditions.checkState;
+
+import java.util.Map;
+
 import com.cronutils.model.Cron;
 import com.cronutils.model.definition.CronDefinition;
 import com.cronutils.model.field.CronField;
@@ -22,10 +33,6 @@ import com.cronutils.model.field.expression.visitor.ValidationFieldExpressionVis
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-
-import java.util.Map;
-
-import static com.cronutils.model.field.CronFieldName.*;
 
 public class CronBuilder {
 
@@ -74,6 +81,8 @@ public class CronBuilder {
 
 	@VisibleForTesting
 	CronBuilder addField(CronFieldName name, FieldExpression expression) {
+		checkState(definition != null, "CronBuilder not initialized.");
+
 		FieldConstraints constraints = definition.getFieldDefinition(name).getConstraints();
 		expression.accept(new ValidationFieldExpressionVisitor(constraints, definition.isStrictRanges()));
 		fields.put(name, new CronField(name, expression, constraints));

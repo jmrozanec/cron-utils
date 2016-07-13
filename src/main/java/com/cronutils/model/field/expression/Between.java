@@ -19,28 +19,24 @@ import com.cronutils.model.field.value.FieldValue;
  * Represents a range in a cron expression.
  */
 public class Between extends FieldExpression {
-    private FieldValue from;
-    private FieldValue to;
+	private FieldValue<?> from;
+	private FieldValue<?> to;
 
-    public Between(FieldValue from, FieldValue to) {
-        this.from = from;
-        this.to = to;
-    }
+	public Between(FieldValue<?> from, FieldValue<?> to) {
+		this.from = from;
+		this.to = to;
+	}
 
-    public Between(Between between) {
-        this(between.getFrom(), between.getTo());
-    }
+	public FieldValue<?> getFrom() {
+		return from;
+	}
 
-    public FieldValue getFrom() {
-        return from;
-    }
+	public FieldValue<?> getTo() {
+		return to;
+	}
 
-    public FieldValue getTo() {
-        return to;
-    }
-
-    @Override
-    public String asString() {
-        return String.format("%s-%s", from, to);
-    }
+	@Override
+	public String asString() {
+		return String.format("%s-%s", from, to);
+	}
 }

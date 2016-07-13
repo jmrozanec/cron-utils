@@ -12,218 +12,255 @@
  */
 package com.cronutils.parser;
 
+import static com.cronutils.model.field.value.SpecialChar.HASH;
+import static com.cronutils.model.field.value.SpecialChar.L;
+import static com.cronutils.model.field.value.SpecialChar.LW;
+import static com.cronutils.model.field.value.SpecialChar.NONE;
+import static com.cronutils.model.field.value.SpecialChar.QUESTION_MARK;
+import static com.cronutils.model.field.value.SpecialChar.W;
+
+import java.util.regex.Pattern;
+
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Validate;
+
 import com.cronutils.StringValidations;
 import com.cronutils.model.field.constraint.FieldConstraints;
-import com.cronutils.model.field.expression.*;
+import com.cronutils.model.field.expression.Always;
+import com.cronutils.model.field.expression.And;
+import com.cronutils.model.field.expression.Between;
+import com.cronutils.model.field.expression.Every;
+import com.cronutils.model.field.expression.FieldExpression;
+import com.cronutils.model.field.expression.On;
+import com.cronutils.model.field.expression.QuestionMark;
 import com.cronutils.model.field.value.FieldValue;
 import com.cronutils.model.field.value.IntegerFieldValue;
 import com.cronutils.model.field.value.SpecialChar;
 import com.cronutils.model.field.value.SpecialCharFieldValue;
 import com.google.common.annotations.VisibleForTesting;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.Validate;
-
-import java.util.regex.Pattern;
 
 /**
  * Parses a field from a cron expression.
  */
 public class FieldParser {
-    private final char[] specialCharsMinusStar = new char[]{'/', '-', ','};//universally supported
-    private Pattern lPattern = Pattern.compile("[0-9]L", Pattern.CASE_INSENSITIVE);
-    private Pattern wPattern = Pattern.compile("[0-9]W", Pattern.CASE_INSENSITIVE);
-    private FieldConstraints fieldConstraints;
 
-    public FieldParser(FieldConstraints constraints) {
-        this.fieldConstraints = Validate.notNull(constraints, "FieldConstraints must not be null");
-    }
+	private static final String SLASH = "/";
+	private static final String W_STRING = "W";
+	private static final String EMPTY_STRING = "";
+	private static final String LW_STRING = "LW";
+	private static final String HASH_TAG = "#";
+	private static final String L_STRING = "L";
+	private static final String QUESTION_MARK_STRING = "?";
+	private static final String ASTERISK = "*";
+	private static final char[] SPECIAL_CHARS_MINUS_STAR = new char[] { '/', '-', ',' };// universally supported
 
-    /**
-     * Parse given expression for a single cron field
-     * @param expression - String
-     * @return CronFieldExpression object that with interpretation of given String parameter
-     */
-    public FieldExpression parse(String expression) {
-        if (!StringUtils.containsAny(expression, specialCharsMinusStar)) {
-            if ("*".equals(expression)) {//all crons support asterisk
-                return new Always();
-            } else {
-                if("?".equals(expression)){
-                    return new QuestionMark();
-                }
-                return parseOn(expression);
-            }
-        } else {
-            String[] array = expression.split(",");
-            if (array.length > 1) {
-                And and = new And();
-                for (String exp : array) {
-                    and.and(parse(exp));
-                }
-                return and;
-            } else {
-                array = expression.split("-");
-                if (array.length > 1) {
-                    return parseBetween(array);
-                } else {
-                    String[] values = expression.split("/");
-                    if(values.length == 2) {
-                        String start = values[0];
-                        String value = values[1];
-                        if("*".equals(start.trim()) || "".equals(start.trim())){
-                            return new Every(new IntegerFieldValue(Integer.parseInt(value)));
-                        }else{
-                            return new Every(
-                                    new On(new IntegerFieldValue(Integer.parseInt(start))),
-                                    new IntegerFieldValue(Integer.parseInt(value))
-                            );
-                        }
-                    }else if(values.length == 1){
-                        throw new IllegalArgumentException("Missing steps for expression: " + expression);
-                    }else {
-                        throw new IllegalArgumentException("Invalid expression: " + expression);
-                    }
-                }
-            }
-        }
-    }
+	private static final Pattern L_PATTERN = Pattern.compile("[0-9]L", Pattern.CASE_INSENSITIVE);
+	private static final Pattern W_PATTERN = Pattern.compile("[0-9]W", Pattern.CASE_INSENSITIVE);
 
-    @VisibleForTesting
-    FieldExpression parseBetween(String[]array){
-        if (array[1].contains("/")) {
-            String[] every = array[1].split("/");
-            return new Every(new Between(map(array[0]), map(every[0])), mapToIntegerFieldValue(every[1]));
-        } else {
-            return new Between(map(array[0]), map(array[1]));
-        }
-    }
+	private FieldConstraints fieldConstraints;
 
-    @VisibleForTesting
-    On parseOn(String exp){
-        if("?".equals(exp)){
-            return parseOnWithQuestionMark(exp);
-        }
-        if (exp.contains("#")) {
-            return parseOnWithHash(exp);
-        }
-        if (exp.contains("LW")) {
-            return parseOnWithLW(exp);
-        }
-        if (lPattern.matcher(exp).find()||exp.equalsIgnoreCase("L")) {
-            return parseOnWithL(exp);
-        }
-        if (wPattern.matcher(exp).find()) {
-            return parseOnWithW(exp);
-        }
-        return new On(
-                mapToIntegerFieldValue(exp),
-                new SpecialCharFieldValue(SpecialChar.NONE),
-                new IntegerFieldValue(-1)
-        );
-    }
+	public FieldParser(FieldConstraints constraints) {
+		this.fieldConstraints = Validate.notNull(constraints, "FieldConstraints must not be null");
+	}
 
-    @VisibleForTesting
-    On parseOnWithHash(String exp){
-        SpecialCharFieldValue specialChar = new SpecialCharFieldValue(SpecialChar.HASH);
-        String[] array = exp.split("#");
-        IntegerFieldValue nth = mapToIntegerFieldValue(array[1]);
-        if (array[0].isEmpty()) {
-            throw new IllegalArgumentException("Time should be specified!");
-        }
-        return new On(mapToIntegerFieldValue(array[0]), specialChar, nth);
-    }
+	/**
+	 * Parse given expression for a single cron field
+	 * 
+	 * @param expression
+	 *            - String
+	 * @return CronFieldExpression object that with interpretation of given String parameter
+	 */
+	public FieldExpression parse(String expression) {
+		if (!StringUtils.containsAny(expression, SPECIAL_CHARS_MINUS_STAR)) {
+			return noSpecialCharsNorStar(expression);
+		} else {
+			String[] array = expression.split(",");
+			if (array.length > 1) {
+				return commaSplitResult(array);
+			} else {
+				String[] betWeenArray = expression.split("-");
+				return dashSplitResult(expression, betWeenArray);
+			}
+		}
+	}
 
-    @VisibleForTesting
-    On parseOnWithQuestionMark(String exp){
-        SpecialCharFieldValue specialChar = new SpecialCharFieldValue(SpecialChar.QUESTION_MARK);
-        exp = exp.replace("?", "");
-        if("".equals(exp)){
-            return new On(new IntegerFieldValue(-1), specialChar, new IntegerFieldValue(-1));
-        }else{
-            throw new IllegalArgumentException(String.format("Expected: '?', found: %s", exp));
-        }
-    }
+	private FieldExpression dashSplitResult(String expression, String[] betWeenArray) {
+		if (betWeenArray.length > 1) {
+			return parseBetween(betWeenArray);
+		} else {
+			return slashSplit(expression, expression.split(SLASH));
+		}
+	}
 
-    @VisibleForTesting
-    On parseOnWithLW(String exp){
-        SpecialCharFieldValue specialChar = new SpecialCharFieldValue(SpecialChar.LW);
-        exp = exp.replace("LW", "");
-        if("".equals(exp)){
-            return new On(new IntegerFieldValue(-1), specialChar, new IntegerFieldValue(-1));
-        }else{
-            throw new IllegalArgumentException(String.format("Expected: LW, found: %s", exp));
-        }
-    }
+	private FieldExpression commaSplitResult(String[] array) {
+		And and = new And();
+		for (String exp : array) {
+			and.and(parse(exp));
+		}
+		return and;
+	}
 
-    @VisibleForTesting
-    On parseOnWithL(String exp){
-        SpecialCharFieldValue specialChar = new SpecialCharFieldValue(SpecialChar.L);
-        exp = exp.replace("L", "");
-        IntegerFieldValue time = new IntegerFieldValue(-1);
-        if(!"".equals(exp)){
-            time = mapToIntegerFieldValue(exp);
-        }
-        return new On(time, specialChar, new IntegerFieldValue(-1));
-    }
+	private FieldExpression slashSplit(String expression, String[] values) {
+		if (values.length == 2) {
+			String start = values[0];
+			String value = values[1];
+			return asteriskOrempty(start, value);
+		} else if (values.length == 1) {
+			throw new IllegalArgumentException("Missing steps for expression: " + expression);
+		} else {
+			throw new IllegalArgumentException("Invalid expression: " + expression);
+		}
+	}
 
-    @VisibleForTesting
-    On parseOnWithW(String exp){
-        return new On(
-                mapToIntegerFieldValue(exp.replace("W", "")),
-                new SpecialCharFieldValue(SpecialChar.W),
-                new IntegerFieldValue(-1)
-        );
-    }
+	private FieldExpression asteriskOrempty(String start, String value) {
+		String trimmedStart = start.trim();
+		if (ASTERISK.equals(trimmedStart) || EMPTY_STRING.equals(start.trim())) {
+			return new Every(new IntegerFieldValue(Integer.parseInt(value)));
+		} else {
+			return new Every(new On(new IntegerFieldValue(Integer.parseInt(start))), new IntegerFieldValue(Integer.parseInt(value)));
+		}
+	}
 
-    @VisibleForTesting
-    IntegerFieldValue mapToIntegerFieldValue(String string){
-        try{
-            return new IntegerFieldValue(intToInt(stringToInt(string)));
-        }catch (NumberFormatException e){
-            throw new IllegalArgumentException(String.format("Invalid value. Expected some integer, found %s", string));
-        }
-    }
+	private FieldExpression noSpecialCharsNorStar(String expression) {
+		if (ASTERISK.equals(expression)) {// all crons support asterisk
+			return new Always();
+		} else {
+			if (QUESTION_MARK_STRING.equals(expression)) {
+				return new QuestionMark();
+			}
+			return parseOn(expression);
+		}
+	}
 
-    @VisibleForTesting
-    FieldValue map(String string){
-        for(SpecialChar sc : SpecialChar.values()){
-            if(sc.toString().equals(string)){
-                return new SpecialCharFieldValue(sc);
-            }
-        }
-        return new IntegerFieldValue(stringToInt(string));
-    }
+	@VisibleForTesting
+	FieldExpression parseBetween(String[] array) {
+		if (array[1].contains(SLASH)) {
+			String[] every = array[1].split(SLASH);
+			return new Every(new Between(map(array[0]), map(every[0])), mapToIntegerFieldValue(every[1]));
+		} else {
+			return new Between(map(array[0]), map(array[1]));
+		}
+	}
 
-    /**
-     * Maps string expression to integer.
-     * If no mapping is found, will try to parse String as Integer
-     * @param exp - expression to be mapped
-     * @return integer value for string expression
-     */
-    int stringToInt(String exp) {
-        if (fieldConstraints.getStringMapping().containsKey(exp)) {
-            return fieldConstraints.getStringMapping().get(exp);
-        } else {
-            try{
-                return Integer.parseInt(exp);
-            }catch (NumberFormatException e){
-                String invalidChars = new StringValidations(fieldConstraints).removeValidChars(exp);
-                throw new IllegalArgumentException(String.format("Invalid chars in expression! Expression: %s Invalid chars: %s", exp, invalidChars));
-            }
-        }
-    }
+	@VisibleForTesting
+	On parseOn(String exp) {
+		if (QUESTION_MARK_STRING.equals(exp)) {
+			return parseOnWithQuestionMark(exp);
+		} else if (exp.contains(HASH_TAG)) {
+			return parseOnWithHash(exp);
+		} else if (exp.contains(LW_STRING)) {
+			return parseOnWithLW(exp);
+		} else if (L_PATTERN.matcher(exp).find() || exp.equalsIgnoreCase(L_STRING)) {
+			return parseOnWithL(exp);
+		} else if (W_PATTERN.matcher(exp).find()) {
+			return parseOnWithW(exp);
+		} else {
+			return new On(mapToIntegerFieldValue(exp), new SpecialCharFieldValue(NONE), new IntegerFieldValue(-1));
+		}
+	}
 
-    /**
-     * Maps integer values to another integer equivalence.
-     * Always consider mapping higher integers to lower once.
-     * Ex.: if 0 and 7 mean the same, map 7 to 0.
-     * @param exp - integer to be mapped
-     * @return Mapping integer. If no mapping int is found, will return exp
-     */
-    int intToInt(Integer exp) {
-        if (fieldConstraints.getIntMapping().containsKey(exp)) {
-            return fieldConstraints.getIntMapping().get(exp);
-        }
-        return exp;
-    }
+	@VisibleForTesting
+	On parseOnWithHash(String exp) {
+		SpecialCharFieldValue specialChar = new SpecialCharFieldValue(HASH);
+		String[] array = exp.split(HASH_TAG);
+		IntegerFieldValue nth = mapToIntegerFieldValue(array[1]);
+		if (array[0].isEmpty()) {
+			throw new IllegalArgumentException("Time should be specified!");
+		}
+		return new On(mapToIntegerFieldValue(array[0]), specialChar, nth);
+	}
+
+	@VisibleForTesting
+	On parseOnWithQuestionMark(String exp) {
+		SpecialCharFieldValue specialChar = new SpecialCharFieldValue(QUESTION_MARK);
+		String questionMarkExpression = exp.replace(QUESTION_MARK_STRING, EMPTY_STRING);
+		if (EMPTY_STRING.equals(questionMarkExpression)) {
+			return new On(new IntegerFieldValue(-1), specialChar, new IntegerFieldValue(-1));
+		} else {
+			throw new IllegalArgumentException(String.format("Expected: '?', found: %s", questionMarkExpression));
+		}
+	}
+
+	@VisibleForTesting
+	On parseOnWithLW(String exp) {
+		SpecialCharFieldValue specialChar = new SpecialCharFieldValue(LW);
+		String lwExpression = exp.replace(LW_STRING, EMPTY_STRING);
+		if (EMPTY_STRING.equals(lwExpression)) {
+			return new On(new IntegerFieldValue(-1), specialChar, new IntegerFieldValue(-1));
+		} else {
+			throw new IllegalArgumentException(String.format("Expected: LW, found: %s", lwExpression));
+		}
+	}
+
+	@VisibleForTesting
+	On parseOnWithL(String exp) {
+		SpecialCharFieldValue specialChar = new SpecialCharFieldValue(L);
+		String lExpression = exp.replace(L_STRING, EMPTY_STRING);
+		IntegerFieldValue time = new IntegerFieldValue(-1);
+		if (!EMPTY_STRING.equals(lExpression)) {
+			time = mapToIntegerFieldValue(lExpression);
+		}
+		return new On(time, specialChar, new IntegerFieldValue(-1));
+	}
+
+	@VisibleForTesting
+	On parseOnWithW(String exp) {
+		return new On(mapToIntegerFieldValue(exp.replace(W_STRING, EMPTY_STRING)), new SpecialCharFieldValue(W), new IntegerFieldValue(-1));
+	}
+
+	@VisibleForTesting
+	IntegerFieldValue mapToIntegerFieldValue(String string) {
+		try {
+			return new IntegerFieldValue(intToInt(stringToInt(string)));
+		} catch (NumberFormatException e) {
+			throw new IllegalArgumentException(String.format("Invalid value. Expected some integer, found %s", string));
+		}
+	}
+
+	@VisibleForTesting
+	FieldValue<?> map(String string) {
+		for (SpecialChar sc : SpecialChar.values()) {
+			if (sc.toString().equals(string)) {
+				return new SpecialCharFieldValue(sc);
+			}
+		}
+		return new IntegerFieldValue(stringToInt(string));
+	}
+
+	/**
+	 * Maps string expression to integer. If no mapping is found, will try to parse String as Integer
+	 * 
+	 * @param exp
+	 *            - expression to be mapped
+	 * @return integer value for string expression
+	 */
+	int stringToInt(String exp) {
+		Integer value = fieldConstraints.getStringMappingValue(exp);
+		if (value != null) {
+			return value;
+		} else {
+			try {
+				return Integer.parseInt(exp);
+			} catch (NumberFormatException e) {
+				String invalidChars = new StringValidations(fieldConstraints).removeValidChars(exp);
+				throw new IllegalArgumentException(String.format("Invalid chars in expression! Expression: %s Invalid chars: %s", exp, invalidChars));
+			}
+		}
+	}
+
+	/**
+	 * Maps integer values to another integer equivalence. Always consider mapping higher integers to lower once. Ex.: if 0 and 7 mean the
+	 * same, map 7 to 0.
+	 * 
+	 * @param exp
+	 *            - integer to be mapped
+	 * @return Mapping integer. If no mapping int is found, will return exp
+	 */
+	int intToInt(Integer exp) {
+		Integer value = fieldConstraints.getIntMappingValue(exp);
+		if (value != null) {
+			return value;
+		}
+		return exp;
+	}
 }

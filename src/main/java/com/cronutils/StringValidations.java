@@ -12,30 +12,33 @@
  */
 package com.cronutils;
 
-import com.cronutils.model.field.constraint.FieldConstraints;
-import com.cronutils.model.field.value.SpecialChar;
-import com.google.common.annotations.VisibleForTesting;
-import com.google.common.collect.Sets;
+import static com.cronutils.model.field.value.SpecialChar.L;
+import static com.cronutils.model.field.value.SpecialChar.LW;
+import static com.cronutils.model.field.value.SpecialChar.W;
 
 import java.util.Iterator;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.cronutils.model.field.constraint.FieldConstraints;
+import com.cronutils.model.field.value.SpecialChar;
+import com.google.common.annotations.VisibleForTesting;
+import com.google.common.collect.Sets;
+
 public class StringValidations {
 
 	private static final String ESCAPED_END = ")\\b";
 	private static final String ESCAPED_START = "\\b(";
-	private static final SpecialChar[] SPECIAL_CHARS = new SpecialChar[] { SpecialChar.L, SpecialChar.LW, SpecialChar.W };
+	private static final SpecialChar[] SPECIAL_CHARS = new SpecialChar[] { L, LW, W };
+	private static final Pattern NUMS_AND_CHARS_PATTERN = Pattern.compile("[#\\?/\\*0-9]");
 
 	private Pattern stringToIntKeysPattern;
-	private Pattern numsAndCharsPattern;
 	private Pattern lwPattern;
 
 	public StringValidations(FieldConstraints constraints) {
 		this.lwPattern = buildLWPattern(constraints.getSpecialChars());
-		this.stringToIntKeysPattern = buildStringToIntPattern(constraints.getStringMapping().keySet());
-		this.numsAndCharsPattern = Pattern.compile("[#\\?/\\*0-9]");
+		this.stringToIntKeysPattern = buildStringToIntPattern(constraints.getStringMappingKeySet());
 	}
 
 	@VisibleForTesting
@@ -45,7 +48,7 @@ public class StringValidations {
 
 	@VisibleForTesting
 	public String removeValidChars(String exp) {
-		Matcher numsAndCharsMatcher = numsAndCharsPattern.matcher(exp.toUpperCase());
+		Matcher numsAndCharsMatcher = NUMS_AND_CHARS_PATTERN.matcher(exp.toUpperCase());
 		Matcher stringToIntKeysMatcher = stringToIntKeysPattern.matcher(numsAndCharsMatcher.replaceAll(""));
 		Matcher specialWordsMatcher = lwPattern.matcher(stringToIntKeysMatcher.replaceAll(""));
 		return specialWordsMatcher.replaceAll("").replaceAll("\\s+", "").replaceAll(",", "").replaceAll("-", "");

@@ -17,13 +17,9 @@ package com.cronutils.model.field.expression;
  * Represents a star (*) value on cron expression field
  */
 public class Always extends FieldExpression {
-    public Always(){}
-    private Always(Always always) {
-        this();
-    }
 
-    @Override
-    public String asString() {
-        return "*";
-    }
+	@Override
+	public String asString() {
+		return "*";
+	}
 }

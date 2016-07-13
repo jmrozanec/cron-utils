@@ -1,15 +1,21 @@
 package com.cronutils.descriptor;
 
-import com.cronutils.model.field.expression.*;
-import com.cronutils.model.field.value.FieldValue;
-import com.cronutils.model.field.value.IntegerFieldValue;
-import com.google.common.collect.Lists;
-import org.apache.commons.lang3.Validate;
-
 import java.text.MessageFormat;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.function.Function;
+
+import org.apache.commons.lang3.Validate;
+
+import com.cronutils.model.field.expression.Always;
+import com.cronutils.model.field.expression.And;
+import com.cronutils.model.field.expression.Between;
+import com.cronutils.model.field.expression.Every;
+import com.cronutils.model.field.expression.FieldExpression;
+import com.cronutils.model.field.expression.On;
+import com.cronutils.model.field.value.FieldValue;
+import com.cronutils.model.field.value.IntegerFieldValue;
+import com.google.common.collect.Lists;
 
 /*
  * Copyright 2014 jmrozanec
@@ -25,177 +31,188 @@ import java.util.function.Function;
  */
 
 /**
- * Description strategy to handle cases on how to present
- * cron information in a human readable format
+ * Description strategy to handle cases on how to present cron information in a human readable format
  */
 abstract class DescriptionStrategy {
-    protected Function<Integer, String> nominalValueFunction;
-    protected ResourceBundle bundle;
+	protected Function<Integer, String> nominalValueFunction;
+	protected ResourceBundle bundle;
 
-    public DescriptionStrategy(ResourceBundle bundle) {
-        this.bundle = bundle;
-        nominalValueFunction = integer -> "" + integer;
-    }
+	public DescriptionStrategy(ResourceBundle bundle) {
+		this.bundle = bundle;
+		nominalValueFunction = integer -> "" + integer;
+	}
 
-    /**
-     * Provide a human readable description;
-     * @return human readable description - String
-     */
-    public abstract String describe();
+	/**
+	 * Provide a human readable description;
+	 * 
+	 * @return human readable description - String
+	 */
+	public abstract String describe();
 
-    /**
-     * Given a CronFieldExpression, provide a String with a human readable description.
-     * Will identify CronFieldExpression subclasses and delegate.
-     * @param fieldExpression - CronFieldExpression instance - not null
-     * @return human readable description - String
-     */
-    protected String describe(FieldExpression fieldExpression){
-        return describe(fieldExpression, false);
-    }
+	/**
+	 * Given a CronFieldExpression, provide a String with a human readable description. Will identify CronFieldExpression subclasses and
+	 * delegate.
+	 * 
+	 * @param fieldExpression
+	 *            - CronFieldExpression instance - not null
+	 * @return human readable description - String
+	 */
+	protected String describe(FieldExpression fieldExpression) {
+		return describe(fieldExpression, false);
+	}
 
-    /**
-     * Given a CronFieldExpression, provide a String with a human readable description.
-     * Will identify CronFieldExpression subclasses and delegate.
-     * @param fieldExpression - CronFieldExpression instance - not null
-     * @param and - boolean expression that indicates if description should fit an "and" context
-     * @return human readable description - String
-     */
-    protected String describe(FieldExpression fieldExpression, boolean and) {
-        Validate.notNull(fieldExpression, "CronFieldExpression should not be null!");
-        if (fieldExpression instanceof Always) {
-            return describe((Always)fieldExpression, and);
-        }
-        if (fieldExpression instanceof And) {
-            return describe((And) fieldExpression);
-        }
-        if (fieldExpression instanceof Between) {
-            return describe((Between) fieldExpression, and);
-        }
-        if (fieldExpression instanceof Every) {
-            return describe((Every) fieldExpression, and);
-        }
-        if (fieldExpression instanceof On) {
-            return describe((On) fieldExpression, and);
-        }
-        return "";
-    }
+	/**
+	 * Given a CronFieldExpression, provide a String with a human readable description. Will identify CronFieldExpression subclasses and
+	 * delegate.
+	 * 
+	 * @param fieldExpression
+	 *            - CronFieldExpression instance - not null
+	 * @param and
+	 *            - boolean expression that indicates if description should fit an "and" context
+	 * @return human readable description - String
+	 */
+	protected String describe(FieldExpression fieldExpression, boolean and) {
+		Validate.notNull(fieldExpression, "CronFieldExpression should not be null!");
+		if (fieldExpression instanceof Always) {
+			return describe((Always) fieldExpression, and);
+		}
+		if (fieldExpression instanceof And) {
+			return describe((And) fieldExpression);
+		}
+		if (fieldExpression instanceof Between) {
+			return describe((Between) fieldExpression, and);
+		}
+		if (fieldExpression instanceof Every) {
+			return describe((Every) fieldExpression, and);
+		}
+		if (fieldExpression instanceof On) {
+			return describe((On) fieldExpression, and);
+		}
+		return "";
+	}
 
-    /**
-     * Given an int, will return a nominal value. Example:
-     * 1 in weeks context, may mean "Monday",
-     * so nominal value for 1 would be "Monday"
-     * Default will return int as String
-     * @param fieldValue - some FieldValue
-     * @return String
-     */
-    protected String nominalValue(FieldValue fieldValue) {
-        Validate.notNull(fieldValue, "FieldValue must not be null");
-        if(fieldValue instanceof IntegerFieldValue){
-            return nominalValueFunction.apply(((IntegerFieldValue)fieldValue).getValue());
-        }
-        return fieldValue.toString();
-    }
+	/**
+	 * Given an int, will return a nominal value. Example: 1 in weeks context, may mean "Monday", so nominal value for 1 would be "Monday"
+	 * Default will return int as String
+	 * 
+	 * @param fieldValue
+	 *            - some FieldValue
+	 * @return String
+	 */
+	protected String nominalValue(FieldValue fieldValue) {
+		Validate.notNull(fieldValue, "FieldValue must not be null");
+		if (fieldValue instanceof IntegerFieldValue) {
+			return nominalValueFunction.apply(((IntegerFieldValue) fieldValue).getValue());
+		}
+		return fieldValue.toString();
+	}
 
-    /**
-     * Provide a human readable description for Always instance
-     * @param always - Always
-     * @return human readable description - String
-     */
-    protected String describe(Always always, boolean and) {
-        return "";
-    }
+	/**
+	 * Provide a human readable description for Always instance
+	 * 
+	 * @param always
+	 *            - Always
+	 * @return human readable description - String
+	 */
+	protected String describe(Always always, boolean and) {
+		return "";
+	}
 
-    /**
-     * Provide a human readable description for And instance
-     * @param and - And
-     * @return human readable description - String
-     */
-    protected String describe(And and) {
-        List<FieldExpression> expressions = Lists.newArrayList();
-        List<FieldExpression> onExpressions = Lists.newArrayList();
-        for(FieldExpression fieldExpression : and.getExpressions()){
-            if(fieldExpression instanceof On){
-                onExpressions.add(fieldExpression);
-            } else {
-                expressions.add(fieldExpression);
-            }
-        }
-        StringBuilder builder = new StringBuilder();
-        if(!onExpressions.isEmpty()) {
-            builder.append(bundle.getString("at"));
-            createAndDescription(builder, onExpressions).append(" %p");//TODO this causes bug #39
-        }
-        if(!expressions.isEmpty()){
-            createAndDescription(builder, expressions);
-        }
+	/**
+	 * Provide a human readable description for And instance
+	 * 
+	 * @param and
+	 *            - And
+	 * @return human readable description - String
+	 */
+	protected String describe(And and) {
+		List<FieldExpression> expressions = Lists.newArrayList();
+		List<FieldExpression> onExpressions = Lists.newArrayList();
+		for (FieldExpression fieldExpression : and.getExpressions()) {
+			if (fieldExpression instanceof On) {
+				onExpressions.add(fieldExpression);
+			} else {
+				expressions.add(fieldExpression);
+			}
+		}
+		StringBuilder builder = new StringBuilder();
+		if (!onExpressions.isEmpty()) {
+			builder.append(bundle.getString("at"));
+			createAndDescription(builder, onExpressions).append(" %p");// TODO this causes bug #39
+		}
+		if (!expressions.isEmpty()) {
+			createAndDescription(builder, expressions);
+		}
 
-        return builder.toString();
-    }
+		return builder.toString();
+	}
 
-    /**
-     * Creates human readable description for And element
-     * @param builder - StringBuilder instance to which description will be appended
-     * @param expressions - field expressions
-     * @return same StringBuilder instance as parameter
-     */
-    private StringBuilder createAndDescription(StringBuilder builder, List<FieldExpression> expressions){
-        if((expressions.size() - 2) >= 0){
-            for (int j = 0; j < expressions.size() - 2; j++) {
-                builder.append(String.format(" %s, ", describe(expressions.get(j), true)));
-            }
-            builder.append(String.format(" %s ", describe(expressions.get(expressions.size() - 2), true)));
-        }
-        builder.append(String.format(" %s ", bundle.getString("and")));
-        builder.append(describe(expressions.get(expressions.size()-1), true));
-        return builder;
-    }
+	/**
+	 * Creates human readable description for And element
+	 * 
+	 * @param builder
+	 *            - StringBuilder instance to which description will be appended
+	 * @param expressions
+	 *            - field expressions
+	 * @return same StringBuilder instance as parameter
+	 */
+	private StringBuilder createAndDescription(StringBuilder builder, List<FieldExpression> expressions) {
+		if ((expressions.size() - 2) >= 0) {
+			for (int j = 0; j < expressions.size() - 2; j++) {
+				builder.append(String.format(" %s, ", describe(expressions.get(j), true)));
+			}
+			builder.append(String.format(" %s ", describe(expressions.get(expressions.size() - 2), true)));
+		}
+		builder.append(String.format(" %s ", bundle.getString("and")));
+		builder.append(describe(expressions.get(expressions.size() - 1), true));
+		return builder;
+	}
 
-    /**
-     * Provide a human readable description for Between instance
-     * @param between - Between
-     * @return human readable description - String
-     */
-    protected String describe(Between between, boolean and) {
-        return bundle.getString("every")+" %s "+
-                MessageFormat.format(
-                        bundle.getString("between_x_and_y"),
-                        nominalValue(between.getFrom()),
-                        nominalValue(between.getTo())
-                )+" ";
-    }
+	/**
+	 * Provide a human readable description for Between instance
+	 * 
+	 * @param between
+	 *            - Between
+	 * @return human readable description - String
+	 */
+	protected String describe(Between between, boolean and) {
+		return bundle.getString("every") + " %s "
+				+ MessageFormat.format(bundle.getString("between_x_and_y"), nominalValue(between.getFrom()), nominalValue(between.getTo())) + " ";
+	}
 
-    /**
-     * Provide a human readable description for Every instance
-     * @param every - Every
-     * @return human readable description - String
-     */
-    protected String describe(Every every, boolean and) {
-        String description;
-        if (every.getPeriod().getValue() > 1) {
-            description = String.format("%s %s ", bundle.getString("every"), nominalValue(every.getPeriod())) + " %p ";
-        } else {
-            description = bundle.getString("every")+" %s ";
-        }
-        if(every.getExpression() instanceof Between){
-            Between between = (Between) every.getExpression();
-            description += MessageFormat.format(
-                    bundle.getString("between_x_and_y"),
-                    nominalValue(between.getFrom()),
-                    nominalValue(between.getTo())
-            )+" ";
-        }
-        return description;
-    }
+	/**
+	 * Provide a human readable description for Every instance
+	 * 
+	 * @param every
+	 *            - Every
+	 * @return human readable description - String
+	 */
+	protected String describe(Every every, boolean and) {
+		String description;
+		if (every.getPeriod().getValue() > 1) {
+			description = String.format("%s %s ", bundle.getString("every"), nominalValue(every.getPeriod())) + " %p ";
+		} else {
+			description = bundle.getString("every") + " %s ";
+		}
+		if (every.getExpression() instanceof Between) {
+			Between between = (Between) every.getExpression();
+			description += MessageFormat.format(bundle.getString("between_x_and_y"), nominalValue(between.getFrom()), nominalValue(between.getTo()))
+					+ " ";
+		}
+		return description;
+	}
 
-    /**
-     * Provide a human readable description for On instance
-     * @param on - On
-     * @return human readable description - String
-     */
-    protected String describe(On on, boolean and) {
-        if(and){
-             return nominalValue(on.getTime());
-        }
-        return String.format("%s %s ", bundle.getString("at"), nominalValue(on.getTime())) + "%s";
-    }
+	/**
+	 * Provide a human readable description for On instance
+	 * 
+	 * @param on
+	 *            - On
+	 * @return human readable description - String
+	 */
+	protected String describe(On on, boolean and) {
+		if (and) {
+			return nominalValue(on.getTime());
+		}
+		return String.format("%s %s ", bundle.getString("at"), nominalValue(on.getTime())) + "%s";
+	}
 }
