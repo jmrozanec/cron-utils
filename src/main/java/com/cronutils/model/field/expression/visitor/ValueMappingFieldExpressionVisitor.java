@@ -15,7 +15,8 @@ package com.cronutils.model.field.expression.visitor;
 import com.cronutils.model.field.expression.*;
 import com.cronutils.model.field.value.FieldValue;
 import com.cronutils.model.field.value.IntegerFieldValue;
-import com.google.common.base.Function;
+
+import java.util.function.Function;
 
 /**
  * Performs a transformation on FieldExpression values.

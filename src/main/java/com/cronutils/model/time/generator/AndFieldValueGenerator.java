@@ -2,14 +2,12 @@ package com.cronutils.model.time.generator;
 
 import com.cronutils.model.field.CronField;
 import com.cronutils.model.field.expression.*;
-import com.google.common.base.Function;
-import com.google.common.base.Predicate;
-import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
 /*
  * Copyright 2015 jmrozanec
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -31,14 +29,11 @@ class AndFieldValueGenerator extends FieldValueGenerator {
     public int generateNextValue(final int reference) throws NoSuchValueException {
         List<Integer> candidates =
                 computeCandidates(
-                        new Function<FieldValueGenerator, Integer>() {
-                            @Override
-                            public Integer apply(FieldValueGenerator fieldValueGenerator) {
-                                try {
-                                    return fieldValueGenerator.generateNextValue(reference);
-                                } catch (NoSuchValueException e) {
-                                    return NO_VALUE;
-                                }
+                        fieldValueGenerator -> {
+                            try {
+                                return fieldValueGenerator.generateNextValue(reference);
+                            } catch (NoSuchValueException e) {
+                                return NO_VALUE;
                             }
                         }
                 );
@@ -53,14 +48,11 @@ class AndFieldValueGenerator extends FieldValueGenerator {
     public int generatePreviousValue(final int reference) throws NoSuchValueException {
         List<Integer> candidates =
                 computeCandidates(
-                        new Function<FieldValueGenerator, Integer>() {
-                            @Override
-                            public Integer apply(FieldValueGenerator candidateGenerator) {
-                                try {
-                                    return candidateGenerator.generatePreviousValue(reference);
-                                } catch (NoSuchValueException e) {
-                                    return NO_VALUE;
-                                }
+                        candidateGenerator -> {
+                            try {
+                                return candidateGenerator.generatePreviousValue(reference);
+                            } catch (NoSuchValueException e) {
+                                return NO_VALUE;
                             }
                         }
                 );
@@ -80,7 +72,9 @@ class AndFieldValueGenerator extends FieldValueGenerator {
                 values.add(reference);
                 reference = generateNextValue(reference);
             }
-        } catch (NoSuchValueException e) {}
+        } catch (NoSuchValueException e) {
+            e.printStackTrace();
+        }
         return values;
     }
 
@@ -105,16 +99,7 @@ class AndFieldValueGenerator extends FieldValueGenerator {
         for (FieldExpression expression : and.getExpressions()) {
             candidates.add(function.apply(createCandidateGeneratorInstance(new CronField(cronField.getField(), expression, cronField.getConstraints()))));
         }
-        candidates = new ArrayList<Integer>(
-                Collections2.filter(candidates, new Predicate<Integer>() {
-                    @Override
-                    public boolean apply(Integer integer) {
-                        return integer>=0;
-                    }
-                })
-        );
-        Collections.sort(candidates);
-        return candidates;
+        return candidates.parallelStream().filter(integer -> integer>=0).sorted().collect(Collectors.toList());
     }
 
     private FieldValueGenerator createCandidateGeneratorInstance(CronField cronField){

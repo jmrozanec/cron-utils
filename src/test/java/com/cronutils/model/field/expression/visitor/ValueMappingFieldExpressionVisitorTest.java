@@ -4,9 +4,10 @@ import com.cronutils.model.field.constraint.FieldConstraints;
 import com.cronutils.model.field.constraint.FieldConstraintsBuilder;
 import com.cronutils.model.field.expression.QuestionMark;
 import com.cronutils.model.field.value.FieldValue;
-import com.google.common.base.Function;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.util.function.Function;
 
 import static org.junit.Assert.*;
 
@@ -17,12 +18,7 @@ public class ValueMappingFieldExpressionVisitorTest {
     @Before
     public void setUp() throws Exception {
         destinationConstraints = FieldConstraintsBuilder.instance().createConstraintsInstance();
-        Function<FieldValue, FieldValue> transform = new Function<FieldValue, FieldValue>() {
-            @Override
-            public FieldValue apply(FieldValue input) {
-                return input;
-            }
-        };
+        Function<FieldValue, FieldValue> transform = input -> input;
         this.valueMappingFieldExpressionVisitor = new ValueMappingFieldExpressionVisitor(transform);
     }
 

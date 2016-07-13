@@ -1,8 +1,8 @@
 package com.cronutils.model.field.definition;
 
+import com.cronutils.mapper.WeekDay;
 import com.cronutils.model.definition.CronDefinitionBuilder;
 import com.cronutils.model.field.CronFieldName;
-import com.cronutils.mapper.WeekDay;
 import org.apache.commons.lang3.Validate;
 
 /*

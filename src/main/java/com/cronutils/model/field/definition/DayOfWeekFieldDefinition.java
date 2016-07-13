@@ -1,8 +1,8 @@
 package com.cronutils.model.field.definition;
 
+import com.cronutils.mapper.WeekDay;
 import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.field.constraint.FieldConstraints;
-import com.cronutils.mapper.WeekDay;
 
 /*
  * Copyright 2015 jmrozanec

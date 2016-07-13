@@ -1,13 +1,12 @@
 package com.cronutils.descriptor;
 
-import com.cronutils.model.field.constraint.FieldConstraintsBuilder;
 import com.cronutils.model.field.expression.Always;
 import com.cronutils.model.field.expression.FieldExpression;
-import com.google.common.base.Function;
 import com.google.common.collect.Sets;
 
 import java.util.ResourceBundle;
 import java.util.Set;
+import java.util.function.Function;
 
 /*
  * Copyright 2014 jmrozanec

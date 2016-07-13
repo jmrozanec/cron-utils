@@ -12,17 +12,15 @@
  */
 package com.cronutils;
 
-import static com.google.common.base.Preconditions.checkArgument;
+import com.cronutils.model.field.constraint.FieldConstraints;
+import com.cronutils.model.field.value.SpecialChar;
+import com.google.common.annotations.VisibleForTesting;
+import com.google.common.collect.Sets;
 
 import java.util.Iterator;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import com.cronutils.model.field.constraint.FieldConstraints;
-import com.cronutils.model.field.value.SpecialChar;
-import com.google.common.annotations.VisibleForTesting;
-import com.google.common.collect.Sets;
 
 public class StringValidations {
 
@@ -69,7 +67,10 @@ public class StringValidations {
 		StringBuilder builder = new StringBuilder(ESCAPED_START);
 		Iterator<String> iterator = words.iterator();
 
-		checkArgument(iterator.hasNext());
+		if (!iterator.hasNext()) {
+			builder.append(ESCAPED_END);
+			return Pattern.compile(builder.toString());
+		}
 		String next = iterator.next();
 		builder.append(next);
 		while (iterator.hasNext()) {

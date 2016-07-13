@@ -8,7 +8,6 @@ import com.cronutils.model.field.expression.Between;
 import com.cronutils.model.field.expression.FieldExpression;
 import com.cronutils.parser.CronParserField;
 import com.google.common.collect.Lists;
-
 import com.google.common.collect.Sets;
 import org.apache.commons.lang3.Validate;
 import org.joda.time.DateTime;

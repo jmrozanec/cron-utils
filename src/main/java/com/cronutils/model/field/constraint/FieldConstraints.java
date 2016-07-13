@@ -1,18 +1,11 @@
 package com.cronutils.model.field.constraint;
 
-import com.cronutils.model.field.expression.FieldExpression;
-import com.cronutils.model.field.value.FieldValue;
-import com.cronutils.model.field.value.IntegerFieldValue;
 import com.cronutils.model.field.value.SpecialChar;
-import com.google.common.annotations.VisibleForTesting;
-import com.google.common.collect.Sets;
 import org.apache.commons.lang3.Validate;
 
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /*
  * Copyright 2014 jmrozanec
