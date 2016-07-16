@@ -70,7 +70,7 @@ class OnDayOfMonthValueGenerator extends FieldValueGenerator {
         On on = ((On)cronField.getExpression());
         try {
             return value == generateValue(on, year, month);
-        } catch (NoSuchValueException e) {}
+        } catch (NoSuchValueException ignored) {}//we just skip, since we generate values until we get the exception
         return false;
     }
 
