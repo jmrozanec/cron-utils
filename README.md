@@ -42,11 +42,13 @@ cron-utils is available on [Maven central](http://search.maven.org/#search%7Cga%
 
 **Usage Examples**
 
+Below we present some examples. You can find this and others in a [sample repo we created](https://github.com/jmrozanec/cron-utils-examples) to showcase cron-utils libraries!
+
 ***Build cron definitions***
 
     //define your own cron: arbitrary fields are allowed and last field can be optional
     CronDefinition cronDefinition =
-        CronDefinitionBuilder.define()
+        CronDefinitionBuilder.defineCron()
             .withSeconds().and()
             .withMinutes().and()
             .withHours().and()
