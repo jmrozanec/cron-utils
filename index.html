@@ -82,22 +82,22 @@
         </ul><p><strong>Quick example</strong></p>
 
 <pre><code>//get a predefined instance
-    CronDefinition cronDefinition =
-    CronDefinitionRegistry.instance().retrieve(QUARTZ);
+CronDefinition cronDefinition =
+CronDefinitionBuilder.instanceDefinitionFor(QUARTZ);
 
-    //create a parser based on provided definition
-    CronParser parser = new CronParser(cronDefinition);
-    Cron quartzCron = parser.parse("0 23 ? * * 1-5 *");
+//create a parser based on provided definition
+CronParser parser = new CronParser(cronDefinition);
+Cron quartzCron = parser.parse("0 23 ? * * 1-5 *");
 
-    //create a descriptor for a specific Locale
-    CronDescriptor descriptor = CronDescriptor.instance(Locale.UK);
+//create a descriptor for a specific Locale
+CronDescriptor descriptor = CronDescriptor.instance(Locale.UK);
 
-    //parse some expression and ask descriptor for description
-    String description = descriptor.describe(parser.parse("*/45 * * * * *"));
-    //description will be: "every 45 seconds"
+//parse some expression and ask descriptor for description
+String description = descriptor.describe(parser.parse("*/45 * * * * *"));
+//description will be: "every 45 seconds"
 
-    //validate expression
-    quartzCron.validate()
+//validate expression
+quartzCron.validate()
 
 </code></pre>
 
