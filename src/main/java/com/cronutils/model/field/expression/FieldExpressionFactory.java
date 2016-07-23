@@ -27,7 +27,7 @@ public class FieldExpressionFactory {
     private WeekDay definitionWeekDay;
     private WeekDay enumWeekDay = new WeekDay(Weekdays.MONDAY.getWeekday(), false);
 
-    private FieldExpressionFactory(CronDefinition cronDefinition) {
+    public FieldExpressionFactory(CronDefinition cronDefinition) {
         this.definitionWeekDay = ((DayOfWeekFieldDefinition)cronDefinition.getFieldDefinition(CronFieldName.DAY_OF_WEEK)).getMondayDoWValue();
     }
     
