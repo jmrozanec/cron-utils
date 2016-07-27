@@ -49,6 +49,6 @@ public class Every extends FieldExpression {
 		if (period.getValue() == 1) {
 			return expression.asString() != null ? expression.asString() : EMPTY_STRING;
 		}
-		return String.format("%s/%s", this.expression.asString(), getPeriod());
+		return String.format("%s/%s", expression.asString(), getPeriod());
 	}
 }

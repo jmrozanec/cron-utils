@@ -16,6 +16,7 @@ import com.google.common.collect.Maps;
 
 /*
  * Copyright 2014 jmrozanec
+ * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -32,7 +33,7 @@ import com.google.common.collect.Maps;
  */
 public class CronParser {
 
-	private Map<Integer, List<CronParserField>> expressions = Maps.newHashMap();;
+	private final Map<Integer, List<CronParserField>> expressions = Maps.newHashMap();;
 	private CronDefinition cronDefinition;
 
 	/**

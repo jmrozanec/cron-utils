@@ -34,12 +34,15 @@ import com.google.common.collect.Lists;
  * Description strategy to handle cases on how to present cron information in a human readable format
  */
 abstract class DescriptionStrategy {
+	private static final String EVERY = "every";
+	private static final String WHITE_SPACE = " ";
+	private static final String EMPTY = "";
 	protected Function<Integer, String> nominalValueFunction;
 	protected ResourceBundle bundle;
 
 	public DescriptionStrategy(ResourceBundle bundle) {
 		this.bundle = bundle;
-		nominalValueFunction = integer -> "" + integer;
+		nominalValueFunction = integer -> EMPTY + integer;
 	}
 
 	/**
@@ -50,8 +53,8 @@ abstract class DescriptionStrategy {
 	public abstract String describe();
 
 	/**
-	 * Given a CronFieldExpression, provide a String with a human readable description. Will identify CronFieldExpression subclasses and
-	 * delegate.
+	 * Given a {@linkplain CronFieldExpression}, provide a {@linkplain String} with a human readable description. Will identify
+	 * {@linkplain CronFieldExpression} subclasses and delegate.
 	 * 
 	 * @param fieldExpression
 	 *            - CronFieldExpression instance - not null
@@ -62,8 +65,8 @@ abstract class DescriptionStrategy {
 	}
 
 	/**
-	 * Given a CronFieldExpression, provide a String with a human readable description. Will identify CronFieldExpression subclasses and
-	 * delegate.
+	 * Given a {@linkplain CronFieldExpression}, provide a {@linkplain String} with a human readable description. Will identify
+	 * {@linkplain CronFieldExpression} subclasses and delegate.
 	 * 
 	 * @param fieldExpression
 	 *            - CronFieldExpression instance - not null
@@ -88,7 +91,7 @@ abstract class DescriptionStrategy {
 		if (fieldExpression instanceof On) {
 			return describe((On) fieldExpression, and);
 		}
-		return "";
+		return EMPTY;
 	}
 
 	/**
@@ -115,7 +118,7 @@ abstract class DescriptionStrategy {
 	 * @return human readable description - String
 	 */
 	protected String describe(Always always, boolean and) {
-		return "";
+		return EMPTY;
 	}
 
 	/**
@@ -176,8 +179,8 @@ abstract class DescriptionStrategy {
 	 * @return human readable description - String
 	 */
 	protected String describe(Between between, boolean and) {
-		return bundle.getString("every") + " %s "
-				+ MessageFormat.format(bundle.getString("between_x_and_y"), nominalValue(between.getFrom()), nominalValue(between.getTo())) + " ";
+		return bundle.getString(EVERY) + " %s "
+				+ MessageFormat.format(bundle.getString("between_x_and_y"), nominalValue(between.getFrom()), nominalValue(between.getTo())) + WHITE_SPACE;
 	}
 
 	/**
@@ -190,14 +193,14 @@ abstract class DescriptionStrategy {
 	protected String describe(Every every, boolean and) {
 		String description;
 		if (every.getPeriod().getValue() > 1) {
-			description = String.format("%s %s ", bundle.getString("every"), nominalValue(every.getPeriod())) + " %p ";
+			description = String.format("%s %s ", bundle.getString(EVERY), nominalValue(every.getPeriod())) + " %p ";
 		} else {
-			description = bundle.getString("every") + " %s ";
+			description = bundle.getString(EVERY) + " %s ";
 		}
 		if (every.getExpression() instanceof Between) {
 			Between between = (Between) every.getExpression();
 			description += MessageFormat.format(bundle.getString("between_x_and_y"), nominalValue(between.getFrom()), nominalValue(between.getTo()))
-					+ " ";
+					+ WHITE_SPACE;
 		}
 		return description;
 	}

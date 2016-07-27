@@ -1,10 +1,12 @@
 package com.cronutils.model.field.expression;
 
-import com.cronutils.model.field.expression.visitor.FieldExpressionVisitor;
 import org.apache.commons.lang3.Validate;
+
+import com.cronutils.model.field.expression.visitor.FieldExpressionVisitor;
 
 /*
  * Copyright 2015 jmrozanec
+ * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -17,25 +19,27 @@ import org.apache.commons.lang3.Validate;
  */
 public abstract class FieldExpression {
 
-    public And and(FieldExpression exp) {
-        return new And().and(this).and(exp);
-    }
+	public And and(FieldExpression exp) {
+		return new And().and(this).and(exp);
+	}
 
-    /**
-     * Represents FieldExpression as string
-     * @return String representation, never null.
-     */
-    public abstract String asString();
+	/**
+	 * Represents FieldExpression as string
+	 * 
+	 * @return String representation, never null.
+	 */
+	public abstract String asString();
 
-    /**
-     * Accept a visitor to perform some action on the instance.
-     * Current instance is cloned, so that we ensure immutability.
-     * Clone of this instance is returned after visitor.visit(clone) was invoked.
-     * @param visitor - FieldExpressionVisitor instance, never null
-     * @return FieldExpression copied instance with visitor action performed.
-     */
-    public final FieldExpression accept(FieldExpressionVisitor visitor){
-        Validate.notNull(visitor, "FieldExpressionVisitor must not be null");
-        return visitor.visit(this);
-    }
+	/**
+	 * Accept a visitor to perform some action on the instance. Current instance is cloned, so that we ensure immutability. Clone of this
+	 * instance is returned after visitor.visit(clone) was invoked.
+	 * 
+	 * @param visitor
+	 *            - FieldExpressionVisitor instance, never null
+	 * @return FieldExpression copied instance with visitor action performed.
+	 */
+	public final FieldExpression accept(FieldExpressionVisitor visitor) {
+		Validate.notNull(visitor, "FieldExpressionVisitor must not be null");
+		return visitor.visit(this);
+	}
 }

@@ -27,6 +27,7 @@ import com.cronutils.model.field.value.SpecialChar;
  * integer-integer mappings if more than one integer represents the same concept.
  */
 public class FieldConstraints {
+
 	private final Map<String, Integer> stringMapping;
 	private final Map<Integer, Integer> intMapping;
 	private final Set<SpecialChar> specialChars;

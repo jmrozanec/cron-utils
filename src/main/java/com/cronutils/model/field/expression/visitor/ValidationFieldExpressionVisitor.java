@@ -28,8 +28,10 @@ import com.cronutils.model.field.value.SpecialCharFieldValue;
 import com.google.common.annotations.VisibleForTesting;
 
 public class ValidationFieldExpressionVisitor implements FieldExpressionVisitor {
-	private static final String EMPTY_STRING = "";
+
 	private static final String OORANGE = "Value %s not in range [%s, %s]";
+	private static final String EMPTY_STRING = "";
+
 	private FieldConstraints constraints;
 	private StringValidations stringValidations;
 	private boolean strictRanges;

@@ -24,6 +24,7 @@ import com.cronutils.model.field.expression.FieldExpression;
  * Provides a strategy to generate values. Strategy is valid for 0+ numbers
  */
 public abstract class FieldValueGenerator {
+
 	protected static final int NO_VALUE = Integer.MIN_VALUE;
 	protected CronField cronField;
 

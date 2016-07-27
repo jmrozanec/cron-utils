@@ -24,9 +24,10 @@ import com.cronutils.model.field.constraint.FieldConstraints;
  * Represents a cron field.
  */
 public class CronParserField {
-	private CronFieldName field;
-	private FieldConstraints constraints;
-	private FieldParser parser;
+
+	private final CronFieldName field;
+	private final FieldConstraints constraints;
+	private final FieldParser parser;
 
 	/**
 	 * Constructor

@@ -36,8 +36,8 @@ import com.google.common.collect.Maps;
 
 public class CronBuilder {
 
+	private final Map<CronFieldName, CronField> fields = Maps.newHashMap();
 	private CronDefinition definition;
-	private Map<CronFieldName, CronField> fields = Maps.newHashMap();
 
 	private CronBuilder(CronDefinition definition) {
 		this.definition = definition;

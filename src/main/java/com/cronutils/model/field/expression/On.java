@@ -1,5 +1,7 @@
 package com.cronutils.model.field.expression;
 
+import static com.google.common.base.Preconditions.checkArgument;
+
 import org.apache.commons.lang3.Validate;
 
 import com.cronutils.model.field.value.IntegerFieldValue;
@@ -39,9 +41,7 @@ public class On extends FieldExpression {
 
 	public On(IntegerFieldValue time, SpecialCharFieldValue specialChar) {
 		this(time, specialChar, new IntegerFieldValue(-1));
-		if (specialChar.getValue().equals(SpecialChar.HASH)) {
-			throw new IllegalArgumentException("value missing for a#b cron expression");
-		}
+		checkArgument(specialChar.getValue().equals(SpecialChar.HASH), "value missing for a#b cron expression");
 	}
 
 	public On(IntegerFieldValue time, SpecialCharFieldValue specialChar, IntegerFieldValue nth) {
