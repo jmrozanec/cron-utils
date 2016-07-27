@@ -75,9 +75,7 @@ class EveryFieldValueGenerator extends FieldValueGenerator {
                 values.add(reference);
                 reference=generateNextValue(reference);
             }
-        } catch (NoSuchValueException e) {
-            log.debug("Failed to generate candidates", e);
-        }
+        } catch (NoSuchValueException ignored) {}//we just skip, since we generate values until we get the exception
         return values;
     }
 
