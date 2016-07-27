@@ -41,7 +41,7 @@ public class On extends FieldExpression {
 
 	public On(IntegerFieldValue time, SpecialCharFieldValue specialChar) {
 		this(time, specialChar, new IntegerFieldValue(-1));
-		checkArgument(specialChar.getValue().equals(SpecialChar.HASH), "value missing for a#b cron expression");
+		checkArgument(!specialChar.getValue().equals(SpecialChar.HASH), "value missing for a#b cron expression");
 	}
 
 	public On(IntegerFieldValue time, SpecialCharFieldValue specialChar, IntegerFieldValue nth) {
