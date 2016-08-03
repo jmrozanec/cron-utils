@@ -2,6 +2,7 @@ package com.cronutils.model.field.expression;
 
 /*
  * Copyright 2014 jmrozanec
+ * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -17,13 +18,15 @@ package com.cronutils.model.field.expression;
  * Represents a star (*) value on cron expression field
  */
 public class Always extends FieldExpression {
-    public Always(){}
-    private Always(Always always) {
-        this();
-    }
 
-    @Override
-    public String asString() {
-        return "*";
-    }
+	public Always(){}
+
+	private Always(Always always) {
+		this();
+	}
+
+	@Override
+	public String asString() {
+		return "*";
+	}
 }

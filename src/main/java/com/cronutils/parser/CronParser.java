@@ -1,20 +1,22 @@
 package com.cronutils.parser;
 
-import com.cronutils.model.Cron;
-import com.cronutils.model.definition.CronDefinition;
-import com.cronutils.model.field.CronField;
-import com.cronutils.model.field.definition.FieldDefinition;
-import com.google.common.collect.Maps;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.Validate;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Validate;
+
+import com.cronutils.model.Cron;
+import com.cronutils.model.definition.CronDefinition;
+import com.cronutils.model.field.CronField;
+import com.cronutils.model.field.definition.FieldDefinition;
+import com.google.common.collect.Maps;
+
 /*
  * Copyright 2014 jmrozanec
+ * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -30,71 +32,68 @@ import java.util.Map;
  * Parser for cron expressions
  */
 public class CronParser {
-    private CronDefinition cronDefinition;
-    private Map<Integer, List<CronParserField>> expressions;
 
-    /**
-     * Constructor
-     * @param cronDefinition - cronDefinition of cron expressions to be parsed
-     *                   if null, a NullPointerException will be raised.
-     */
-    public CronParser(CronDefinition cronDefinition) {
-        expressions = Maps.newHashMap();
-        this.cronDefinition = Validate.notNull(cronDefinition, "CronDefinition must not be null");
-        buildPossibleExpressions(cronDefinition);
-    }
+	private final Map<Integer, List<CronParserField>> expressions = Maps.newHashMap();;
+	private CronDefinition cronDefinition;
 
-    /**
-     * Build possible cron expressions from definitions.
-     * One is built for sure. A second one may be build if last field is optional.
-     * @param cronDefinition - cron definition instance
-     */
-    private void buildPossibleExpressions(CronDefinition cronDefinition) {
-        List<CronParserField> expression = new ArrayList<CronParserField>();
-        for(FieldDefinition fieldDefinition : cronDefinition.getFieldDefinitions()){
-            expression.add(new CronParserField(fieldDefinition.getFieldName(), fieldDefinition.getConstraints()));
-        }
-        Collections.sort(expression, CronParserField.createFieldTypeComparator());
-        expressions.put(expression.size(), expression);
+	/**
+	 * @param cronDefinition
+	 *            - cronDefinition of cron expressions to be parsed if null, a NullPointerException will be raised.
+	 */
+	public CronParser(CronDefinition cronDefinition) {
+		this.cronDefinition = Validate.notNull(cronDefinition, "CronDefinition must not be null");
+		buildPossibleExpressions(cronDefinition);
+	}
 
-        if (cronDefinition.isLastFieldOptional()) {
-            List<CronParserField> shortExpression = new ArrayList<CronParserField>();
-            shortExpression.addAll(expression);
-            shortExpression.remove(shortExpression.size() - 1);
-            expressions.put(shortExpression.size(), shortExpression);
-        }
-    }
+	/**
+	 * Build possible cron expressions from definitions. One is built for sure. A second one may be build if last field is optional.
+	 * 
+	 * @param cronDefinition
+	 *            - cron definition instance
+	 */
+	private void buildPossibleExpressions(CronDefinition cronDefinition) {
+		List<CronParserField> expression = new ArrayList<>();
+		for (FieldDefinition fieldDefinition : cronDefinition.getFieldDefinitions()) {
+			expression.add(new CronParserField(fieldDefinition.getFieldName(), fieldDefinition.getConstraints()));
+		}
+		Collections.sort(expression, CronParserField.createFieldTypeComparator());
+		expressions.put(expression.size(), expression);
 
-    /**
-     * Parse string with cron expression
-     * @param expression - cron expression, never null
-     * @return Cron instance, corresponding to cron expression received
-     * @throws java.lang.IllegalArgumentException if expression does not match cron definition
-     */
-    public Cron parse(String expression) {
-        Validate.notNull(expression, "Expression must not be null");
-        expression = expression.replaceAll("\\s+", " ").trim();
-        if (StringUtils.isEmpty(expression)) {
-            throw new IllegalArgumentException("Empty expression!");
-        }
-        expression = expression.toUpperCase();
-        String[] expressionParts = expression.split(" ");
-        int expressionLength = expressionParts.length;
-        if(!expressions.containsKey(expressionLength)){
-            throw new IllegalArgumentException(
-                    String.format("Cron expression contains %s parts but we expect one of %s",
-                            expressionLength, expressions.keySet()
-                    )
-            );
-        }
-        List<CronField> results = new ArrayList<CronField>();
-        List<CronParserField> fields = expressions.get(expressionLength);
-        CronParserField field;
-        for (int j = 0; j < fields.size(); j++) {
-            field = fields.get(j);
-            results.add(field.parse(expressionParts[j]));
-        }
-        return new Cron(cronDefinition, results).validate();
-    }
+		if (cronDefinition.isLastFieldOptional()) {
+			List<CronParserField> shortExpression = new ArrayList<>();
+			shortExpression.addAll(expression);
+			shortExpression.remove(shortExpression.size() - 1);
+			expressions.put(shortExpression.size(), shortExpression);
+		}
+	}
+
+	/**
+	 * Parse string with cron expression
+	 * 
+	 * @param expression
+	 *            - cron expression, never null
+	 * @return Cron instance, corresponding to cron expression received
+	 * @throws java.lang.IllegalArgumentException
+	 *             if expression does not match cron definition
+	 */
+	public Cron parse(String expression) {
+		Validate.notNull(expression, "Expression must not be null");
+		String replaced = expression.replaceAll("\\s+", " ").trim();
+		if (StringUtils.isEmpty(replaced)) {
+			throw new IllegalArgumentException("Empty expression!");
+		}
+		String[] expressionParts = replaced.toUpperCase().split(" ");
+		int expressionLength = expressionParts.length;
+		List<CronParserField> fields = expressions.get(expressionLength);
+		if (fields == null) {
+			throw new IllegalArgumentException(
+					String.format("Cron expression contains %s parts but we expect one of %s", expressionLength, expressions.keySet()));
+		}
+		int size = fields.size();
+		List<CronField> results = new ArrayList<>(size + 1);
+		for (int j = 0; j < size; j++) {
+			results.add(fields.get(j).parse(expressionParts[j]));
+		}
+		return new Cron(cronDefinition, results).validate();
+	}
 }
-

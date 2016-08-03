@@ -1,9 +1,5 @@
 package com.cronutils.model.time.generator;
 
-import com.cronutils.model.field.CronField;
-import com.cronutils.model.field.expression.FieldExpression;
-import org.apache.commons.lang3.Validate;
-
 import java.util.Collections;
 import java.util.List;
 /*
@@ -19,48 +15,61 @@ import java.util.List;
  * limitations under the License.
  */
 
+import org.apache.commons.lang3.Validate;
+
+import com.cronutils.model.field.CronField;
+import com.cronutils.model.field.expression.FieldExpression;
+
 /**
- * Provides a strategy to generate values.
- * Strategy is valid for 0+ numbers
+ * Provides a strategy to generate values. Strategy is valid for 0+ numbers
  */
 public abstract class FieldValueGenerator {
-    protected static int NO_VALUE = Integer.MIN_VALUE;
-    protected CronField cronField;
 
-    public FieldValueGenerator(CronField cronField){
-        this.cronField = Validate.notNull(cronField, "CronField must not be null");
-        Validate.isTrue(matchesFieldExpressionClass(cronField.getExpression()), "FieldExpression does not match required class");
-    }
+	protected static final int NO_VALUE = Integer.MIN_VALUE;
+	protected CronField cronField;
 
-    /**
-     * Generates next valid value from reference
-     * @param reference - reference value
-     * @return generated value - Integer
-     * @throws NoSuchValueException - if there is no next value
-     */
-    public abstract int generateNextValue(int reference) throws NoSuchValueException;
+	public FieldValueGenerator(CronField cronField) {
+		this.cronField = Validate.notNull(cronField, "CronField must not be null");
+		Validate.isTrue(matchesFieldExpressionClass(cronField.getExpression()), "FieldExpression does not match required class");
+	}
 
-    /**
-     * Generates previous valid value from reference
-     * @param reference - reference value
-     * @return generated value - Integer
-     * @throws NoSuchValueException - if there is no previous value
-     */
-    public abstract int generatePreviousValue(int reference) throws NoSuchValueException;
-    protected abstract List<Integer> generateCandidatesNotIncludingIntervalExtremes(int start, int end);
-    public abstract boolean isMatch(int value);
+	/**
+	 * Generates next valid value from reference
+	 * 
+	 * @param reference
+	 *            - reference value
+	 * @return generated value - Integer
+	 * @throws NoSuchValueException
+	 *             - if there is no next value
+	 */
+	public abstract int generateNextValue(int reference) throws NoSuchValueException;
 
-    public final List<Integer> generateCandidates(int start, int end){
-        List<Integer> candidates = generateCandidatesNotIncludingIntervalExtremes(start, end);
-        if(isMatch(start)){
-            candidates.add(start);
-        }
-        if(isMatch(end)){
-            candidates.add(end);
-        }
-        Collections.sort(candidates);
-        return candidates;
-    }
+	/**
+	 * Generates previous valid value from reference
+	 * 
+	 * @param reference
+	 *            - reference value
+	 * @return generated value - Integer
+	 * @throws NoSuchValueException
+	 *             - if there is no previous value
+	 */
+	public abstract int generatePreviousValue(int reference) throws NoSuchValueException;
 
-    protected abstract boolean matchesFieldExpressionClass(FieldExpression fieldExpression);
+	protected abstract List<Integer> generateCandidatesNotIncludingIntervalExtremes(int start, int end);
+
+	public abstract boolean isMatch(int value);
+
+	public final List<Integer> generateCandidates(int start, int end) {
+		List<Integer> candidates = generateCandidatesNotIncludingIntervalExtremes(start, end);
+		if (isMatch(start)) {
+			candidates.add(start);
+		}
+		if (isMatch(end)) {
+			candidates.add(end);
+		}
+		Collections.sort(candidates);
+		return candidates;
+	}
+
+	protected abstract boolean matchesFieldExpressionClass(FieldExpression fieldExpression);
 }

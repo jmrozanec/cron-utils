@@ -1,5 +1,7 @@
 package com.cronutils.model.field.expression;
 
+import org.apache.commons.lang3.Validate;
+
 /*
  * Copyright 2014 jmrozanec
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,44 +16,40 @@ package com.cronutils.model.field.expression;
  */
 
 import com.cronutils.model.field.value.IntegerFieldValue;
-import org.apache.commons.lang3.Validate;
 
 /**
  * Represents every x time on a cron field.
  */
 public class Every extends FieldExpression {
-    private FieldExpression expression;
-    private IntegerFieldValue period;
+	private FieldExpression expression;
+	private IntegerFieldValue period;
 
-    public Every(IntegerFieldValue time) {
-        this(new Always(), time);
-    }
+	private Every(Every every){
+		this(every.getExpression(), every.getPeriod());
+	}
 
-    public Every(FieldExpression expression, IntegerFieldValue period) {
-        this.expression = Validate.notNull(expression, "Expression must not be null");
-        if (period == null) {
-            period = new IntegerFieldValue(1);
-        }
-        this.period = period;
-    }
+	public Every(IntegerFieldValue time) {
+		this(new Always(), time);
+	}
 
-    private Every(Every every){
-        this(every.getExpression(), every.getPeriod());
-    }
+	public Every(FieldExpression expression, IntegerFieldValue period) {
+		this.expression = Validate.notNull(expression, "Expression must not be null");
+		this.period = period == null ? new IntegerFieldValue(1) : period;
+	}
 
-    public IntegerFieldValue getPeriod() {
-        return period;
-    }
+	public IntegerFieldValue getPeriod() {
+		return period;
+	}
 
-    public FieldExpression getExpression(){
-        return expression;
-    }
+	public FieldExpression getExpression() {
+		return expression;
+	}
 
-    @Override
-    public String asString() {
-        if(period.getValue()==1){
-            return expression.asString()!=null?expression.asString():"";
-        }
-        return String.format("%s/%s", this.expression.asString(), getPeriod());
-    }
+	@Override
+	public String asString() {
+		if (period.getValue() == 1) {
+			return expression.asString() != null ? expression.asString() : "";
+		}
+		return String.format("%s/%s", expression.asString(), getPeriod());
+	}
 }

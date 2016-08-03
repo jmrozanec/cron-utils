@@ -12,60 +12,61 @@
  */
 package com.cronutils.parser;
 
+import java.util.Comparator;
+
+import org.apache.commons.lang3.Validate;
+
 import com.cronutils.model.field.CronField;
 import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.field.constraint.FieldConstraints;
-import org.apache.commons.lang3.Validate;
-
-import java.util.Comparator;
 
 /**
  * Represents a cron field.
  */
 public class CronParserField {
-    private CronFieldName field;
-    private FieldConstraints constraints;
-    private FieldParser parser;
 
-    /**
-     * Constructor
-     * @param fieldName - CronFieldName instance
-     */
-    public CronParserField(CronFieldName fieldName, FieldConstraints constraints) {
-        this.field = Validate.notNull(fieldName, "CronFieldName must not be null");
-        this.constraints = Validate.notNull(constraints, "FieldConstraints must not be null");
-        this.parser = new FieldParser(constraints);
-    }
+	private final CronFieldName field;
+	private final FieldConstraints constraints;
+	private final FieldParser parser;
 
-    /**
-     * Returns field name
-     * @return CronFieldName, never null
-     */
-    public CronFieldName getField() {
-        return field;
-    }
+	/**
+	 * Constructor
+	 * 
+	 * @param fieldName
+	 *            - CronFieldName instance
+	 */
+	public CronParserField(CronFieldName fieldName, FieldConstraints constraints) {
+		this.field = Validate.notNull(fieldName, "CronFieldName must not be null");
+		this.constraints = Validate.notNull(constraints, "FieldConstraints must not be null");
+		this.parser = new FieldParser(constraints);
+	}
 
-    /**
-     * Parses a String cron expression
-     * @param expression - cron expression
-     * @return parse result as CronFieldParseResult instance - never null.
-     * May throw a RuntimeException if cron expression is bad.
-     */
-    public CronField parse(String expression) {
-        return new CronField(field, parser.parse(expression), constraints);
-    }
+	/**
+	 * Returns field name
+	 * 
+	 * @return CronFieldName, never null
+	 */
+	public CronFieldName getField() {
+		return field;
+	}
 
-    /**
-     * Create a Comparator that compares CronField instances using CronFieldName value.
-     * @return Comparator for CronField instance, never null.
-     */
-    public static Comparator<CronParserField> createFieldTypeComparator() {
-        return new Comparator<CronParserField>() {
-            @Override
-            public int compare(CronParserField o1, CronParserField o2) {
-                return o1.getField().getOrder() - o2.getField().getOrder();
-            }
-        };
-    }
+	/**
+	 * Parses a String cron expression
+	 * 
+	 * @param expression
+	 *            - cron expression
+	 * @return parse result as CronFieldParseResult instance - never null. May throw a RuntimeException if cron expression is bad.
+	 */
+	public CronField parse(String expression) {
+		return new CronField(field, parser.parse(expression), constraints);
+	}
+
+	/**
+	 * Create a Comparator that compares CronField instances using CronFieldName value.
+	 * 
+	 * @return Comparator for CronField instance, never null.
+	 */
+	public static Comparator<CronParserField> createFieldTypeComparator() {
+		return (o1, o2) -> o1.getField().getOrder() - o2.getField().getOrder();
+	}
 }
-

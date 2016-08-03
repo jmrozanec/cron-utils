@@ -1,12 +1,13 @@
 package com.cronutils.model.field.expression;
 
-import com.google.common.collect.Lists;
-
 import java.util.Collections;
 import java.util.List;
 
+import com.google.common.collect.Lists;
+
 /*
  * Copyright 2014 jmrozanec
+ * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -21,37 +22,34 @@ import java.util.List;
  * Represents a conjunction of cron expressions for a field.
  */
 public class And extends FieldExpression {
+	private final List<FieldExpression> expressions;
 
-    private List<FieldExpression> expressions;
+	public And() {
+		expressions = Lists.newArrayList();
+	}
 
-    public And() {
-        expressions = Lists.newArrayList();
-    }
+	private And(And and) {
+		expressions = Lists.newArrayList(and.getExpressions());
+	}
 
-    private And(And and) {
-        expressions = Lists.newArrayList(and.getExpressions());
-    }
+	@Override
+	public And and(FieldExpression exp) {
+		expressions.add(exp);
+		return this;
+	}
 
-    @Override
-    public And and(FieldExpression exp) {
-        expressions.add(exp);
-        return this;
-    }
+	@Override
+	public String asString() {
+		StringBuilder builder = new StringBuilder();
+		for (int j = 0; j < expressions.size() - 1; j++) {
+			builder.append(expressions.get(j).asString());
+			builder.append(",");
+		}
+		builder.append(expressions.get(expressions.size() - 1).asString());
+		return builder.toString();
+	}
 
-    @Override
-    public String asString() {
-        StringBuilder builder = new StringBuilder();
-        for(int j=0; j< expressions.size(); j++){
-            builder.append(expressions.get(j).asString());
-            if(j < expressions.size() -1){
-                builder.append(",");
-            }
-        }
-        return builder.toString();
-    }
-
-    public List<FieldExpression> getExpressions() {
-        return Collections.unmodifiableList(expressions);
-    }
+	public List<FieldExpression> getExpressions() {
+		return Collections.unmodifiableList(expressions);
+	}
 }
-

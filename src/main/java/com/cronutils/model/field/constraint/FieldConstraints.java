@@ -1,11 +1,12 @@
 package com.cronutils.model.field.constraint;
 
-import com.cronutils.model.field.value.SpecialChar;
-import org.apache.commons.lang3.Validate;
-
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
+
+import org.apache.commons.lang3.Validate;
+
+import com.cronutils.model.field.value.SpecialChar;
 
 /*
  * Copyright 2014 jmrozanec
@@ -21,60 +22,67 @@ import java.util.Set;
  */
 
 /**
- * Holds information on valid values for a field
- * and allows to perform mappings and validations.
- * Example of information for valid field values: int range,
- * valid special characters, valid nominal values.
- * Example for mappings: conversions from nominal values to integers
- * and integer-integer mappings if more than one integer
- * represents the same concept.
+ * Holds information on valid values for a field and allows to perform mappings and validations. Example of information for valid field
+ * values: int range, valid special characters, valid nominal values. Example for mappings: conversions from nominal values to integers and
+ * integer-integer mappings if more than one integer represents the same concept.
  */
 public class FieldConstraints {
-    private Map<String, Integer> stringMapping;
-    private Map<Integer, Integer> intMapping;
-    private Set<SpecialChar> specialChars;
-    private int startRange;
-    private int endRange;
 
-    /**
-     * @param specialChars - allowed special chars
-     * @param startRange - lowest possible value
-     * @param endRange - highest possible value
-     */
-    public FieldConstraints(Map<String, Integer> stringMapping, Map<Integer, Integer> intMapping, Set<SpecialChar> specialChars, int startRange, int endRange) {
-        this.stringMapping = Collections.unmodifiableMap(Validate.notNull(stringMapping, "String mapping must not be null"));
-        this.intMapping = Collections.unmodifiableMap(Validate.notNull(intMapping, "Integer mapping must not be null"));
-        this.specialChars = Collections.unmodifiableSet(Validate.notNull(specialChars, "Special (non-standard) chars set must not be null"));
-        this.startRange = startRange;
-        this.endRange = endRange;
-    }
+	private final Map<String, Integer> stringMapping;
+	private final Map<Integer, Integer> intMapping;
+	private final Set<SpecialChar> specialChars;
+	private final Integer startRange;
+	private final Integer endRange;
 
-    public int getStartRange() {
-        return startRange;
-    }
+	/**
+	 * @param specialChars
+	 *            - allowed special chars
+	 * @param startRange
+	 *            - lowest possible value
+	 * @param endRange
+	 *            - highest possible value
+	 */
+	public FieldConstraints(Map<String, Integer> stringMapping, Map<Integer, Integer> intMapping, Set<SpecialChar> specialChars, int startRange,
+			int endRange) {
+		this.stringMapping = Collections.unmodifiableMap(Validate.notNull(stringMapping, "String mapping must not be null"));
+		this.intMapping = Collections.unmodifiableMap(Validate.notNull(intMapping, "Integer mapping must not be null"));
+		this.specialChars = Collections.unmodifiableSet(Validate.notNull(specialChars, "Special (non-standard) chars set must not be null"));
+		this.startRange = startRange;
+		this.endRange = endRange;
+	}
 
-    public int getEndRange() {
-        return endRange;
-    }
+	public int getStartRange() {
+		return startRange;
+	}
 
-    public Set<SpecialChar> getSpecialChars() {
-        return specialChars;
-    }
+	public int getEndRange() {
+		return endRange;
+	}
 
-    /**
-     * Check if given number is greater or equal to start range and minor or equal to end range
-     * @param value - to be checked
-     */
-    public boolean isInRange(int value) {
-        return value >= getStartRange() && value <= getEndRange();
-    }
+	public Set<SpecialChar> getSpecialChars() {
+		return specialChars;
+	}
 
-    public Map<String, Integer> getStringMapping() {
-        return stringMapping;
-    }
+	/**
+	 * Check if given number is greater or equal to start range and minor or equal to end range
+	 * 
+	 * @param value
+	 *            - to be checked
+	 */
+	public boolean isInRange(int value) {
+		return value >= getStartRange() && value <= getEndRange();
+	}
 
-    public Map<Integer, Integer> getIntMapping() {
-        return intMapping;
-    }
+	public Set<String> getStringMappingKeySet() {
+		return stringMapping.keySet();
+	}
+
+	public Integer getStringMappingValue(String exp) {
+		return stringMapping.get(exp);
+	}
+
+	public Integer getIntMappingValue(Integer exp) {
+		return intMapping.get(exp);
+	}
+
 }
-
