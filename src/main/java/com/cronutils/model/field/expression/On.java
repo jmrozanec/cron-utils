@@ -21,15 +21,14 @@ import com.cronutils.model.field.value.SpecialCharFieldValue;
  * limitations under the License.
  */
 public class On extends FieldExpression {
-
-	private static final String W = "W";
-	private static final String L = "L";
-
 	private static final int DEFAULT_NTH_VALUE = -1;
-
 	private IntegerFieldValue time;
 	private IntegerFieldValue nth;
 	private SpecialCharFieldValue specialChar;
+
+	private On(On on){
+		this(on.time, on.specialChar, on.nth);
+	}
 
 	public On(SpecialCharFieldValue specialChar) {
 		this(new IntegerFieldValue(DEFAULT_NTH_VALUE), specialChar);
@@ -74,27 +73,11 @@ public class On extends FieldExpression {
 		case HASH:
 			return String.format("%s#%s", getTime(), getNth());
 		case W:
-			return wCase();
+			return isDefault(getTime())?"W":String.format("%sW", getTime());
 		case L:
-			return lCase();
+			return isDefault(getTime())?"L":String.format("%sL", getTime());
 		default:
 			return specialChar.toString();
-		}
-	}
-
-	private String lCase() {
-		if (isDefault(getTime())) {
-			return L;
-		} else {
-			return String.format("%sL", getTime());
-		}
-	}
-
-	private String wCase() {
-		if (isDefault(getTime())) {
-			return W;
-		} else {
-			return String.format("%sW", getTime());
 		}
 	}
 

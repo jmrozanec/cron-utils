@@ -23,6 +23,10 @@ public class Between extends FieldExpression {
 	private FieldValue<?> from;
 	private FieldValue<?> to;
 
+	public Between(Between between) {
+		this(between.getFrom(), between.getTo());
+	}
+
 	public Between(FieldValue<?> from, FieldValue<?> to) {
 		this.from = from;
 		this.to = to;

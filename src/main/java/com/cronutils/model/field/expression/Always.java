@@ -19,6 +19,12 @@ package com.cronutils.model.field.expression;
  */
 public class Always extends FieldExpression {
 
+	public Always(){}
+
+	private Always(Always always) {
+		this();
+	}
+
 	@Override
 	public String asString() {
 		return "*";

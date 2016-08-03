@@ -27,8 +27,6 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Sets;
 
 public class StringValidations {
-
-	private static final String EMPTY = "";
 	private static final String ESCAPED_END = ")\\b";
 	private static final String ESCAPED_START = "\\b(";
 	private static final SpecialChar[] SPECIAL_CHARS = new SpecialChar[] { L, LW, W };
@@ -50,9 +48,9 @@ public class StringValidations {
 	@VisibleForTesting
 	public String removeValidChars(String exp) {
 		Matcher numsAndCharsMatcher = NUMS_AND_CHARS_PATTERN.matcher(exp.toUpperCase());
-		Matcher stringToIntKeysMatcher = stringToIntKeysPattern.matcher(numsAndCharsMatcher.replaceAll(EMPTY));
-		Matcher specialWordsMatcher = lwPattern.matcher(stringToIntKeysMatcher.replaceAll(EMPTY));
-		return specialWordsMatcher.replaceAll(EMPTY).replaceAll("\\s+", EMPTY).replaceAll(",", EMPTY).replaceAll("-", EMPTY);
+		Matcher stringToIntKeysMatcher = stringToIntKeysPattern.matcher(numsAndCharsMatcher.replaceAll(""));
+		Matcher specialWordsMatcher = lwPattern.matcher(stringToIntKeysMatcher.replaceAll(""));
+		return specialWordsMatcher.replaceAll("").replaceAll("\\s+", "").replaceAll(",", "").replaceAll("-", "");
 	}
 
 	@VisibleForTesting

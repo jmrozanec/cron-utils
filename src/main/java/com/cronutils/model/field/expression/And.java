@@ -22,8 +22,15 @@ import com.google.common.collect.Lists;
  * Represents a conjunction of cron expressions for a field.
  */
 public class And extends FieldExpression {
+	private final List<FieldExpression> expressions;
 
-	private final List<FieldExpression> expressions = Lists.newArrayList();
+	public And() {
+		expressions = Lists.newArrayList();
+	}
+
+	private And(And and) {
+		expressions = Lists.newArrayList(and.getExpressions());
+	}
 
 	@Override
 	public And and(FieldExpression exp) {

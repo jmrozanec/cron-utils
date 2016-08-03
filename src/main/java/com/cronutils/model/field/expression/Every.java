@@ -21,11 +21,12 @@ import com.cronutils.model.field.value.IntegerFieldValue;
  * Represents every x time on a cron field.
  */
 public class Every extends FieldExpression {
-
-	private static final String EMPTY_STRING = "";
-
 	private FieldExpression expression;
 	private IntegerFieldValue period;
+
+	private Every(Every every){
+		this(every.getExpression(), every.getPeriod());
+	}
 
 	public Every(IntegerFieldValue time) {
 		this(new Always(), time);
@@ -47,7 +48,7 @@ public class Every extends FieldExpression {
 	@Override
 	public String asString() {
 		if (period.getValue() == 1) {
-			return expression.asString() != null ? expression.asString() : EMPTY_STRING;
+			return expression.asString() != null ? expression.asString() : "";
 		}
 		return String.format("%s/%s", expression.asString(), getPeriod());
 	}

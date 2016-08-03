@@ -36,13 +36,12 @@ import com.google.common.collect.Lists;
 abstract class DescriptionStrategy {
 	private static final String EVERY = "every";
 	private static final String WHITE_SPACE = " ";
-	private static final String EMPTY = "";
 	protected Function<Integer, String> nominalValueFunction;
 	protected ResourceBundle bundle;
 
 	public DescriptionStrategy(ResourceBundle bundle) {
 		this.bundle = bundle;
-		nominalValueFunction = integer -> EMPTY + integer;
+		nominalValueFunction = integer -> WHITE_SPACE+integer;
 	}
 
 	/**
@@ -53,8 +52,8 @@ abstract class DescriptionStrategy {
 	public abstract String describe();
 
 	/**
-	 * Given a {@linkplain CronFieldExpression}, provide a {@linkplain String} with a human readable description. Will identify
-	 * {@linkplain CronFieldExpression} subclasses and delegate.
+	 * Given a {@linkplain FieldExpression}, provide a {@linkplain String} with a human readable description. Will identify
+	 * {@linkplain FieldExpression} subclasses and delegate.
 	 * 
 	 * @param fieldExpression
 	 *            - CronFieldExpression instance - not null
@@ -65,8 +64,8 @@ abstract class DescriptionStrategy {
 	}
 
 	/**
-	 * Given a {@linkplain CronFieldExpression}, provide a {@linkplain String} with a human readable description. Will identify
-	 * {@linkplain CronFieldExpression} subclasses and delegate.
+	 * Given a {@linkplain FieldExpression}, provide a {@linkplain String} with a human readable description. Will identify
+	 * {@linkplain FieldExpression} subclasses and delegate.
 	 * 
 	 * @param fieldExpression
 	 *            - CronFieldExpression instance - not null
@@ -91,7 +90,7 @@ abstract class DescriptionStrategy {
 		if (fieldExpression instanceof On) {
 			return describe((On) fieldExpression, and);
 		}
-		return EMPTY;
+		return "";
 	}
 
 	/**
@@ -118,7 +117,7 @@ abstract class DescriptionStrategy {
 	 * @return human readable description - String
 	 */
 	protected String describe(Always always, boolean and) {
-		return EMPTY;
+		return "";
 	}
 
 	/**
@@ -199,8 +198,10 @@ abstract class DescriptionStrategy {
 		}
 		if (every.getExpression() instanceof Between) {
 			Between between = (Between) every.getExpression();
-			description += MessageFormat.format(bundle.getString("between_x_and_y"), nominalValue(between.getFrom()), nominalValue(between.getTo()))
-					+ WHITE_SPACE;
+			description +=
+					MessageFormat.format(
+							bundle.getString("between_x_and_y"), nominalValue(between.getFrom()), nominalValue(between.getTo())
+					)+ WHITE_SPACE;
 		}
 		return description;
 	}
