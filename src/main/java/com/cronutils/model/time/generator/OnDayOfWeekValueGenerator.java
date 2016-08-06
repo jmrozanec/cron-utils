@@ -1,5 +1,11 @@
 package com.cronutils.model.time.generator;
 
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.util.List;
+
+import org.apache.commons.lang3.Validate;
+
 import com.cronutils.mapper.ConstantsMapper;
 import com.cronutils.mapper.WeekDay;
 import com.cronutils.model.field.CronField;
@@ -7,10 +13,6 @@ import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.field.expression.FieldExpression;
 import com.cronutils.model.field.expression.On;
 import com.google.common.collect.Lists;
-import org.apache.commons.lang3.Validate;
-import org.joda.time.DateTime;
-
-import java.util.List;
 /*
  * Copyright 2015 jmrozanec
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -96,11 +98,11 @@ class OnDayOfWeekValueGenerator extends FieldValueGenerator {
     }
 
     private int generateHashValues(On on, int year, int month){
-        int dowForFirstDoM = new DateTime(year, month, 1, 1, 1).getDayOfWeek();//1-7
-        int requiredDoW = ConstantsMapper.weekDayMapping(mondayDoWValue, ConstantsMapper.JODATIME_WEEK_DAY, on.getTime().getValue());//to normalize to joda-time value
+        DayOfWeek dowForFirstDoM = LocalDate.of(year, month, 1).getDayOfWeek();//1-7
+        int requiredDoW = ConstantsMapper.weekDayMapping(mondayDoWValue, ConstantsMapper.JAVA8, on.getTime().getValue());//to normalize to joda-time value
         int requiredNth = on.getNth().getValue();
         int baseDay = 1;//day 1 from given month
-        int diff = dowForFirstDoM - requiredDoW;
+        int diff = dowForFirstDoM.getValue() - requiredDoW;
         if(diff == 0){
             //base day remains the same
         }
@@ -114,20 +116,20 @@ class OnDayOfWeekValueGenerator extends FieldValueGenerator {
     }
 
     private int generateLValues(On on, int year, int month) throws NoSuchValueException {
-        int lastDoM = new DateTime(year, month, 1, 1, 1).dayOfMonth().getMaximumValue();
-        DateTime lastDoMDateTime = new DateTime(year, month, lastDoM, 1, 1);
-        int dowForLastDoM = lastDoMDateTime.getDayOfWeek();//1-7
-        int requiredDoW = ConstantsMapper.weekDayMapping(mondayDoWValue, ConstantsMapper.JODATIME_WEEK_DAY, on.getTime().getValue());//to normalize to joda-time value
+        int lastDoM = LocalDate.of(year, month, 1).lengthOfMonth();
+        LocalDate lastDoMDateTime = LocalDate.of(year, month, lastDoM);
+        int dowForLastDoM = lastDoMDateTime.getDayOfWeek().getValue();//1-7
+        int requiredDoW = ConstantsMapper.weekDayMapping(mondayDoWValue, ConstantsMapper.JAVA8, on.getTime().getValue());//to normalize to joda-time value
         int dowDiff = dowForLastDoM - requiredDoW;
 
         if(dowDiff==0){
-            return lastDoMDateTime.dayOfMonth().get();
+            return lastDoMDateTime.getDayOfMonth();
         }
         if(dowDiff<0){
-            return lastDoMDateTime.minusDays(dowForLastDoM+(7-requiredDoW)).dayOfMonth().get();
+            return lastDoMDateTime.minusDays(dowForLastDoM+(7-requiredDoW)).getDayOfMonth();
         }
         if(dowDiff>0){
-            return lastDoMDateTime.minusDays(dowDiff).dayOfMonth().get();
+            return lastDoMDateTime.minusDays(dowDiff).getDayOfMonth();
         }
         throw new NoSuchValueException();
     }
@@ -145,9 +147,9 @@ class OnDayOfWeekValueGenerator extends FieldValueGenerator {
      */
 	private int generateNoneValues(On on, int year, int month, int reference) {
 		// the day of week the first of the month is on
-		int dowForFirstDoM = new DateTime(year, month, 1, 1, 1).getDayOfWeek();// 1-7
+		int dowForFirstDoM = LocalDate.of(year, month, 1).getDayOfWeek().getValue();// 1-7
 		// the day of week we need, normalize to jodatime
-		int requiredDoW = ConstantsMapper.weekDayMapping(mondayDoWValue, ConstantsMapper.JODATIME_WEEK_DAY, on.getTime().getValue());
+		int requiredDoW = ConstantsMapper.weekDayMapping(mondayDoWValue, ConstantsMapper.JAVA8, on.getTime().getValue());
 		// the first day of the month
 		int baseDay = 1;// day 1 from given month
 		// the difference between the days of week

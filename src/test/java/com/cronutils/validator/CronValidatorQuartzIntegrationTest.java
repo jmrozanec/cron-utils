@@ -1,15 +1,15 @@
 package com.cronutils.validator;
 
-import com.cronutils.model.CronType;
-import com.cronutils.model.definition.CronDefinitionBuilder;
-import com.cronutils.parser.CronParser;
-import org.joda.time.DateTime;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Locale;
+
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.Locale;
-
-import static org.junit.Assert.assertTrue;
+import com.cronutils.model.CronType;
+import com.cronutils.model.definition.CronDefinitionBuilder;
+import com.cronutils.parser.CronParser;
 
 /*
  * Copyright 2015 jmrozanec
@@ -43,9 +43,9 @@ public class CronValidatorQuartzIntegrationTest {
      */
     @Test
     public void testSingleMonthMappingIsValid(){
-        DateTime date = new DateTime(2015, 1, 1, 1, 1);
+        LocalDate date = LocalDate.of(2015, 1, 1);
         for(int j=0;j<12;j++){
-            String expression = String.format("0 0 0 * %s ? *", date.plusMonths(j).toString("MMM", Locale.US).toUpperCase());
+            String expression = String.format("0 0 0 * %s ? *", date.plusMonths(j).format(DateTimeFormatter.ofPattern("MMM", Locale.US)).toUpperCase());
             parser.parse(expression);
         }
     }

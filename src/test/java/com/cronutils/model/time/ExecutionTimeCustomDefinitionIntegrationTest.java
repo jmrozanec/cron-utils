@@ -1,15 +1,17 @@
 package com.cronutils.model.time;
 
+import static java.time.ZoneOffset.UTC;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+import java.time.ZonedDateTime;
+
+import org.junit.Test;
+
 import com.cronutils.model.Cron;
 import com.cronutils.model.definition.CronDefinition;
 import com.cronutils.model.definition.CronDefinitionBuilder;
 import com.cronutils.parser.CronParser;
-import org.joda.time.DateTime;
-import org.joda.time.MutableDateTime;
-import org.junit.Test;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 public class ExecutionTimeCustomDefinitionIntegrationTest {
 
@@ -27,12 +29,12 @@ public class ExecutionTimeCustomDefinitionIntegrationTest {
         CronParser parser = new CronParser(cronDefinition);
         Cron cron = parser.parse("*/30 * * * * *");
 
-        DateTime startDateTime = new DateTime(2015, 8, 28, 12, 5, 44, 0);
-        DateTime expectedDateTime = new DateTime(2015, 8, 28, 12, 6, 0, 0);
+        ZonedDateTime startDateTime = ZonedDateTime.of(2015, 8, 28, 12, 5, 44, 0, UTC);
+        ZonedDateTime expectedDateTime = ZonedDateTime.of(2015, 8, 28, 12, 6, 0, 0, UTC);
 
         ExecutionTime executionTime = ExecutionTime.forCron(cron);
 
-        DateTime nextExecutionDateTime = executionTime.nextExecution(startDateTime);
+        ZonedDateTime nextExecutionDateTime = executionTime.nextExecution(startDateTime);
         assertEquals(expectedDateTime, nextExecutionDateTime);
     }
 
@@ -51,19 +53,13 @@ public class ExecutionTimeCustomDefinitionIntegrationTest {
         CronParser parser = new CronParser(cronDefinition);
         Cron cron = parser.parse("0/30 * * * * *");
 
-        MutableDateTime mutableDateTime = new MutableDateTime();
-        mutableDateTime.setDateTime(2015, 8, 28, 12, 5, 14, 0);
 
-        DateTime startDateTime = mutableDateTime.toDateTime();
-
-        mutableDateTime = new MutableDateTime();
-        mutableDateTime.setDateTime(2015, 8, 28, 12, 5, 30, 0);
-
-        DateTime expectedDateTime = mutableDateTime.toDateTime();
+        ZonedDateTime startDateTime = ZonedDateTime.of(2015, 8, 28, 12, 5, 14, 0, UTC);
+        ZonedDateTime expectedDateTime = ZonedDateTime.of(2015, 8, 28, 12, 5, 30, 0, UTC);
 
         ExecutionTime executionTime = ExecutionTime.forCron(cron);
 
-        DateTime nextExecutionDateTime = executionTime.nextExecution(startDateTime);
+        ZonedDateTime nextExecutionDateTime = executionTime.nextExecution(startDateTime);
         assertEquals(expectedDateTime, nextExecutionDateTime);
     }
 
@@ -86,9 +82,9 @@ public class ExecutionTimeCustomDefinitionIntegrationTest {
 
         CronParser parser = new CronParser(cronDefinition);
         Cron cron = parser.parse("0 0 */2 * * *");
-        DateTime startDateTime = DateTime.parse("2015-08-28T12:05:14.000-03:00");
+        ZonedDateTime startDateTime = ZonedDateTime.parse("2015-08-28T12:05:14.000-03:00");
 
-        assertTrue(DateTime.parse("2015-08-28T14:00:00.000-03:00").compareTo(ExecutionTime.forCron(cron).nextExecution(startDateTime)) == 0);
+        assertTrue(ZonedDateTime.parse("2015-08-28T14:00:00.000-03:00").compareTo(ExecutionTime.forCron(cron).nextExecution(startDateTime)) == 0);
     }
 
     /**
@@ -110,9 +106,9 @@ public class ExecutionTimeCustomDefinitionIntegrationTest {
 
         CronParser parser = new CronParser(cronDefinition);
         Cron cron = parser.parse("0 0 /2 * * *");
-        DateTime startDateTime = DateTime.parse("2015-08-28T12:05:14.000-03:00");
+        ZonedDateTime startDateTime = ZonedDateTime.parse("2015-08-28T12:05:14.000-03:00");
 
-        assertTrue(DateTime.parse("2015-08-28T14:00:00.000-03:00").compareTo(ExecutionTime.forCron(cron).nextExecution(startDateTime)) == 0);
+        assertTrue(ZonedDateTime.parse("2015-08-28T14:00:00.000-03:00").compareTo(ExecutionTime.forCron(cron).nextExecution(startDateTime)) == 0);
     }
 
     /**
@@ -140,9 +136,9 @@ public class ExecutionTimeCustomDefinitionIntegrationTest {
 
         CronParser parser = new CronParser(cronDefinition);
         Cron cron = parser.parse("30 3 * * MON-FRI");
-        DateTime sameDayBeforeEventStartDateTime = DateTime.parse("1970-01-01T00:00:00.000-03:00");
+        ZonedDateTime sameDayBeforeEventStartDateTime = ZonedDateTime.parse("1970-01-01T00:00:00.000-03:00");
         assertEquals(1, ExecutionTime.forCron(cron).nextExecution(sameDayBeforeEventStartDateTime).getDayOfMonth());
-        DateTime sameDayAfterEventStartDateTime = DateTime.parse("1970-01-01T12:00:00.000-03:00");
+        ZonedDateTime sameDayAfterEventStartDateTime = ZonedDateTime.parse("1970-01-01T12:00:00.000-03:00");
         assertEquals(2, ExecutionTime.forCron(cron).nextExecution(sameDayAfterEventStartDateTime).getDayOfMonth());
     }
 }

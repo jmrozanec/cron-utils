@@ -1,35 +1,25 @@
 package com.cronutils;
 
+import java.text.ParseException;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+
+import org.junit.Test;
+
 import com.cronutils.model.Cron;
 import com.cronutils.model.CronType;
-import com.cronutils.model.definition.CronDefinition;
 import com.cronutils.model.definition.CronDefinitionBuilder;
 import com.cronutils.model.time.ExecutionTime;
 import com.cronutils.parser.CronParser;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-import org.junit.Before;
-import org.junit.Test;
-
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
-import static org.hamcrest.core.AnyOf.anyOf;
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
 
 public class OpenIssuesTest {
-    DateFormat dfSimple = new SimpleDateFormat("hh:mm:ss MM/dd/yyyy a");
-    DateFormat df = new SimpleDateFormat("hh:mm:ss EEE, MMM dd yyyy a");
+    DateTimeFormatter dfSimple = DateTimeFormatter.ofPattern("hh:mm:ss MM/dd/yyyy a X");
+    DateTimeFormatter df = DateTimeFormatter.ofPattern("hh:mm:ss EEE, MMM dd yyyy a X");
 
     @Test
-    public void testBasicCron() throws ParseException
-    {
-        printDate("3:15:00 11/20/2015 PM");
-        printDate("3:15:00 11/27/2015 PM");
+    public void testBasicCron() throws ParseException {
+        printDate("03:15:00 11/20/2015 PM Z");
+        printDate("03:15:00 11/27/2015 PM Z");
 // printDate("3:15:00 11/29/2015 PM");
 // printDate("3:15:00 11/30/2015 PM");
 // printDate("3:15:00 12/01/2015 PM");
@@ -39,10 +29,9 @@ public class OpenIssuesTest {
 // printDate("3:15:00 12/31/2015 PM");
     }
 
-    private void printDate(String startDate) throws ParseException
-    {
-        Date now = dfSimple.parse(startDate);
-        System.out.println("Starting: "+ df.format(now));
+    private void printDate(String startDate) throws ParseException {
+        ZonedDateTime now = ZonedDateTime.parse(startDate, dfSimple);
+        System.out.println("Starting: " + df.format(now));
         printNextDate(now, "0 6 * * 0");//Sunday
         printNextDate(now, "0 6 * * 1");
         printNextDate(now, "0 6 * * 2");
@@ -52,23 +41,18 @@ public class OpenIssuesTest {
         printNextDate(now, "0 6 * * 6");
     }
 
-    private void printNextDate(Date now, String cronString)
-    {
-        Date date = nextSchedule(cronString, now);
+    private void printNextDate(ZonedDateTime now, String cronString) {
+        ZonedDateTime date = nextSchedule(cronString, now);
         System.out.println("Next time: " + df.format(date));
     }
 
-    public static Date nextSchedule(String cronString, Date lastExecution)
-    {
-        DateTime now = new DateTime(lastExecution);
-        CronParser cronParser =new CronParser(
-                CronDefinitionBuilder.instanceDefinitionFor(CronType.UNIX));
+    private static ZonedDateTime nextSchedule(String cronString, ZonedDateTime lastExecution) {
+        CronParser cronParser = new CronParser(CronDefinitionBuilder.instanceDefinitionFor(CronType.UNIX));
         Cron cron = cronParser.parse(cronString);
 
         ExecutionTime executionTime = ExecutionTime.forCron(cron);
-        DateTime nextExecution = executionTime.nextExecution(now);
 
-        return nextExecution.toDate();
+        return executionTime.nextExecution(lastExecution);
     }
 }
 

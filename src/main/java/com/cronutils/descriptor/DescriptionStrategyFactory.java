@@ -1,11 +1,13 @@
 package com.cronutils.descriptor;
 
-import com.cronutils.model.field.expression.FieldExpression;
-import com.cronutils.model.field.expression.On;
-import org.joda.time.DateTime;
-
+import java.time.DayOfWeek;
+import java.time.Month;
+import java.time.format.TextStyle;
 import java.util.ResourceBundle;
 import java.util.function.Function;
+
+import com.cronutils.model.field.expression.FieldExpression;
+import com.cronutils.model.field.expression.On;
 
 /*
 * Copyright 2014 jmrozanec
@@ -30,7 +32,7 @@ class DescriptionStrategyFactory {
      * @return - DescriptionStrategy instance, never null
      */
     public static DescriptionStrategy daysOfWeekInstance(final ResourceBundle bundle, final FieldExpression expression) {
-        final Function<Integer, String> nominal = integer -> new DateTime().withDayOfWeek(integer).dayOfWeek().getAsText(bundle.getLocale());
+        final Function<Integer, String> nominal = integer -> DayOfWeek.of(integer).getDisplayName(TextStyle.FULL, bundle.getLocale());
 
         NominalDescriptionStrategy dow = new NominalDescriptionStrategy(bundle, nominal, expression);
 
@@ -88,7 +90,7 @@ class DescriptionStrategyFactory {
     public static DescriptionStrategy monthsInstance(final ResourceBundle bundle, final FieldExpression expression) {
         return new NominalDescriptionStrategy(
                 bundle,
-                integer -> new DateTime().withMonthOfYear(integer).monthOfYear().getAsText(bundle.getLocale()),
+                integer -> Month.of(integer).getDisplayName(TextStyle.FULL, bundle.getLocale()),
                 expression
         );
     }
