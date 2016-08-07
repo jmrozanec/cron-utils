@@ -1,5 +1,15 @@
 package com.cronutils.model.time.generator;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
+import java.time.LocalDate;
+import java.util.List;
+
+import org.junit.Before;
+import org.junit.Test;
+
 import com.cronutils.model.field.CronField;
 import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.field.constraint.FieldConstraints;
@@ -7,13 +17,6 @@ import com.cronutils.model.field.constraint.FieldConstraintsBuilder;
 import com.cronutils.model.field.expression.On;
 import com.cronutils.model.field.value.SpecialChar;
 import com.cronutils.model.field.value.SpecialCharFieldValue;
-import org.joda.time.DateTime;
-import org.junit.Before;
-import org.junit.Test;
-
-import java.util.List;
-
-import static org.junit.Assert.*;
 /*
  * Copyright 2015 jmrozanec
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -30,7 +33,7 @@ public class OnDayOfMonthValueGeneratorLTest {
     private OnDayOfMonthValueGenerator fieldValueGenerator;
     private int year = 2015;
     private int month = 2;
-    private int lastDayInMonth = new DateTime(2015, 2, 1, 1, 1).dayOfMonth().getMaximumValue();
+    private int lastDayInMonth = LocalDate.of(2015, 2, 1).lengthOfMonth();
 
     @Before
     public void setUp(){

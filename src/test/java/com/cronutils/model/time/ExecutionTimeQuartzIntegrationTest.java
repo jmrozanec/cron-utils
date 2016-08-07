@@ -1,23 +1,27 @@
 package com.cronutils.model.time;
 
+import static java.time.ZoneOffset.UTC;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import java.time.DayOfWeek;
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
+
+import org.junit.Before;
+import org.junit.Test;
+
 import com.cronutils.model.Cron;
 import com.cronutils.model.CronType;
 import com.cronutils.model.definition.CronDefinitionBuilder;
 import com.cronutils.parser.CronParser;
-
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeConstants;
-import org.joda.time.DateTimeZone;
-import org.joda.time.Duration;
-import org.joda.time.Interval;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
-import org.junit.Before;
-import org.junit.Test;
-
-import java.text.SimpleDateFormat;
-
-import static org.junit.Assert.*;
 
 /*
  * Copyright 2015 jmrozanec
@@ -47,34 +51,34 @@ public class ExecutionTimeQuartzIntegrationTest {
 
     @Test
     public void testNextExecutionEverySecond() throws Exception {
-        DateTime now = truncateToSeconds(DateTime.now());
-        DateTime expected = truncateToSeconds(now.plusSeconds(1));
+        ZonedDateTime now = truncateToSeconds(ZonedDateTime.now());
+        ZonedDateTime expected = truncateToSeconds(now.plusSeconds(1));
         ExecutionTime executionTime = ExecutionTime.forCron(parser.parse(EVERY_SECOND));
         assertEquals(expected, executionTime.nextExecution(now));
     }
 
     @Test
     public void testTimeToNextExecution() throws Exception {
-        DateTime now = truncateToSeconds(DateTime.now());
-        DateTime expected = truncateToSeconds(now.plusSeconds(1));
+        ZonedDateTime now = truncateToSeconds(ZonedDateTime.now());
+        ZonedDateTime expected = truncateToSeconds(now.plusSeconds(1));
         ExecutionTime executionTime = ExecutionTime.forCron(parser.parse(EVERY_SECOND));
-        assertEquals(new Interval(now, expected).toDuration(), executionTime.timeToNextExecution(now));
+        assertEquals(java.time.Duration.between(now, expected), executionTime.timeToNextExecution(now));
     }
 
     @Test
     public void testLastExecution() throws Exception {
-        DateTime now = truncateToSeconds(DateTime.now());
-        DateTime expected = truncateToSeconds(now.minusSeconds(1));
+        ZonedDateTime now = truncateToSeconds(ZonedDateTime.now());
+        ZonedDateTime expected = truncateToSeconds(now.minusSeconds(1));
         ExecutionTime executionTime = ExecutionTime.forCron(parser.parse(EVERY_SECOND));
         assertEquals(expected, executionTime.lastExecution(now));
     }
 
     @Test
     public void testTimeFromLastExecution() throws Exception {
-        DateTime now = truncateToSeconds(DateTime.now());
-        DateTime expected = truncateToSeconds(now.minusSeconds(1));
+        ZonedDateTime now = truncateToSeconds(ZonedDateTime.now());
+        ZonedDateTime expected = truncateToSeconds(now.minusSeconds(1));
         ExecutionTime executionTime = ExecutionTime.forCron(parser.parse(EVERY_SECOND));
-        assertEquals(new Interval(expected, now).toDuration(), executionTime.timeFromLastExecution(now));
+        assertEquals(java.time.Duration.between(expected, now), executionTime.timeToNextExecution(now));
     }
 
     /**
@@ -87,14 +91,14 @@ public class ExecutionTimeQuartzIntegrationTest {
     public void testDoesNotIgnoreMonthOrDayOfWeek(){
         //seconds, minutes, hours, dayOfMonth, month, dayOfWeek
         ExecutionTime executionTime = ExecutionTime.forCron(parser.parse("0 11 11 11 11 ?"));
-        DateTime now = new DateTime(2015, 4, 15, 0, 0, 0);
-        DateTime whenToExecuteNext = executionTime.nextExecution(now);
+        ZonedDateTime now = ZonedDateTime.of(2015, 4, 15, 0, 0, 0, 0, UTC);
+        ZonedDateTime whenToExecuteNext = executionTime.nextExecution(now);
         assertEquals(2015, whenToExecuteNext.getYear());
-        assertEquals(11, whenToExecuteNext.getMonthOfYear());
+        assertEquals(11, whenToExecuteNext.getMonthValue());
         assertEquals(11, whenToExecuteNext.getDayOfMonth());
-        assertEquals(11, whenToExecuteNext.getHourOfDay());
-        assertEquals(11, whenToExecuteNext.getMinuteOfHour());
-        assertEquals(0, whenToExecuteNext.getSecondOfMinute());
+        assertEquals(11, whenToExecuteNext.getHour());
+        assertEquals(11, whenToExecuteNext.getMinute());
+        assertEquals(0, whenToExecuteNext.getSecond());
     }
 
     /**
@@ -103,12 +107,12 @@ public class ExecutionTimeQuartzIntegrationTest {
      */
     @Test
     public void testHourlyIntervalTimeFromLastExecution() throws Exception {
-        DateTime now = DateTime.now();
-        DateTime previousHour = now.minusHours(1);
-        String quartzCronExpression = String.format("0 0 %s * * ?", previousHour.getHourOfDay());
+        ZonedDateTime now = ZonedDateTime.now();
+        ZonedDateTime previousHour = now.minusHours(1);
+        String quartzCronExpression = String.format("0 0 %s * * ?", previousHour.getHour());
         ExecutionTime executionTime = ExecutionTime.forCron(parser.parse(quartzCronExpression));
 
-        assertTrue(executionTime.timeFromLastExecution(now).getStandardMinutes() <= 120);
+        assertTrue(executionTime.timeFromLastExecution(now).toMinutes() <= 120);
     }
 
     /**
@@ -122,9 +126,9 @@ public class ExecutionTimeQuartzIntegrationTest {
         String expression = "0/1 * * 1/1 * ? *";  // every second every day
         ExecutionTime executionTime = ExecutionTime.forCron(parser.parse(expression));
 
-        DateTime now = new DateTime().withTime(23, 59, 59, 0);
-        DateTime expected = now.plusSeconds(1);
-        DateTime nextExecution = executionTime.nextExecution(now);
+        ZonedDateTime now = ZonedDateTime.of(LocalDate.of(2016, 8, 5), LocalTime.of(23, 59, 59, 0), UTC);
+        ZonedDateTime expected = now.plusSeconds(1);
+        ZonedDateTime nextExecution = executionTime.nextExecution(now);
 
         assertEquals(expected, nextExecution);
     }
@@ -140,9 +144,9 @@ public class ExecutionTimeQuartzIntegrationTest {
         String expression = "0/1 * * 1/1 * ? *";  // every second every day
         ExecutionTime executionTime = ExecutionTime.forCron(parser.parse(expression));
 
-        DateTime now = new DateTime(2015, 1, 31, 23, 59, 59, 0);
-        DateTime expected = now.plusSeconds(1);
-        DateTime nextExecution = executionTime.nextExecution(now);
+        ZonedDateTime now = ZonedDateTime.of(2015, 1, 31, 23, 59, 59, 0, UTC);
+        ZonedDateTime expected = now.plusSeconds(1);
+        ZonedDateTime nextExecution = executionTime.nextExecution(now);
 
         assertEquals(expected, nextExecution);
     }
@@ -153,9 +157,9 @@ public class ExecutionTimeQuartzIntegrationTest {
     @Test
     public void testTimeShiftingProperlyDone() throws Exception {
         ExecutionTime executionTime = ExecutionTime.forCron(parser.parse("0 0/10 22 ? * *"));
-        DateTime nextExecution = executionTime.nextExecution(DateTime.now().withHourOfDay(15).withMinuteOfHour(27));
-        assertEquals(22, nextExecution.getHourOfDay());
-        assertEquals(0, nextExecution.getMinuteOfHour());
+        ZonedDateTime nextExecution = executionTime.nextExecution(ZonedDateTime.now().withHour(15).withMinute(27));
+        assertEquals(22, nextExecution.getHour());
+        assertEquals(0, nextExecution.getMinute());
     }
 
     /**
@@ -171,10 +175,10 @@ public class ExecutionTimeQuartzIntegrationTest {
      */
     @Test
     public void testSaturdayExecutionTime(){
-        DateTime now = DateTime.now();
+        ZonedDateTime now = ZonedDateTime.now();
         ExecutionTime executionTime = ExecutionTime.forCron(parser.parse("0 0 3 ? * 6"));
-        DateTime last = executionTime.lastExecution(now);
-        DateTime next = executionTime.nextExecution(now);
+        ZonedDateTime last = executionTime.lastExecution(now);
+        ZonedDateTime next = executionTime.nextExecution(now);
         assertNotEquals(last, next);
     }
 
@@ -183,10 +187,10 @@ public class ExecutionTimeQuartzIntegrationTest {
      */
     @Test
     public void testWeekdayExecutionTime(){
-        DateTime now = DateTime.now();
+        ZonedDateTime now = ZonedDateTime.now();
         ExecutionTime executionTime = ExecutionTime.forCron(parser.parse("0 0 3 ? * *"));
-        DateTime last = executionTime.lastExecution(now);
-        DateTime next = executionTime.nextExecution(now);
+        ZonedDateTime last = executionTime.lastExecution(now);
+        ZonedDateTime next = executionTime.nextExecution(now);
         assertNotEquals(last, next);
     }
 
@@ -196,10 +200,10 @@ public class ExecutionTimeQuartzIntegrationTest {
     @Test
     public void testExecutionTimeForRanges(){
         ExecutionTime executionTime = ExecutionTime.forCron(parser.parse("* 10-20 * * * ? 2099"));
-        DateTime scanTime = DateTime.parse("2016-02-29T11:00:00.000-06:00");
-        DateTime nextTime = executionTime.nextExecution(scanTime);
+        ZonedDateTime scanTime = ZonedDateTime.parse("2016-02-29T11:00:00.000-06:00");
+        ZonedDateTime nextTime = executionTime.nextExecution(scanTime);
         assertNotNull(nextTime);
-        assertEquals(10, nextTime.getMinuteOfHour());
+        assertEquals(10, nextTime.getMinute());
     }
 
     /**
@@ -208,10 +212,10 @@ public class ExecutionTimeQuartzIntegrationTest {
     @Test
     public void testLastExecutionTimeForFixedMonth(){
         ExecutionTime executionTime = ExecutionTime.forCron(parser.parse("0 30 12 1 9 ? 2010"));
-        DateTime scanTime = DateTime.parse("2016-01-08T11:00:00.000-06:00");
-        DateTime lastTime = executionTime.lastExecution(scanTime);
+        ZonedDateTime scanTime = ZonedDateTime.parse("2016-01-08T11:00:00.000-06:00");
+        ZonedDateTime lastTime = executionTime.lastExecution(scanTime);
         assertNotNull(lastTime);
-        assertEquals(9, lastTime.getMonthOfYear());
+        assertEquals(9, lastTime.getMonthValue());
     }
 
     /**
@@ -221,10 +225,10 @@ public class ExecutionTimeQuartzIntegrationTest {
     public void testNextExecutionRightDoWForFixedMonth(){
         //cron format: s,m,H,DoM,M,DoW,Y
         ExecutionTime executionTime = ExecutionTime.forCron(parser.parse("0 * * ? 5 1 *"));
-        DateTime scanTime = DateTime.parse("2016-03-06T20:17:28.000-03:00");
-        DateTime nextTime = executionTime.nextExecution(scanTime);
+        ZonedDateTime scanTime = ZonedDateTime.parse("2016-03-06T20:17:28.000-03:00");
+        ZonedDateTime nextTime = executionTime.nextExecution(scanTime);
         assertNotNull(nextTime);
-        assertEquals(DateTimeConstants.SUNDAY, nextTime.getDayOfWeek());
+        assertEquals(DayOfWeek.SUNDAY, nextTime.getDayOfWeek());
     }
 
     /**
@@ -234,10 +238,10 @@ public class ExecutionTimeQuartzIntegrationTest {
     public void testNextExecutionRightDoWForFixedYear(){
         //cron format: s,m,H,DoM,M,DoW,Y
         ExecutionTime executionTime = ExecutionTime.forCron(parser.parse("0 * * ? * 1 2099"));
-        DateTime scanTime = DateTime.parse("2016-03-06T20:17:28.000-03:00");
-        DateTime nextTime = executionTime.nextExecution(scanTime);
+        ZonedDateTime scanTime = ZonedDateTime.parse("2016-03-06T20:17:28.000-03:00");
+        ZonedDateTime nextTime = executionTime.nextExecution(scanTime);
         assertNotNull(nextTime);
-        assertEquals(DateTimeConstants.SUNDAY, nextTime.getDayOfWeek());
+        assertEquals(DayOfWeek.SUNDAY, nextTime.getDayOfWeek());
     }
 
     /**
@@ -268,13 +272,13 @@ public class ExecutionTimeQuartzIntegrationTest {
         String cronText = "0 0 18 ? * MON";
         Cron cron = parser.parse(cronText);
         final ExecutionTime executionTime = ExecutionTime.forCron(cron);
-        DateTime now = DateTime.parse("2016-03-18T19:02:51.424+09:00");
-        DateTime next = executionTime.nextExecution(now);
-        DateTime nextNext = executionTime.nextExecution(next);
-        assertEquals(DateTimeConstants.MONDAY, next.getDayOfWeek());
-        assertEquals(DateTimeConstants.MONDAY, nextNext.getDayOfWeek());
-        assertEquals(18, next.getHourOfDay());
-        assertEquals(18, nextNext.getHourOfDay());
+        ZonedDateTime now = ZonedDateTime.parse("2016-03-18T19:02:51.424+09:00");
+        ZonedDateTime next = executionTime.nextExecution(now);
+        ZonedDateTime nextNext = executionTime.nextExecution(next);
+        assertEquals(DayOfWeek.MONDAY, next.getDayOfWeek());
+        assertEquals(DayOfWeek.MONDAY, nextNext.getDayOfWeek());
+        assertEquals(18, next.getHour());
+        assertEquals(18, nextNext.getHour());
     }
 
     /**
@@ -285,14 +289,14 @@ public class ExecutionTimeQuartzIntegrationTest {
      * @throws Exception
      */
     @Test
-    public void testMultipleMinuteIntervalTimeFromLastExecution() throws Exception {
+    public void testMultipleMinuteIntervalTimeFromLastExecution() {
         String expression = "* 8-10,23-25,38-40,53-55 * * * ? *"; // every second for intervals of minutes
         ExecutionTime executionTime = ExecutionTime.forCron(parser.parse(expression));
 
-        assertEquals(301, executionTime.timeFromLastExecution(new DateTime().withTime(3, 1, 0, 0)).getStandardSeconds());
-        assertEquals(1, executionTime.timeFromLastExecution(new DateTime().withTime(13, 8, 4, 0)).getStandardSeconds());
-        assertEquals(1, executionTime.timeFromLastExecution(new DateTime().withTime(13, 11, 0, 0)).getStandardSeconds());
-        assertEquals(63, executionTime.timeFromLastExecution(new DateTime().withTime(13, 12, 2, 0)).getStandardSeconds());
+        assertEquals(301, executionTime.timeFromLastExecution(ZonedDateTime.of(LocalDate.now(), LocalTime.of(3, 1, 0, 0), UTC)).getSeconds());
+        assertEquals(1, executionTime.timeFromLastExecution(ZonedDateTime.of(LocalDate.now(), LocalTime.of(13, 8, 4, 0), UTC)).getSeconds());
+        assertEquals(1, executionTime.timeFromLastExecution(ZonedDateTime.of(LocalDate.now(), LocalTime.of(13, 11, 0, 0), UTC)).getSeconds());
+        assertEquals(63, executionTime.timeFromLastExecution(ZonedDateTime.of(LocalDate.now(), LocalTime.of(13, 12, 2, 0), UTC)).getSeconds());
     }
 
     /**
@@ -303,46 +307,42 @@ public class ExecutionTimeQuartzIntegrationTest {
      * @throws Exception
      */
     @Test
-    public void testMultipleMinuteIntervalMatch() throws Exception {
-        assertEquals(ExecutionTime.forCron(parser.parse("* * 21-23,0-4 * * ?")).isMatch(new DateTime(2014, 9, 20, 20, 0, 0)), false);
-        assertEquals(ExecutionTime.forCron(parser.parse("* * 21-23,0-4 * * ?")).isMatch(new DateTime(2014, 9, 20, 21, 0, 0)), true);
-        assertEquals(ExecutionTime.forCron(parser.parse("* * 21-23,0-4 * * ?")).isMatch(new DateTime(2014, 9, 20, 0, 0, 0)), true);
-        assertEquals(ExecutionTime.forCron(parser.parse("* * 21-23,0-4 * * ?")).isMatch(new DateTime(2014, 9, 20, 4, 0, 0)), true);
-        assertEquals(ExecutionTime.forCron(parser.parse("* * 21-23,0-4 * * ?")).isMatch(new DateTime(2014, 9, 20, 5, 0, 0)), false);
+    public void testMultipleMinuteIntervalMatch() {
+        assertEquals(ExecutionTime.forCron(parser.parse("* * 21-23,0-4 * * ?")).isMatch(ZonedDateTime.of(2014, 9, 20, 20, 0, 0, 0, UTC)), false);
+        assertEquals(ExecutionTime.forCron(parser.parse("* * 21-23,0-4 * * ?")).isMatch(ZonedDateTime.of(2014, 9, 20, 21, 0, 0, 0, UTC)), true);
+        assertEquals(ExecutionTime.forCron(parser.parse("* * 21-23,0-4 * * ?")).isMatch(ZonedDateTime.of(2014, 9, 20, 0, 0, 0, 0, UTC)), true);
+        assertEquals(ExecutionTime.forCron(parser.parse("* * 21-23,0-4 * * ?")).isMatch(ZonedDateTime.of(2014, 9, 20, 4, 0, 0, 0, UTC)), true);
+        assertEquals(ExecutionTime.forCron(parser.parse("* * 21-23,0-4 * * ?")).isMatch(ZonedDateTime.of(2014, 9, 20, 5, 0, 0, 0, UTC)), false);
     }
 
     @Test
     public void testDayLightSavingsSwitch() {
-        try {
-            // every 2 minutes
-            String expression = "* 0/2 * * * ?";
-            Cron cron = parser.parse(expression);
+        // every 2 minutes
+        String expression = "* 0/2 * * * ?";
+        Cron cron = parser.parse(expression);
 
-            // SIMULATE SCHEDULE JUST PRIOR TO DST
-            DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy MM dd HH:mm:ss").withZone(DateTimeZone.forID("America/Denver"));
-            DateTime prevRun = new DateTime(formatter.parseDateTime("2016 03 13 01:59:59"));
+        // SIMULATE SCHEDULE JUST PRIOR TO DST
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy MM dd HH:mm:ss")
+                .withZone(ZoneId.of("America/Denver"));
+        ZonedDateTime prevRun = ZonedDateTime.parse("2016 03 13 01:59:59", formatter);
 
-            ExecutionTime executionTime = ExecutionTime.forCron(cron);
-            DateTime nextRun = executionTime.nextExecution(prevRun);
-            // Assert we got 3:00am
-            assertEquals("Incorrect Hour", 3, nextRun.getHourOfDay());
-            assertEquals("Incorrect Minute", 0, nextRun.getMinuteOfHour());
+        ExecutionTime executionTime = ExecutionTime.forCron(cron);
+        ZonedDateTime nextRun = executionTime.nextExecution(prevRun);
+        // Assert we got 3:00am
+        assertEquals("Incorrect Hour", 3, nextRun.getHour());
+        assertEquals("Incorrect Minute", 0, nextRun.getMinute());
 
-            // SIMULATE SCHEDULE POST DST - simulate a schedule after DST 3:01 with the same cron, expect 3:02
-            nextRun = nextRun.plusMinutes(1);
-            nextRun = executionTime.nextExecution(nextRun);
-            assertEquals("Incorrect Hour", 3, nextRun.getHourOfDay());
-            assertEquals("Incorrect Minute", 2, nextRun.getMinuteOfHour());
+        // SIMULATE SCHEDULE POST DST - simulate a schedule after DST 3:01 with the same cron, expect 3:02
+        nextRun = nextRun.plusMinutes(1);
+        nextRun = executionTime.nextExecution(nextRun);
+        assertEquals("Incorrect Hour", 3, nextRun.getHour());
+        assertEquals("Incorrect Minute", 2, nextRun.getMinute());
 
-            // SIMULATE SCHEDULE NEXT DAY DST - verify after midnight on DST switch things still work as expected
-            prevRun = new DateTime(new SimpleDateFormat("yyyy MM dd HH:mm:ss").parseObject("2016 03 14 00:00:59"));
-            nextRun = executionTime.nextExecution(prevRun);
-            assertEquals("incorrect hour", nextRun.getHourOfDay(), 0);
-            assertEquals("incorrect minute", nextRun.getMinuteOfHour(), 2);
-        }
-        catch(Exception e) {
-            fail("Exception Received: " +e.getMessage());
-        }
+        // SIMULATE SCHEDULE NEXT DAY DST - verify after midnight on DST switch things still work as expected
+        prevRun = ZonedDateTime.parse("2016-03-14T00:00:59Z");
+        nextRun = executionTime.nextExecution(prevRun);
+        assertEquals("incorrect hour", nextRun.getHour(), 0);
+        assertEquals("incorrect minute", nextRun.getMinute(), 2);
     }
 
     /**
@@ -350,18 +350,13 @@ public class ExecutionTimeQuartzIntegrationTest {
      */
     @Test
     public void testCronWithFirstWorkDayOfWeek() {
-        try {
-            String cronText = "0 0 12 1W * ? *";
-            Cron cron = parser.parse(cronText);
-            DateTime dt = new DateTime(new SimpleDateFormat("yyyy MM dd HH:mm:ss").parseObject("2016 03 29 00:00:59"));
+        String cronText = "0 0 12 1W * ? *";
+        Cron cron = parser.parse(cronText);
+        ZonedDateTime dt = ZonedDateTime.parse("2016-03-29T00:00:59Z");
 
-            ExecutionTime executionTime = ExecutionTime.forCron(cron);
-            DateTime nextRun = executionTime.nextExecution(dt);
-            assertEquals("incorrect Day", nextRun.getDayOfMonth(), 1); // should be April 1st (Friday)
-        }
-        catch(Exception e) {
-            fail("Exception Received: "+e.getMessage());
-        }
+        ExecutionTime executionTime = ExecutionTime.forCron(cron);
+        ZonedDateTime nextRun = executionTime.nextExecution(dt);
+        assertEquals("incorrect Day", nextRun.getDayOfMonth(), 1); // should be April 1st (Friday)
     }
 
     /**
@@ -370,7 +365,7 @@ public class ExecutionTimeQuartzIntegrationTest {
      */
     @Test
     public void testDayOfWeekMapping() {
-        DateTime fridayMorning = new DateTime(2016, 4, 22, 0, 0, 0, DateTimeZone.UTC);
+        ZonedDateTime fridayMorning = ZonedDateTime.of(2016, 4, 22, 0, 0, 0, 0, UTC);
         ExecutionTime numberExec = ExecutionTime.forCron(parser.parse("0 0 12 ? * 2,3,4,5,6 *"));
         ExecutionTime nameExec = ExecutionTime.forCron(parser.parse("0 0 12 ? * MON,TUE,WED,THU,FRI *"));
         assertEquals("same generated dates", numberExec.nextExecution(fridayMorning),
@@ -382,32 +377,32 @@ public class ExecutionTimeQuartzIntegrationTest {
      */
     @Test
     public void testMinimumInterval() {
-        Duration s1 = Duration.standardSeconds(1);
+        Duration s1 = Duration.ofSeconds(1);
         assertEquals(getMinimumInterval("* * * * * ?"), s1);
         assertEquals("Should ignore whitespace", getMinimumInterval("*   *    *  *       * ?"), s1);
         assertEquals(getMinimumInterval("0/1 * * * * ?"), s1);
         assertEquals(getMinimumInterval("*/1 * * * * ?"), s1);
 
-        Duration s60 = Duration.standardSeconds(60);
+        Duration s60 = Duration.ofSeconds(60);
         assertEquals(getMinimumInterval("0 * * * * ?"), s60);
         assertEquals(getMinimumInterval("0 */1 * * * ?"), s60);
 
-        assertEquals(getMinimumInterval("0 */5 * * * ?"), Duration.standardSeconds(300));
-        assertEquals(getMinimumInterval("0 0 * * * ?"), Duration.standardSeconds(3600));
-        assertEquals(getMinimumInterval("0 0 */3 * * ?"), Duration.standardSeconds(10800));
-        assertEquals(getMinimumInterval("0 0 0 * * ?"), Duration.standardSeconds(86400));
+        assertEquals(getMinimumInterval("0 */5 * * * ?"), Duration.ofSeconds(300));
+        assertEquals(getMinimumInterval("0 0 * * * ?"), Duration.ofSeconds(3600));
+        assertEquals(getMinimumInterval("0 0 */3 * * ?"), Duration.ofSeconds(10800));
+        assertEquals(getMinimumInterval("0 0 0 * * ?"), Duration.ofSeconds(86400));
     }
 
     private Duration getMinimumInterval(String quartzPattern) {
         ExecutionTime et = ExecutionTime.forCron(parser.parse(quartzPattern));
-        DateTime coolDay = new DateTime(2016, 1, 1, 0, 0, 0);
+        ZonedDateTime coolDay = ZonedDateTime.of(2016, 1, 1, 0, 0, 0, 0, UTC);
         // Find next execution time #1
-        DateTime t1 = et.nextExecution(coolDay);
+        ZonedDateTime t1 = et.nextExecution(coolDay);
         // Find next execution time #2 right after #1, the interval between them is minimum
         return et.timeToNextExecution(t1);
     }
 
-    private DateTime truncateToSeconds(DateTime dateTime){
-        return dateTime.secondOfMinute().roundFloorCopy();
+    private ZonedDateTime truncateToSeconds(ZonedDateTime dateTime){
+        return dateTime.truncatedTo(ChronoUnit.SECONDS);
     }
 }

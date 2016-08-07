@@ -62,7 +62,6 @@
         <slf4j.version>1.7.12</slf4j.version>
         <log4j.version>1.2.17</log4j.version>
         <commonsLang.version>3.4</commonsLang.version>
-        <jodatime.version>2.8.2</jodatime.version>
         <junit.version>4.12</junit.version>
         <mockito.version>1.10.19</mockito.version>
         <powermock.version>1.6.2</powermock.version>
@@ -84,16 +83,17 @@
             <artifactId>commons-lang3</artifactId>
             <version>${commonsLang.version}</version>
         </dependency>
-        <dependency>
-            <groupId>joda-time</groupId>
-            <artifactId>joda-time</artifactId>
-            <version>${jodatime.version}</version>
-        </dependency>
 
         <dependency>
             <groupId>com.cronutils</groupId>
             <artifactId>htime</artifactId>
             <version>${htime.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>joda-time</groupId>
+                    <artifactId>joda-time</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>

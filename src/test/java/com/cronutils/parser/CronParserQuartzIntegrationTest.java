@@ -1,22 +1,21 @@
 package com.cronutils.parser;
 
+import static org.junit.Assert.assertEquals;
+
+import java.time.ZonedDateTime;
+import java.util.Locale;
+
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.ExpectedException;
+
 import com.cronutils.descriptor.CronDescriptor;
 import com.cronutils.model.Cron;
 import com.cronutils.model.CronType;
 import com.cronutils.model.definition.CronDefinition;
 import com.cronutils.model.definition.CronDefinitionBuilder;
 import com.cronutils.model.time.ExecutionTime;
-
-import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
-
-import java.util.Locale;
 
 /*
  * Copyright 2015 jmrozanec
@@ -31,9 +30,7 @@ import java.util.Locale;
  * limitations under the License.
  */
 public class CronParserQuartzIntegrationTest {
-
-    private final static DateTimeFormatter formatter = DateTimeFormat.forPattern("YYYY-MM-DD HH:mm:ss");
-
+    
     private CronParser parser;
 
     @Rule
@@ -195,10 +192,10 @@ public class CronParserQuartzIntegrationTest {
     @Test
     public void testIntervalSeconds() {
         ExecutionTime executionTime = ExecutionTime.forCron(parser.parse("0/20 * * * * ?"));
-        DateTime now = DateTime.parse("2005-08-09 18:32:42", formatter);
-        DateTime lastExecution = executionTime.lastExecution(now);
-        DateTime assertDate = DateTime.parse("2005-01-09 18:32:40", formatter);
-        Assert.assertEquals(assertDate, lastExecution);
+        ZonedDateTime now = ZonedDateTime.parse("2005-08-09T18:32:42Z");
+        ZonedDateTime lastExecution = executionTime.lastExecution(now);
+        ZonedDateTime assertDate = ZonedDateTime.parse("2005-08-09T18:32:40Z");
+        assertEquals(assertDate, lastExecution);
     }
 
     /**
@@ -207,10 +204,10 @@ public class CronParserQuartzIntegrationTest {
     @Test
     public void testIntervalMinutes() {
         ExecutionTime executionTime = ExecutionTime.forCron(parser.parse("0 0/7 * * * ?"));
-        DateTime now = DateTime.parse("2005-08-09 18:32:42", formatter);
-        DateTime lastExecution = executionTime.lastExecution(now);
-        DateTime assertDate = DateTime.parse("2005-01-09 18:28:00", formatter);
-        Assert.assertEquals(assertDate, lastExecution);
+        ZonedDateTime now = ZonedDateTime.parse("2005-08-09T18:32:42Z");
+        ZonedDateTime lastExecution = executionTime.lastExecution(now);
+        ZonedDateTime assertDate = ZonedDateTime.parse("2005-08-09T18:28:00Z");
+        assertEquals(assertDate, lastExecution);
     }
 
     /**

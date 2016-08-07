@@ -1,5 +1,12 @@
 package com.cronutils.model.time.generator;
 
+import java.time.LocalDate;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
+
+import org.apache.commons.lang3.Validate;
+
 import com.cronutils.mapper.WeekDay;
 import com.cronutils.model.field.CronField;
 import com.cronutils.model.field.CronFieldName;
@@ -9,12 +16,6 @@ import com.cronutils.model.field.expression.FieldExpression;
 import com.cronutils.parser.CronParserField;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import org.apache.commons.lang3.Validate;
-import org.joda.time.DateTime;
-
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
 /*
  * Copyright 2015 jmrozanec
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -124,6 +125,6 @@ class BetweenDayOfWeekValueGenerator extends FieldValueGenerator {
 
 	@Override
 	public boolean isMatch(int value) {
-        return dowValidValues.contains(new DateTime(year, month, value, 0, 0).getDayOfWeek());
+        return dowValidValues.contains(LocalDate.of(year, month, value).getDayOfWeek().getValue());
 	}
 }
