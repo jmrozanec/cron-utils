@@ -99,7 +99,7 @@ class OnDayOfWeekValueGenerator extends FieldValueGenerator {
 
     private int generateHashValues(On on, int year, int month){
         DayOfWeek dowForFirstDoM = LocalDate.of(year, month, 1).getDayOfWeek();//1-7
-        int requiredDoW = ConstantsMapper.weekDayMapping(mondayDoWValue, ConstantsMapper.JAVA8, on.getTime().getValue());//to normalize to joda-time value
+        int requiredDoW = ConstantsMapper.weekDayMapping(mondayDoWValue, ConstantsMapper.JAVA8, on.getTime().getValue());//to normalize to jdk8-time value
         int requiredNth = on.getNth().getValue();
         int baseDay = 1;//day 1 from given month
         int diff = dowForFirstDoM.getValue() - requiredDoW;
@@ -119,7 +119,7 @@ class OnDayOfWeekValueGenerator extends FieldValueGenerator {
         int lastDoM = LocalDate.of(year, month, 1).lengthOfMonth();
         LocalDate lastDoMDateTime = LocalDate.of(year, month, lastDoM);
         int dowForLastDoM = lastDoMDateTime.getDayOfWeek().getValue();//1-7
-        int requiredDoW = ConstantsMapper.weekDayMapping(mondayDoWValue, ConstantsMapper.JAVA8, on.getTime().getValue());//to normalize to joda-time value
+        int requiredDoW = ConstantsMapper.weekDayMapping(mondayDoWValue, ConstantsMapper.JAVA8, on.getTime().getValue());//to normalize to jdk8-time value
         int dowDiff = dowForLastDoM - requiredDoW;
 
         if(dowDiff==0){
@@ -148,7 +148,7 @@ class OnDayOfWeekValueGenerator extends FieldValueGenerator {
 	private int generateNoneValues(On on, int year, int month, int reference) {
 		// the day of week the first of the month is on
 		int dowForFirstDoM = LocalDate.of(year, month, 1).getDayOfWeek().getValue();// 1-7
-		// the day of week we need, normalize to jodatime
+		// the day of week we need, normalize to jdk8time
 		int requiredDoW = ConstantsMapper.weekDayMapping(mondayDoWValue, ConstantsMapper.JAVA8, on.getTime().getValue());
 		// the first day of the month
 		int baseDay = 1;// day 1 from given month

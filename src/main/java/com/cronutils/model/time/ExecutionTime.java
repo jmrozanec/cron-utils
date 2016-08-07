@@ -6,6 +6,7 @@ import static com.cronutils.model.time.generator.FieldValueGeneratorFactory.crea
 import static com.cronutils.model.time.generator.FieldValueGeneratorFactory.createDayOfWeekValueGeneratorInstance;
 import static java.time.temporal.TemporalAdjusters.lastDayOfMonth;
 
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -116,7 +117,7 @@ public class ExecutionTime {
 
     /**
      * Provide nearest date for next execution.
-     * @param date - jodatime DateTime instance. If null, a NullPointerException will be raised.
+     * @param date - ZonedDateTime instance. If null, a NullPointerException will be raised.
      * @return ZonedDateTime instance, never null. Next execution time.
      */
     public ZonedDateTime nextExecution(ZonedDateTime date) {
@@ -135,7 +136,7 @@ public class ExecutionTime {
     /**
      * If date is not match, will return next closest match.
      * If date is match, will return this date.
-     * @param date - reference DateTime instance - never null;
+     * @param date - reference ZonedDateTime instance - never null;
      * @return ZonedDateTime instance, never null. Value obeys logic specified above.
      * @throws NoSuchValueException
      */
@@ -341,11 +342,11 @@ public class ExecutionTime {
 
     /**
      * Provide nearest time for next execution.
-     * @param date - jodatime DateTime instance. If null, a NullPointerException will be raised.
-     * @return jodatime Duration instance, never null. Time to next execution.
+     * @param date - ZonedDateTime instance. If null, a NullPointerException will be raised.
+     * @return Duration instance, never null. Time to next execution.
      */
-    public java.time.Duration timeToNextExecution(ZonedDateTime date){
-        return java.time.Duration.between(date, nextExecution(date));
+    public Duration timeToNextExecution(ZonedDateTime date){
+        return Duration.between(date, nextExecution(date));
     }
 
     /**
@@ -368,11 +369,11 @@ public class ExecutionTime {
 
     /**
      * Provide nearest time from last execution.
-     * @param date - jodatime DateTime instance. If null, a NullPointerException will be raised.
-     * @return jodatime Duration instance, never null. Time from last execution.
+     * @param date - ZonedDateTime instance. If null, a NullPointerException will be raised.
+     * @return Duration instance, never null. Time from last execution.
      */
-    public java.time.Duration timeFromLastExecution(ZonedDateTime date){
-        return java.time.Duration.between(lastExecution(date), date);
+    public Duration timeFromLastExecution(ZonedDateTime date){
+        return Duration.between(lastExecution(date), date);
     }
 
     /**
