@@ -14,6 +14,7 @@ import org.mockito.MockitoAnnotations;
 
 import java.util.Set;
 
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
 /*
@@ -72,7 +73,7 @@ public class CronParserTest {
         expectedException.expect(IllegalArgumentException.class);
         expectedException.expectMessage("Missing steps for expression: */");
 
-        parser.parse("*/");
+        assertNotNull(parser.parse("*/"));
     }
 
 

@@ -25,7 +25,7 @@ public class Issue55UnexpectedExecutionTimes {
 
     /** Setup. */
     @Before
-    public void setup(){
+    public void setUp(){
         cronDefinition = CronDefinitionBuilder.defineCron()
                 .withMinutes().and()
                 .withHours().and()

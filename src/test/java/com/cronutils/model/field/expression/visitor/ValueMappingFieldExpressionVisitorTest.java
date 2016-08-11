@@ -19,31 +19,6 @@ public class ValueMappingFieldExpressionVisitorTest {
     }
 
     @Test
-    public void testVisitAlways() throws Exception {
-
-    }
-
-    @Test
-    public void testVisitAnd() throws Exception {
-
-    }
-
-    @Test
-    public void testVisitBetween() throws Exception {
-
-    }
-
-    @Test
-    public void testVisitEvery() throws Exception {
-
-    }
-
-    @Test
-    public void testVisitOn() throws Exception {
-
-    }
-
-    @Test
     public void testVisitQuestionMark() throws Exception {
         QuestionMark param = new QuestionMark();
         QuestionMark questionMark = (QuestionMark) valueMappingFieldExpressionVisitor.visit(param);

@@ -11,6 +11,8 @@ import com.cronutils.model.CronType;
 import com.cronutils.model.definition.CronDefinitionBuilder;
 import com.cronutils.parser.CronParser;
 
+import static org.junit.Assert.assertNotNull;
+
 /*
  * Copyright 2015 jmrozanec
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -55,7 +57,7 @@ public class CronValidatorQuartzIntegrationTest {
      */
     @Test
     public void testDayOfWeekRangeMappingIsValid(){
-        parser.parse("0 0 0 ? * MON-FRI *");
+        assertNotNull(parser.parse("0 0 0 ? * MON-FRI *"));
     }
 
     /**

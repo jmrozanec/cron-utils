@@ -62,7 +62,7 @@ public class ExecutionTimeQuartzIntegrationTest {
         ZonedDateTime now = truncateToSeconds(ZonedDateTime.now());
         ZonedDateTime expected = truncateToSeconds(now.plusSeconds(1));
         ExecutionTime executionTime = ExecutionTime.forCron(parser.parse(EVERY_SECOND));
-        assertEquals(java.time.Duration.between(now, expected), executionTime.timeToNextExecution(now));
+        assertEquals(Duration.between(now, expected), executionTime.timeToNextExecution(now));
     }
 
     @Test
@@ -167,7 +167,7 @@ public class ExecutionTimeQuartzIntegrationTest {
      */
     @Test
     public void testMonthRangeExecutionTime(){
-        ExecutionTime.forCron(parser.parse("0 0 0 * JUL-AUG ? *"));
+        assertNotNull(ExecutionTime.forCron(parser.parse("0 0 0 * JUL-AUG ? *")));
     }
 
     /**
