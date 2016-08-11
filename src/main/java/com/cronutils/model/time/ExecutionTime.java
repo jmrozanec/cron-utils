@@ -1,25 +1,5 @@
 package com.cronutils.model.time;
 
-import static com.cronutils.model.field.CronFieldName.DAY_OF_WEEK;
-import static com.cronutils.model.field.value.SpecialChar.QUESTION_MARK;
-import static com.cronutils.model.time.generator.FieldValueGeneratorFactory.createDayOfMonthValueGeneratorInstance;
-import static com.cronutils.model.time.generator.FieldValueGeneratorFactory.createDayOfWeekValueGeneratorInstance;
-import static java.time.temporal.TemporalAdjusters.lastDayOfMonth;
-
-import java.time.Duration;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import org.apache.commons.lang3.Validate;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.cronutils.mapper.WeekDay;
 import com.cronutils.model.Cron;
 import com.cronutils.model.definition.CronDefinition;
@@ -33,6 +13,21 @@ import com.cronutils.model.time.generator.NoSuchValueException;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import org.apache.commons.lang3.Validate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.time.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import static com.cronutils.model.field.CronFieldName.DAY_OF_WEEK;
+import static com.cronutils.model.field.value.SpecialChar.QUESTION_MARK;
+import static com.cronutils.model.time.generator.FieldValueGeneratorFactory.createDayOfMonthValueGeneratorInstance;
+import static com.cronutils.model.time.generator.FieldValueGeneratorFactory.createDayOfWeekValueGeneratorInstance;
+import static java.time.temporal.TemporalAdjusters.lastDayOfMonth;
 
 /*
  * Copyright 2014 jmrozanec
@@ -109,6 +104,8 @@ public class ExecutionTime {
                     case YEAR:
                         executionTimeBuilder.forYearsMatching(fields.get(name));
                         break;
+                    default:
+                        break;
                 }
             }
         }
@@ -140,7 +137,7 @@ public class ExecutionTime {
      * @return ZonedDateTime instance, never null. Value obeys logic specified above.
      * @throws NoSuchValueException
      */
-    ZonedDateTime nextClosestMatch(ZonedDateTime date) throws NoSuchValueException {
+    private ZonedDateTime nextClosestMatch(ZonedDateTime date) throws NoSuchValueException {
         List<Integer> year = yearsValueGenerator.generateCandidates(date.getYear(), date.getYear());
         TimeNode days = null;
         int lowestMonth = months.getValues().get(0);
@@ -234,7 +231,7 @@ public class ExecutionTime {
      * @return ZonedDateTime instance, never null. Value obeys logic specified above.
      * @throws NoSuchValueException
      */
-    ZonedDateTime previousClosestMatch(ZonedDateTime date) throws NoSuchValueException {
+    private ZonedDateTime previousClosestMatch(ZonedDateTime date) throws NoSuchValueException {
         List<Integer> year = yearsValueGenerator.generateCandidates(date.getYear(), date.getYear());
         TimeNode days = generateDays(cronDefinition, date);
         int highestMonth = months.getValues().get(months.getValues().size()-1);
@@ -316,7 +313,7 @@ public class ExecutionTime {
         return date;
     }
 
-    TimeNode generateDays(CronDefinition cronDefinition, ZonedDateTime date){
+    private TimeNode generateDays(CronDefinition cronDefinition, ZonedDateTime date){
         boolean questionMarkSupported =
                 cronDefinition.getFieldDefinition(DAY_OF_WEEK).getConstraints().getSpecialChars().contains(QUESTION_MARK);
         if(questionMarkSupported){

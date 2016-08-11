@@ -7,7 +7,7 @@ import org.junit.Test;
 
 import java.util.function.Function;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
 public class ValueMappingFieldExpressionVisitorTest {
     private ValueMappingFieldExpressionVisitor valueMappingFieldExpressionVisitor;

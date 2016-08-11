@@ -3,7 +3,6 @@ package com.cronutils.model.time.generator;
 import com.cronutils.mapper.WeekDay;
 import com.cronutils.model.field.CronField;
 import com.cronutils.model.field.CronFieldName;
-import com.cronutils.model.field.constraint.FieldConstraints;
 import com.cronutils.model.field.expression.*;
 import com.cronutils.model.field.value.IntegerFieldValue;
 import com.cronutils.model.field.value.SpecialChar;

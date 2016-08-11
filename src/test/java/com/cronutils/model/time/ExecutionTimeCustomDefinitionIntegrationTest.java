@@ -1,17 +1,16 @@
 package com.cronutils.model.time;
 
-import static java.time.ZoneOffset.UTC;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
-import java.time.ZonedDateTime;
-
-import org.junit.Test;
-
 import com.cronutils.model.Cron;
 import com.cronutils.model.definition.CronDefinition;
 import com.cronutils.model.definition.CronDefinitionBuilder;
 import com.cronutils.parser.CronParser;
+import org.junit.Test;
+
+import java.time.ZonedDateTime;
+
+import static java.time.ZoneOffset.UTC;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class ExecutionTimeCustomDefinitionIntegrationTest {
 

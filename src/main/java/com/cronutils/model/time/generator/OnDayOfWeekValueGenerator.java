@@ -1,11 +1,5 @@
 package com.cronutils.model.time.generator;
 
-import java.time.DayOfWeek;
-import java.time.LocalDate;
-import java.util.List;
-
-import org.apache.commons.lang3.Validate;
-
 import com.cronutils.mapper.ConstantsMapper;
 import com.cronutils.mapper.WeekDay;
 import com.cronutils.model.field.CronField;
@@ -13,6 +7,11 @@ import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.field.expression.FieldExpression;
 import com.cronutils.model.field.expression.On;
 import com.google.common.collect.Lists;
+import org.apache.commons.lang3.Validate;
+
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.util.List;
 /*
  * Copyright 2015 jmrozanec
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -93,8 +92,9 @@ class OnDayOfWeekValueGenerator extends FieldValueGenerator {
                 return generateLValues(on, year, month);
             case NONE:
                 return generateNoneValues(on, year, month, reference);
+            default:
+                throw new NoSuchValueException();
         }
-        throw new NoSuchValueException();
     }
 
     private int generateHashValues(On on, int year, int month){

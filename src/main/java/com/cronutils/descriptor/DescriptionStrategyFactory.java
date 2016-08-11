@@ -1,13 +1,13 @@
 package com.cronutils.descriptor;
 
+import com.cronutils.model.field.expression.FieldExpression;
+import com.cronutils.model.field.expression.On;
+
 import java.time.DayOfWeek;
 import java.time.Month;
 import java.time.format.TextStyle;
 import java.util.ResourceBundle;
 import java.util.function.Function;
-
-import com.cronutils.model.field.expression.FieldExpression;
-import com.cronutils.model.field.expression.On;
 
 /*
 * Copyright 2014 jmrozanec

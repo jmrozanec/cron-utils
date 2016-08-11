@@ -1,5 +1,6 @@
 package com.cronutils.model.field.expression;
 
+import com.cronutils.model.field.value.IntegerFieldValue;
 import org.apache.commons.lang3.Validate;
 
 /*
@@ -14,8 +15,6 @@ import org.apache.commons.lang3.Validate;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-import com.cronutils.model.field.value.IntegerFieldValue;
 
 /**
  * Represents every x time on a cron field.

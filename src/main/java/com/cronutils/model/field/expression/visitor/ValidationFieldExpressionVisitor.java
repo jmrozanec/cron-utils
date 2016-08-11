@@ -14,13 +14,7 @@ package com.cronutils.model.field.expression.visitor;
 
 import com.cronutils.StringValidations;
 import com.cronutils.model.field.constraint.FieldConstraints;
-import com.cronutils.model.field.expression.Always;
-import com.cronutils.model.field.expression.And;
-import com.cronutils.model.field.expression.Between;
-import com.cronutils.model.field.expression.Every;
-import com.cronutils.model.field.expression.FieldExpression;
-import com.cronutils.model.field.expression.On;
-import com.cronutils.model.field.expression.QuestionMark;
+import com.cronutils.model.field.expression.*;
 import com.cronutils.model.field.value.FieldValue;
 import com.cronutils.model.field.value.IntegerFieldValue;
 import com.cronutils.model.field.value.SpecialChar;
@@ -139,7 +133,7 @@ public class ValidationFieldExpressionVisitor implements FieldExpressionVisitor 
 	 *             - if not in range
 	 */
 	@VisibleForTesting
-	void isInRange(FieldValue<?> fieldValue) {
+	protected void isInRange(FieldValue<?> fieldValue) {
 		if (fieldValue instanceof IntegerFieldValue) {
 			int value = ((IntegerFieldValue) fieldValue).getValue();
 			if (!constraints.isInRange(value)) {
@@ -149,11 +143,11 @@ public class ValidationFieldExpressionVisitor implements FieldExpressionVisitor 
 	}
 
 	@VisibleForTesting
-	boolean isDefault(FieldValue<?> fieldValue) {
+	protected boolean isDefault(FieldValue<?> fieldValue) {
 		return fieldValue instanceof IntegerFieldValue && ((IntegerFieldValue) fieldValue).getValue() == -1;
 	}
 
-	boolean isSpecialCharNotL(FieldValue<?> fieldValue) {
+	protected boolean isSpecialCharNotL(FieldValue<?> fieldValue) {
 		return fieldValue instanceof SpecialCharFieldValue && !SpecialChar.L.equals(fieldValue.getValue());
 	}
 }

@@ -1,12 +1,8 @@
 package com.cronutils.model.field.expression;
 
-import com.cronutils.model.field.constraint.FieldConstraints;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 /*

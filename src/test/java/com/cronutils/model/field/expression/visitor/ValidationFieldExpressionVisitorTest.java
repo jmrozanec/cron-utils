@@ -1,10 +1,5 @@
 package com.cronutils.model.field.expression.visitor;
 
-import com.cronutils.model.field.value.SpecialChar;
-import org.junit.Test;
-
-import static org.junit.Assert.*;
-
 public class ValidationFieldExpressionVisitorTest {
     //TODO enable
     /*

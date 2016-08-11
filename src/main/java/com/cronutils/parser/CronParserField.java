@@ -12,13 +12,12 @@
  */
 package com.cronutils.parser;
 
-import java.util.Comparator;
-
-import org.apache.commons.lang3.Validate;
-
 import com.cronutils.model.field.CronField;
 import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.field.constraint.FieldConstraints;
+import org.apache.commons.lang3.Validate;
+
+import java.util.Comparator;
 
 /**
  * Represents a cron field.

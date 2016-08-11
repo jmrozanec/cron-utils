@@ -1,12 +1,11 @@
 package com.cronutils.model.field.constraint;
 
+import com.cronutils.model.field.value.SpecialChar;
+import org.apache.commons.lang3.Validate;
+
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
-
-import org.apache.commons.lang3.Validate;
-
-import com.cronutils.model.field.value.SpecialChar;
 
 /*
  * Copyright 2014 jmrozanec

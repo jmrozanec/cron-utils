@@ -5,9 +5,7 @@ import com.cronutils.model.field.expression.FieldExpression;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
 /*
  * Copyright 2015 jmrozanec

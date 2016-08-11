@@ -1,16 +1,15 @@
 package com.cronutils;
 
-import java.text.ParseException;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
-
-import org.junit.Test;
-
 import com.cronutils.model.Cron;
 import com.cronutils.model.CronType;
 import com.cronutils.model.definition.CronDefinitionBuilder;
 import com.cronutils.model.time.ExecutionTime;
 import com.cronutils.parser.CronParser;
+import org.junit.Test;
+
+import java.text.ParseException;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class OpenIssuesTest {
     private DateTimeFormatter dfSimple = DateTimeFormatter.ofPattern("hh:mm:ss MM/dd/yyyy a X");

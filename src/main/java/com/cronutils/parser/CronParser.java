@@ -1,18 +1,17 @@
 package com.cronutils.parser;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.Validate;
-
 import com.cronutils.model.Cron;
 import com.cronutils.model.definition.CronDefinition;
 import com.cronutils.model.field.CronField;
 import com.cronutils.model.field.definition.FieldDefinition;
 import com.google.common.collect.Maps;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Validate;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 /*
  * Copyright 2014 jmrozanec

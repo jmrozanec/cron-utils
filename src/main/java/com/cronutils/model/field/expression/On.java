@@ -1,12 +1,11 @@
 package com.cronutils.model.field.expression;
 
-import static com.google.common.base.Preconditions.checkArgument;
-
-import org.apache.commons.lang3.Validate;
-
 import com.cronutils.model.field.value.IntegerFieldValue;
 import com.cronutils.model.field.value.SpecialChar;
 import com.cronutils.model.field.value.SpecialCharFieldValue;
+import org.apache.commons.lang3.Validate;
+
+import static com.google.common.base.Preconditions.checkArgument;
 
 /*
  * Copyright 2014 jmrozanec

@@ -1,27 +1,18 @@
 package com.cronutils.model.time;
 
-import static java.time.ZoneOffset.UTC;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
-import java.time.DayOfWeek;
-import java.time.Duration;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
-
-import org.junit.Before;
-import org.junit.Test;
-
 import com.cronutils.model.Cron;
 import com.cronutils.model.CronType;
 import com.cronutils.model.definition.CronDefinitionBuilder;
 import com.cronutils.parser.CronParser;
+import org.junit.Before;
+import org.junit.Test;
+
+import java.time.*;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
+
+import static java.time.ZoneOffset.UTC;
+import static org.junit.Assert.*;
 
 /*
  * Copyright 2015 jmrozanec
@@ -78,7 +69,7 @@ public class ExecutionTimeQuartzIntegrationTest {
         ZonedDateTime now = truncateToSeconds(ZonedDateTime.now());
         ZonedDateTime expected = truncateToSeconds(now.minusSeconds(1));
         ExecutionTime executionTime = ExecutionTime.forCron(parser.parse(EVERY_SECOND));
-        assertEquals(java.time.Duration.between(expected, now), executionTime.timeToNextExecution(now));
+        assertEquals(Duration.between(expected, now), executionTime.timeToNextExecution(now));
     }
 
     /**

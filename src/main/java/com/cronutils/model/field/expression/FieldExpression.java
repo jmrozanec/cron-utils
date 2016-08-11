@@ -1,8 +1,7 @@
 package com.cronutils.model.field.expression;
 
-import org.apache.commons.lang3.Validate;
-
 import com.cronutils.model.field.expression.visitor.FieldExpressionVisitor;
+import org.apache.commons.lang3.Validate;
 
 /*
  * Copyright 2015 jmrozanec

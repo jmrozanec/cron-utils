@@ -1,20 +1,19 @@
 package com.cronutils.model.time.generator;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
-import java.time.Duration;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-
-import org.junit.Test;
-
 import com.cronutils.model.Cron;
 import com.cronutils.model.CronType;
 import com.cronutils.model.definition.CronDefinition;
 import com.cronutils.model.definition.CronDefinitionBuilder;
 import com.cronutils.model.time.ExecutionTime;
 import com.cronutils.parser.CronParser;
+import org.junit.Test;
+
+import java.time.Duration;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class ExecutionTimeUnixIntegrationTest {
 

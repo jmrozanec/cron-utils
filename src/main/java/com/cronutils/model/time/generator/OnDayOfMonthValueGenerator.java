@@ -1,16 +1,15 @@
 package com.cronutils.model.time.generator;
 
-import java.time.DayOfWeek;
-import java.time.LocalDate;
-import java.util.List;
-
-import org.apache.commons.lang3.Validate;
-
 import com.cronutils.model.field.CronField;
 import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.field.expression.FieldExpression;
 import com.cronutils.model.field.expression.On;
 import com.google.common.collect.Lists;
+import org.apache.commons.lang3.Validate;
+
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.util.List;
 
 /*
  * Copyright 2015 jmrozanec
@@ -113,7 +112,8 @@ class OnDayOfMonthValueGenerator extends FieldValueGenerator {
                     return lastDayOfMonth.minusDays(diff).getDayOfMonth();
                 }
                 return lastDayOfMonth.getDayOfMonth();
+            default:
+                throw new NoSuchValueException();
         }
-        throw new NoSuchValueException();
     }
 }
