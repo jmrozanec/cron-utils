@@ -1,9 +1,6 @@
 package com.cronutils.model.field.expression;
 
-import com.cronutils.model.field.constraint.FieldConstraints;
-import com.cronutils.model.field.constraint.FieldConstraintsBuilder;
 import com.cronutils.model.field.value.IntegerFieldValue;
-import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -20,13 +17,6 @@ import static org.junit.Assert.assertEquals;
  * limitations under the License.
  */
 public class EveryTest {
-    private FieldConstraints nullFieldConstraints;
-
-    @Before
-    public void setUp() {
-        nullFieldConstraints = FieldConstraintsBuilder.instance().createConstraintsInstance();
-    }
-
     @Test
     public void testGetTime() throws Exception {
         int every = 5;

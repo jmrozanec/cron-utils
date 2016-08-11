@@ -31,8 +31,7 @@ public class CronMapperTest {
     private CronFieldName testCronFieldName;
     @Mock
     private CronField mockCronField;
-    private CronMapper mapper;
-    private Function<Cron, Cron> cronMapping;
+    private Function<Cron, Cron> cronMapping=null;
 
     @Before
     public void setUp(){

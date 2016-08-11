@@ -1,6 +1,7 @@
 package com.cronutils.parser;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.time.ZonedDateTime;
 import java.util.Locale;
@@ -30,7 +31,6 @@ import com.cronutils.model.time.ExecutionTime;
  * limitations under the License.
  */
 public class CronParserQuartzIntegrationTest {
-    
     private CronParser parser;
 
     @Rule
@@ -136,7 +136,7 @@ public class CronParserQuartzIntegrationTest {
      */
     @Test
     public void testJulyMonthAsStringConsideredSpecialChar(){
-        parser.parse("0 0 0 * JUL ? *");
+        assertNotNull(parser.parse("0 0 0 * JUL ? *"));
     }
 
     /**
@@ -217,7 +217,7 @@ public class CronParserQuartzIntegrationTest {
     public void testRegressionDifferentMessageForException(){
         thrown.expect(IllegalArgumentException.class);
         thrown.expectMessage("Invalid chars in expression! Expression: $ Invalid chars: $");
-        ExecutionTime.forCron(parser.parse("* * * * $ ?"));
+        assertNotNull(ExecutionTime.forCron(parser.parse("* * * * $ ?")));
     }
 
     /**
@@ -228,21 +228,21 @@ public class CronParserQuartzIntegrationTest {
         thrown.expect(IllegalArgumentException.class);
         thrown.expectMessage(
                 "Invalid cron expression: 0 * * * * *. Both, a day-of-week AND a day-of-month parameter, are not supported.");
-        ExecutionTime.forCron(parser.parse("0/1 * * * * *"));
+        assertNotNull(ExecutionTime.forCron(parser.parse("0/1 * * * * *")));
     }
 
     @Test
     public void testErrorAbout2Parts(){
         thrown.expect(IllegalArgumentException.class);
         thrown.expectMessage("Cron expression contains 2 parts but we expect one of [6, 7]");
-        ExecutionTime.forCron(parser.parse("* *"));
+        assertNotNull(ExecutionTime.forCron(parser.parse("* *")));
     }
 
     @Test
     public void testErrorAboutMissingSteps(){
         thrown.expect(IllegalArgumentException.class);
         thrown.expectMessage("Missing steps for expression: */");
-        ExecutionTime.forCron(parser.parse("*/ * * * * ?"));
+        assertNotNull(ExecutionTime.forCron(parser.parse("*/ * * * * ?")));
     }
 
 }

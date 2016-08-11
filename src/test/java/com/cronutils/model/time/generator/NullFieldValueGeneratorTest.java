@@ -6,6 +6,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 /*
@@ -55,6 +56,6 @@ public class NullFieldValueGeneratorTest {
 
     @Test
     public void testConstructorNotMatchesNull() throws Exception {
-        new NullFieldValueGenerator(mock(CronField.class));
+        assertNotNull(new NullFieldValueGenerator(mock(CronField.class)));
     }
 }

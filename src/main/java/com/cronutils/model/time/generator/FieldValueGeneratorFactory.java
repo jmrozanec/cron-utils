@@ -20,7 +20,6 @@ import org.slf4j.LoggerFactory;
  * limitations under the License.
  */
 public class FieldValueGeneratorFactory {
-	private static final Logger log = LoggerFactory.getLogger(FieldValueGeneratorFactory.class);
     private static FieldValueGeneratorFactory factory = new FieldValueGeneratorFactory();
     private FieldValueGeneratorFactory(){}
 

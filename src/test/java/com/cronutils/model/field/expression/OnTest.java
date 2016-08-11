@@ -1,7 +1,5 @@
 package com.cronutils.model.field.expression;
 
-import com.cronutils.model.field.constraint.FieldConstraints;
-import com.cronutils.model.field.constraint.FieldConstraintsBuilder;
 import com.cronutils.model.field.value.IntegerFieldValue;
 import com.cronutils.model.field.value.SpecialChar;
 import com.cronutils.model.field.value.SpecialCharFieldValue;
@@ -24,18 +22,11 @@ import static org.junit.Assert.assertEquals;
 public class OnTest {
     private int time;
     private int nth;
-    private FieldConstraints nullFieldConstraints;
 
     @Before
     public void setUp() {
         time = 5;
         nth = 3;
-        nullFieldConstraints =
-                FieldConstraintsBuilder.instance()
-                        .addHashSupport()
-                        .addLSupport()
-                        .addWSupport()
-                        .createConstraintsInstance();
     }
 
     @Test

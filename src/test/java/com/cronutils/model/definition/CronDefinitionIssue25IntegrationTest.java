@@ -52,6 +52,6 @@ public class CronDefinitionIssue25IntegrationTest {
     public void testExecutionTime(){
         CronParser parser = new CronParser(cronDefinition);
         Cron cron = parser.parse(CRON_EXPRESSION);
-        ExecutionTime executionTime = ExecutionTime.forCron(cron);
+        ExecutionTime.forCron(cron);
     }
 }

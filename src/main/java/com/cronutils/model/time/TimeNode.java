@@ -23,7 +23,6 @@ import java.util.concurrent.atomic.AtomicInteger;
  * limitations under the License.
  */
 class TimeNode {
-	private static final Logger log = LoggerFactory.getLogger(TimeNode.class);
     protected List<Integer> values;
 
     public TimeNode(List<Integer> values){

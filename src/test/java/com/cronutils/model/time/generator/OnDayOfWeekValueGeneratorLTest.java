@@ -29,7 +29,7 @@ import static org.junit.Assert.*;
  * limitations under the License.
  */
 public class OnDayOfWeekValueGeneratorLTest {
-    FieldConstraints constraints = FieldConstraintsBuilder.instance().addLSupport().createConstraintsInstance();
+    private FieldConstraints constraints = FieldConstraintsBuilder.instance().addLSupport().createConstraintsInstance();
     private OnDayOfWeekValueGenerator fieldValueGenerator;
     private WeekDay mondayDoWValue = ConstantsMapper.QUARTZ_WEEK_DAY;
     private int year = 2015;

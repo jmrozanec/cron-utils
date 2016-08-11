@@ -1,7 +1,5 @@
 package com.cronutils.model.field.expression;
 
-import com.cronutils.model.field.constraint.FieldConstraints;
-import com.cronutils.model.field.constraint.FieldConstraintsBuilder;
 import com.cronutils.model.field.value.IntegerFieldValue;
 import com.cronutils.model.field.value.SpecialChar;
 import com.cronutils.model.field.value.SpecialCharFieldValue;
@@ -24,15 +22,11 @@ import static org.junit.Assert.assertEquals;
 public class BetweenTest {
     private int from;
     private int to;
-    private int every;
-    private FieldConstraints nullFieldConstraints;
 
     @Before
     public void setUp() {
         from = 1;
         to = 5;
-        every = 2;
-        nullFieldConstraints = FieldConstraintsBuilder.instance().createConstraintsInstance();
     }
 
     @Test

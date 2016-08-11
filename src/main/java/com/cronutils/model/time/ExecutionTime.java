@@ -445,11 +445,11 @@ public class ExecutionTime {
                         .plusMinutes(minutesOfHour)
                         .plusSeconds(secondsOfMinute);
         return ensureSameDate(date, years, monthsOfYear, dayOfMonth,
-                hoursOfDay, minutesOfHour, secondsOfMinute, timeZone);
+                hoursOfDay, minutesOfHour, secondsOfMinute);
     }
 
     private ZonedDateTime ensureSameDate(ZonedDateTime date, int years, int monthsOfYear, int dayOfMonth,
-                                    int hoursOfDay, int minutesOfHour, int secondsOfMinute, ZoneId timeZone){
+                                    int hoursOfDay, int minutesOfHour, int secondsOfMinute){
         if(date.getSecond()!=secondsOfMinute){
             date = date.plusSeconds(secondsOfMinute-date.getSecond());
         }

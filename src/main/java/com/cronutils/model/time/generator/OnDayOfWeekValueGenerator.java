@@ -103,9 +103,6 @@ class OnDayOfWeekValueGenerator extends FieldValueGenerator {
         int requiredNth = on.getNth().getValue();
         int baseDay = 1;//day 1 from given month
         int diff = dowForFirstDoM.getValue() - requiredDoW;
-        if(diff == 0){
-            //base day remains the same
-        }
         if(diff < 0){
             baseDay = baseDay+Math.abs(diff);
         }

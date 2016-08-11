@@ -31,8 +31,6 @@ public class FieldConstraintsTest {
     private int startRange;
     private int endRange;
 
-    private FieldConstraints fieldConstraints;
-
     @Before
     public void setUp() throws Exception {
         intMapping = Maps.newHashMap();
@@ -40,7 +38,6 @@ public class FieldConstraintsTest {
         specialCharSet = Sets.newHashSet();
         startRange = 0;
         endRange = 59;
-        fieldConstraints = new FieldConstraints(stringMapping, intMapping, specialCharSet, startRange, endRange);
     }
 
     @Test(expected = NullPointerException.class)
