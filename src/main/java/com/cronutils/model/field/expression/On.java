@@ -3,9 +3,9 @@ package com.cronutils.model.field.expression;
 import com.cronutils.model.field.value.IntegerFieldValue;
 import com.cronutils.model.field.value.SpecialChar;
 import com.cronutils.model.field.value.SpecialCharFieldValue;
-import org.apache.commons.lang3.Validate;
+import com.cronutils.utils.Preconditions;
 
-import static com.google.common.base.Preconditions.checkArgument;
+import static com.cronutils.utils.Preconditions.checkArgument;
 
 /*
  * Copyright 2014 jmrozanec
@@ -43,9 +43,9 @@ public class On extends FieldExpression {
 	}
 
 	public On(IntegerFieldValue time, SpecialCharFieldValue specialChar, IntegerFieldValue nth) {
-		Validate.notNull(time, "time must not be null");
-		Validate.notNull(specialChar, "special char must not null");
-		Validate.notNull(nth, "nth value must not be null");
+		Preconditions.checkNotNull(time, "time must not be null");
+		Preconditions.checkNotNull(specialChar, "special char must not null");
+		Preconditions.checkNotNull(nth, "nth value must not be null");
 
 		this.time = time;
 		this.specialChar = specialChar;

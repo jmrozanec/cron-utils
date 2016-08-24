@@ -19,8 +19,8 @@ import com.cronutils.model.definition.CronDefinition;
 import com.cronutils.model.field.CronField;
 import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.field.expression.visitor.ValidationFieldExpressionVisitor;
-import com.google.common.collect.Maps;
-import org.apache.commons.lang3.Validate;
+import com.cronutils.utils.Preconditions;
+import java.util.HashMap;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -36,9 +36,9 @@ public class Cron {
     private String asString;
 
     public Cron(CronDefinition cronDefinition, List<CronField> fields){
-        this.cronDefinition = Validate.notNull(cronDefinition, "CronDefinition must not be null");
-        Validate.notNull(fields, "CronFields cannot be null");
-        this.fields = Maps.newHashMap();
+        this.cronDefinition = Preconditions.checkNotNull(cronDefinition, "CronDefinition must not be null");
+        Preconditions.checkNotNull(fields, "CronFields cannot be null");
+        this.fields = new HashMap<>();
         for(CronField field : fields){
             this.fields.put(field.getField(), field);
         }
@@ -51,7 +51,7 @@ public class Cron {
      * @return CronField that corresponds to given CronFieldName
      */
     public CronField retrieve(CronFieldName name){
-        return fields.get(Validate.notNull(name, "CronFieldName must not be null"));
+        return fields.get(Preconditions.checkNotNull(name, "CronFieldName must not be null"));
     }
 
     /**

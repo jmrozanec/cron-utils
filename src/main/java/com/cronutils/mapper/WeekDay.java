@@ -1,7 +1,7 @@
 package com.cronutils.mapper;
 
-import com.google.common.annotations.VisibleForTesting;
-import org.apache.commons.lang3.Validate;
+import com.cronutils.utils.Preconditions;
+import com.cronutils.utils.VisibleForTesting;
 
 import java.util.function.Function;
 
@@ -23,7 +23,7 @@ public class WeekDay {
     private boolean firstDayZero;
 
     public WeekDay(int mondayDoWValue, boolean firstDayZero){
-        Validate.isTrue(mondayDoWValue>=0, "Monday Day of Week value must be greater or equal to zero");
+        Preconditions.checkArgument(mondayDoWValue>=0, "Monday Day of Week value must be greater or equal to zero");
         this.mondayDoWValue = mondayDoWValue;
         this.firstDayZero = firstDayZero;
     }

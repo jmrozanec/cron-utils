@@ -1,7 +1,7 @@
 package com.cronutils.model.field.expression;
 
 import com.cronutils.model.field.expression.visitor.FieldExpressionVisitor;
-import org.apache.commons.lang3.Validate;
+import com.cronutils.utils.Preconditions;
 
 /*
  * Copyright 2015 jmrozanec
@@ -38,7 +38,7 @@ public abstract class FieldExpression {
 	 * @return FieldExpression copied instance with visitor action performed.
 	 */
 	public final FieldExpression accept(FieldExpressionVisitor visitor) {
-		Validate.notNull(visitor, "FieldExpressionVisitor must not be null");
+		Preconditions.checkNotNull(visitor, "FieldExpressionVisitor must not be null");
 		return visitor.visit(this);
 	}
 }

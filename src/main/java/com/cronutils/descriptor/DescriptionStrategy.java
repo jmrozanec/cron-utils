@@ -3,8 +3,8 @@ package com.cronutils.descriptor;
 import com.cronutils.model.field.expression.*;
 import com.cronutils.model.field.value.FieldValue;
 import com.cronutils.model.field.value.IntegerFieldValue;
-import com.google.common.collect.Lists;
-import org.apache.commons.lang3.Validate;
+import com.cronutils.utils.Preconditions;
+import java.util.ArrayList;
 
 import java.text.MessageFormat;
 import java.util.List;
@@ -68,7 +68,7 @@ abstract class DescriptionStrategy {
 	 * @return human readable description - String
 	 */
 	protected String describe(FieldExpression fieldExpression, boolean and) {
-		Validate.notNull(fieldExpression, "CronFieldExpression should not be null!");
+		Preconditions.checkNotNull(fieldExpression, "CronFieldExpression should not be null!");
 		if (fieldExpression instanceof Always) {
 			return describe((Always) fieldExpression, and);
 		}
@@ -96,7 +96,7 @@ abstract class DescriptionStrategy {
 	 * @return String
 	 */
 	protected String nominalValue(FieldValue fieldValue) {
-		Validate.notNull(fieldValue, "FieldValue must not be null");
+		Preconditions.checkNotNull(fieldValue, "FieldValue must not be null");
 		if (fieldValue instanceof IntegerFieldValue) {
 			return nominalValueFunction.apply(((IntegerFieldValue) fieldValue).getValue());
 		}
@@ -122,8 +122,8 @@ abstract class DescriptionStrategy {
 	 * @return human readable description - String
 	 */
 	protected String describe(And and) {
-		List<FieldExpression> expressions = Lists.newArrayList();
-		List<FieldExpression> onExpressions = Lists.newArrayList();
+		List<FieldExpression> expressions = new ArrayList<>();
+		List<FieldExpression> onExpressions = new ArrayList<>();
 		for (FieldExpression fieldExpression : and.getExpressions()) {
 			if (fieldExpression instanceof On) {
 				onExpressions.add(fieldExpression);

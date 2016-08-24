@@ -3,8 +3,8 @@ package com.cronutils.model.time.generator;
 import com.cronutils.model.field.CronField;
 import com.cronutils.model.field.expression.Every;
 import com.cronutils.model.field.expression.FieldExpression;
-import com.google.common.annotations.VisibleForTesting;
-import com.google.common.collect.Lists;
+import com.cronutils.utils.VisibleForTesting;
+import java.util.ArrayList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -68,7 +68,7 @@ class EveryFieldValueGenerator extends FieldValueGenerator {
 
     @Override
     protected List<Integer> generateCandidatesNotIncludingIntervalExtremes(int start, int end) {
-        List<Integer>values = Lists.newArrayList();
+        List<Integer>values = new ArrayList<>();
         try {
             int reference = generateNextValue(start);
             while(reference<end){

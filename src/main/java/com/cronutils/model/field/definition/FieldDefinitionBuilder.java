@@ -3,7 +3,7 @@ package com.cronutils.model.field.definition;
 import com.cronutils.model.definition.CronDefinitionBuilder;
 import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.field.constraint.FieldConstraintsBuilder;
-import org.apache.commons.lang3.Validate;
+import com.cronutils.utils.Preconditions;
 
 /*
  * Copyright 2014 jmrozanec
@@ -33,8 +33,8 @@ public class FieldDefinitionBuilder {
      *                  if null, a NullPointerException will be raised
      */
     public FieldDefinitionBuilder(CronDefinitionBuilder cronDefinitionBuilder, CronFieldName fieldName){
-        this.cronDefinitionBuilder = Validate.notNull(cronDefinitionBuilder, "ParserBuilder must not be null");
-        this.fieldName = Validate.notNull(fieldName, "CronFieldName must not be null");
+        this.cronDefinitionBuilder = Preconditions.checkNotNull(cronDefinitionBuilder, "ParserBuilder must not be null");
+        this.fieldName = Preconditions.checkNotNull(fieldName, "CronFieldName must not be null");
         this.constraints = FieldConstraintsBuilder.instance().forField(fieldName);
     }
 

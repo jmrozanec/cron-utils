@@ -4,9 +4,9 @@ import com.cronutils.model.Cron;
 import com.cronutils.model.definition.CronDefinition;
 import com.cronutils.model.field.CronField;
 import com.cronutils.model.field.definition.FieldDefinition;
-import com.google.common.collect.Maps;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.Validate;
+import com.cronutils.utils.Preconditions;
+import com.cronutils.utils.StringUtils;
+import java.util.HashMap;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -32,7 +32,7 @@ import java.util.Map;
  */
 public class CronParser {
 
-	private final Map<Integer, List<CronParserField>> expressions = Maps.newHashMap();;
+	private final Map<Integer, List<CronParserField>> expressions = new HashMap<>();;
 	private CronDefinition cronDefinition;
 
 	/**
@@ -40,7 +40,7 @@ public class CronParser {
 	 *            - cronDefinition of cron expressions to be parsed if null, a NullPointerException will be raised.
 	 */
 	public CronParser(CronDefinition cronDefinition) {
-		this.cronDefinition = Validate.notNull(cronDefinition, "CronDefinition must not be null");
+		this.cronDefinition = Preconditions.checkNotNull(cronDefinition, "CronDefinition must not be null");
 		buildPossibleExpressions(cronDefinition);
 	}
 
@@ -76,7 +76,7 @@ public class CronParser {
 	 *             if expression does not match cron definition
 	 */
 	public Cron parse(String expression) {
-		Validate.notNull(expression, "Expression must not be null");
+		Preconditions.checkNotNull(expression, "Expression must not be null");
 		String replaced = expression.replaceAll("\\s+", " ").trim();
 		if (StringUtils.isEmpty(replaced)) {
 			throw new IllegalArgumentException("Empty expression!");

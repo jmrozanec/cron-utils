@@ -3,7 +3,7 @@ package com.cronutils.model.field.definition;
 import com.cronutils.mapper.WeekDay;
 import com.cronutils.model.definition.CronDefinitionBuilder;
 import com.cronutils.model.field.CronFieldName;
-import org.apache.commons.lang3.Validate;
+import com.cronutils.utils.Preconditions;
 
 /*
  * Copyright 2015 jmrozanec
@@ -28,7 +28,7 @@ public class FieldDayOfWeekDefinitionBuilder extends FieldSpecialCharsDefinition
      */
     public FieldDayOfWeekDefinitionBuilder(CronDefinitionBuilder cronDefinitionBuilder, CronFieldName fieldName) {
         super(cronDefinitionBuilder, fieldName);
-        Validate.isTrue(CronFieldName.DAY_OF_WEEK.equals(fieldName), "CronFieldName must be DAY_OF_WEEK");
+        Preconditions.checkArgument(CronFieldName.DAY_OF_WEEK.equals(fieldName), "CronFieldName must be DAY_OF_WEEK");
     }
 
     /**

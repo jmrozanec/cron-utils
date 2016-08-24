@@ -10,10 +10,11 @@ import com.cronutils.model.field.expression.Always;
 import com.cronutils.model.field.expression.QuestionMark;
 import com.cronutils.model.time.generator.FieldValueGenerator;
 import com.cronutils.model.time.generator.NoSuchValueException;
-import com.google.common.annotations.VisibleForTesting;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
-import org.apache.commons.lang3.Validate;
+import com.cronutils.utils.Preconditions;
+import com.cronutils.utils.VisibleForTesting;
+import java.util.ArrayList;
+import java.util.HashSet;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -62,14 +63,14 @@ public class ExecutionTime {
     ExecutionTime(CronDefinition cronDefinition, FieldValueGenerator yearsValueGenerator, CronField daysOfWeekCronField,
                   CronField daysOfMonthCronField, TimeNode months, TimeNode hours,
                   TimeNode minutes, TimeNode seconds) {
-        this.cronDefinition = Validate.notNull(cronDefinition);
-        this.yearsValueGenerator = Validate.notNull(yearsValueGenerator);
-        this.daysOfWeekCronField = Validate.notNull(daysOfWeekCronField);
-        this.daysOfMonthCronField = Validate.notNull(daysOfMonthCronField);
-        this.months = Validate.notNull(months);
-        this.hours = Validate.notNull(hours);
-        this.minutes = Validate.notNull(minutes);
-        this.seconds = Validate.notNull(seconds);
+        this.cronDefinition = Preconditions.checkNotNull(cronDefinition);
+        this.yearsValueGenerator = Preconditions.checkNotNull(yearsValueGenerator);
+        this.daysOfWeekCronField = Preconditions.checkNotNull(daysOfWeekCronField);
+        this.daysOfMonthCronField = Preconditions.checkNotNull(daysOfMonthCronField);
+        this.months = Preconditions.checkNotNull(months);
+        this.hours = Preconditions.checkNotNull(hours);
+        this.minutes = Preconditions.checkNotNull(minutes);
+        this.seconds = Preconditions.checkNotNull(seconds);
     }
 
     /**
@@ -118,7 +119,7 @@ public class ExecutionTime {
      * @return ZonedDateTime instance, never null. Next execution time.
      */
     public ZonedDateTime nextExecution(ZonedDateTime date) {
-        Validate.notNull(date);
+        Preconditions.checkNotNull(date);
         try {
             ZonedDateTime nextMatch = nextClosestMatch(date);
             if(nextMatch.equals(date)){
@@ -352,7 +353,7 @@ public class ExecutionTime {
      * @return ZonedDateTime instance, never null. Last execution time.
      */
     public ZonedDateTime lastExecution(ZonedDateTime date){
-        Validate.notNull(date);
+        Preconditions.checkNotNull(date);
         try {
             ZonedDateTime previousMatch = previousClosestMatch(date);
             if(previousMatch.equals(date)){
@@ -385,7 +386,7 @@ public class ExecutionTime {
 	private List<Integer> generateDayCandidatesQuestionMarkNotSupported(int year, int month, WeekDay mondayDoWValue) {
         LocalDate date = LocalDate.of(year, month, 1);
         int lengthOfMonth = date.lengthOfMonth();
-        Set<Integer> candidates = Sets.newHashSet();
+        Set<Integer> candidates = new HashSet<>();
         if (daysOfMonthCronField.getExpression() instanceof Always && daysOfWeekCronField.getExpression() instanceof Always) {
             candidates.addAll(createDayOfMonthValueGeneratorInstance(daysOfMonthCronField,
                     year, month).generateCandidates(1, lengthOfMonth));
@@ -401,7 +402,7 @@ public class ExecutionTime {
             candidates.addAll(createDayOfMonthValueGeneratorInstance(daysOfMonthCronField, year, month)
                     .generateCandidates(1, lengthOfMonth));
         }
-        List<Integer> candidatesList = Lists.newArrayList(candidates);
+        List<Integer> candidatesList = new ArrayList<>(candidates);
 		Collections.sort(candidatesList);
 		return candidatesList;
 	}
@@ -409,7 +410,7 @@ public class ExecutionTime {
     private List<Integer> generateDayCandidatesQuestionMarkSupported(int year, int month, WeekDay mondayDoWValue){
         LocalDate date = LocalDate.of(year, month, 1);
         int lengthOfMonth = date.lengthOfMonth();
-        Set<Integer> candidates = Sets.newHashSet();
+        Set<Integer> candidates = new HashSet<>();
         if (daysOfMonthCronField.getExpression() instanceof Always && daysOfWeekCronField.getExpression() instanceof Always) {
             candidates.addAll(createDayOfMonthValueGeneratorInstance(daysOfMonthCronField, year, month)
                     .generateCandidates(1, lengthOfMonth));
@@ -426,7 +427,7 @@ public class ExecutionTime {
             candidates.addAll(createDayOfMonthValueGeneratorInstance(daysOfMonthCronField, year, month)
                     .generateCandidates(1, lengthOfMonth));
         }
-        List<Integer> candidatesList = Lists.newArrayList(candidates);
+        List<Integer> candidatesList = new ArrayList<>(candidates);
         Collections.sort(candidatesList);
         return candidatesList;
     }

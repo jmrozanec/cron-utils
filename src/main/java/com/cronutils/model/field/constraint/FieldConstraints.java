@@ -1,7 +1,7 @@
 package com.cronutils.model.field.constraint;
 
 import com.cronutils.model.field.value.SpecialChar;
-import org.apache.commons.lang3.Validate;
+import com.cronutils.utils.Preconditions;
 
 import java.util.Collections;
 import java.util.Map;
@@ -43,9 +43,9 @@ public class FieldConstraints {
 	 */
 	public FieldConstraints(Map<String, Integer> stringMapping, Map<Integer, Integer> intMapping, Set<SpecialChar> specialChars, int startRange,
 			int endRange) {
-		this.stringMapping = Collections.unmodifiableMap(Validate.notNull(stringMapping, "String mapping must not be null"));
-		this.intMapping = Collections.unmodifiableMap(Validate.notNull(intMapping, "Integer mapping must not be null"));
-		this.specialChars = Collections.unmodifiableSet(Validate.notNull(specialChars, "Special (non-standard) chars set must not be null"));
+		this.stringMapping = Collections.unmodifiableMap(Preconditions.checkNotNull(stringMapping, "String mapping must not be null"));
+		this.intMapping = Collections.unmodifiableMap(Preconditions.checkNotNull(intMapping, "Integer mapping must not be null"));
+		this.specialChars = Collections.unmodifiableSet(Preconditions.checkNotNull(specialChars, "Special (non-standard) chars set must not be null"));
 		this.startRange = startRange;
 		this.endRange = endRange;
 	}

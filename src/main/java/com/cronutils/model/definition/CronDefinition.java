@@ -2,8 +2,8 @@ package com.cronutils.model.definition;
 
 import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.field.definition.FieldDefinition;
-import com.google.common.collect.Maps;
-import org.apache.commons.lang3.Validate;
+import com.cronutils.utils.Preconditions;
+import java.util.HashMap;
 
 import java.util.*;
 
@@ -37,13 +37,13 @@ public class CronDefinition {
      * @param lastFieldOptional - boolean, value stating if last field is optional
      */
     public CronDefinition(List<FieldDefinition> fieldDefinitions, Set<CronConstraint> cronConstraints, boolean lastFieldOptional, boolean strictRanges){
-        Validate.notNull(fieldDefinitions, "Field definitions must not be null");
-        Validate.notNull(cronConstraints, "Cron validations must not be null");
-        Validate.notEmpty(fieldDefinitions, "Field definitions must not be empty");
+        Preconditions.checkNotNull(fieldDefinitions, "Field definitions must not be null");
+        Preconditions.checkNotNull(cronConstraints, "Cron validations must not be null");
+        Preconditions.checkNotNullNorEmpty(fieldDefinitions, "Field definitions must not be empty");
         if(lastFieldOptional){
-            Validate.isTrue(fieldDefinitions.size() > 1, "If last field is optional, field definition must hold at least two fields");
+            Preconditions.checkArgument(fieldDefinitions.size() > 1, "If last field is optional, field definition must hold at least two fields");
         }
-        this.fieldDefinitions = Maps.newHashMap();
+        this.fieldDefinitions = new HashMap<>();
         for(FieldDefinition field : fieldDefinitions){
             this.fieldDefinitions.put(field.getFieldName(), field);
         }
