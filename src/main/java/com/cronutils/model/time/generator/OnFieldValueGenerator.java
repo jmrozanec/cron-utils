@@ -3,7 +3,7 @@ package com.cronutils.model.time.generator;
 import com.cronutils.model.field.CronField;
 import com.cronutils.model.field.expression.FieldExpression;
 import com.cronutils.model.field.expression.On;
-import com.google.common.collect.Lists;
+import java.util.ArrayList;
 
 import java.util.List;
 /*
@@ -43,7 +43,7 @@ class OnFieldValueGenerator extends FieldValueGenerator {
 
     @Override
     protected List<Integer> generateCandidatesNotIncludingIntervalExtremes(int start, int end) {
-        List<Integer> values = Lists.newArrayList();
+        List<Integer> values = new ArrayList<>();
         int time = ((On) cronField.getExpression()).getTime().getValue();
         if(time>start && time<end){
             values.add(time);

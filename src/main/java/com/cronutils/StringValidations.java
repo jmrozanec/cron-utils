@@ -14,8 +14,8 @@ package com.cronutils;
 
 import com.cronutils.model.field.constraint.FieldConstraints;
 import com.cronutils.model.field.value.SpecialChar;
-import com.google.common.annotations.VisibleForTesting;
-import com.google.common.collect.Sets;
+import com.cronutils.utils.VisibleForTesting;
+import java.util.HashSet;
 
 import java.util.Iterator;
 import java.util.Set;
@@ -53,7 +53,7 @@ public class StringValidations {
 
 	@VisibleForTesting
 	Pattern buildLWPattern(Set<SpecialChar> specialChars) {
-		Set<String> scs = Sets.newHashSet();
+		Set<String> scs = new HashSet<>();
 		for (SpecialChar sc : SPECIAL_CHARS) {
 			if (specialChars.contains(sc)) {
 				scs.add(sc.name());

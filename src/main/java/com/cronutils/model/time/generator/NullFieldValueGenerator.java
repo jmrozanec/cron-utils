@@ -2,7 +2,7 @@ package com.cronutils.model.time.generator;
 
 import com.cronutils.model.field.CronField;
 import com.cronutils.model.field.expression.FieldExpression;
-import com.google.common.collect.Lists;
+import java.util.ArrayList;
 
 import java.util.List;
 /*
@@ -34,7 +34,7 @@ class NullFieldValueGenerator extends FieldValueGenerator {
 
     @Override
     protected List<Integer> generateCandidatesNotIncludingIntervalExtremes(int start, int end) {
-        return Lists.newArrayList();
+        return new ArrayList<>();
     }
 
     @Override

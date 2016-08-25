@@ -1,6 +1,6 @@
 package com.cronutils.model.field.expression;
 
-import com.google.common.collect.Lists;
+import java.util.ArrayList;
 
 import java.util.Collections;
 import java.util.List;
@@ -25,11 +25,11 @@ public class And extends FieldExpression {
 	private final List<FieldExpression> expressions;
 
 	public And() {
-		expressions = Lists.newArrayList();
+		expressions = new ArrayList<>();
 	}
 
 	private And(And and) {
-		expressions = Lists.newArrayList(and.getExpressions());
+		expressions = new ArrayList<>(and.getExpressions());
 	}
 
 	@Override

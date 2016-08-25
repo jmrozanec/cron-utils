@@ -10,7 +10,7 @@ import com.cronutils.model.field.expression.On;
 import com.cronutils.model.field.value.IntegerFieldValue;
 import com.cronutils.model.time.generator.FieldValueGenerator;
 import com.cronutils.model.time.generator.FieldValueGeneratorFactory;
-import org.apache.commons.lang3.Validate;
+import com.cronutils.utils.Preconditions;
 /*
  * Copyright 2015 jmrozanec
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -148,8 +148,8 @@ class ExecutionTimeBuilder {
     }
 
     private void validate(CronFieldName name, CronField cronField){
-        Validate.notNull(name, "Reference CronFieldName cannot be null");
-        Validate.notNull(cronField.getField(), "CronField's CronFieldName cannot be null");
+        Preconditions.checkNotNull(name, "Reference CronFieldName cannot be null");
+        Preconditions.checkNotNull(cronField.getField(), "CronField's CronFieldName cannot be null");
         if(!name.equals(cronField.getField())){
             throw new IllegalArgumentException(
                     String.format("Invalid argument! Expected CronField instance for field %s but found %s", cronField.getField(), name)

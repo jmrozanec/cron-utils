@@ -4,8 +4,8 @@ import com.cronutils.model.field.CronField;
 import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.field.expression.FieldExpression;
 import com.cronutils.model.field.expression.On;
-import com.google.common.collect.Lists;
-import org.apache.commons.lang3.Validate;
+import com.cronutils.utils.Preconditions;
+import java.util.ArrayList;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -29,7 +29,7 @@ class OnDayOfMonthValueGenerator extends FieldValueGenerator {
 
     public OnDayOfMonthValueGenerator(CronField cronField, int year, int month) {
         super(cronField);
-        Validate.isTrue(CronFieldName.DAY_OF_MONTH.equals(cronField.getField()), "CronField does not belong to day of" +
+        Preconditions.checkArgument(CronFieldName.DAY_OF_MONTH.equals(cronField.getField()), "CronField does not belong to day of" +
                 " month");
         this.year = year;
         this.month = month;
@@ -58,7 +58,7 @@ class OnDayOfMonthValueGenerator extends FieldValueGenerator {
 
     @Override
     protected List<Integer> generateCandidatesNotIncludingIntervalExtremes(int start, int end) {
-        List<Integer> values = Lists.newArrayList();
+        List<Integer> values = new ArrayList<>();
         try {
             int reference = generateNextValue(start);
             while (reference < end) {

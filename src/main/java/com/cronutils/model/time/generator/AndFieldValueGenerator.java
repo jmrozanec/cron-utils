@@ -2,7 +2,7 @@ package com.cronutils.model.time.generator;
 
 import com.cronutils.model.field.CronField;
 import com.cronutils.model.field.expression.*;
-import com.google.common.collect.Lists;
+import java.util.ArrayList;
 
 import java.util.List;
 import java.util.function.Function;
@@ -65,7 +65,7 @@ class AndFieldValueGenerator extends FieldValueGenerator {
 
     @Override
     protected List<Integer> generateCandidatesNotIncludingIntervalExtremes(int start, int end) {
-        List<Integer> values = Lists.newArrayList();
+        List<Integer> values = new ArrayList<>();
         try {
             int reference = generateNextValue(start);
             while(reference<end){
@@ -95,7 +95,7 @@ class AndFieldValueGenerator extends FieldValueGenerator {
 
     private List<Integer> computeCandidates(Function<FieldValueGenerator, Integer> function){
         And and = (And) cronField.getExpression();
-        List<Integer> candidates = Lists.newArrayList();
+        List<Integer> candidates = new ArrayList<>();
         for (FieldExpression expression : and.getExpressions()) {
             candidates.add(function.apply(createCandidateGeneratorInstance(new CronField(cronField.getField(), expression, cronField.getConstraints()))));
         }

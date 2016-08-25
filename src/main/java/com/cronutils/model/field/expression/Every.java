@@ -1,7 +1,7 @@
 package com.cronutils.model.field.expression;
 
 import com.cronutils.model.field.value.IntegerFieldValue;
-import org.apache.commons.lang3.Validate;
+import com.cronutils.utils.Preconditions;
 
 /*
  * Copyright 2014 jmrozanec
@@ -32,7 +32,7 @@ public class Every extends FieldExpression {
 	}
 
 	public Every(FieldExpression expression, IntegerFieldValue period) {
-		this.expression = Validate.notNull(expression, "Expression must not be null");
+		this.expression = Preconditions.checkNotNull(expression, "Expression must not be null");
 		this.period = period == null ? new IntegerFieldValue(1) : period;
 	}
 

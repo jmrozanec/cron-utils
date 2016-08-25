@@ -17,10 +17,10 @@ import com.cronutils.model.field.expression.QuestionMark;
 import com.cronutils.model.field.expression.visitor.ValueMappingFieldExpressionVisitor;
 import com.cronutils.model.field.value.IntegerFieldValue;
 import com.cronutils.model.field.value.SpecialChar;
-import com.google.common.annotations.VisibleForTesting;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-import org.apache.commons.lang3.Validate;
+import com.cronutils.utils.Preconditions;
+import com.cronutils.utils.VisibleForTesting;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 import java.util.List;
 import java.util.Map;
@@ -51,10 +51,10 @@ public class CronMapper {
      *             if null a NullPointerException will be raised
      */
     public CronMapper(CronDefinition from, CronDefinition to, Function<Cron, Cron> cronRules){
-        Validate.notNull(from, "Source CronDefinition must not be null");
-        this.to = Validate.notNull(to, "Destination CronDefinition must not be null");
-        this.cronRules = Validate.notNull(cronRules, "CronRules must not be null");
-        mappings = Maps.newHashMap();
+        Preconditions.checkNotNull(from, "Source CronDefinition must not be null");
+        this.to = Preconditions.checkNotNull(to, "Destination CronDefinition must not be null");
+        this.cronRules = Preconditions.checkNotNull(cronRules, "CronRules must not be null");
+        mappings = new HashMap<>();
         buildMappings(from, to);
     }
 
@@ -65,8 +65,8 @@ public class CronMapper {
      * @return new Cron instance, never null;
      */
     public Cron map(Cron cron) {
-        Validate.notNull(cron, "Cron must not be null");
-        List<CronField> fields = Lists.newArrayList();
+        Preconditions.checkNotNull(cron, "Cron must not be null");
+        List<CronField> fields = new ArrayList<>();
         for(CronFieldName name : CronFieldName.values()){
             if(mappings.containsKey(name)){
                 fields.add(mappings.get(name).apply(cron.retrieve(name)));
@@ -127,7 +127,7 @@ public class CronMapper {
                 if(dow.getExpression() instanceof QuestionMark || dom.getExpression() instanceof QuestionMark){
                     return cron;
                 } else {
-                    Map<CronFieldName, CronField> fields = Maps.newHashMap();
+                    Map<CronFieldName, CronField> fields = new HashMap<>();
                     fields.putAll(cron.retrieveFieldsAsMap());
                     if(dow.getExpression() instanceof Always){
                         fields.put(CronFieldName.DAY_OF_WEEK, new CronField(CronFieldName.DAY_OF_WEEK, new QuestionMark(), fields.get(CronFieldName.DAY_OF_WEEK).getConstraints()));
@@ -138,7 +138,7 @@ public class CronMapper {
                             cron.validate();
                         }
                     }
-                    return new Cron(cron.getCronDefinition(), Lists.<CronField>newArrayList(fields.values()));
+                    return new Cron(cron.getCronDefinition(), new ArrayList<>(fields.values()));
                 }
             }
             return cron;
@@ -155,8 +155,8 @@ public class CronMapper {
      * @param to - target CronDefinition
      */
     private void buildMappings(CronDefinition from, CronDefinition to){
-        Map<CronFieldName, FieldDefinition> sourceFieldDefinitions = Maps.newHashMap();
-        Map<CronFieldName, FieldDefinition> destFieldDefinitions = Maps.newHashMap();
+        Map<CronFieldName, FieldDefinition> sourceFieldDefinitions = new HashMap<>();
+        Map<CronFieldName, FieldDefinition> destFieldDefinitions = new HashMap<>();
         for(FieldDefinition fieldDefinition : from.getFieldDefinitions()){
             sourceFieldDefinitions.put(fieldDefinition.getFieldName(), fieldDefinition);
         }

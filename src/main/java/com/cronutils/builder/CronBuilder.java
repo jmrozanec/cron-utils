@@ -19,18 +19,18 @@ import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.field.constraint.FieldConstraints;
 import com.cronutils.model.field.expression.FieldExpression;
 import com.cronutils.model.field.expression.visitor.ValidationFieldExpressionVisitor;
-import com.google.common.annotations.VisibleForTesting;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
+import com.cronutils.utils.VisibleForTesting;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 import java.util.Map;
 
 import static com.cronutils.model.field.CronFieldName.*;
-import static com.google.common.base.Preconditions.checkState;
+import static com.cronutils.utils.Preconditions.checkState;
 
 public class CronBuilder {
 
-	private final Map<CronFieldName, CronField> fields = Maps.newHashMap();
+	private final Map<CronFieldName, CronField> fields = new HashMap<>();
 	private CronDefinition definition;
 
 	private CronBuilder(CronDefinition definition) {
@@ -70,7 +70,7 @@ public class CronBuilder {
 	}
 
 	public Cron instance() {
-		return new Cron(definition, Lists.newArrayList(fields.values())).validate();
+		return new Cron(definition, new ArrayList<>(fields.values())).validate();
 	}
 
 	@VisibleForTesting

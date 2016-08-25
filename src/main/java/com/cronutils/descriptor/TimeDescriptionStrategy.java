@@ -2,8 +2,8 @@ package com.cronutils.descriptor;
 
 import com.cronutils.model.field.expression.*;
 import com.cronutils.model.field.value.IntegerFieldValue;
-import com.google.common.collect.Sets;
-import org.apache.commons.lang3.Validate;
+import com.cronutils.utils.Preconditions;
+import java.util.HashSet;
 
 import java.util.ResourceBundle;
 import java.util.Set;
@@ -46,7 +46,7 @@ class TimeDescriptionStrategy extends DescriptionStrategy {
         this.hours = ensureInstance(hours, new Always());
         this.minutes = ensureInstance(minutes, new Always());
         this.seconds = ensureInstance(seconds, new On(new IntegerFieldValue(defaultSeconds)));
-        descriptions = Sets.newHashSet();
+        descriptions = new HashSet<>();
         registerFunctions();
     }
 
@@ -57,7 +57,7 @@ class TimeDescriptionStrategy extends DescriptionStrategy {
      * @return
      */
     private FieldExpression ensureInstance(FieldExpression expression, FieldExpression defaultExpression) {
-        Validate.notNull(defaultExpression, "Default expression must not be null");
+        Preconditions.checkNotNull(defaultExpression, "Default expression must not be null");
         if (expression != null) {
             return expression;
         } else {

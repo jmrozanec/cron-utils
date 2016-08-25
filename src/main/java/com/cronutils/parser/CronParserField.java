@@ -15,7 +15,7 @@ package com.cronutils.parser;
 import com.cronutils.model.field.CronField;
 import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.field.constraint.FieldConstraints;
-import org.apache.commons.lang3.Validate;
+import com.cronutils.utils.Preconditions;
 
 import java.util.Comparator;
 
@@ -35,8 +35,8 @@ public class CronParserField {
 	 *            - CronFieldName instance
 	 */
 	public CronParserField(CronFieldName fieldName, FieldConstraints constraints) {
-		this.field = Validate.notNull(fieldName, "CronFieldName must not be null");
-		this.constraints = Validate.notNull(constraints, "FieldConstraints must not be null");
+		this.field = Preconditions.checkNotNull(fieldName, "CronFieldName must not be null");
+		this.constraints = Preconditions.checkNotNull(constraints, "FieldConstraints must not be null");
 		this.parser = new FieldParser(constraints);
 	}
 

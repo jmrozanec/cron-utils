@@ -2,7 +2,7 @@ package com.cronutils.descriptor;
 
 import com.cronutils.model.field.expression.Always;
 import com.cronutils.model.field.expression.FieldExpression;
-import com.google.common.collect.Sets;
+import java.util.HashSet;
 
 import java.util.ResourceBundle;
 import java.util.Set;
@@ -39,7 +39,7 @@ class NominalDescriptionStrategy extends DescriptionStrategy {
      */
     public NominalDescriptionStrategy(ResourceBundle bundle, Function<Integer, String> nominalValueFunction, FieldExpression expression) {
         super(bundle);
-        descriptions = Sets.newHashSet();
+        descriptions = new HashSet<>();
         if (nominalValueFunction != null) {
             this.nominalValueFunction = nominalValueFunction;
         }

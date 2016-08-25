@@ -19,7 +19,7 @@ import com.cronutils.model.field.value.FieldValue;
 import com.cronutils.model.field.value.IntegerFieldValue;
 import com.cronutils.model.field.value.SpecialChar;
 import com.cronutils.model.field.value.SpecialCharFieldValue;
-import com.google.common.annotations.VisibleForTesting;
+import com.cronutils.utils.VisibleForTesting;
 
 public class ValidationFieldExpressionVisitor implements FieldExpressionVisitor {
 

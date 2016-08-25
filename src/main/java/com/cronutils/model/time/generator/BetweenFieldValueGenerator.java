@@ -5,7 +5,7 @@ import com.cronutils.model.field.expression.Between;
 import com.cronutils.model.field.expression.FieldExpression;
 import com.cronutils.model.field.value.FieldValue;
 import com.cronutils.model.field.value.IntegerFieldValue;
-import com.google.common.collect.Lists;
+import java.util.ArrayList;
 
 import java.util.List;
 /*
@@ -58,7 +58,7 @@ class BetweenFieldValueGenerator extends FieldValueGenerator {
 
     @Override
     protected List<Integer> generateCandidatesNotIncludingIntervalExtremes(int start, int end) {
-        List<Integer> values = Lists.newArrayList();
+        List<Integer> values = new ArrayList<>();
         //check overlapping ranges: x1 <= y2 && y1 <= x2
         Between between = (Between)cronField.getExpression();
         int expressionStart = map(between.getFrom());

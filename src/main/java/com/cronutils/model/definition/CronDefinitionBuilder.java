@@ -8,9 +8,9 @@ import com.cronutils.model.field.definition.FieldDefinition;
 import com.cronutils.model.field.definition.FieldDefinitionBuilder;
 import com.cronutils.model.field.definition.FieldSpecialCharsDefinitionBuilder;
 import com.cronutils.model.field.expression.QuestionMark;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 
 import java.util.HashSet;
 import java.util.Map;
@@ -43,8 +43,8 @@ public class CronDefinitionBuilder {
      * lastFieldOptional is defined false.
      */
     private CronDefinitionBuilder() {
-        fields = Maps.newHashMap();
-        cronConstraints = Sets.newHashSet();
+        fields = new HashMap<>();
+        cronConstraints = new HashSet<>();
         lastFieldOptional = false;
         enforceStrictRanges = false;
     }
@@ -155,7 +155,7 @@ public class CronDefinitionBuilder {
     public CronDefinition instance() {
         Set<CronConstraint> validations = new HashSet<CronConstraint>();
         validations.addAll(cronConstraints);
-        return new CronDefinition(Lists.newArrayList(this.fields.values()), validations, lastFieldOptional, enforceStrictRanges);
+        return new CronDefinition(new ArrayList<>(this.fields.values()), validations, lastFieldOptional, enforceStrictRanges);
     }
 
     /**
