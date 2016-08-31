@@ -383,7 +383,17 @@ public class ExecutionTimeQuartzIntegrationTest {
         assertEquals(getMinimumInterval("0 0 */3 * * ?"), Duration.ofSeconds(10800));
         assertEquals(getMinimumInterval("0 0 0 * * ?"), Duration.ofSeconds(86400));
     }
+    
+    @Test
+    public void noSpecificDayOfMonth() {
+        Cron cron = parser.parse("0 * * ? * *");
+        ExecutionTime executionTime = ExecutionTime.forCron(cron);
+        ZonedDateTime now = ZonedDateTime.of(2016, 8, 30, 23, 59, 0,0,ZoneId.of("UTC"));
+        ZonedDateTime nextRun = executionTime.nextExecution(now);
 
+        assertEquals(ZonedDateTime.of(2016, 8, 31, 0, 0, 0,0, ZoneId.of("UTC")), nextRun);
+    }
+    
     private Duration getMinimumInterval(String quartzPattern) {
         ExecutionTime et = ExecutionTime.forCron(parser.parse(quartzPattern));
         ZonedDateTime coolDay = ZonedDateTime.of(2016, 1, 1, 0, 0, 0, 0, UTC);
@@ -396,4 +406,7 @@ public class ExecutionTimeQuartzIntegrationTest {
     private ZonedDateTime truncateToSeconds(ZonedDateTime dateTime){
         return dateTime.truncatedTo(ChronoUnit.SECONDS);
     }
+    
+   
+
 }
