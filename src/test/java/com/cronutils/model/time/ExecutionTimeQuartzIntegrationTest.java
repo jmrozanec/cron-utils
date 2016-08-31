@@ -406,7 +406,4 @@ public class ExecutionTimeQuartzIntegrationTest {
     private ZonedDateTime truncateToSeconds(ZonedDateTime dateTime){
         return dateTime.truncatedTo(ChronoUnit.SECONDS);
     }
-    
-   
-
 }
