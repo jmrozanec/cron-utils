@@ -3,13 +3,14 @@ package com.cronutils.model.time;
 import com.cronutils.model.definition.CronDefinition;
 import com.cronutils.model.field.CronField;
 import com.cronutils.model.field.CronFieldName;
+import com.cronutils.model.field.constraint.FieldConstraints;
 import com.cronutils.model.field.constraint.FieldConstraintsBuilder;
 import com.cronutils.model.field.expression.Always;
 import com.cronutils.model.field.expression.On;
 import com.cronutils.model.field.value.IntegerFieldValue;
 import com.cronutils.model.time.generator.FieldValueGenerator;
 import com.cronutils.model.time.generator.FieldValueGeneratorFactory;
-import org.apache.commons.lang3.Validate;
+import com.cronutils.utils.Preconditions;
 /*
  * Copyright 2015 jmrozanec
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -100,16 +101,18 @@ class ExecutionTimeBuilder {
             lowestAssigned=true;
         }
         if(daysOfMonthCronField==null){
+            FieldConstraints constraints = getConstraint(CronFieldName.DAY_OF_MONTH);
             daysOfMonthCronField=lowestAssigned?
-                    new CronField(CronFieldName.DAY_OF_MONTH, new Always(FieldConstraintsBuilder.instance().createConstraintsInstance())):
-                    new CronField(CronFieldName.DAY_OF_MONTH, new On(FieldConstraintsBuilder.instance().createConstraintsInstance(), new IntegerFieldValue(0)));
+                    new CronField(CronFieldName.DAY_OF_MONTH, new Always(), constraints):
+                    new CronField(CronFieldName.DAY_OF_MONTH, new On(new IntegerFieldValue(0)), constraints);
         }else{
             lowestAssigned=true;
         }
         if(daysOfWeekCronField==null){
+            FieldConstraints constraints = getConstraint(CronFieldName.DAY_OF_WEEK);
             daysOfWeekCronField=lowestAssigned?
-                    new CronField(CronFieldName.DAY_OF_WEEK, new Always(FieldConstraintsBuilder.instance().createConstraintsInstance())):
-                    new CronField(CronFieldName.DAY_OF_WEEK, new On(FieldConstraintsBuilder.instance().createConstraintsInstance(), new IntegerFieldValue(0)));
+                    new CronField(CronFieldName.DAY_OF_WEEK, new Always(), constraints):
+                    new CronField(CronFieldName.DAY_OF_WEEK, new On(new IntegerFieldValue(0)), constraints);
         }else{
             lowestAssigned=true;
         }
@@ -119,14 +122,7 @@ class ExecutionTimeBuilder {
         if(yearsValueGenerator==null){
             yearsValueGenerator =
                     FieldValueGeneratorFactory.forCronField(
-                            new CronField(
-                                    CronFieldName.YEAR,
-                                    new Always(
-                                            FieldConstraintsBuilder.instance()
-                                                    .forField(CronFieldName.YEAR)
-                                                    .createConstraintsInstance()
-                                    )
-                            )
+                            new CronField(CronFieldName.YEAR,new Always(), getConstraint(CronFieldName.YEAR))
                     );
         }
 
@@ -137,32 +133,31 @@ class ExecutionTimeBuilder {
     }
 
     private TimeNode timeNodeLowest(CronFieldName name, int lower, int higher){
+        FieldConstraints constraints = getConstraint(name);
         return new TimeNode(
                 FieldValueGeneratorFactory.forCronField(
-                        new CronField(
-                                name,
-                                new On(
-                                        FieldConstraintsBuilder.instance()
-                                                .forField(name)
-                                                .createConstraintsInstance(), new IntegerFieldValue(lower))
-                        )
+                        new CronField(name, new On(new IntegerFieldValue(lower)), constraints)
                 ).generateCandidates(lower, higher));
     }
 
     private TimeNode timeNodeAlways(CronFieldName name, int lower, int higher){
         return new TimeNode(
                 FieldValueGeneratorFactory.forCronField(
-                        new CronField(name,new Always(FieldConstraintsBuilder.instance().createConstraintsInstance()))
+                        new CronField(name,new Always(), getConstraint(name))
                 ).generateCandidates(lower, higher));
     }
 
     private void validate(CronFieldName name, CronField cronField){
-        Validate.notNull(name, "Reference CronFieldName cannot be null");
-        Validate.notNull(cronField.getField(), "CronField's CronFieldName cannot be null");
+        Preconditions.checkNotNull(name, "Reference CronFieldName cannot be null");
+        Preconditions.checkNotNull(cronField.getField(), "CronField's CronFieldName cannot be null");
         if(!name.equals(cronField.getField())){
             throw new IllegalArgumentException(
                     String.format("Invalid argument! Expected CronField instance for field %s but found %s", cronField.getField(), name)
             );
         }
+    }
+
+    private FieldConstraints getConstraint(CronFieldName name){
+        return cronDefinition.getFieldDefinition(name)!=null?cronDefinition.getFieldDefinition(name).getConstraints():FieldConstraintsBuilder.instance().forField(name).createConstraintsInstance();
     }
 }

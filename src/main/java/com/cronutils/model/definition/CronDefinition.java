@@ -2,13 +2,11 @@ package com.cronutils.model.definition;
 
 import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.field.definition.FieldDefinition;
-import com.google.common.collect.Maps;
-import org.apache.commons.lang3.Validate;
+import com.cronutils.utils.Preconditions;
+import java.util.HashMap;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
+
 /*
  * Copyright 2014 jmrozanec
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -27,7 +25,9 @@ import java.util.Set;
  */
 public class CronDefinition {
     private Map<CronFieldName, FieldDefinition> fieldDefinitions;
+    private Set<CronConstraint> cronConstraints;
     private boolean lastFieldOptional;
+    private boolean strictRanges;
 
     /**
      * Constructor
@@ -36,17 +36,20 @@ public class CronDefinition {
      *                         Throws an IllegalArgumentException if an empty list is received
      * @param lastFieldOptional - boolean, value stating if last field is optional
      */
-    public CronDefinition(List<FieldDefinition> fieldDefinitions, boolean lastFieldOptional){
-        Validate.notNull(fieldDefinitions, "Field definitions must not be null");
-        Validate.notEmpty(fieldDefinitions, "Field definitions must not be empty");
+    public CronDefinition(List<FieldDefinition> fieldDefinitions, Set<CronConstraint> cronConstraints, boolean lastFieldOptional, boolean strictRanges){
+        Preconditions.checkNotNull(fieldDefinitions, "Field definitions must not be null");
+        Preconditions.checkNotNull(cronConstraints, "Cron validations must not be null");
+        Preconditions.checkNotNullNorEmpty(fieldDefinitions, "Field definitions must not be empty");
         if(lastFieldOptional){
-            Validate.isTrue(fieldDefinitions.size() > 1, "If last field is optional, field definition must hold at least two fields");
+            Preconditions.checkArgument(fieldDefinitions.size() > 1, "If last field is optional, field definition must hold at least two fields");
         }
-        this.fieldDefinitions = Maps.newHashMap();
+        this.fieldDefinitions = new HashMap<>();
         for(FieldDefinition field : fieldDefinitions){
             this.fieldDefinitions.put(field.getFieldName(), field);
         }
+        this.cronConstraints = Collections.unmodifiableSet(cronConstraints);
         this.lastFieldOptional = lastFieldOptional;
+        this.strictRanges = strictRanges;
     }
 
     /**
@@ -55,6 +58,14 @@ public class CronDefinition {
      */
     public boolean isLastFieldOptional() {
         return lastFieldOptional;
+    }
+
+    /**
+     * If ranges for field values should be strictly enforced ('from' greater than 'to')
+     * @return true if should be enforced, false otherwise.
+     */
+    public boolean isStrictRanges() {
+        return strictRanges;
     }
 
     /**
@@ -73,4 +84,9 @@ public class CronDefinition {
     public FieldDefinition getFieldDefinition(CronFieldName cronFieldName){
         return fieldDefinitions.get(cronFieldName);
     }
+
+    public Set<CronConstraint> getCronConstraints() {
+        return cronConstraints;
+    }
 }
+

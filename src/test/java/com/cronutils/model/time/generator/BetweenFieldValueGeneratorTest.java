@@ -1,5 +1,7 @@
 package com.cronutils.model.time.generator;
 
+import com.cronutils.model.field.CronField;
+import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.field.constraint.FieldConstraints;
 import com.cronutils.model.field.constraint.FieldConstraintsBuilder;
 import com.cronutils.model.field.expression.Between;
@@ -26,15 +28,15 @@ import static org.mockito.Mockito.mock;
  */
 public class BetweenFieldValueGeneratorTest {
     private BetweenFieldValueGenerator fieldValueGenerator;
-
+    private FieldConstraints constraints;
     private int from = 0;
     private int to = 2;
     private int outOfRange = 7;
 
     @Before
     public void setUp(){
-        FieldConstraints constraints = FieldConstraintsBuilder.instance().createConstraintsInstance();
-        fieldValueGenerator = new BetweenFieldValueGenerator(new Between(constraints, new IntegerFieldValue(from), new IntegerFieldValue(to)));
+        constraints = FieldConstraintsBuilder.instance().createConstraintsInstance();
+        fieldValueGenerator = new BetweenFieldValueGenerator(new CronField(CronFieldName.HOUR, new Between(new IntegerFieldValue(from), new IntegerFieldValue(to)), constraints));
     }
 
     @Test(expected = NoSuchValueException.class)
@@ -80,6 +82,6 @@ public class BetweenFieldValueGeneratorTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void testConstructorNotMatchesBetween() throws Exception {
-        new BetweenFieldValueGenerator(mock(FieldExpression.class));
+        new BetweenFieldValueGenerator(new CronField(CronFieldName.HOUR, mock(FieldExpression.class), constraints));
     }
 }

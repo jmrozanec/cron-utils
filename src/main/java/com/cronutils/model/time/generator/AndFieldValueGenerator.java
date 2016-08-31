@@ -1,14 +1,13 @@
 package com.cronutils.model.time.generator;
 
+import com.cronutils.model.field.CronField;
 import com.cronutils.model.field.expression.*;
-import com.google.common.base.Function;
-import com.google.common.base.Predicate;
-import com.google.common.collect.Collections2;
-import com.google.common.collect.Lists;
-
 import java.util.ArrayList;
-import java.util.Collections;
+
 import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
 /*
  * Copyright 2015 jmrozanec
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,22 +21,19 @@ import java.util.List;
  * limitations under the License.
  */
 class AndFieldValueGenerator extends FieldValueGenerator {
-    public AndFieldValueGenerator(FieldExpression expression) {
-        super(expression);
+    public AndFieldValueGenerator(CronField cronField) {
+        super(cronField);
     }
 
     @Override
     public int generateNextValue(final int reference) throws NoSuchValueException {
         List<Integer> candidates =
                 computeCandidates(
-                        new Function<FieldValueGenerator, Integer>() {
-                            @Override
-                            public Integer apply(FieldValueGenerator fieldValueGenerator) {
-                                try {
-                                    return fieldValueGenerator.generateNextValue(reference);
-                                } catch (NoSuchValueException e) {
-                                    return NO_VALUE;
-                                }
+                        fieldValueGenerator -> {
+                            try {
+                                return fieldValueGenerator.generateNextValue(reference);
+                            } catch (NoSuchValueException e) {
+                                return NO_VALUE;
                             }
                         }
                 );
@@ -52,14 +48,11 @@ class AndFieldValueGenerator extends FieldValueGenerator {
     public int generatePreviousValue(final int reference) throws NoSuchValueException {
         List<Integer> candidates =
                 computeCandidates(
-                        new Function<FieldValueGenerator, Integer>() {
-                            @Override
-                            public Integer apply(FieldValueGenerator candidateGenerator) {
-                                try {
-                                    return candidateGenerator.generatePreviousValue(reference);
-                                } catch (NoSuchValueException e) {
-                                    return NO_VALUE;
-                                }
+                        candidateGenerator -> {
+                            try {
+                                return candidateGenerator.generatePreviousValue(reference);
+                            } catch (NoSuchValueException e) {
+                                return NO_VALUE;
                             }
                         }
                 );
@@ -72,23 +65,25 @@ class AndFieldValueGenerator extends FieldValueGenerator {
 
     @Override
     protected List<Integer> generateCandidatesNotIncludingIntervalExtremes(int start, int end) {
-        List<Integer> values = Lists.newArrayList();
+        List<Integer> values = new ArrayList<>();
         try {
             int reference = generateNextValue(start);
             while(reference<end){
                 values.add(reference);
                 reference = generateNextValue(reference);
             }
-        } catch (NoSuchValueException e) {}
+        } catch (NoSuchValueException e) {
+            e.printStackTrace();
+        }
         return values;
     }
 
     @Override
     public boolean isMatch(int value) {
-        And and = (And) expression;
+        And and = (And) cronField.getExpression();
         boolean match = false;
         for (FieldExpression expression : and.getExpressions()) {
-            match = match || createCandidateGeneratorInstance(expression).isMatch(value);
+            match = match || createCandidateGeneratorInstance(new CronField(cronField.getField(), expression, cronField.getConstraints())).isMatch(value);
         }
         return match;
     }
@@ -99,35 +94,27 @@ class AndFieldValueGenerator extends FieldValueGenerator {
     }
 
     private List<Integer> computeCandidates(Function<FieldValueGenerator, Integer> function){
-        And and = (And) expression;
-        List<Integer> candidates = Lists.newArrayList();
+        And and = (And) cronField.getExpression();
+        List<Integer> candidates = new ArrayList<>();
         for (FieldExpression expression : and.getExpressions()) {
-            candidates.add(function.apply(createCandidateGeneratorInstance(expression)));
+            candidates.add(function.apply(createCandidateGeneratorInstance(new CronField(cronField.getField(), expression, cronField.getConstraints()))));
         }
-        candidates = new ArrayList<Integer>(
-                Collections2.filter(candidates, new Predicate<Integer>() {
-                    @Override
-                    public boolean apply(Integer integer) {
-                        return integer>=0;
-                    }
-                })
-        );
-        Collections.sort(candidates);
-        return candidates;
+        return candidates.parallelStream().filter(integer -> integer>=0).sorted().collect(Collectors.toList());
     }
 
-    private FieldValueGenerator createCandidateGeneratorInstance(FieldExpression expression){
+    private FieldValueGenerator createCandidateGeneratorInstance(CronField cronField){
+        FieldExpression expression = cronField.getExpression();
         if(expression instanceof Always){
-            return new AlwaysFieldValueGenerator(expression);
+            return new AlwaysFieldValueGenerator(cronField);
         }
         if(expression instanceof Between){
-            return new BetweenFieldValueGenerator(expression);
+            return new BetweenFieldValueGenerator(cronField);
         }
         if(expression instanceof Every){
-            return new EveryFieldValueGenerator(expression);
+            return new EveryFieldValueGenerator(cronField);
         }
         if(expression instanceof On){
-            return new OnFieldValueGenerator(expression);
+            return new OnFieldValueGenerator(cronField);
         }
         throw new IllegalArgumentException(String.format("FieldExpression %s not supported!", expression.getClass()));
     }

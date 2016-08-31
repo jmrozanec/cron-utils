@@ -9,8 +9,6 @@ import org.junit.Test;
 
 import java.util.Map;
 import java.util.Set;
-
-import static org.junit.Assert.*;
 /*
  * Copyright 2015 jmrozanec
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -31,8 +29,6 @@ public class FieldConstraintsTest {
     private int startRange;
     private int endRange;
 
-    private FieldConstraints fieldConstraints;
-
     @Before
     public void setUp() throws Exception {
         intMapping = Maps.newHashMap();
@@ -40,7 +36,6 @@ public class FieldConstraintsTest {
         specialCharSet = Sets.newHashSet();
         startRange = 0;
         endRange = 59;
-        fieldConstraints = new FieldConstraints(stringMapping, intMapping, specialCharSet, startRange, endRange);
     }
 
     @Test(expected = NullPointerException.class)
@@ -56,69 +51,5 @@ public class FieldConstraintsTest {
     @Test(expected = NullPointerException.class)
     public void testSpecialCharsSetNull() throws Exception {
         new FieldConstraints(stringMapping, intMapping, null, startRange, endRange);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void testStringToIntFailsNoStringMappingAndStringNotInt() throws Exception {
-        String monString = "MON";
-
-        assertNull(stringMapping.get(monString));
-        fieldConstraints.stringToInt(monString);
-    }
-
-    @Test
-    public void testStringToInt() throws Exception {
-        String monString = "MON";
-        int monNumber = 1;
-
-        stringMapping.put(monString, monNumber);
-
-        assertEquals(monNumber, fieldConstraints.stringToInt(monString));
-    }
-
-    @Test
-    public void testIntToIntNoMapping() throws Exception {
-        int source = 1;
-        assertNull(intMapping.get(source));
-        assertEquals(source, fieldConstraints.intToInt(source));
-    }
-
-    @Test
-    public void testIntToIntWithMapping() throws Exception {
-        int source = 1;
-        int dest = 0;
-        intMapping.put(source, dest);
-
-        assertEquals(dest, fieldConstraints.intToInt(source));
-    }
-
-    @Test
-    public void testValidateInRangeOK() throws Exception {
-        assertEquals(startRange, fieldConstraints.validateInRange(startRange));
-        assertEquals(endRange, fieldConstraints.validateInRange(endRange));
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void testValidateInRangeOutThrowsExceptionUpperBound() throws Exception {
-        fieldConstraints.validateInRange(endRange + 1);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void testValidateInRangeOutThrowsExceptionLowerBound() throws Exception {
-        fieldConstraints.validateInRange(startRange - 1);
-    }
-
-    @Test
-    public void testValidateSpecialCharAllowedContainsChar() throws Exception {
-        SpecialChar specialChar = SpecialChar.HASH;
-        specialCharSet.add(specialChar);
-        fieldConstraints.validateSpecialCharAllowed(specialChar);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void testValidateSpecialCharAllowedDoesNotContainChar() throws Exception {
-        SpecialChar specialChar = SpecialChar.HASH;
-        assertFalse(specialCharSet.contains(specialChar));
-        fieldConstraints.validateSpecialCharAllowed(specialChar);
     }
 }

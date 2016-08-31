@@ -5,6 +5,8 @@ import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.field.constraint.FieldConstraints;
 import com.cronutils.model.field.expression.FieldExpression;
 import com.cronutils.parser.CronParser;
+import com.cronutils.parser.CronParserField;
+import com.cronutils.parser.FieldParser;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

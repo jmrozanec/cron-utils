@@ -3,7 +3,7 @@ package com.cronutils.descriptor;
 import com.cronutils.model.Cron;
 import com.cronutils.model.field.CronField;
 import com.cronutils.model.field.CronFieldName;
-import org.apache.commons.lang3.Validate;
+import com.cronutils.utils.Preconditions;
 
 import java.util.Locale;
 import java.util.Map;
@@ -53,7 +53,7 @@ public class CronDescriptor {
      * @return description - String
      */
     public String describe(Cron cron) {
-        Validate.notNull(cron, "Cron must not be null");
+        Preconditions.checkNotNull(cron, "Cron must not be null");
         Map<CronFieldName, CronField> expressions = cron.retrieveFieldsAsMap();
         return
                 new StringBuilder()

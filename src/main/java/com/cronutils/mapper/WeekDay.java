@@ -1,8 +1,9 @@
 package com.cronutils.mapper;
 
-import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Function;
-import org.apache.commons.lang3.Validate;
+import com.cronutils.utils.Preconditions;
+import com.cronutils.utils.VisibleForTesting;
+
+import java.util.function.Function;
 
 /*
  * Copyright 2015 jmrozanec
@@ -22,7 +23,7 @@ public class WeekDay {
     private boolean firstDayZero;
 
     public WeekDay(int mondayDoWValue, boolean firstDayZero){
-        Validate.isTrue(mondayDoWValue>=0, "Monday Day of Week value must be greater or equal to zero");
+        Preconditions.checkArgument(mondayDoWValue>=0, "Monday Day of Week value must be greater or equal to zero");
         this.mondayDoWValue = mondayDoWValue;
         this.firstDayZero = firstDayZero;
     }
@@ -60,29 +61,26 @@ public class WeekDay {
     }
 
     private Function<Integer, Integer> bothSameStartOfRange(final int startRange, final int endRange, final WeekDay source, final WeekDay target){
-        return new Function<Integer, Integer>() {
-            @Override
-            public Integer apply(Integer integer) {
-                int diff = target.getMondayDoWValue() - source.getMondayDoWValue();
-                int result = integer;
-                if(diff == 0){
-                    return integer;
-                }
-                if(diff < 0){
-                    result = integer + diff;
-                    int distanceToStartRange = startRange - result;
-                    if(result < startRange){
-                        result = endRange + 1 - distanceToStartRange;
-                    }
-                }
-                if(diff > 0){
-                    result = integer + diff;
-                    if(result > endRange){
-                        result -= endRange;
-                    }
-                }
-                return result;
+        return integer -> {
+            int diff = target.getMondayDoWValue() - source.getMondayDoWValue();
+            int result = integer;
+            if(diff == 0){
+                return integer;
             }
+            if(diff < 0){
+                result = integer + diff;
+                int distanceToStartRange = startRange - result;
+                if(result < startRange){
+                    result = endRange + 1 - distanceToStartRange;
+                }
+            }
+            if(diff > 0){
+                result = integer + diff;
+                if(result > endRange){
+                    result -= endRange;
+                }
+            }
+            return result;
         };
     }
 }

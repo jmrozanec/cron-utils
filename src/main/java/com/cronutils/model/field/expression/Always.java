@@ -2,6 +2,7 @@ package com.cronutils.model.field.expression;
 
 /*
  * Copyright 2014 jmrozanec
+ * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -13,38 +14,19 @@ package com.cronutils.model.field.expression;
  * limitations under the License.
  */
 
-import com.cronutils.model.field.constraint.FieldConstraints;
-import com.cronutils.model.field.value.IntegerFieldValue;
-
 /**
  * Represents a star (*) value on cron expression field
  */
 public class Always extends FieldExpression {
-    private Every every;
 
-    public Always(FieldConstraints constraints) {
-        this(constraints, null);
-    }
+	public Always(){}
 
-    private Always(Always always) {
-        this(always.getConstraints(), always.getEvery().getTime());
-    }
+	private Always(Always always) {
+		this();
+	}
 
-    public Always(FieldConstraints constraints, IntegerFieldValue every) {
-        super(constraints);
-        if (every != null) {
-            this.every = new Every(getConstraints(), every);
-        } else {
-            this.every = new Every(getConstraints(), new IntegerFieldValue(1));
-        }
-    }
-
-    @Override
-    public String asString() {
-        return String.format("*%s", every.asString());
-    }
-
-    public Every getEvery() {
-        return every;
-    }
+	@Override
+	public String asString() {
+		return "*";
+	}
 }

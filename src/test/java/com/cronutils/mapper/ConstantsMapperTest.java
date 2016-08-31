@@ -18,23 +18,23 @@ import static org.junit.Assert.assertEquals;
 public class ConstantsMapperTest {
 
     @Test
-    public void testWeekDayMappingQuartzToJodatime() throws Exception {
+    public void testWeekDayMappingQuartzToJDK8time() throws Exception {
         WeekDay quartz = ConstantsMapper.QUARTZ_WEEK_DAY;
-        WeekDay jodatime = ConstantsMapper.JODATIME_WEEK_DAY;
+        WeekDay jdktime = ConstantsMapper.JAVA8;
         for(int j=2; j<8; j++){
-            assertEquals(j-1, ConstantsMapper.weekDayMapping(quartz, jodatime, j));
+            assertEquals(j-1, ConstantsMapper.weekDayMapping(quartz, jdktime, j));
         }
-        assertEquals(7, ConstantsMapper.weekDayMapping(quartz, jodatime, 1));
+        assertEquals(7, ConstantsMapper.weekDayMapping(quartz, jdktime, 1));
     }
 
     @Test
-    public void testWeekDayMappingJodatimeToQuartz() throws Exception {
+    public void testWeekDayMappingJDK8ToQuartz() throws Exception {
         WeekDay quartz = ConstantsMapper.QUARTZ_WEEK_DAY;
-        WeekDay jodatime = ConstantsMapper.JODATIME_WEEK_DAY;
+        WeekDay jdktime = ConstantsMapper.JAVA8;
         for(int j=1; j<7; j++){
-            assertEquals(j+1, ConstantsMapper.weekDayMapping(jodatime, quartz, j));
+            assertEquals(j+1, ConstantsMapper.weekDayMapping(jdktime, quartz, j));
         }
-        assertEquals(1, ConstantsMapper.weekDayMapping(jodatime, quartz, 7));
+        assertEquals(1, ConstantsMapper.weekDayMapping(jdktime, quartz, 7));
     }
 
     @Test
@@ -56,22 +56,22 @@ public class ConstantsMapperTest {
     }
 
     @Test
-    public void testWeekDayMappingCrontabToJodatime() throws Exception {
+    public void testWeekDayMappingCrontabToJDK8() throws Exception {
         WeekDay crontab = ConstantsMapper.CRONTAB_WEEK_DAY;
-        WeekDay jodatime = ConstantsMapper.JODATIME_WEEK_DAY;
+        WeekDay jdktime = ConstantsMapper.JAVA8;
         for(int j=1; j<7; j++){
-            assertEquals(j, ConstantsMapper.weekDayMapping(crontab, jodatime, j));
+            assertEquals(j, ConstantsMapper.weekDayMapping(crontab, jdktime, j));
         }
-        assertEquals(7, ConstantsMapper.weekDayMapping(crontab, jodatime, 0));
+        assertEquals(7, ConstantsMapper.weekDayMapping(crontab, jdktime, 0));
     }
 
     @Test
-    public void testWeekDayMappingJodatimeToCrontab() throws Exception {
+    public void testWeekDayMappingJDK8ToCrontab() throws Exception {
         WeekDay crontab = ConstantsMapper.CRONTAB_WEEK_DAY;
-        WeekDay jodatime = ConstantsMapper.JODATIME_WEEK_DAY;
+        WeekDay jdktime = ConstantsMapper.JAVA8;
         for(int j=1; j<7; j++){
-            assertEquals(j, ConstantsMapper.weekDayMapping(jodatime, crontab, j));
+            assertEquals(j, ConstantsMapper.weekDayMapping(jdktime, crontab, j));
         }
-        assertEquals(0, ConstantsMapper.weekDayMapping(jodatime, crontab, 7));
+        assertEquals(0, ConstantsMapper.weekDayMapping(jdktime, crontab, 7));
     }
 }

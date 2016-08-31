@@ -1,10 +1,11 @@
 package com.cronutils.model.time.generator;
 
+import com.cronutils.model.field.CronField;
 import com.cronutils.model.field.expression.Between;
 import com.cronutils.model.field.expression.FieldExpression;
 import com.cronutils.model.field.value.FieldValue;
 import com.cronutils.model.field.value.IntegerFieldValue;
-import com.google.common.collect.Lists;
+import java.util.ArrayList;
 
 import java.util.List;
 /*
@@ -21,26 +22,33 @@ import java.util.List;
  */
 class BetweenFieldValueGenerator extends FieldValueGenerator {
 
-    public BetweenFieldValueGenerator(FieldExpression expression) {
-        super(expression);
+    public BetweenFieldValueGenerator(CronField cronField) {
+        super(cronField);
     }
 
     @Override
     public int generateNextValue(int reference) throws NoSuchValueException {
-        Between between = (Between)expression;
-        int candidate = new EveryFieldValueGenerator(between.getEvery()).generateNextValue(reference);
+        Between between = (Between)cronField.getExpression();
+        //TODO validate from/to logic
+        int candidate = reference;
+        do{
+            ++candidate;
+        }while(candidate < map(between.getFrom()));
 
         if(candidate > map(between.getTo())){
             throw new NoSuchValueException();
         }
-
         return candidate;
     }
 
     @Override
     public int generatePreviousValue(int reference) throws NoSuchValueException {
-        Between between = (Between)expression;
-        int candidate = new EveryFieldValueGenerator(between.getEvery()).generatePreviousValue(reference);
+        Between between = (Between)cronField.getExpression();
+        //TODO deal with from/to logic, to ensure correct values are assumed
+        int candidate = reference;
+        do{
+            --candidate;
+        }while(candidate > map(between.getTo()));
 
         if(candidate < map(between.getFrom())){
             throw new NoSuchValueException();
@@ -50,9 +58,9 @@ class BetweenFieldValueGenerator extends FieldValueGenerator {
 
     @Override
     protected List<Integer> generateCandidatesNotIncludingIntervalExtremes(int start, int end) {
-        List<Integer> values = Lists.newArrayList();
+        List<Integer> values = new ArrayList<>();
         //check overlapping ranges: x1 <= y2 && y1 <= x2
-        Between between = (Between)expression;
+        Between between = (Between)cronField.getExpression();
         int expressionStart = map(between.getFrom());
         int expressionEnd = map(between.getTo());
         int rangestart=start;
@@ -83,11 +91,9 @@ class BetweenFieldValueGenerator extends FieldValueGenerator {
 
     @Override
     public boolean isMatch(int value) {
-        Between between = (Between)expression;
-        if(value >= map(between.getFrom()) && value <= map(between.getTo())){
-            return new EveryFieldValueGenerator(between.getEvery()).isMatch(value);
-        }
-        return false;
+        Between between = (Between)cronField.getExpression();
+        return value >= map(between.getFrom()) && value <= map(between.getTo());
+        //TODO validate quartz ranges: L-3, 5-1, etc.
     }
 
     @Override

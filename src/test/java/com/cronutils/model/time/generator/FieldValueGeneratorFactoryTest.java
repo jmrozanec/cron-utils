@@ -3,7 +3,6 @@ package com.cronutils.model.time.generator;
 import com.cronutils.mapper.WeekDay;
 import com.cronutils.model.field.CronField;
 import com.cronutils.model.field.CronFieldName;
-import com.cronutils.model.field.constraint.FieldConstraints;
 import com.cronutils.model.field.expression.*;
 import com.cronutils.model.field.value.IntegerFieldValue;
 import com.cronutils.model.field.value.SpecialChar;
@@ -161,7 +160,7 @@ public class FieldValueGeneratorFactoryTest {
 
     @Test
     public void testCreateDayOfWeekValueGeneratorInstance_Between() throws Exception {
-        Between between = new Between(mock(FieldConstraints.class), new IntegerFieldValue(1), new IntegerFieldValue(7));
+        Between between = new Between(new IntegerFieldValue(1), new IntegerFieldValue(7));
         when(mockCronField.getField()).thenReturn(CronFieldName.DAY_OF_WEEK);
         when(mockCronField.getExpression()).thenReturn(between);
         assertEquals(

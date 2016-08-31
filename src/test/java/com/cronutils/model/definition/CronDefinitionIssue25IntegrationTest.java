@@ -4,12 +4,10 @@ import com.cronutils.model.Cron;
 import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.time.ExecutionTime;
 import com.cronutils.parser.CronParser;
-import com.cronutils.validator.CronValidator;
 import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 /*
  * Copyright 2015 jmrozanec
@@ -38,12 +36,6 @@ public class CronDefinitionIssue25IntegrationTest {
     }
 
     @Test
-    public void testValidator(){
-        CronValidator validator = new CronValidator(cronDefinition);
-        assertTrue(validator.isValid(CRON_EXPRESSION));
-    }
-
-    @Test
     public void testParser(){
         CronParser parser = new CronParser(cronDefinition);
         Cron cron = parser.parse(CRON_EXPRESSION);
@@ -59,6 +51,6 @@ public class CronDefinitionIssue25IntegrationTest {
     public void testExecutionTime(){
         CronParser parser = new CronParser(cronDefinition);
         Cron cron = parser.parse(CRON_EXPRESSION);
-        ExecutionTime executionTime = ExecutionTime.forCron(cron);
+        ExecutionTime.forCron(cron);
     }
 }

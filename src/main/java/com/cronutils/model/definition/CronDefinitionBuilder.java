@@ -1,15 +1,20 @@
 package com.cronutils.model.definition;
 
+import com.cronutils.model.Cron;
 import com.cronutils.model.CronType;
 import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.field.definition.FieldDayOfWeekDefinitionBuilder;
 import com.cronutils.model.field.definition.FieldDefinition;
 import com.cronutils.model.field.definition.FieldDefinitionBuilder;
 import com.cronutils.model.field.definition.FieldSpecialCharsDefinitionBuilder;
-import com.google.common.collect.Maps;
-
+import com.cronutils.model.field.expression.QuestionMark;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 /*
  * Copyright 2014 jmrozanec
@@ -29,15 +34,19 @@ import java.util.Map;
  */
 public class CronDefinitionBuilder {
     private Map<CronFieldName, FieldDefinition> fields;
+    private Set<CronConstraint> cronConstraints;
     private boolean lastFieldOptional;
+    private boolean enforceStrictRanges;
 
     /**
      * Constructor.
      * lastFieldOptional is defined false.
      */
     private CronDefinitionBuilder() {
-        fields = Maps.newHashMap();
+        fields = new HashMap<>();
+        cronConstraints = new HashSet<>();
         lastFieldOptional = false;
+        enforceStrictRanges = false;
     }
 
     /**
@@ -114,6 +123,24 @@ public class CronDefinitionBuilder {
     }
 
     /**
+     * Sets enforceStrictRanges value to true
+     * @return this CronDefinitionBuilder instance
+     */
+    public CronDefinitionBuilder enforceStrictRanges() {
+        enforceStrictRanges = true;
+        return this;
+    }
+
+    /**
+     * Adds a cron validation
+     * @return this CronDefinitionBuilder instance
+     */
+    public CronDefinitionBuilder withCronValidation(CronConstraint validation) {
+        this.cronConstraints.add(validation);
+        return this;
+    }
+
+    /**
      * Registers a certain FieldDefinition
      * @param definition - FieldDefinition  instance, never null
      */
@@ -126,7 +153,9 @@ public class CronDefinitionBuilder {
      * @return returns CronDefinition instance, never null
      */
     public CronDefinition instance() {
-        return new CronDefinition(new ArrayList<FieldDefinition>(this.fields.values()), lastFieldOptional);
+        Set<CronConstraint> validations = new HashSet<CronConstraint>();
+        validations.addAll(cronConstraints);
+        return new CronDefinition(new ArrayList<>(this.fields.values()), validations, lastFieldOptional, enforceStrictRanges);
     }
 
     /**
@@ -140,6 +169,7 @@ public class CronDefinitionBuilder {
                 .withDayOfMonth().and()
                 .withMonth().and()
                 .withDayOfWeek().withValidRange(0,6).withMondayDoWValue(1).and()
+                .enforceStrictRanges()
                 .instance();
     }
 
@@ -157,6 +187,19 @@ public class CronDefinitionBuilder {
                 .withDayOfWeek().withValidRange(1, 7).withMondayDoWValue(2).supportsHash().supportsL().supportsW().supportsQuestionMark().and()
                 .withYear().withValidRange(1970, 2099).and()
                 .lastFieldOptional()
+                .withCronValidation(
+                        //Solves issue #63: https://github.com/jmrozanec/cron-utils/issues/63
+                        //both a day-of-week AND a day-of-month parameter should fail for QUARTZ
+                        new CronConstraint("Both, a day-of-week AND a day-of-month parameter, are not supported.") {
+                            @Override
+                            public boolean validate(Cron cron) {
+                                if(!(cron.retrieve(CronFieldName.DAY_OF_MONTH).getExpression() instanceof QuestionMark)){
+                                    return cron.retrieve(CronFieldName.DAY_OF_WEEK).getExpression() instanceof QuestionMark;
+                                } else {
+                                    return !(cron.retrieve(CronFieldName.DAY_OF_WEEK).getExpression() instanceof QuestionMark);
+                                }
+                            }
+                        })
                 .instance();
     }
 
@@ -171,6 +214,7 @@ public class CronDefinitionBuilder {
                 .withDayOfMonth().and()
                 .withMonth().and()
                 .withDayOfWeek().withValidRange(0,7).withMondayDoWValue(1).withIntMapping(7,0).and()
+                .enforceStrictRanges()
                 .instance();
     }
 
@@ -192,3 +236,4 @@ public class CronDefinitionBuilder {
         }
     }
 }
+

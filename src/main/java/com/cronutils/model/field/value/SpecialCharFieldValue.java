@@ -1,6 +1,7 @@
 package com.cronutils.model.field.value;
 
-import org.apache.commons.lang3.Validate;
+import com.cronutils.utils.Preconditions;
+
 /*
  * Copyright 2015 jmrozanec
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,11 +14,11 @@ import org.apache.commons.lang3.Validate;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-public class SpecialCharFieldValue extends  FieldValue<SpecialChar> {
+public class SpecialCharFieldValue extends FieldValue<SpecialChar> {
     private SpecialChar specialChar = SpecialChar.NONE;
 
     public SpecialCharFieldValue(SpecialChar specialChar){
-        Validate.notNull(specialChar, "special char must not be null");
+        Preconditions.checkNotNull(specialChar, "special char must not be null");
         this.specialChar = specialChar;
     }
 
@@ -26,3 +27,4 @@ public class SpecialCharFieldValue extends  FieldValue<SpecialChar> {
         return specialChar;
     }
 }
+

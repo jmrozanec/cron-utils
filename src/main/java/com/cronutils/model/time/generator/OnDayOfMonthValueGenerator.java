@@ -4,11 +4,13 @@ import com.cronutils.model.field.CronField;
 import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.field.expression.FieldExpression;
 import com.cronutils.model.field.expression.On;
-import com.google.common.collect.Lists;
-import org.apache.commons.lang3.Validate;
-import org.joda.time.DateTime;
+import com.cronutils.utils.Preconditions;
+import java.util.ArrayList;
 
+import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.util.List;
+
 /*
  * Copyright 2015 jmrozanec
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -24,19 +26,21 @@ import java.util.List;
 class OnDayOfMonthValueGenerator extends FieldValueGenerator {
     private int year;
     private int month;
+
     public OnDayOfMonthValueGenerator(CronField cronField, int year, int month) {
-        super(cronField.getExpression());
-        Validate.isTrue(CronFieldName.DAY_OF_MONTH.equals(cronField.getField()), "CronField does not belong to day of month");
+        super(cronField);
+        Preconditions.checkArgument(CronFieldName.DAY_OF_MONTH.equals(cronField.getField()), "CronField does not belong to day of" +
+                " month");
         this.year = year;
         this.month = month;
     }
 
     @Override
     public int generateNextValue(int reference) throws NoSuchValueException {
-        On on = ((On)expression);
+        On on = ((On) cronField.getExpression());
         int value = generateValue(on, year, month);
 
-        if(value<=reference){
+        if (value <= reference) {
             throw new NoSuchValueException();
         }
         return value;
@@ -44,9 +48,9 @@ class OnDayOfMonthValueGenerator extends FieldValueGenerator {
 
     @Override
     public int generatePreviousValue(int reference) throws NoSuchValueException {
-        On on = ((On)expression);
+        On on = ((On) cronField.getExpression());
         int value = generateValue(on, year, month);
-        if(value>=reference){
+        if (value >= reference) {
             throw new NoSuchValueException();
         }
         return value;
@@ -54,23 +58,25 @@ class OnDayOfMonthValueGenerator extends FieldValueGenerator {
 
     @Override
     protected List<Integer> generateCandidatesNotIncludingIntervalExtremes(int start, int end) {
-        List<Integer>values = Lists.newArrayList();
+        List<Integer> values = new ArrayList<>();
         try {
             int reference = generateNextValue(start);
-            while(reference<end){
+            while (reference < end) {
                 values.add(reference);
-                reference=generateNextValue(reference);
+                reference = generateNextValue(reference);
             }
-        } catch (NoSuchValueException e) {}
+        } catch (NoSuchValueException e) {
+        }
         return values;
     }
 
     @Override
     public boolean isMatch(int value) {
-        On on = ((On)expression);
+        On on = ((On) cronField.getExpression());
         try {
             return value == generateValue(on, year, month);
-        } catch (NoSuchValueException e) {}
+        } catch (NoSuchValueException ignored) {
+        }//we just skip, since we generate values until we get the exception
         return false;
     }
 
@@ -80,35 +86,34 @@ class OnDayOfMonthValueGenerator extends FieldValueGenerator {
     }
 
     private int generateValue(On on, int year, int month) throws NoSuchValueException {
-        int time = on.getTime().getValue();
-        switch (on.getSpecialChar().getValue()){
+        int dayOfMonth = on.getTime().getValue();
+        switch (on.getSpecialChar().getValue()) {
             case L:
-                return new DateTime(year, month, 1, 1, 1).dayOfMonth().getMaximumValue();
-            case W:
-                DateTime doM = new DateTime(year, month, time, 1, 1);
-                if(doM.getDayOfWeek()==6){//dayOfWeek is Saturday!
-                    if(time==1){//first day in month is Saturday! We execute on Monday
+                return LocalDate.of(year, month, 1).lengthOfMonth();
+            case W: // First work day of the week
+                LocalDate doM = LocalDate.of(year, month, dayOfMonth);
+                if (doM.getDayOfWeek() == DayOfWeek.SATURDAY) {//dayOfWeek is Saturday!
+                    if (dayOfMonth == 1) {//first day in month is Saturday! We execute on Monday
                         return 3;
                     }
-                    return time-1;
+                    return dayOfMonth - 1;
                 }
-                if(doM.getDayOfWeek()==7){
-                    if((time+1)<=doM.dayOfMonth().getMaximumValue()){
-                        return time+1;
+                if (doM.getDayOfWeek() == DayOfWeek.SUNDAY) { // dayOfWeek is Sunday
+                    if ((dayOfMonth + 1) <= doM.lengthOfMonth()) {
+                        return dayOfMonth + 1;
                     }
                 }
-                break;
+                return dayOfMonth;  // first day of week is a weekday            
             case LW:
-                DateTime lastDayOfMonth =
-                        new DateTime(year, month, new DateTime(year, month, 1, 1, 1)
-                                .dayOfMonth().getMaximumValue(), 1, 1);
-                int dow = lastDayOfMonth.getDayOfWeek();
+                LocalDate lastDayOfMonth = LocalDate.of(year, month, LocalDate.of(year, month, 1).lengthOfMonth());
+                int dow = lastDayOfMonth.getDayOfWeek().getValue();
                 int diff = dow - 5;
-                if(diff > 0){
-                    return lastDayOfMonth.minusDays(diff).dayOfMonth().get();
+                if (diff > 0) {
+                    return lastDayOfMonth.minusDays(diff).getDayOfMonth();
                 }
-                return lastDayOfMonth.dayOfMonth().get();
+                return lastDayOfMonth.getDayOfMonth();
+            default:
+                throw new NoSuchValueException();
         }
-        throw new NoSuchValueException();
     }
 }

@@ -2,13 +2,15 @@ package com.cronutils.validator;
 
 import com.cronutils.model.CronType;
 import com.cronutils.model.definition.CronDefinitionBuilder;
-import org.joda.time.DateTime;
+import com.cronutils.parser.CronParser;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNotNull;
 
 /*
  * Copyright 2015 jmrozanec
@@ -23,11 +25,10 @@ import static org.junit.Assert.assertTrue;
  * limitations under the License.
  */
 public class CronValidatorQuartzIntegrationTest {
-    private CronValidator validator;
-
+    private CronParser parser;
     @Before
     public void setUp() throws Exception {
-        validator = new CronValidator(CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ));
+        parser = new CronParser(CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ));
     }
 
     /**
@@ -35,7 +36,7 @@ public class CronValidatorQuartzIntegrationTest {
      */
     @Test
     public void testMonthRangeMappingIsValid(){
-        assertTrue(validator.isValid("0 0 0 * JUL-AUG * *"));
+        parser.parse("0 0 0 * JUL-AUG ? *").validate();
     }
 
     /**
@@ -43,10 +44,10 @@ public class CronValidatorQuartzIntegrationTest {
      */
     @Test
     public void testSingleMonthMappingIsValid(){
-        DateTime date = new DateTime(2015, 1, 1, 1, 1);
+        LocalDate date = LocalDate.of(2015, 1, 1);
         for(int j=0;j<12;j++){
-            String expression = String.format("0 0 0 * %s * *", date.plusMonths(j).toString("MMM", Locale.US).toUpperCase());
-            assertTrue(String.format("We expect '%s' to be valid", expression), validator.isValid(expression));
+            String expression = String.format("0 0 0 * %s ? *", date.plusMonths(j).format(DateTimeFormatter.ofPattern("MMM", Locale.US)).toUpperCase());
+            parser.parse(expression);
         }
     }
 
@@ -55,7 +56,7 @@ public class CronValidatorQuartzIntegrationTest {
      */
     @Test
     public void testDayOfWeekRangeMappingIsValid(){
-        assertTrue(validator.isValid("0 0 0 * * MON-FRI *"));
+        assertNotNull(parser.parse("0 0 0 ? * MON-FRI *"));
     }
 
     /**
@@ -64,8 +65,7 @@ public class CronValidatorQuartzIntegrationTest {
     @Test
     public void testDayOfWeekMappingIsValid(){
         for(String dow : new String[]{"MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"}){
-            String expression = String.format("0 0 0 * * %s *", dow);
-            assertTrue(String.format("We expect '%s' to be valid", expression), validator.isValid(expression));
+            parser.parse(String.format("0 0 0 ? * %s *", dow));
         }
 
     }
@@ -78,7 +78,8 @@ public class CronValidatorQuartzIntegrationTest {
      */
     @Test
     public void testQuestionMarkSupport(){
-        assertTrue(validator.isValid("0 10,44 14 ? 3 WED"));
-        assertTrue(validator.isValid("0 0 12 ? * SAT-SUN"));
+        parser.parse("0 10,44 14 ? 3 WED");
+        parser.parse("0 0 12 ? * FRI-SAT");
+        parser.parse("0 0 12 ? * SAT-SUN");
     }
 }

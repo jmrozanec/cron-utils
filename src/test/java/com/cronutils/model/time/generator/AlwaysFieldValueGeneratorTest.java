@@ -1,5 +1,7 @@
 package com.cronutils.model.time.generator;
 
+import com.cronutils.model.field.CronField;
+import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.field.constraint.FieldConstraintsBuilder;
 import com.cronutils.model.field.expression.Always;
 import com.cronutils.model.field.expression.FieldExpression;
@@ -27,7 +29,7 @@ public class AlwaysFieldValueGeneratorTest {
 
     @Before
     public void setUp(){
-        fieldValueGenerator = new AlwaysFieldValueGenerator(new Always(FieldConstraintsBuilder.instance().createConstraintsInstance()));
+        fieldValueGenerator = new AlwaysFieldValueGenerator(new CronField(CronFieldName.HOUR, new Always(), FieldConstraintsBuilder.instance().createConstraintsInstance()));
     }
 
     @Test
@@ -39,7 +41,7 @@ public class AlwaysFieldValueGeneratorTest {
 
     @Test
     public void testGeneratePreviousValue() throws Exception {
-        for(int j=0; j<10; j++){
+        for(int j=1; j<10; j++){
             assertEquals(j-1, fieldValueGenerator.generatePreviousValue(j));
         }
     }
@@ -66,6 +68,6 @@ public class AlwaysFieldValueGeneratorTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void testConstructorNotMatchesAlways() throws Exception {
-        new AlwaysFieldValueGenerator(mock(FieldExpression.class));
+        new AlwaysFieldValueGenerator(new CronField(CronFieldName.HOUR, mock(FieldExpression.class), FieldConstraintsBuilder.instance().createConstraintsInstance()));
     }
 }

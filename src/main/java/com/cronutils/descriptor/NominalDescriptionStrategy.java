@@ -1,13 +1,12 @@
 package com.cronutils.descriptor;
 
-import com.cronutils.model.field.constraint.FieldConstraintsBuilder;
 import com.cronutils.model.field.expression.Always;
 import com.cronutils.model.field.expression.FieldExpression;
-import com.google.common.base.Function;
-import com.google.common.collect.Sets;
+import java.util.HashSet;
 
 import java.util.ResourceBundle;
 import java.util.Set;
+import java.util.function.Function;
 
 /*
  * Copyright 2014 jmrozanec
@@ -40,14 +39,14 @@ class NominalDescriptionStrategy extends DescriptionStrategy {
      */
     public NominalDescriptionStrategy(ResourceBundle bundle, Function<Integer, String> nominalValueFunction, FieldExpression expression) {
         super(bundle);
-        descriptions = Sets.newHashSet();
+        descriptions = new HashSet<>();
         if (nominalValueFunction != null) {
             this.nominalValueFunction = nominalValueFunction;
         }
         if (expression != null) {
             this.expression = expression;
         } else {
-            this.expression = new Always(FieldConstraintsBuilder.instance().createConstraintsInstance());
+            this.expression = new Always();
         }
     }
 

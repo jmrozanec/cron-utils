@@ -2,8 +2,8 @@ package com.cronutils.model.field.constraint;
 
 import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.field.value.SpecialChar;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
+import java.util.HashMap;
+import java.util.HashSet;
 
 import java.util.Map;
 import java.util.Set;
@@ -35,11 +35,11 @@ public class FieldConstraintsBuilder {
      * Constructor
      */
     private FieldConstraintsBuilder() {
-        stringMapping = Maps.newHashMap();
-        intMapping = Maps.newHashMap();
+        stringMapping = new HashMap<>();
+        intMapping = new HashMap<>();
         startRange = 0;//no negatives!
         endRange = Integer.MAX_VALUE;
-        specialChars = Sets.newHashSet();
+        specialChars = new HashSet<>();
         specialChars.add(SpecialChar.NONE);
     }
 
@@ -144,6 +144,26 @@ public class FieldConstraintsBuilder {
     }
 
     /**
+     * Shifts integer representation of weekday/month names
+     * @param shiftSize - size of the shift
+     * @return same FieldConstraintsBuilder instance
+     */
+    public FieldConstraintsBuilder withShiftedStringMapping(int shiftSize){
+        for(String key : this.stringMapping.keySet()) {
+            Integer value = this.stringMapping.get(key);
+            value += shiftSize;
+            if(value > endRange) {
+                value -= endRange;
+            }
+            if(value < startRange) {
+                value += (startRange - endRange);
+            }
+            this.stringMapping.put(key, value);
+        }
+        return this;
+    }
+
+    /**
      * Creates FieldConstraints instance based on previously built parameters
      * @return new FieldConstraints instance
      */
@@ -157,7 +177,7 @@ public class FieldConstraintsBuilder {
      * and integers correspond to their 1-7 mappings
      */
     private static Map<String, Integer> daysOfWeekMapping() {
-        Map<String, Integer> stringMapping = Maps.newHashMap();
+        Map<String, Integer> stringMapping = new HashMap<>();
         stringMapping.put("MON", 1);
         stringMapping.put("TUE", 2);
         stringMapping.put("WED", 3);
@@ -174,7 +194,7 @@ public class FieldConstraintsBuilder {
      * and integers correspond to their 1-12 mappings
      */
     private static Map<String, Integer> monthsMapping() {
-        Map<String, Integer> stringMapping = Maps.newHashMap();
+        Map<String, Integer> stringMapping = new HashMap<>();
         stringMapping.put("JAN", 1);
         stringMapping.put("FEB", 2);
         stringMapping.put("MAR", 3);
@@ -198,3 +218,4 @@ public class FieldConstraintsBuilder {
         return new FieldConstraintsBuilder();
     }
 }
+

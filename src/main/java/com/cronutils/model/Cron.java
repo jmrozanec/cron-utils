@@ -1,16 +1,3 @@
-package com.cronutils.model;
-
-import com.cronutils.model.definition.CronDefinition;
-import com.cronutils.model.field.CronField;
-import com.cronutils.model.field.CronFieldName;
-import com.google.common.collect.Maps;
-import org.apache.commons.lang3.Validate;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-
 /*
  * Copyright 2014 jmrozanec
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -24,6 +11,22 @@ import java.util.Map;
  * limitations under the License.
  */
 
+package com.cronutils.model;
+
+import com.cronutils.mapper.CronMapper;
+import com.cronutils.model.definition.CronConstraint;
+import com.cronutils.model.definition.CronDefinition;
+import com.cronutils.model.field.CronField;
+import com.cronutils.model.field.CronFieldName;
+import com.cronutils.model.field.expression.visitor.ValidationFieldExpressionVisitor;
+import com.cronutils.utils.Preconditions;
+import java.util.HashMap;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+
 /**
  * Represents a cron expression
  */
@@ -33,9 +36,9 @@ public class Cron {
     private String asString;
 
     public Cron(CronDefinition cronDefinition, List<CronField> fields){
-        this.cronDefinition = Validate.notNull(cronDefinition, "CronDefinition must not be null");
-        Validate.notNull(fields, "CronFields cannot be null");
-        this.fields = Maps.newHashMap();
+        this.cronDefinition = Preconditions.checkNotNull(cronDefinition, "CronDefinition must not be null");
+        Preconditions.checkNotNull(fields, "CronFields cannot be null");
+        this.fields = new HashMap<>();
         for(CronField field : fields){
             this.fields.put(field.getField(), field);
         }
@@ -48,7 +51,7 @@ public class Cron {
      * @return CronField that corresponds to given CronFieldName
      */
     public CronField retrieve(CronFieldName name){
-        return fields.get(Validate.notNull(name, "CronFieldName must not be null"));
+        return fields.get(Preconditions.checkNotNull(name, "CronFieldName must not be null"));
     }
 
     /**
@@ -75,4 +78,40 @@ public class Cron {
     public CronDefinition getCronDefinition() {
         return cronDefinition;
     }
+
+    public Cron validate(){
+        for(Map.Entry<CronFieldName, CronField> field : retrieveFieldsAsMap().entrySet()){
+            CronFieldName fieldName = field.getKey();
+            field.getValue().getExpression().accept(
+                    new ValidationFieldExpressionVisitor(getCronDefinition().getFieldDefinition(fieldName).getConstraints(), cronDefinition.isStrictRanges())
+            );
+        }
+        for(CronConstraint constraint : getCronDefinition().getCronConstraints()){
+            if(!constraint.validate(this)){
+                throw new IllegalArgumentException(String.format("Invalid cron expression: %s. %s", asString(), constraint.getDescription()));
+            }
+        }
+        return this;
+    }
+
+    /**
+     * Provides means to compare if two cron expressions are equivalent.
+     * @param cronMapper - maps 'cron' parameter to this instance definition;
+     * @param cron - any cron instance, never null
+     * @return boolean - true if equivalent; false otherwise.
+     */
+    public boolean equivalent(CronMapper cronMapper, Cron cron){
+        return asString().equals(cronMapper.map(cron).asString());
+    }
+
+    /**
+     * Provides means to compare if two cron expressions are equivalent.
+     * Assumes same cron definition.
+     * @param cron - any cron instance, never null
+     * @return boolean - true if equivalent; false otherwise.
+     */
+    public boolean equivalent(Cron cron){
+        return asString().equals(cron.asString());
+    }
 }
+

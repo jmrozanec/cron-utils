@@ -1,12 +1,8 @@
 package com.cronutils.model.field.expression;
 
-import com.cronutils.model.field.constraint.FieldConstraints;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 /*
@@ -23,18 +19,10 @@ import static org.mockito.Mockito.mock;
  */
 public class FieldExpressionTest {
     private TestFieldExpression testCronFieldExpression;
-    @Mock
-    private FieldConstraints mockFieldConstraints;
 
     @Before
     public void setUp() throws Exception {
-        MockitoAnnotations.initMocks(this);
-        this.testCronFieldExpression = new TestFieldExpression(mockFieldConstraints);
-    }
-
-    @Test(expected = NullPointerException.class)
-    public void testConstructorNullConstraints() throws Exception {
-        new TestFieldExpression(null);
+        this.testCronFieldExpression = new TestFieldExpression();
     }
 
     @Test
@@ -45,21 +33,11 @@ public class FieldExpressionTest {
         assertTrue(and.getExpressions().contains(testCronFieldExpression));
     }
 
-    @Test
-    public void testGetConstraints() throws Exception {
-        assertEquals(mockFieldConstraints, testCronFieldExpression.getConstraints());
-    }
-
     class TestFieldExpression extends FieldExpression {
-
-        public TestFieldExpression(FieldConstraints constraints) {
-            super(constraints);
-        }
-
 
         @Override
         public String asString() {
-            return null;
+            return "test";
         }
     }
 }

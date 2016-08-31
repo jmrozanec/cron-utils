@@ -6,6 +6,7 @@ A Java library to parse, validate, migrate crons as well as get human readable d
 [![Build Status](https://travis-ci.org/jmrozanec/cron-utils.png?branch=master)](https://travis-ci.org/jmrozanec/cron-utils)
 [![Coverage Status](https://coveralls.io/repos/jmrozanec/cron-utils/badge.png)](https://coveralls.io/r/jmrozanec/cron-utils)
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/35b1b558473d42c4980432a3ecf84f6c)](https://www.codacy.com/app/jmrozanec/cron-utils?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=jmrozanec/cron-utils&amp;utm_campaign=Badge_Grade)
 [![Project stats by OpenHub](https://www.openhub.net/p/cron-utils/widgets/project_thin_badge.gif)](https://www.openhub.net/p/cron-utils/)
 
 **Download**
@@ -15,7 +16,7 @@ cron-utils is available on [Maven central](http://search.maven.org/#search%7Cga%
     <dependency>
         <groupId>com.cronutils</groupId>
         <artifactId>cron-utils</artifactId>
-        <version>3.1.6</version>
+        <version>5.0.0</version>
     </dependency>
 
 
@@ -25,9 +26,13 @@ cron-utils is available on [Maven central](http://search.maven.org/#search%7Cga%
  * You can flag last field as optional!
  * Supports all cron special characters: * / , -
     * Non-standard characters L, W, LW, '?' and # are supported as well!
- * Print to locale specific human readable format (English, German, Korean and Spanish are fully supported. Dutch, French, Italian and Portuguese have basic support).
+ * Print to locale specific human readable format (English, German, Korean and Spanish are fully supported. Dutch, French, Italian, Portuguese and Russian have basic support).
  * Parse and Description process are decoupled: parse once and operate with the result!
- * Validate if cron string expressions match a cron definition using CronValidator
+ * Build cron expressions using CronBuilder: 
+    * no need to remember fields and constraints for each cron provider
+    * crons become decoupled from cron provider: anytime you can export to another format.
+ * Check if cron expressions are equivalent
+ * Validate if cron string expressions match a cron definition
  * Convert crons between different cron definitions: if you need to migrate expressions, CronMapper may help you!
  * Pre-defined definitions for the following cron libraries are provided:
     * [Unix](http://www.unix.com/man-page/linux/5/crontab/)
@@ -38,111 +43,128 @@ cron-utils is available on [Maven central](http://search.maven.org/#search%7Cga%
 
 **Usage Examples**
 
+Below we present some examples. You can find this and others in a [sample repo we created](https://github.com/jmrozanec/cron-utils-examples) to showcase cron-utils libraries!
+
 ***Build cron definitions***
 
-    //define your own cron: arbitrary fields are allowed and last field can be optional
-    CronDefinition cronDefinition =
-        CronDefinitionBuilder.define()
-            .withSeconds().and()
-            .withMinutes().and()
-            .withHours().and()
-            .withDayOfMonth()
-                .supportsHash().supportsL().supportsW().and()
-            .withMonth().and()
-            .withDayOfWeek()
-                .withIntMapping(7, 0) //we support non-standard non-zero-based numbers!
-                .supportsHash().supportsL().supportsW().and()
-            .withYear().and()
-            .lastFieldOptional()
-            .instance();
+```java
+// Define your own cron: arbitrary fields are allowed and last field can be optional
+CronDefinition cronDefinition =
+    CronDefinitionBuilder.defineCron()
+        .withSeconds().and()
+        .withMinutes().and()
+        .withHours().and()
+        .withDayOfMonth()
+            .supportsHash().supportsL().supportsW().and()
+        .withMonth().and()
+        .withDayOfWeek()
+            .withIntMapping(7, 0) //we support non-standard non-zero-based numbers!
+            .supportsHash().supportsL().supportsW().and()
+        .withYear().and()
+        .lastFieldOptional()
+        .instance();
 
-    //or get a predefined instance
-    cronDefinition = CronDefinitionBuilder.instanceDefinitionFor(QUARTZ);
+// or get a predefined instance
+cronDefinition = CronDefinitionBuilder.instanceDefinitionFor(QUARTZ);
+```
+
+***Build a cron expression***
+```java 
+// Create a cron expression. CronMigrator will ensure you remain cron provider agnostic
+import static com.cronutils.model.field.expression.FieldExpressionFactory.*;
+
+Cron cron = CronBuilder.cron(CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ))
+    .withYear(always())
+    .withDoM(between(SpecialChar.L, 3))
+    .withMonth(always())
+    .withDoW(questionMark())
+    .withHour(always())
+    .withMinute(always())
+    .withSecond(on(0))
+    .instance();
+// Obtain the string expression
+String cronAsString = cron.asString(); // 0 * * L-3 * ? *
+```
 
 ***Parse***
-
-    //create a parser based on provided definition
-    CronParser parser = new CronParser(cronDefinition);
-    Cron quartzCron = parser.parse("0 23 ? * * 1-5 *");
+```java
+// Create a parser based on provided definition
+CronParser parser = new CronParser(cronDefinition);
+Cron quartzCron = parser.parse("0 23 * ? * 1-5 *");
+```
 
 ***Describe***
+```java
+// Create a descriptor for a specific Locale
+CronDescriptor descriptor = CronDescriptor.instance(Locale.UK);
 
-    //create a descriptor for a specific Locale
-    CronDescriptor descriptor = CronDescriptor.instance(Locale.UK);
+// Parse some expression and ask descriptor for description
+String description = descriptor.describe(parser.parse("*/45 * * * * ?"));
+// Description will be: "every 45 seconds"
 
-    //parse some expression and ask descriptor for description
-    String description = descriptor.describe(parser.parse("*/45 * * * * *"));
-    //description will be: "every 45 seconds"
-
-    description = descriptor.describe(quartzCron);
-    //description will be: "every hour at minute 23 every day between Monday and Friday"
-    //which is the same description we get for the cron below:
-    descriptor.describe(parser.parse("0 23 ? * * MON-FRI *"));
+description = descriptor.describe(quartzCron);
+// Description will be: "every hour at minute 23 every day between Monday and Friday"
+// which is the same description we get for the cron below:
+descriptor.describe(parser.parse("0 23 * ? * MON-FRI *"));
+```
 
 ***Migrate***
+```java
+// Migration between cron libraries has never been so easy!
+// Turn cron expressions into another format by using CronMapper:
+CronMapper cronMapper = CronMapper.fromQuartzToCron4j();
 
-    //Migration between cron libraries is easy!
-    //Turn cron expressions into another format by using CronMapper:
-    CronMapper cronMapper =
-            new CronMapper(
-                    cronDefinition,
-                    CronDefinitionBuilder.instanceDefinitionFor(CRON4J)
-            );
-    Cron cron4jCron = cronMapper.map(quartzCron);
-    //and to get a String representation of it, we can use
-    cron4jCron.asString();//will return: 23 * * * 1-5
+Cron cron4jCron = cronMapper.map(quartzCron);
+// and to get a String representation of it, we can use
+cron4jCron.asString();//will return: 23 * * * 1-5
+```
 
 ***Validate***
-
-    //Validate if a string expression matches a cron definition:
-    CronValidator quartzValidator = new CronValidator(cronDefinition);
-
-    //getting a boolean result:
-    quartzValidator.isValid("0 23 ? * * MON-FRI *");
-
-    //or returning same string if valid and raising an exception if invalid
-    quartzValidator.validate("0 23 ? * * MON-FRI *");
+```java
+cron4jCron.validate()
+```
 
 ***Calculate time from/to execution***
+```java
+// Get date for last execution
+DateTime now = DateTime.now();
+ExecutionTime executionTime = ExecutionTime.forCron(parser.parse("* * * * * * *"));
+DateTime lastExecution = executionTime.lastExecution(now));
 
-    //Get date for last execution
-    DateTime now = DateTime.now();
-    ExecutionTime executionTime = ExecutionTime.forCron(parser.parse("* * * * * * *"));
-    DateTime lastExecution = executionTime.lastExecution(now));
+// Get date for next execution
+DateTime nextExecution = executionTime.nextExecution(now));
 
-    //Get date for next execution
-    DateTime nextExecution = executionTime.nextExecution(now));
+// Time from last execution
+Duration timeFromLastExecution = executionTime.timeFromLastExecution(now);
 
-    //Time from last execution
-    Duration timeFromLastExecution = executionTime.timeFromLastExecution(now);
-
-    //Time to next execution
-    Duration timeToNextExecution = executionTime.timeToNextExecution(now);
+// Time to next execution
+Duration timeToNextExecution = executionTime.timeToNextExecution(now);
+```
 
 ***Map constants between libraries***
-
-    //Map day of week value from Quartz to JodaTime
-    int jodatimeDayOfWeek =
-            ConstantsMapper.weekDayMapping(
-                    ConstantsMapper.QUARTZ_WEEK_DAY,
-                    ConstantsMapper.JODATIME_WEEK_DAY
-            );
-
+```java
+// Map day of week value from Quartz to JodaTime
+int jodatimeDayOfWeek =
+        ConstantsMapper.weekDayMapping(
+                ConstantsMapper.QUARTZ_WEEK_DAY,
+                ConstantsMapper.JODATIME_WEEK_DAY
+        );
+```
 ***Date and time formatting for humans!***
 
 Use [htime](https://github.com/jmrozanec/htime) - Human readable datetime formatting for Java!
 Despite this functionality is not bundled in the same jar, is a cron-utils project you may find useful.
-
-    //You no longer need to remember "YYYY-MM-dd KK a" patterns.
-    DateTimeFormatter formatter = 
+```java
+// You no longer need to remember "YYYY-MM-dd KK a" patterns.
+DateTimeFormatter formatter = 
 	    HDateTimeFormatBuilder
 		    .getInstance()
 		    .forJodaTime()
 		    .getFormatter(Locale.US)
 		    .forPattern("June 9, 2011");
-    String formattedDateTime = formatter.print(lastExecution);
-    //formattedDateTime will be lastExecution in "dayOfWeek, Month day, Year" format
-
+String formattedDateTime = formatter.print(lastExecution);
+// formattedDateTime will be lastExecution in "dayOfWeek, Month day, Year" format
+```
 
 **Contribute & Support!**
 

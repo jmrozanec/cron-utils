@@ -139,10 +139,10 @@ public class OnDayOfWeekValueGeneratorHashTest {
         return new OnDayOfWeekValueGenerator(
                 new CronField(
                         CronFieldName.DAY_OF_WEEK,
-                        new On(constraints, new IntegerFieldValue(firstDayDoWGreaterThanRequestedDoW_TimeValue),
+                        new On(new IntegerFieldValue(firstDayDoWGreaterThanRequestedDoW_TimeValue),
                                 new SpecialCharFieldValue(SpecialChar.HASH), new IntegerFieldValue(firstDayDoWGreaterThanRequestedDoW_HashValue)
-                        )
-                ),
+                        ),
+                        constraints),
                 year, firstDayDoWGreaterThanRequestedDoW_Month, mondayDoWValue
         );
     }
@@ -151,9 +151,9 @@ public class OnDayOfWeekValueGeneratorHashTest {
         return new OnDayOfWeekValueGenerator(
                 new CronField(
                         CronFieldName.DAY_OF_WEEK,
-                        new On(constraints, new IntegerFieldValue(firstDayDoWLessThanRequestedDoW_TimeValue),
-                                new SpecialCharFieldValue(SpecialChar.HASH), new IntegerFieldValue(firstDayDoWLessThanRequestedDoW_HashValue))
-                ),
+                        new On(new IntegerFieldValue(firstDayDoWLessThanRequestedDoW_TimeValue),
+                                new SpecialCharFieldValue(SpecialChar.HASH), new IntegerFieldValue(firstDayDoWLessThanRequestedDoW_HashValue)),
+                        constraints),
                 year, firstDayDoWLessThanRequestedDoW_Month, mondayDoWValue
         );
     }
@@ -162,10 +162,11 @@ public class OnDayOfWeekValueGeneratorHashTest {
         return new OnDayOfWeekValueGenerator(
                 new CronField(
                         CronFieldName.DAY_OF_WEEK,
-                        new On(constraints,
-                                new IntegerFieldValue(firstDayDoWEqualToRequestedDoW_TimeValue), new SpecialCharFieldValue(SpecialChar.HASH), new IntegerFieldValue(firstDayDoWEqualToRequestedDoW_HashValue)
-                        )
-                ),
+                        new On(
+                                new IntegerFieldValue(firstDayDoWEqualToRequestedDoW_TimeValue),
+                                new SpecialCharFieldValue(SpecialChar.HASH),
+                                new IntegerFieldValue(firstDayDoWEqualToRequestedDoW_HashValue)
+                        ), constraints),
                 year, firstDayDoWEqualToRequestedDoW_Month, mondayDoWValue
         );
     }

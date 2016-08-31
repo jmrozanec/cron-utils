@@ -1,8 +1,5 @@
 package com.cronutils.model.time.generator;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.cronutils.mapper.WeekDay;
 import com.cronutils.model.field.CronField;
 import com.cronutils.model.field.expression.*;
@@ -21,7 +18,6 @@ import com.cronutils.model.field.value.SpecialChar;
  * limitations under the License.
  */
 public class FieldValueGeneratorFactory {
-	private static final Logger log = LoggerFactory.getLogger(FieldValueGeneratorFactory.class);
     private static FieldValueGeneratorFactory factory = new FieldValueGeneratorFactory();
     private FieldValueGeneratorFactory(){}
 
@@ -32,25 +28,25 @@ public class FieldValueGeneratorFactory {
     public static FieldValueGenerator forCronField(CronField cronField){
         FieldExpression fieldExpression = cronField.getExpression();
         if(fieldExpression instanceof Always){
-            return new AlwaysFieldValueGenerator(fieldExpression);
+            return new AlwaysFieldValueGenerator(cronField);
         }
         if(fieldExpression instanceof And){
-            return new AndFieldValueGenerator(fieldExpression);
+            return new AndFieldValueGenerator(cronField);
         }
         if(fieldExpression instanceof Between){
-            return new BetweenFieldValueGenerator(fieldExpression);
+            return new BetweenFieldValueGenerator(cronField);
         }
         if(fieldExpression instanceof Every){
-            return new EveryFieldValueGenerator(fieldExpression);
+            return new EveryFieldValueGenerator(cronField);
         }
         if(fieldExpression instanceof On){
             On on = (On) fieldExpression;
             if(!SpecialChar.NONE.equals(on.getSpecialChar().getValue())) {
                 throw new RuntimeException(String.format("Cannot create instance for On instance with %s value", on.getSpecialChar()));
             }
-            return new OnFieldValueGenerator(fieldExpression);
+            return new OnFieldValueGenerator(cronField);
         }
-        return new NullFieldValueGenerator(cronField.getExpression());
+        return new NullFieldValueGenerator(cronField);
     }
 
     public static FieldValueGenerator createDayOfMonthValueGeneratorInstance(CronField cronField, int year, int month){

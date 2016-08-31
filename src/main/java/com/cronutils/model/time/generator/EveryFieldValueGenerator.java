@@ -1,12 +1,14 @@
 package com.cronutils.model.time.generator;
 
+import com.cronutils.model.field.CronField;
 import com.cronutils.model.field.expression.Every;
 import com.cronutils.model.field.expression.FieldExpression;
-import com.google.common.annotations.VisibleForTesting;
-import com.google.common.collect.Lists;
+import com.cronutils.utils.VisibleForTesting;
+import java.util.ArrayList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.time.ZonedDateTime;
 import java.util.List;
 /*
  * Copyright 2015 jmrozanec
@@ -23,27 +25,30 @@ import java.util.List;
 class EveryFieldValueGenerator extends FieldValueGenerator {
     private static final Logger log = LoggerFactory.getLogger(EveryFieldValueGenerator.class);
 
-    public EveryFieldValueGenerator(FieldExpression expression) {
-        super(expression);
-        log.info("Strting");
+    public EveryFieldValueGenerator(CronField cronField) {
+        super(cronField);
+        log.trace(String.format(
+                "processing \"%s\" at %s",
+                cronField.getExpression().asString(), ZonedDateTime.now()
+        ));
     }
 
     @Override
     public int generateNextValue(int reference) throws NoSuchValueException {
         //intuition: for valid values, we have: offset+period*i
-        if(reference>=expression.getConstraints().getEndRange()){
+        if(reference>=cronField.getConstraints().getEndRange()){
             throw new NoSuchValueException();
         }
-        Every every = (Every)expression;
+        Every every = (Every)cronField.getExpression();
         int referenceWithoutOffset = reference-offset();
-        int period = every.getTime().getValue();
+        int period = every.getPeriod().getValue();
         int remainder = referenceWithoutOffset % period;
 
         int next = reference+(period-remainder);
-        if(next<expression.getConstraints().getStartRange()){
-            return expression.getConstraints().getStartRange();
+        if(next<cronField.getConstraints().getStartRange()){
+            return cronField.getConstraints().getStartRange();
         }
-        if(next>expression.getConstraints().getEndRange()){
+        if(next>cronField.getConstraints().getEndRange()){
             throw new NoSuchValueException();
         }
         return next;
@@ -51,8 +56,8 @@ class EveryFieldValueGenerator extends FieldValueGenerator {
 
     @Override
     public int generatePreviousValue(int reference) throws NoSuchValueException {
-        Every every = (Every)expression;
-        int period = every.getTime().getValue();
+        Every every = (Every)cronField.getExpression();
+        int period = every.getPeriod().getValue();
         int remainder = reference % period;
         if(remainder == 0){
             return reference-period;
@@ -63,24 +68,22 @@ class EveryFieldValueGenerator extends FieldValueGenerator {
 
     @Override
     protected List<Integer> generateCandidatesNotIncludingIntervalExtremes(int start, int end) {
-        List<Integer>values = Lists.newArrayList();
+        List<Integer>values = new ArrayList<>();
         try {
             int reference = generateNextValue(start);
             while(reference<end){
                 values.add(reference);
                 reference=generateNextValue(reference);
             }
-        } catch (NoSuchValueException e) {
-            log.warn("Failed to generate candidates", e);
-        }
+        } catch (NoSuchValueException ignored) {}//we just skip, since we generate values until we get the exception
         return values;
     }
 
     @Override
     public boolean isMatch(int value) {
-        Every every = (Every)expression;
-        int start = every.getConstraints().getStartRange();
-        return ((value-start) % every.getTime().getValue()) == 0;
+        Every every = (Every)cronField.getExpression();
+        int start = cronField.getConstraints().getStartRange();
+        return ((value-start) % every.getPeriod().getValue()) == 0;
     }
 
     @Override
@@ -90,6 +93,6 @@ class EveryFieldValueGenerator extends FieldValueGenerator {
 
     @VisibleForTesting
     int offset(){
-        return expression.getConstraints().getStartRange();
+        return cronField.getConstraints().getStartRange();
     }
 }

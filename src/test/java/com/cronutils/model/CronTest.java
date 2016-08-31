@@ -1,9 +1,12 @@
 package com.cronutils.model;
 
+import com.cronutils.mapper.CronMapper;
 import com.cronutils.model.definition.CronDefinition;
+import com.cronutils.model.definition.CronDefinitionBuilder;
 import com.cronutils.model.field.CronField;
 import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.field.expression.FieldExpression;
+import com.cronutils.parser.CronParser;
 import com.google.common.collect.Lists;
 import org.junit.Before;
 import org.junit.Test;
@@ -80,5 +83,21 @@ public class CronTest {
         when(mockField.getExpression()).thenReturn(mockFieldExpression);
         when(mockFieldExpression.asString()).thenReturn(expressionString);
         assertEquals(expressionString, cron.asString());
+    }
+
+    @Test
+    public void testEquivalent(){
+        CronDefinition unixcd = CronDefinitionBuilder.instanceDefinitionFor(CronType.UNIX);
+        CronDefinition quartzcd = CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ);
+        CronParser unix = new CronParser(unixcd);
+        CronParser quartz = new CronParser(quartzcd);
+        Cron cron1 = unix.parse("* * * * MON");
+        Cron cron2 = unix.parse("*/1 * * * 1");
+        Cron cron3 = unix.parse("0 * * * *");
+        Cron cron4 = quartz.parse("0 * * ? * MON *");
+
+        assertTrue(cron1.equivalent(CronMapper.sameCron(unixcd), cron2));
+        assertFalse(cron1.equivalent(CronMapper.sameCron(unixcd), cron3));
+        assertTrue(cron1.equivalent(CronMapper.fromQuartzToCron4j(), cron4));
     }
 }

@@ -5,11 +5,17 @@ import com.cronutils.model.Cron;
 import com.cronutils.model.CronType;
 import com.cronutils.model.definition.CronDefinition;
 import com.cronutils.model.definition.CronDefinitionBuilder;
-import com.cronutils.validator.CronValidator;
+import com.cronutils.model.time.ExecutionTime;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
+import java.time.ZonedDateTime;
 import java.util.Locale;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 /*
  * Copyright 2015 jmrozanec
@@ -25,6 +31,9 @@ import java.util.Locale;
  */
 public class CronParserQuartzIntegrationTest {
     private CronParser parser;
+
+    @Rule
+    public ExpectedException thrown = ExpectedException.none();
 
     @Before
     public void setUp() throws Exception {
@@ -93,8 +102,8 @@ public class CronParserQuartzIntegrationTest {
      */
     @Test
     public void testMonthRangeStringMapping(){
-        parser.parse("0 0 0 * JUL-AUG * *");
-        parser.parse("0 0 0 * JAN-FEB * *");
+        parser.parse("0 0 0 * JUL-AUG ? *");
+        parser.parse("0 0 0 * JAN-FEB ? *");
     }
 
     /**
@@ -102,7 +111,7 @@ public class CronParserQuartzIntegrationTest {
      */
     @Test
     public void testSingleMonthStringMapping(){
-        parser.parse("0 0 0 * JAN * *");
+        parser.parse("0 0 0 * JAN ? *");
     }
 
     /**
@@ -110,7 +119,7 @@ public class CronParserQuartzIntegrationTest {
      */
     @Test
     public void testDoWRangeStringMapping(){
-        parser.parse("0 0 0 * * MON-FRI *");
+        parser.parse("0 0 0 ? * MON-FRI *");
     }
 
     /**
@@ -118,7 +127,7 @@ public class CronParserQuartzIntegrationTest {
      */
     @Test
     public void testSingleDoWStringMapping(){
-        parser.parse("0 0 0 * * MON *");
+        parser.parse("0 0 0 ? * MON *");
     }
 
     /**
@@ -126,13 +135,13 @@ public class CronParserQuartzIntegrationTest {
      */
     @Test
     public void testJulyMonthAsStringConsideredSpecialChar(){
-        parser.parse("0 0 0 * JUL * *");
+        assertNotNull(parser.parse("0 0 0 * JUL ? *"));
     }
 
     /**
      * Issue #35: A>B in range considered invalid expression for Quartz.
      */
-    //@Test//TODO
+    @Test
     public void testSunToSat() {
     // FAILS SUN-SAT: SUN = 7 and SAT = 6
         parser.parse("0 0 12 ? * SUN-SAT");
@@ -164,9 +173,75 @@ public class CronParserQuartzIntegrationTest {
         String expression = "0 * * ? * 1,5";
         CronDefinition definition = CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ);
         CronParser parser = new CronParser(definition);
-        CronValidator validator = new CronValidator(definition);
         Cron c = parser.parse(expression);
         CronDescriptor.instance(Locale.GERMAN).describe(c);
-        validator.validate(expression);
     }
+
+    /**
+     * Issue #63: Parser exception when parsing cron:
+     */
+    @Test(expected = IllegalArgumentException.class)
+    public void testDoMAndDoWParametersInvalidForQuartz(){
+        parser.parse("0 30 17 4 1 * 2016");
+    }
+
+    /**
+     * Issue #78: ExecutionTime.forCron fails on intervals
+     */
+    @Test
+    public void testIntervalSeconds() {
+        ExecutionTime executionTime = ExecutionTime.forCron(parser.parse("0/20 * * * * ?"));
+        ZonedDateTime now = ZonedDateTime.parse("2005-08-09T18:32:42Z");
+        ZonedDateTime lastExecution = executionTime.lastExecution(now);
+        ZonedDateTime assertDate = ZonedDateTime.parse("2005-08-09T18:32:40Z");
+        assertEquals(assertDate, lastExecution);
+    }
+
+    /**
+     * Issue #78: ExecutionTime.forCron fails on intervals
+     */
+    @Test
+    public void testIntervalMinutes() {
+        ExecutionTime executionTime = ExecutionTime.forCron(parser.parse("0 0/7 * * * ?"));
+        ZonedDateTime now = ZonedDateTime.parse("2005-08-09T18:32:42Z");
+        ZonedDateTime lastExecution = executionTime.lastExecution(now);
+        ZonedDateTime assertDate = ZonedDateTime.parse("2005-08-09T18:28:00Z");
+        assertEquals(assertDate, lastExecution);
+    }
+
+    /**
+     * Issue #89: regression - NumberFormatException: For input string: "$"
+     */
+    @Test
+    public void testRegressionDifferentMessageForException(){
+        thrown.expect(IllegalArgumentException.class);
+        thrown.expectMessage("Invalid chars in expression! Expression: $ Invalid chars: $");
+        assertNotNull(ExecutionTime.forCron(parser.parse("* * * * $ ?")));
+    }
+
+    /**
+     * Issue #90: Reported error contains other expression than the one provided
+     */
+    @Test
+    public void testReportedErrorContainsSameExpressionAsProvided(){
+        thrown.expect(IllegalArgumentException.class);
+        thrown.expectMessage(
+                "Invalid cron expression: 0 * * * * *. Both, a day-of-week AND a day-of-month parameter, are not supported.");
+        assertNotNull(ExecutionTime.forCron(parser.parse("0/1 * * * * *")));
+    }
+
+    @Test
+    public void testErrorAbout2Parts(){
+        thrown.expect(IllegalArgumentException.class);
+        thrown.expectMessage("Cron expression contains 2 parts but we expect one of [6, 7]");
+        assertNotNull(ExecutionTime.forCron(parser.parse("* *")));
+    }
+
+    @Test
+    public void testErrorAboutMissingSteps(){
+        thrown.expect(IllegalArgumentException.class);
+        thrown.expectMessage("Missing steps for expression: */");
+        assertNotNull(ExecutionTime.forCron(parser.parse("*/ * * * * ?")));
+    }
+
 }

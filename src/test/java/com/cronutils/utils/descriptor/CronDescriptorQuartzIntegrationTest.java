@@ -35,12 +35,12 @@ public class CronDescriptorQuartzIntegrationTest {
 
     @Test
     public void testCronWithAndHours(){
-        assertExpression("* * 1,2,3,4 * * * *", "at 1, 2, 3 and 4 hours");
+        assertExpression("* * 1,2,3,4 * * ? *", "at 1, 2, 3 and 4 hours");
     }
 
     @Test
     public void testCronAndWithRangeHours(){
-        assertExpression("* * 1,2,3,4,6-9 * * * *", "at 1, 2, 3 and 4 hours and every hour between 6 and 9");
+        assertExpression("* * 1,2,3,4,6-9 * * ? *", "at 1, 2, 3 and 4 hours and every hour between 6 and 9");
     }
 
     @Test
@@ -51,12 +51,12 @@ public class CronDescriptorQuartzIntegrationTest {
 
     @Test
     public void testEverySecond() {
-        assertExpression("* * * * * *", "every second");
+        assertExpression("* * * * * ?", "every second");
     }
 
     @Test
     public void testEvery45Seconds(){
-        assertExpression("*/45 * * * * *", "every 45 seconds");
+        assertExpression("*/45 * * * * ?", "every 45 seconds");
     }
 
     @Test

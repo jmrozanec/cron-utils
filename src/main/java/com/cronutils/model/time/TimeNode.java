@@ -1,15 +1,12 @@
 package com.cronutils.model.time;
 
-import com.google.common.annotations.VisibleForTesting;
-
-import org.apache.commons.lang3.Validate;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import com.cronutils.utils.Preconditions;
+import com.cronutils.utils.VisibleForTesting;
 
 /*
  * Copyright 2015 jmrozanec
@@ -24,11 +21,10 @@ import java.util.concurrent.atomic.AtomicInteger;
  * limitations under the License.
  */
 class TimeNode {
-	private static final Logger log = LoggerFactory.getLogger(TimeNode.class);
     protected List<Integer> values;
 
     public TimeNode(List<Integer> values){
-        this.values = Validate.notEmpty(values, "Values must not be empty");
+        this.values = Preconditions.checkNotNullNorEmpty(values, "Values must not be empty");
         Collections.sort(this.values);
     }
 
@@ -128,7 +124,7 @@ class TimeNode {
      */
     @VisibleForTesting
     int getValueFromList(List<Integer>values, int index, AtomicInteger shift){
-        Validate.notEmpty(values, "List must not be empty");
+        Preconditions.checkNotNullNorEmpty(values, "List must not be empty");
         if(index<0){
             index=index+values.size();
             shift.incrementAndGet();

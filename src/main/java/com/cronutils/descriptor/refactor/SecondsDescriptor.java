@@ -4,10 +4,9 @@ import com.cronutils.model.field.expression.*;
 import com.cronutils.model.field.expression.visitor.FieldExpressionVisitor;
 import com.cronutils.model.field.value.FieldValue;
 import com.cronutils.model.field.value.IntegerFieldValue;
-import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Function;
-import com.google.common.collect.Lists;
-import org.apache.commons.lang3.Validate;
+import com.cronutils.utils.Preconditions;
+import com.cronutils.utils.VisibleForTesting;
+import java.util.ArrayList;
 
 import java.text.MessageFormat;
 import java.util.List;
@@ -38,7 +37,7 @@ class SecondsDescriptor implements FieldExpressionVisitor {
      * @return human readable description - String
      */
     protected String describe(FieldExpression fieldExpression, boolean and) {
-        Validate.notNull(fieldExpression, "CronFieldExpression should not be null!");
+        Preconditions.checkNotNull(fieldExpression, "CronFieldExpression should not be null!");
         if (fieldExpression instanceof Always) {
             return describe((Always)fieldExpression, and);
         }
@@ -66,7 +65,7 @@ class SecondsDescriptor implements FieldExpressionVisitor {
      * @return String
      */
     protected String nominalValue(FieldValue fieldValue) {
-        Validate.notNull(fieldValue, "FieldValue must not be null");
+        Preconditions.checkNotNull(fieldValue, "FieldValue must not be null");
         if(fieldValue instanceof IntegerFieldValue){
             return ""+((IntegerFieldValue)fieldValue).getValue();
         }
@@ -79,10 +78,7 @@ class SecondsDescriptor implements FieldExpressionVisitor {
      * @return human readable description - String
      */
     protected String describe(Always always, boolean and) {
-        if (always.getEvery().getTime().getValue() <= 1) {
-            return "";
-        }
-        return describe(always.getEvery(), and);
+        return bundle.getString("every");
     }
 
     /**
@@ -91,8 +87,8 @@ class SecondsDescriptor implements FieldExpressionVisitor {
      * @return human readable description - String
      */
     protected String describe(And and) {
-        List<FieldExpression> expressions = Lists.newArrayList();
-        List<FieldExpression> onExpressions = Lists.newArrayList();
+        List<FieldExpression> expressions = new ArrayList<>();
+        List<FieldExpression> onExpressions = new ArrayList<>();
         for(FieldExpression fieldExpression : and.getExpressions()){
             if(fieldExpression instanceof On){
                 onExpressions.add(fieldExpression);
@@ -138,7 +134,6 @@ class SecondsDescriptor implements FieldExpressionVisitor {
      */
     protected String describe(Between between, boolean and) {
         return new StringBuilder()
-                .append(describe(between.getEvery(), and))
                 .append(
                         MessageFormat.format(
                                 bundle.getString("between_x_and_y"),
@@ -194,8 +189,8 @@ class SecondsDescriptor implements FieldExpressionVisitor {
     @Override
     public Every visit(Every every) {
         String description;
-        if (every.getTime().getValue() > 1) {
-            description = String.format("%s %s ", bundle.getString("every"), nominalValue(every.getTime())) + " %p ";
+        if (every.getPeriod().getValue() > 1) {
+            description = String.format("%s %s ", bundle.getString("every"), nominalValue(every.getPeriod())) + " %p ";
         } else {
             description = bundle.getString("every")+" %s ";
         }

@@ -1,11 +1,5 @@
 package com.cronutils.model.field.definition;
 
-import com.cronutils.model.field.CronFieldName;
-import com.cronutils.model.field.constraint.FieldConstraints;
-import org.apache.commons.lang3.Validate;
-
-import java.util.Comparator;
-
 /*
  * Copyright 2014 jmrozanec
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,6 +12,12 @@ import java.util.Comparator;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+import com.cronutils.model.field.CronFieldName;
+import com.cronutils.model.field.constraint.FieldConstraints;
+import com.cronutils.utils.Preconditions;
+
+import java.util.Comparator;
 
 /**
  * Represents a definition of allowed values for a cron field.
@@ -34,8 +34,8 @@ public class FieldDefinition {
      *                    if null, a NullPointerException will be raised.
      */
     public FieldDefinition(CronFieldName fieldName, FieldConstraints constraints){
-        this.fieldName = Validate.notNull(fieldName, "CronFieldName must not be null");
-        this.constraints = Validate.notNull(constraints, "FieldConstraints must not be null");
+        this.fieldName = Preconditions.checkNotNull(fieldName, "CronFieldName must not be null");
+        this.constraints = Preconditions.checkNotNull(constraints, "FieldConstraints must not be null");
     }
 
     /**
@@ -67,3 +67,4 @@ public class FieldDefinition {
         };
     }
 }
+

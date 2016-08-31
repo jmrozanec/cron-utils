@@ -1,6 +1,7 @@
 package com.cronutils.model.time.generator;
 
-import com.cronutils.model.field.constraint.FieldConstraints;
+import com.cronutils.model.field.CronField;
+import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.field.constraint.FieldConstraintsBuilder;
 import com.cronutils.model.field.expression.FieldExpression;
 import com.cronutils.model.field.expression.On;
@@ -25,14 +26,19 @@ import static org.mockito.Mockito.mock;
  * limitations under the License.
  */
 public class OnFieldValueGeneratorTest {
-
     private OnFieldValueGenerator fieldValueGenerator;
     private int day = 3;
 
     @Before
     public void setUp(){
-        FieldConstraints constraints = FieldConstraintsBuilder.instance().addLSupport().createConstraintsInstance();
-        fieldValueGenerator = new OnFieldValueGenerator(new On(constraints, new IntegerFieldValue(3)));
+        fieldValueGenerator =
+                new OnFieldValueGenerator(
+                        new CronField(
+                                CronFieldName.HOUR,
+                                new On(new IntegerFieldValue(3)),
+                                FieldConstraintsBuilder.instance().addLSupport().createConstraintsInstance()
+                        )
+                );
     }
 
     @Test(expected = NoSuchValueException.class)
@@ -68,6 +74,6 @@ public class OnFieldValueGeneratorTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void testConstructorNotMatchesOn() throws Exception {
-        new OnFieldValueGenerator(mock(FieldExpression.class));
+        new OnFieldValueGenerator(mock(CronField.class));
     }
 }

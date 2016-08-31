@@ -1,10 +1,11 @@
 package com.cronutils.model.field.expression;
 
-import com.cronutils.model.field.constraint.FieldConstraints;
 import com.cronutils.model.field.value.IntegerFieldValue;
 import com.cronutils.model.field.value.SpecialChar;
 import com.cronutils.model.field.value.SpecialCharFieldValue;
-import org.apache.commons.lang3.Validate;
+import com.cronutils.utils.Preconditions;
+
+import static com.cronutils.utils.Preconditions.checkArgument;
 
 /*
  * Copyright 2014 jmrozanec
@@ -19,81 +20,67 @@ import org.apache.commons.lang3.Validate;
  * limitations under the License.
  */
 public class On extends FieldExpression {
-    private static final int DEFAULT_NTH_VALUE = -1;
-    private IntegerFieldValue time;
-    private IntegerFieldValue nth;
-    private SpecialCharFieldValue specialChar;
+	private static final int DEFAULT_NTH_VALUE = -1;
+	private IntegerFieldValue time;
+	private IntegerFieldValue nth;
+	private SpecialCharFieldValue specialChar;
 
-    private On(On on){
-        this(on.constraints, on.time, on.specialChar, on.nth);
-    }
+	private On(On on){
+		this(on.time, on.specialChar, on.nth);
+	}
 
-    public On(FieldConstraints constraints, SpecialCharFieldValue specialChar) {
-        this(constraints, new IntegerFieldValue(DEFAULT_NTH_VALUE), specialChar);
-    }
+	public On(SpecialCharFieldValue specialChar) {
+		this(new IntegerFieldValue(DEFAULT_NTH_VALUE), specialChar);
+	}
 
-    public On(FieldConstraints constraints, IntegerFieldValue time) {
-        this(constraints, time, new SpecialCharFieldValue(SpecialChar.NONE));
-    }
+	public On(IntegerFieldValue time) {
+		this(time, new SpecialCharFieldValue(SpecialChar.NONE));
+	}
 
-    public On(FieldConstraints constraints, IntegerFieldValue time, SpecialCharFieldValue specialChar) {
-        this(constraints, time, specialChar, new IntegerFieldValue(-1));
-        if(specialChar.getValue().equals(SpecialChar.HASH)){
-            throw new IllegalArgumentException("value missing for a#b cron expression");
-        }
-    }
+	public On(IntegerFieldValue time, SpecialCharFieldValue specialChar) {
+		this(time, specialChar, new IntegerFieldValue(-1));
+		checkArgument(!specialChar.getValue().equals(SpecialChar.HASH), "value missing for a#b cron expression");
+	}
 
-    public On(FieldConstraints constraints, IntegerFieldValue time, SpecialCharFieldValue specialChar, IntegerFieldValue nth) {
-        super(constraints);
-        Validate.notNull(time, "time must not be null");
-        Validate.notNull(specialChar, "special char must not null");
-        Validate.notNull(nth, "nth value must not be null");
-        if(!specialChar.getValue().equals(SpecialChar.HASH) && !specialChar.getValue().equals(SpecialChar.NONE)){
-            this.time = (time.getValue()!=-1)?(IntegerFieldValue)validate(time):time;
-        } else {
-            this.time = (IntegerFieldValue)validate(time);
-        }
-        this.specialChar = (SpecialCharFieldValue)validate(specialChar);
-        this.nth = (nth.getValue()!=-1)?(IntegerFieldValue)validate(nth):nth;
-    }
+	public On(IntegerFieldValue time, SpecialCharFieldValue specialChar, IntegerFieldValue nth) {
+		Preconditions.checkNotNull(time, "time must not be null");
+		Preconditions.checkNotNull(specialChar, "special char must not null");
+		Preconditions.checkNotNull(nth, "nth value must not be null");
 
-    public IntegerFieldValue getTime() {
-        return time;
-    }
+		this.time = time;
+		this.specialChar = specialChar;
+		this.nth = nth;
+	}
 
-    public IntegerFieldValue getNth() {
-        return nth;
-    }
+	public IntegerFieldValue getTime() {
+		return time;
+	}
 
-    public SpecialCharFieldValue getSpecialChar() {
-        return specialChar;
-    }
+	public IntegerFieldValue getNth() {
+		return nth;
+	}
 
-    @Override
-    public String asString() {
-        switch (specialChar.getValue()){
-            case NONE:
-                return ""+getTime();
-            case HASH:
-                return String.format("%s#%s", getTime(), getNth());
-            case W:
-                if(isDefault(getTime())){
-                    return "W";
-                }else{
-                    return String.format("%sW", getTime());
-                }
-            case L:
-                if(isDefault(getTime())){
-                    return "L";
-                }else{
-                    return String.format("%sL", getTime());
-                }
-            default:
-                return specialChar.toString();
-        }
-    }
+	public SpecialCharFieldValue getSpecialChar() {
+		return specialChar;
+	}
 
-    private boolean isDefault(IntegerFieldValue fieldValue){
-        return fieldValue.getValue()==DEFAULT_NTH_VALUE;
-    }
+	@Override
+	public String asString() {
+		switch (specialChar.getValue()) {
+		case NONE:
+			return getTime().toString();
+		case HASH:
+			return String.format("%s#%s", getTime(), getNth());
+		case W:
+			return isDefault(getTime())?"W":String.format("%sW", getTime());
+		case L:
+			return isDefault(getTime())?"L":String.format("%sL", getTime());
+		default:
+			return specialChar.toString();
+		}
+	}
+
+	private boolean isDefault(IntegerFieldValue fieldValue) {
+		return fieldValue.getValue() == DEFAULT_NTH_VALUE;
+	}
 }
