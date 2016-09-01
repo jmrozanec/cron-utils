@@ -127,12 +127,12 @@ cron4jCron.validate()
 ***Calculate time from/to execution***
 ```java
 // Get date for last execution
-DateTime now = DateTime.now();
-ExecutionTime executionTime = ExecutionTime.forCron(parser.parse("* * * * * * *"));
-DateTime lastExecution = executionTime.lastExecution(now));
+ZonedDateTime now = ZonedDateTime.now();
+ExecutionTime executionTime = ExecutionTime.forCron(parser.parse("* * * * * ? *"));
+ZonedDateTime lastExecution = executionTime.lastExecution(now);
 
 // Get date for next execution
-DateTime nextExecution = executionTime.nextExecution(now));
+ZonedDateTime nextExecution = executionTime.nextExecution(now);
 
 // Time from last execution
 Duration timeFromLastExecution = executionTime.timeFromLastExecution(now);
