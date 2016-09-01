@@ -383,7 +383,10 @@ public class ExecutionTimeQuartzIntegrationTest {
         assertEquals(getMinimumInterval("0 0 */3 * * ?"), Duration.ofSeconds(10800));
         assertEquals(getMinimumInterval("0 0 0 * * ?"), Duration.ofSeconds(86400));
     }
-    
+
+    /**
+     * Issue #117: Last Day of month Skipped on Quartz Expression: 0 * * ? * *
+     */
     @Test
     public void noSpecificDayOfMonth() {
         Cron cron = parser.parse("0 * * ? * *");
