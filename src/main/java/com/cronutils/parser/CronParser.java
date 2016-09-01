@@ -6,12 +6,8 @@ import com.cronutils.model.field.CronField;
 import com.cronutils.model.field.definition.FieldDefinition;
 import com.cronutils.utils.Preconditions;
 import com.cronutils.utils.StringUtils;
-import java.util.HashMap;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /*
  * Copyright 2014 jmrozanec

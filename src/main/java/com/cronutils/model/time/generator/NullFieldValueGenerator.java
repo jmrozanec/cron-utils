@@ -2,8 +2,8 @@ package com.cronutils.model.time.generator;
 
 import com.cronutils.model.field.CronField;
 import com.cronutils.model.field.expression.FieldExpression;
-import java.util.ArrayList;
 
+import java.util.ArrayList;
 import java.util.List;
 /*
  * Copyright 2015 jmrozanec

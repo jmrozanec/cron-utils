@@ -3,7 +3,6 @@ package com.cronutils.model.definition;
 import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.field.definition.FieldDefinition;
 import com.cronutils.utils.Preconditions;
-import java.util.HashMap;
 
 import java.util.*;
 

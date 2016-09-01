@@ -5,8 +5,8 @@ import com.cronutils.model.field.expression.Between;
 import com.cronutils.model.field.expression.FieldExpression;
 import com.cronutils.model.field.value.FieldValue;
 import com.cronutils.model.field.value.IntegerFieldValue;
-import java.util.ArrayList;
 
+import java.util.ArrayList;
 import java.util.List;
 /*
  * Copyright 2015 jmrozanec

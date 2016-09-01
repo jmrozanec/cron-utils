@@ -20,9 +20,9 @@ import com.cronutils.model.field.constraint.FieldConstraints;
 import com.cronutils.model.field.expression.FieldExpression;
 import com.cronutils.model.field.expression.visitor.ValidationFieldExpressionVisitor;
 import com.cronutils.utils.VisibleForTesting;
+
 import java.util.ArrayList;
 import java.util.HashMap;
-
 import java.util.Map;
 
 import static com.cronutils.model.field.CronFieldName.*;

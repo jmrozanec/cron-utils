@@ -11,7 +11,6 @@ import com.cronutils.model.field.value.IntegerFieldValue;
 import com.cronutils.model.time.generator.FieldValueGenerator;
 import com.cronutils.model.time.generator.FieldValueGeneratorFactory;
 import com.cronutils.utils.Preconditions;
-import com.cronutils.utils.VisibleForTesting;
 /*
  * Copyright 2015 jmrozanec
  * Licensed under the Apache License, Version 2.0 (the "License");

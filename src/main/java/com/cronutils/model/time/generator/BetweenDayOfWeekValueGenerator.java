@@ -8,13 +8,9 @@ import com.cronutils.model.field.expression.Between;
 import com.cronutils.model.field.expression.FieldExpression;
 import com.cronutils.parser.CronParserField;
 import com.cronutils.utils.Preconditions;
-import java.util.ArrayList;
-import java.util.HashSet;
 
 import java.time.LocalDate;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 /*
  * Copyright 2015 jmrozanec
  * Licensed under the Apache License, Version 2.0 (the "License");

@@ -6,9 +6,9 @@ import com.cronutils.model.field.value.FieldValue;
 import com.cronutils.model.field.value.IntegerFieldValue;
 import com.cronutils.utils.Preconditions;
 import com.cronutils.utils.VisibleForTesting;
-import java.util.ArrayList;
 
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 

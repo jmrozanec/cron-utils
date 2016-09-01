@@ -15,8 +15,8 @@ package com.cronutils;
 import com.cronutils.model.field.constraint.FieldConstraints;
 import com.cronutils.model.field.value.SpecialChar;
 import com.cronutils.utils.VisibleForTesting;
-import java.util.HashSet;
 
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.regex.Matcher;

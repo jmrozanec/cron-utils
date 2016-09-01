@@ -1,12 +1,12 @@
 package com.cronutils.model.time;
 
+import com.cronutils.utils.Preconditions;
+import com.cronutils.utils.VisibleForTesting;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
-
-import com.cronutils.utils.Preconditions;
-import com.cronutils.utils.VisibleForTesting;
 
 /*
  * Copyright 2015 jmrozanec

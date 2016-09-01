@@ -20,12 +20,8 @@ import com.cronutils.model.field.CronField;
 import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.field.expression.visitor.ValidationFieldExpressionVisitor;
 import com.cronutils.utils.Preconditions;
-import java.util.HashMap;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Represents a cron expression

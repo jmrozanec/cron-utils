@@ -12,17 +12,11 @@ import com.cronutils.model.time.generator.FieldValueGenerator;
 import com.cronutils.model.time.generator.NoSuchValueException;
 import com.cronutils.utils.Preconditions;
 import com.cronutils.utils.VisibleForTesting;
-import java.util.ArrayList;
-import java.util.HashSet;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.*;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import static com.cronutils.model.field.CronFieldName.DAY_OF_WEEK;
 import static com.cronutils.model.field.value.SpecialChar.QUESTION_MARK;

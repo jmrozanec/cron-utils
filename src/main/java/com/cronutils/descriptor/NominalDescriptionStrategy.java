@@ -2,8 +2,8 @@ package com.cronutils.descriptor;
 
 import com.cronutils.model.field.expression.Always;
 import com.cronutils.model.field.expression.FieldExpression;
-import java.util.HashSet;
 
+import java.util.HashSet;
 import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.function.Function;

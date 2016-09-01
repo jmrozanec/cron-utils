@@ -5,10 +5,10 @@ import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.field.expression.FieldExpression;
 import com.cronutils.model.field.expression.On;
 import com.cronutils.utils.Preconditions;
-import java.util.ArrayList;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 /*
