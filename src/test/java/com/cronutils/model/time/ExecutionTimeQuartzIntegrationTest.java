@@ -1,5 +1,6 @@
 package com.cronutils.model.time;
 
+import com.cronutils.descriptor.CronDescriptor;
 import com.cronutils.model.Cron;
 import com.cronutils.model.CronType;
 import com.cronutils.model.definition.CronDefinitionBuilder;
@@ -11,6 +12,7 @@ import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 
+import static com.cronutils.model.CronType.QUARTZ;
 import static java.time.ZoneOffset.UTC;
 import static org.junit.Assert.*;
 
@@ -32,7 +34,7 @@ public class ExecutionTimeQuartzIntegrationTest {
 
     @Before
     public void setUp(){
-        parser = new CronParser(CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ));
+        parser = new CronParser(CronDefinitionBuilder.instanceDefinitionFor(QUARTZ));
     }
 
     @Test
@@ -382,6 +384,16 @@ public class ExecutionTimeQuartzIntegrationTest {
         assertEquals(getMinimumInterval("0 0 * * * ?"), Duration.ofSeconds(3600));
         assertEquals(getMinimumInterval("0 0 */3 * * ?"), Duration.ofSeconds(10800));
         assertEquals(getMinimumInterval("0 0 0 * * ?"), Duration.ofSeconds(86400));
+    }
+
+    /**
+     * Issue #114: Describe day of week is incorrect
+     */
+    @Test
+    public void descriptionForExpressionTellsWrongDoW(){
+        CronDescriptor descriptor = CronDescriptor.instance();
+        Cron quartzCron = parser.parse("0 0 8 ? * SUN *");
+        //TODO enable: assertEquals("at 08:00 at Sunday day", descriptor.describe(quartzCron));
     }
 
     /**
