@@ -167,7 +167,7 @@ public class ExecutionTime {
             days = generateDays(cronDefinition, ZonedDateTime.of(LocalDateTime.of(date.getYear(), nextMonths, 1, 0, 0), date.getZone()));
             return initDateTime(date.getYear(), nextMonths, days.getValues().get(0), lowestHour, lowestMinute, lowestSecond, date.getZone());
         }
-        days = generateDays(cronDefinition, date);
+        days = generateDays(cronDefinition, date);       
         if(!days.getValues().contains(date.getDayOfMonth())) {
             nearestValue = days.getNextValue(date.getDayOfMonth(), 0);
             if(nearestValue.getShifts()>0){
@@ -320,10 +320,9 @@ public class ExecutionTime {
         if(questionMarkSupported){
             return new TimeNode(
                     generateDayCandidatesQuestionMarkSupported(
-                            date.getYear(), date.getMonthValue(),
-                            ((DayOfWeekFieldDefinition)
-                                    cronDefinition.getFieldDefinition(DAY_OF_WEEK)
-                            ).getMondayDoWValue()
+                            date.getYear(), 
+                            date.getMonthValue(),
+                            ((DayOfWeekFieldDefinition)cronDefinition.getFieldDefinition(DAY_OF_WEEK)).getMondayDoWValue()
                     )
             );
         }else{
@@ -414,10 +413,12 @@ public class ExecutionTime {
         if (daysOfMonthCronField.getExpression() instanceof Always && daysOfWeekCronField.getExpression() instanceof Always) {
             candidates.addAll(createDayOfMonthValueGeneratorInstance(daysOfMonthCronField, year, month)
                     .generateCandidates(1, lengthOfMonth));
-        } else if (daysOfMonthCronField.getExpression() instanceof QuestionMark) {
-            // the day of week calculator must get a -1 value to indicate its generating the first value of the month
+        } else if (daysOfMonthCronField.getExpression() instanceof QuestionMark) {            
+        	// ZoneDateTime is 1-End of Month, candidate gen is 'exclusive'...0- Length+1 is the proper range? 
             candidates.addAll(createDayOfWeekValueGeneratorInstance(daysOfWeekCronField, year, month, mondayDoWValue)
-                    .generateCandidates(-1, lengthOfMonth));
+                    .generateCandidates(0, lengthOfMonth+1));
+            
+            
         } else if (daysOfWeekCronField.getExpression() instanceof QuestionMark) {
             candidates.addAll(createDayOfMonthValueGeneratorInstance(daysOfMonthCronField, year, month)
                     .generateCandidates(1, lengthOfMonth));
