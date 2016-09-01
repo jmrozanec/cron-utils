@@ -43,7 +43,6 @@ import com.cronutils.utils.VisibleForTesting;
  * Parses a field from a cron expression.
  */
 public class FieldParser {
-
 	private static final String SLASH = "/";
 	private static final String W_STRING = "W";
 	private static final String EMPTY_STRING = "";
@@ -133,7 +132,7 @@ public class FieldParser {
 	}
 
 	@VisibleForTesting
-	FieldExpression parseBetween(String[] array) {
+	protected FieldExpression parseBetween(String[] array) {
 		if (array[1].contains(SLASH)) {
 			String[] every = array[1].split(SLASH);
 			return new Every(new Between(map(array[0]), map(every[0])), mapToIntegerFieldValue(every[1]));
@@ -143,7 +142,7 @@ public class FieldParser {
 	}
 
 	@VisibleForTesting
-	On parseOn(String exp) {
+	protected On parseOn(String exp) {
 		if (QUESTION_MARK_STRING.equals(exp)) {
 			return parseOnWithQuestionMark(exp);
 		} else if (exp.contains(HASH_TAG)) {
@@ -160,7 +159,7 @@ public class FieldParser {
 	}
 
 	@VisibleForTesting
-	On parseOnWithHash(String exp) {
+	protected On parseOnWithHash(String exp) {
 		SpecialCharFieldValue specialChar = new SpecialCharFieldValue(HASH);
 		String[] array = exp.split(HASH_TAG);
 		IntegerFieldValue nth = mapToIntegerFieldValue(array[1]);
@@ -171,7 +170,7 @@ public class FieldParser {
 	}
 
 	@VisibleForTesting
-	On parseOnWithQuestionMark(String exp) {
+	protected On parseOnWithQuestionMark(String exp) {
 		SpecialCharFieldValue specialChar = new SpecialCharFieldValue(QUESTION_MARK);
 		String questionMarkExpression = exp.replace(QUESTION_MARK_STRING, EMPTY_STRING);
 		if (EMPTY_STRING.equals(questionMarkExpression)) {
@@ -182,7 +181,7 @@ public class FieldParser {
 	}
 
 	@VisibleForTesting
-	On parseOnWithLW(String exp) {
+	protected On parseOnWithLW(String exp) {
 		SpecialCharFieldValue specialChar = new SpecialCharFieldValue(LW);
 		String lwExpression = exp.replace(LW_STRING, EMPTY_STRING);
 		if (EMPTY_STRING.equals(lwExpression)) {
@@ -193,7 +192,7 @@ public class FieldParser {
 	}
 
 	@VisibleForTesting
-	On parseOnWithL(String exp) {
+	protected On parseOnWithL(String exp) {
 		SpecialCharFieldValue specialChar = new SpecialCharFieldValue(L);
 		String lExpression = exp.replace(L_STRING, EMPTY_STRING);
 		IntegerFieldValue time = new IntegerFieldValue(-1);
@@ -204,12 +203,12 @@ public class FieldParser {
 	}
 
 	@VisibleForTesting
-	On parseOnWithW(String exp) {
+	protected On parseOnWithW(String exp) {
 		return new On(mapToIntegerFieldValue(exp.replace(W_STRING, EMPTY_STRING)), new SpecialCharFieldValue(W), new IntegerFieldValue(-1));
 	}
 
 	@VisibleForTesting
-	IntegerFieldValue mapToIntegerFieldValue(String string) {
+	protected IntegerFieldValue mapToIntegerFieldValue(String string) {
 		try {
 			return new IntegerFieldValue(intToInt(stringToInt(string)));
 		} catch (NumberFormatException e) {
@@ -218,7 +217,7 @@ public class FieldParser {
 	}
 
 	@VisibleForTesting
-	FieldValue<?> map(String string) {
+	protected FieldValue<?> map(String string) {
 		for (SpecialChar sc : SpecialChar.values()) {
 			if (sc.toString().equals(string)) {
 				return new SpecialCharFieldValue(sc);
@@ -234,7 +233,8 @@ public class FieldParser {
 	 *            - expression to be mapped
 	 * @return integer value for string expression
 	 */
-	int stringToInt(String exp) {
+	@VisibleForTesting
+	protected int stringToInt(String exp) {
 		Integer value = fieldConstraints.getStringMappingValue(exp);
 		if (value != null) {
 			return value;
@@ -256,7 +256,8 @@ public class FieldParser {
 	 *            - integer to be mapped
 	 * @return Mapping integer. If no mapping int is found, will return exp
 	 */
-	int intToInt(Integer exp) {
+	@VisibleForTesting
+	protected int intToInt(Integer exp) {
 		Integer value = fieldConstraints.getIntMappingValue(exp);
 		if (value != null) {
 			return value;

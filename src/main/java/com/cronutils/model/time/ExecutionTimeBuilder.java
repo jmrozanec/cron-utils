@@ -11,6 +11,7 @@ import com.cronutils.model.field.value.IntegerFieldValue;
 import com.cronutils.model.time.generator.FieldValueGenerator;
 import com.cronutils.model.time.generator.FieldValueGeneratorFactory;
 import com.cronutils.utils.Preconditions;
+import com.cronutils.utils.VisibleForTesting;
 /*
  * Copyright 2015 jmrozanec
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -37,53 +38,53 @@ class ExecutionTimeBuilder {
     private TimeNode minutes;
     private TimeNode seconds;
 
-    ExecutionTimeBuilder(CronDefinition cronDefinition){
+    protected ExecutionTimeBuilder(CronDefinition cronDefinition){
         this.cronDefinition = cronDefinition;
     }
 
-    ExecutionTimeBuilder forSecondsMatching(CronField cronField){
+    protected ExecutionTimeBuilder forSecondsMatching(CronField cronField){
         validate(CronFieldName.SECOND, cronField);
         seconds = new TimeNode(FieldValueGeneratorFactory.forCronField(cronField).generateCandidates(0,59));
         return this;
     }
 
-    ExecutionTimeBuilder forMinutesMatching(CronField cronField){
+    protected ExecutionTimeBuilder forMinutesMatching(CronField cronField){
         validate(CronFieldName.MINUTE, cronField);
         minutes = new TimeNode(FieldValueGeneratorFactory.forCronField(cronField).generateCandidates(0,59));
         return this;
     }
 
-    ExecutionTimeBuilder forHoursMatching(CronField cronField){
+    protected ExecutionTimeBuilder forHoursMatching(CronField cronField){
         validate(CronFieldName.HOUR, cronField);
         hours = new TimeNode(FieldValueGeneratorFactory.forCronField(cronField).generateCandidates(0,23));
         return this;
     }
 
-    ExecutionTimeBuilder forMonthsMatching(CronField cronField){
+    protected ExecutionTimeBuilder forMonthsMatching(CronField cronField){
         validate(CronFieldName.MONTH, cronField);
         months = new TimeNode(FieldValueGeneratorFactory.forCronField(cronField).generateCandidates(1,12));
         return this;
     }
 
-    ExecutionTimeBuilder forYearsMatching(CronField cronField){
+    protected ExecutionTimeBuilder forYearsMatching(CronField cronField){
         validate(CronFieldName.YEAR, cronField);
         yearsValueGenerator = FieldValueGeneratorFactory.forCronField(cronField);
         return this;
     }
 
-    ExecutionTimeBuilder forDaysOfWeekMatching(CronField cronField){
+    protected ExecutionTimeBuilder forDaysOfWeekMatching(CronField cronField){
         validate(CronFieldName.DAY_OF_WEEK, cronField);
         daysOfWeekCronField = cronField;
         return this;
     }
 
-    ExecutionTimeBuilder forDaysOfMonthMatching(CronField cronField){
+    protected ExecutionTimeBuilder forDaysOfMonthMatching(CronField cronField){
         validate(CronFieldName.DAY_OF_MONTH, cronField);
         daysOfMonthCronField = cronField;
         return this;
     }
 
-    ExecutionTime build(){
+    protected ExecutionTime build(){
         boolean lowestAssigned = false;
         if(seconds==null){
             seconds=timeNodeLowest(CronFieldName.SECOND, 0, 59);
