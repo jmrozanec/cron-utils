@@ -18,12 +18,7 @@ import com.cronutils.model.field.value.SpecialChar;
  * limitations under the License.
  */
 public class FieldValueGeneratorFactory {
-    private static FieldValueGeneratorFactory factory = new FieldValueGeneratorFactory();
     private FieldValueGeneratorFactory(){}
-
-    public static FieldValueGeneratorFactory instance(){
-        return factory;
-    }
 
     public static FieldValueGenerator forCronField(CronField cronField){
         FieldExpression fieldExpression = cronField.getExpression();

@@ -26,30 +26,22 @@ import static org.mockito.Mockito.when;
  * limitations under the License.
  */
 public class FieldValueGeneratorFactoryTest {
-    private FieldValueGeneratorFactory fieldValueGeneratorFactory;
-
     private CronField mockCronField;
     @Before
     public void setUp() throws Exception {
-        fieldValueGeneratorFactory = FieldValueGeneratorFactory.instance();
         mockCronField = mock(CronField.class);
-    }
-
-    @Test
-    public void testInstance() throws Exception {
-        assertNotNull(FieldValueGeneratorFactory.instance());
     }
 
     @Test
     public void testForCronFieldAlways() throws Exception {
         when(mockCronField.getExpression()).thenReturn(mock(Always.class));
-        assertEquals(AlwaysFieldValueGenerator.class, fieldValueGeneratorFactory.forCronField(mockCronField).getClass());
+        assertEquals(AlwaysFieldValueGenerator.class, FieldValueGeneratorFactory.forCronField(mockCronField).getClass());
     }
 
     @Test
     public void testForCronFieldAnd() throws Exception {
         when(mockCronField.getExpression()).thenReturn(mock(And.class));
-        assertEquals(AndFieldValueGenerator.class, fieldValueGeneratorFactory.forCronField(mockCronField).getClass());
+        assertEquals(AndFieldValueGenerator.class, FieldValueGeneratorFactory.forCronField(mockCronField).getClass());
     }
 
     @Test
