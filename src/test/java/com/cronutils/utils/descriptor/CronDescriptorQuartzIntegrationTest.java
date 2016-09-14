@@ -107,6 +107,14 @@ public class CronDescriptorQuartzIntegrationTest {
     public void testEveryDayEveryFourHoursFromHour2() throws Exception {
         assertExpression("0 0 2/4 * * ?", "");
     }
+    
+    /*
+     * Issue #103
+     */
+    @Test
+    public void testDescriptionDayOfWeek() {
+        assertExpression("* 0/1 * ? * TUE", "every minute at Tuesday day");
+    }
 
     private void assertExpression(String cron, String description){
         assertEquals(description, descriptor.describe(parser.parse(cron)));
