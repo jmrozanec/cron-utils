@@ -36,6 +36,13 @@ public class ValidationFieldExpressionVisitor implements FieldExpressionVisitor 
 		this.strictRanges = strictRanges;
 	}
 
+	protected ValidationFieldExpressionVisitor(FieldConstraints constraints, StringValidations stringValidation, boolean strictRanges) {
+        this.constraints = constraints;
+        this.stringValidations = stringValidation;
+        this.strictRanges = strictRanges;
+    }
+
+	
 	@Override
 	public FieldExpression visit(FieldExpression expression) {
 		String unsupportedChars = stringValidations.removeValidChars(expression.asString());
@@ -68,10 +75,13 @@ public class ValidationFieldExpressionVisitor implements FieldExpressionVisitor 
 		return always;
 	}
 
-	@Override
-	public And visit(And and) {
-		return and;
-	}
+    @Override
+    public And visit(And and) {
+        for(FieldExpression expression: and.getExpressions()) {
+            visit(expression);
+        }
+        return and;
+    }
 
 	@Override
 	public Between visit(Between between) {
