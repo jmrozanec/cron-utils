@@ -32,6 +32,12 @@ public class ValidationFieldExpressionVisitor implements FieldExpressionVisitor 
         this.stringValidations = new StringValidations(constraints);
         this.strictRanges = strictRanges;
     }
+    
+    protected ValidationFieldExpressionVisitor(FieldConstraints constraints, StringValidations stringValidations, boolean strictRanges){
+        this.constraints = constraints;
+        this.stringValidations = stringValidations;
+        this.strictRanges = strictRanges;
+    }
 
     @Override
     public FieldExpression visit(FieldExpression expression) {
@@ -66,6 +72,9 @@ public class ValidationFieldExpressionVisitor implements FieldExpressionVisitor 
 
     @Override
     public And visit(And and) {
+        for(FieldExpression exp: and.getExpressions()) {
+            visit(exp);
+        }
         return and;
     }
 
