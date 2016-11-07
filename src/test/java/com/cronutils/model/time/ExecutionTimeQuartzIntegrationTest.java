@@ -407,7 +407,23 @@ public class ExecutionTimeQuartzIntegrationTest {
 
         assertEquals(ZonedDateTime.of(2016, 8, 31, 0, 0, 0,0, ZoneId.of("UTC")), nextRun);
     }
-    
+
+    /**
+     * nexExecution()
+     * throw exceptions when DAY-OF-MONTH field bigger than param month length
+     */
+    @Test
+    public void bigNumbersOnDayOfMonthField(){
+        Cron cron = parser.parse("0 0 0 31 * ?");
+        ExecutionTime executionTime = ExecutionTime.forCron(cron);
+        ZonedDateTime now = ZonedDateTime.of(2016, 11, 1, 0, 0, 0, 0, ZoneId.of("UTC"));
+
+        //nextRun expected to be  2016-12-31 00:00:00 000
+        //quartz-2.2.3 return the right date
+        ZonedDateTime nextRun = executionTime.nextExecution(now);
+
+        assertEquals(ZonedDateTime.of(2016, 12, 31, 0, 0, 0, 0, ZoneId.of("UTC")), nextRun);
+    }
     @Test
     public void noSpecificDayOfMonthEvaluatedOnLastDay() {
     	Cron cron = parser.parse("0 * * ? * *");
