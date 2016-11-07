@@ -412,7 +412,7 @@ public class ExecutionTimeQuartzIntegrationTest {
      * nexExecution()
      * throw exceptions when DAY-OF-MONTH field bigger than param month length
      */
-    @Test
+    @Test(expected = java.lang.IllegalArgumentException.class)
     public void bigNumbersOnDayOfMonthField(){
         Cron cron = parser.parse("0 0 0 31 * ?");
         ExecutionTime executionTime = ExecutionTime.forCron(cron);
