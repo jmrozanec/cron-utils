@@ -73,7 +73,7 @@ class AndFieldValueGenerator extends FieldValueGenerator {
                 reference = generateNextValue(reference);
             }
         } catch (NoSuchValueException e) {
-            e.printStackTrace();
+//            e.printStackTrace();
         }
         return values;
     }
