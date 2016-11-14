@@ -2,14 +2,19 @@ package com.cronutils.model.time;
 
 import com.cronutils.descriptor.CronDescriptor;
 import com.cronutils.model.Cron;
+import com.cronutils.model.CronType;
+import com.cronutils.model.definition.CronDefinition;
 import com.cronutils.model.definition.CronDefinitionBuilder;
 import com.cronutils.parser.CronParser;
+
 import org.junit.Before;
 import org.junit.Test;
 
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.List;
 
 import static com.cronutils.model.CronType.QUARTZ;
 import static java.time.ZoneOffset.UTC;
@@ -396,6 +401,42 @@ public class ExecutionTimeQuartzIntegrationTest {
     }
 
     /**
+     * Issue #110: DateTimeException thrown from ExecutionTime.nextExecution
+     */
+    @Test
+    public void noDateTimeExceptionIsThrownGeneratingNextExecutionWithDayOfWeekFilters() {
+        ZonedDateTime wednesdayNov9 = ZonedDateTime.of(2016, 11, 9, 1, 1, 0, 0, ZoneId.of("UTC"));
+        ZonedDateTime startOfThursdayNov10 = wednesdayNov9.plusDays(1).truncatedTo(ChronoUnit.DAYS);
+        ZonedDateTime thursdayOct27 = ZonedDateTime.of(2016, 10, 27, 23, 55, 0, 0, ZoneId.of("UTC"));
+        String[] cronExpressionsExcludingWednesdayAndIncludingThursday = {
+                                    // Non-range type day-of-week filters function as expected...
+                                     "0 0/1 * ? * 5"
+                                    ,"0 0/1 * ? * 2,5"
+                                    ,"0 0/1 * ? * THU"
+                                    ,"0 0/1 * ? * THU,SAT"
+                                    /* Range-based day-of-week filters are consitently broken. Exception thrown:
+                                     *  DateTimeException: Invalid value for DayOfMonth (valid values 1 - 28/31): 0
+                                     */
+                                    ,"0 0/1 * ? * 5-6"
+                                    ,"0 0/1 * ? * THU-FRI"
+                                    };
+        for(String cronExpression : cronExpressionsExcludingWednesdayAndIncludingThursday) {
+            assertExpectedNextExecution(cronExpression, wednesdayNov9, startOfThursdayNov10);
+            assertExpectedNextExecution(cronExpression, thursdayOct27, thursdayOct27.plusMinutes(1));
+        }
+        ZonedDateTime endOfThursdayNov3 = ZonedDateTime.of(2016, 11, 3, 23, 59, 0, 0, ZoneId.of("UTC"));
+        ZonedDateTime endOfFridayNov4 = endOfThursdayNov3.plusDays(1);
+        ZonedDateTime endOfSaturdayNov5 = endOfThursdayNov3.plusDays(2);
+        ZonedDateTime endOfMondayNov7 = endOfThursdayNov3.plusDays(4);
+        assertExpectedNextExecution("0 0/1 * ? * 5", endOfThursdayNov3, startOfThursdayNov10);
+        assertExpectedNextExecution("0 0/1 * ? * 2,5", endOfMondayNov7, startOfThursdayNov10);
+        assertExpectedNextExecution("0 0/1 * ? * THU", endOfThursdayNov3, startOfThursdayNov10);
+        assertExpectedNextExecution("0 0/1 * ? * THU,SAT", endOfSaturdayNov5, startOfThursdayNov10);
+        assertExpectedNextExecution("0 0/1 * ? * 5-6", endOfFridayNov4, startOfThursdayNov10); //110
+        assertExpectedNextExecution("0 0/1 * ? * THU-FRI", endOfFridayNov4, startOfThursdayNov10); //110
+    }
+
+    /**
      * Issue #117: Last Day of month Skipped on Quartz Expression: 0 * * ? * *
      */
     @Test
@@ -426,14 +467,14 @@ public class ExecutionTimeQuartzIntegrationTest {
     }
     @Test
     public void noSpecificDayOfMonthEvaluatedOnLastDay() {
-    	Cron cron = parser.parse("0 * * ? * *");
+        Cron cron = parser.parse("0 * * ? * *");
         ExecutionTime executionTime = ExecutionTime.forCron(cron);
         ZonedDateTime now = ZonedDateTime.of(2016, 8, 31, 10, 10, 0,0,ZoneId.of("UTC"));
         ZonedDateTime nextRun = executionTime.nextExecution(now);
 
         assertEquals(ZonedDateTime.of(2016, 8, 31, 10, 11, 0, 0, ZoneId.of("UTC")), nextRun);
     }
-    
+
     private Duration getMinimumInterval(String quartzPattern) {
         ExecutionTime et = ExecutionTime.forCron(parser.parse(quartzPattern));
         ZonedDateTime coolDay = ZonedDateTime.of(2016, 1, 1, 0, 0, 0, 0, UTC);
@@ -445,5 +486,23 @@ public class ExecutionTimeQuartzIntegrationTest {
 
     private ZonedDateTime truncateToSeconds(ZonedDateTime dateTime){
         return dateTime.truncatedTo(ChronoUnit.SECONDS);
+    }
+
+    private void assertExpectedNextExecution(String cronExpression, ZonedDateTime lastRun,
+                                             ZonedDateTime expectedNextRun) {
+
+        String testCaseDescription = "cron expression '" + cronExpression + "' with zdt " + lastRun;
+        System.out.println("TESTING: " + testCaseDescription);
+        CronDefinition cronDef = CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ);
+        CronParser parser = new CronParser(cronDef);
+        Cron cron = parser.parse(cronExpression);
+        ExecutionTime executionTime = ExecutionTime.forCron(cron);
+        try {
+            ZonedDateTime nextRun = executionTime.nextExecution(lastRun);
+            assertEquals(testCaseDescription, expectedNextRun, nextRun);
+        }
+        catch(DateTimeException e) {
+            fail("Issue #110: " + testCaseDescription + " led to " + e);
+        }
     }
 }
