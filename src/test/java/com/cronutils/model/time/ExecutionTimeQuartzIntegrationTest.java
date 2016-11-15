@@ -2,7 +2,6 @@ package com.cronutils.model.time;
 
 import com.cronutils.descriptor.CronDescriptor;
 import com.cronutils.model.Cron;
-import com.cronutils.model.CronType;
 import com.cronutils.model.definition.CronDefinition;
 import com.cronutils.model.definition.CronDefinitionBuilder;
 import com.cronutils.parser.CronParser;
@@ -13,8 +12,6 @@ import org.junit.Test;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.List;
 
 import static com.cronutils.model.CronType.QUARTZ;
 import static java.time.ZoneOffset.UTC;
@@ -493,7 +490,7 @@ public class ExecutionTimeQuartzIntegrationTest {
 
         String testCaseDescription = "cron expression '" + cronExpression + "' with zdt " + lastRun;
         System.out.println("TESTING: " + testCaseDescription);
-        CronDefinition cronDef = CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ);
+        CronDefinition cronDef = CronDefinitionBuilder.instanceDefinitionFor(QUARTZ);
         CronParser parser = new CronParser(cronDef);
         Cron cron = parser.parse(cronExpression);
         ExecutionTime executionTime = ExecutionTime.forCron(cron);
