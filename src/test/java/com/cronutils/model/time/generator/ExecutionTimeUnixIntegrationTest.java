@@ -9,6 +9,7 @@ import com.cronutils.parser.CronParser;
 import org.junit.Test;
 
 import java.time.Duration;
+import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
@@ -277,5 +278,22 @@ public class ExecutionTimeUnixIntegrationTest {
         ExecutionTime executionTime = ExecutionTime.forCron(parser.parse("1 0 * * tue"));
         ZonedDateTime date = ZonedDateTime.parse("2016-05-24T01:02:50Z");
         assertEquals(ZonedDateTime.parse("2016-05-31T00:01:00Z"), executionTime.nextExecution(date));
+    }
+
+    /**
+     * Issue #112: Calling nextExecution exactly on the first instant of the fallback hour (after the DST ends) makes it go back to DST.
+     * https://github.com/jmrozanec/cron-utils/issues/112
+     */
+    //TODO
+    public void testWrongNextExecutionOnDSTEnd() throws Exception {
+        ZoneId zone = ZoneId.of("America/Sao_Paulo");
+
+        //2016-02-20T23:00-03:00[America/Sao_Paulo], first minute of fallback hour
+        ZonedDateTime date = ZonedDateTime.ofInstant(Instant.ofEpochMilli(1456020000000L), zone);
+        ZonedDateTime expected = ZonedDateTime.ofInstant(Instant.ofEpochMilli(1456020000000L + 60000), zone);
+
+        CronParser parser = new CronParser(CronDefinitionBuilder.instanceDefinitionFor(CronType.UNIX));
+        ExecutionTime executionTime = ExecutionTime.forCron(parser.parse("* * * * *"));
+        assertEquals(expected, executionTime.nextExecution(date));
     }
 }
