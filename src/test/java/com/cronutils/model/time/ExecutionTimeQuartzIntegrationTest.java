@@ -473,6 +473,16 @@ public class ExecutionTimeQuartzIntegrationTest {
     }
 
     /**
+     * Issue #133:
+     * https://github.com/jmrozanec/cron-utils/issues/133
+     * Reported case: QUARTZ cron definition: 31 not supported on the day-of-month field
+     */
+    @Test
+    public void validate31IsSupportedForDoM(){
+        parser.parse("0 0 0 31 * ?");
+    }
+
+    /**
      * Issue #136: Bug exposed at PR #136
      * https://github.com/jmrozanec/cron-utils/pull/136
      * Reported case: when executing isMatch for a given range of dates,
