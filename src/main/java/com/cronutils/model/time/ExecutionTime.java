@@ -455,12 +455,8 @@ public class ExecutionTime {
         if (daysOfMonthCronField.getExpression() instanceof Always && daysOfWeekCronField.getExpression() instanceof Always) {
             candidates.addAll(createDayOfMonthValueGeneratorInstance(daysOfMonthCronField, year, month)
                     .generateCandidates(1, lengthOfMonth));
-        } else if (daysOfMonthCronField.getExpression() instanceof QuestionMark) {            
-        	// ZoneDateTime is 1-End of Month, candidate gen is 'exclusive'...0- Length+1 is the proper range? 
-            candidates.addAll(createDayOfWeekValueGeneratorInstance(daysOfWeekCronField, year, month, mondayDoWValue)
-                    .generateCandidates(1, lengthOfMonth));
-            
-            
+        } else if (daysOfMonthCronField.getExpression() instanceof QuestionMark) {
+            candidates.addAll(createDayOfWeekValueGeneratorInstance(daysOfWeekCronField, year, month, mondayDoWValue).generateCandidates(1, lengthOfMonth));
         } else if (daysOfWeekCronField.getExpression() instanceof QuestionMark) {
             candidates.addAll(createDayOfMonthValueGeneratorInstance(daysOfMonthCronField, year, month)
                     .generateCandidates(1, lengthOfMonth));

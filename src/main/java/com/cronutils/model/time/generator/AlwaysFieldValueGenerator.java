@@ -1,6 +1,7 @@
 package com.cronutils.model.time.generator;
 
 import com.cronutils.model.field.CronField;
+import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.field.expression.Always;
 import com.cronutils.model.field.expression.FieldExpression;
 
@@ -54,7 +55,9 @@ class AlwaysFieldValueGenerator extends FieldValueGenerator {
 
     @Override
     public boolean isMatch(int value) {
-        return cronField.getConstraints().isInRange(value);
+        return cronField.getField() == CronFieldName.DAY_OF_WEEK || cronField.getConstraints().isInRange(value);
+        //TODO for DoW we do not have enough information to reject.
+        //TODO We should think of a better strategy to propagate context information that would allow us perform validations.
     }
 
     @Override
