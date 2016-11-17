@@ -340,6 +340,33 @@ public class ExecutionTimeQuartzIntegrationTest {
     }
 
     /**
+     * nexExecution()
+     * throw exceptions when DAY-OF-MONTH field bigger than param month length
+     */
+    @Test(expected = java.lang.IllegalArgumentException.class)
+    public void bigNumbersOnDayOfMonthField(){
+        Cron cron = parser.parse("0 0 0 31 * ?");
+        ExecutionTime executionTime = ExecutionTime.forCron(cron);
+        ZonedDateTime now = ZonedDateTime.of(2016, 11, 1, 0, 0, 0, 0, ZoneId.of("UTC"));
+
+        //nextRun expected to be  2016-12-31 00:00:00 000
+        //quartz-2.2.3 return the right date
+        ZonedDateTime nextRun = executionTime.nextExecution(now);
+
+        assertEquals(ZonedDateTime.of(2016, 12, 31, 0, 0, 0, 0, ZoneId.of("UTC")), nextRun);
+    }
+
+    @Test
+    public void noSpecificDayOfMonthEvaluatedOnLastDay() {
+        Cron cron = parser.parse("0 * * ? * *");
+        ExecutionTime executionTime = ExecutionTime.forCron(cron);
+        ZonedDateTime now = ZonedDateTime.of(2016, 8, 31, 10, 10, 0,0,ZoneId.of("UTC"));
+        ZonedDateTime nextRun = executionTime.nextExecution(now);
+
+        assertEquals(ZonedDateTime.of(2016, 8, 31, 10, 11, 0, 0, ZoneId.of("UTC")), nextRun);
+    }
+
+    /**
      * Issue #75: W flag not behaving as expected: did not return first workday of month, but an exception
      */
     @Test
@@ -388,16 +415,6 @@ public class ExecutionTimeQuartzIntegrationTest {
     }
 
     /**
-     * Issue #114: Describe day of week is incorrect
-     */
-    @Test
-    public void descriptionForExpressionTellsWrongDoW(){
-        CronDescriptor descriptor = CronDescriptor.instance();
-        Cron quartzCron = parser.parse("0 0 8 ? * SUN *");
-        //TODO enable: assertEquals("at 08:00 at Sunday day", descriptor.describe(quartzCron));
-    }
-
-    /**
      * Issue #110: DateTimeException thrown from ExecutionTime.nextExecution
      */
     @Test
@@ -406,17 +423,17 @@ public class ExecutionTimeQuartzIntegrationTest {
         ZonedDateTime startOfThursdayNov10 = wednesdayNov9.plusDays(1).truncatedTo(ChronoUnit.DAYS);
         ZonedDateTime thursdayOct27 = ZonedDateTime.of(2016, 10, 27, 23, 55, 0, 0, ZoneId.of("UTC"));
         String[] cronExpressionsExcludingWednesdayAndIncludingThursday = {
-                                    // Non-range type day-of-week filters function as expected...
-                                     "0 0/1 * ? * 5",
-                                    "0 0/1 * ? * 2,5",
-                                    "0 0/1 * ? * THU",
-                                    "0 0/1 * ? * THU,SAT",
+                // Non-range type day-of-week filters function as expected...
+                "0 0/1 * ? * 5",
+                "0 0/1 * ? * 2,5",
+                "0 0/1 * ? * THU",
+                "0 0/1 * ? * THU,SAT",
                                     /* Range-based day-of-week filters are consitently broken. Exception thrown:
                                      *  DateTimeException: Invalid value for DayOfMonth (valid values 1 - 28/31): 0
                                      */
-                                    "0 0/1 * ? * 5-6",
-                                    "0 0/1 * ? * THU-FRI"
-                                    };
+                "0 0/1 * ? * 5-6",
+                "0 0/1 * ? * THU-FRI"
+        };
         for(String cronExpression : cronExpressionsExcludingWednesdayAndIncludingThursday) {
             assertExpectedNextExecution(cronExpression, wednesdayNov9, startOfThursdayNov10);
             assertExpectedNextExecution(cronExpression, thursdayOct27, thursdayOct27.plusMinutes(1));
@@ -434,6 +451,16 @@ public class ExecutionTimeQuartzIntegrationTest {
     }
 
     /**
+     * Issue #114: Describe day of week is incorrect
+     */
+    @Test
+    public void descriptionForExpressionTellsWrongDoW(){
+        CronDescriptor descriptor = CronDescriptor.instance();
+        Cron quartzCron = parser.parse("0 0 8 ? * SUN *");
+        //TODO enable: assertEquals("at 08:00 at Sunday day", descriptor.describe(quartzCron));
+    }
+
+    /**
      * Issue #117: Last Day of month Skipped on Quartz Expression: 0 * * ? * *
      */
     @Test
@@ -447,29 +474,47 @@ public class ExecutionTimeQuartzIntegrationTest {
     }
 
     /**
-     * nexExecution()
-     * throw exceptions when DAY-OF-MONTH field bigger than param month length
+     * Issue #123:
+     * https://github.com/jmrozanec/cron-utils/issues/123
+     * Reported case: next execution time is set improperly
+     * Potential duplicate: https://github.com/jmrozanec/cron-utils/issues/124
      */
-    @Test(expected = java.lang.IllegalArgumentException.class)
-    public void bigNumbersOnDayOfMonthField(){
-        Cron cron = parser.parse("0 0 0 31 * ?");
-        ExecutionTime executionTime = ExecutionTime.forCron(cron);
-        ZonedDateTime now = ZonedDateTime.of(2016, 11, 1, 0, 0, 0, 0, ZoneId.of("UTC"));
-
-        //nextRun expected to be  2016-12-31 00:00:00 000
-        //quartz-2.2.3 return the right date
-        ZonedDateTime nextRun = executionTime.nextExecution(now);
-
-        assertEquals(ZonedDateTime.of(2016, 12, 31, 0, 0, 0, 0, ZoneId.of("UTC")), nextRun);
-    }
     @Test
-    public void noSpecificDayOfMonthEvaluatedOnLastDay() {
-        Cron cron = parser.parse("0 * * ? * *");
-        ExecutionTime executionTime = ExecutionTime.forCron(cron);
-        ZonedDateTime now = ZonedDateTime.of(2016, 8, 31, 10, 10, 0,0,ZoneId.of("UTC"));
-        ZonedDateTime nextRun = executionTime.nextExecution(now);
+    public void testNextExecutionTimeProperlySet(){
+        CronParser quartzCronParser = new CronParser(CronDefinitionBuilder.instanceDefinitionFor(QUARTZ));
+        String quartzCronExpression2 = "0 5/15 * * * ? *";
+        Cron parsedQuartzCronExpression = quartzCronParser.parse(quartzCronExpression2);
 
-        assertEquals(ZonedDateTime.of(2016, 8, 31, 10, 11, 0, 0, ZoneId.of("UTC")), nextRun);
+        ExecutionTime executionTime = ExecutionTime.forCron(parsedQuartzCronExpression);
+
+        ZonedDateTime zonedDateTime = LocalDateTime.of(2016, 7, 30, 15, 0, 0, 527).atZone(ZoneOffset.UTC);
+
+        ZonedDateTime nextExecution = executionTime.nextExecution(zonedDateTime);
+        ZonedDateTime lastExecution = executionTime.lastExecution(zonedDateTime);
+
+        assertEquals("2016-07-30T14:50Z", lastExecution.toString());
+        assertEquals("2016-07-30T15:05Z", nextExecution.toString());
+    }
+
+    /**
+     * Issue #124:
+     * https://github.com/jmrozanec/cron-utils/issues/124
+     * Reported case: next execution time is set improperly
+     * Potential duplicate: https://github.com/jmrozanec/cron-utils/issues/123
+     */
+    @Test
+    public void testNextExecutionTimeProperlySet2(){
+        CronParser quartzCronParser = new CronParser(CronDefinitionBuilder.instanceDefinitionFor(QUARTZ));
+        String quartzCronExpression2 = "0 3/27 10-14 * * ? *";
+        Cron parsedQuartzCronExpression = quartzCronParser.parse(quartzCronExpression2);
+
+        ExecutionTime executionTime = ExecutionTime.forCron(parsedQuartzCronExpression);
+
+        ZonedDateTime zonedDateTime = LocalDateTime.of(2016, 1, 1, 10, 0, 0, 0).atZone(ZoneOffset.UTC);
+
+        ZonedDateTime nextExecution = executionTime.nextExecution(zonedDateTime);
+
+        assertEquals("2016-01-01T10:03Z", nextExecution.toString());
     }
 
     /**

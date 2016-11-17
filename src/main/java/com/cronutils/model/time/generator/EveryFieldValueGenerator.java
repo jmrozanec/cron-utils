@@ -1,8 +1,10 @@
 package com.cronutils.model.time.generator;
 
 import com.cronutils.model.field.CronField;
+import com.cronutils.model.field.expression.Between;
 import com.cronutils.model.field.expression.Every;
 import com.cronutils.model.field.expression.FieldExpression;
+import com.cronutils.model.field.expression.On;
 import com.cronutils.utils.VisibleForTesting;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -70,6 +72,9 @@ class EveryFieldValueGenerator extends FieldValueGenerator {
     protected List<Integer> generateCandidatesNotIncludingIntervalExtremes(int start, int end) {
         List<Integer>values = new ArrayList<>();
         try {
+            if(start!=offset()){
+                values.add(offset());
+            }
             int reference = generateNextValue(start);
             while(reference<end){
                 values.add(reference);
@@ -82,7 +87,7 @@ class EveryFieldValueGenerator extends FieldValueGenerator {
     @Override
     public boolean isMatch(int value) {
         Every every = (Every)cronField.getExpression();
-        int start = cronField.getConstraints().getStartRange();
+        int start = offset();
         return ((value-start) % every.getPeriod().getValue()) == 0;
     }
 
@@ -93,6 +98,10 @@ class EveryFieldValueGenerator extends FieldValueGenerator {
 
     @VisibleForTesting
     int offset(){
+        FieldExpression expression = ((Every)cronField.getExpression()).getExpression();
+        if(expression instanceof On){
+            return ((On) expression).getTime().getValue();
+        }
         return cronField.getConstraints().getStartRange();
     }
 }
