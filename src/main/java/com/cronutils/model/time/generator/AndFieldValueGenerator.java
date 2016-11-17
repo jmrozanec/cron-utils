@@ -2,6 +2,8 @@ package com.cronutils.model.time.generator;
 
 import com.cronutils.model.field.CronField;
 import com.cronutils.model.field.expression.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +23,7 @@ import java.util.stream.Collectors;
  * limitations under the License.
  */
 class AndFieldValueGenerator extends FieldValueGenerator {
+    private static final Logger log = LoggerFactory.getLogger(AndFieldValueGenerator.class);
     public AndFieldValueGenerator(CronField cronField) {
         super(cronField);
     }
@@ -73,7 +76,7 @@ class AndFieldValueGenerator extends FieldValueGenerator {
                 reference = generateNextValue(reference);
             }
         } catch (NoSuchValueException e) {
-            e.printStackTrace();
+            log.debug("Catched expected exception while generating candidates", e);
         }
         return values;
     }

@@ -296,4 +296,15 @@ public class ExecutionTimeUnixIntegrationTest {
         ExecutionTime executionTime = ExecutionTime.forCron(parser.parse("* * * * *"));
         assertEquals(expected, executionTime.nextExecution(date));
     }
+
+    /**
+     * Issue #125: Prints stack trace for NoSuchValueException for expressions with comma-separated values
+     * https://github.com/jmrozanec/cron-utils/issues/125
+     */
+    @Test
+    public void testNextExecutionProducesStackTraces() throws Exception {
+        CronParser parser = new CronParser(CronDefinitionBuilder.instanceDefinitionFor(CronType.UNIX));
+        ExecutionTime executionTime = ExecutionTime.forCron(parser.parse("45 1,13 * * *"));
+        executionTime.nextExecution(ZonedDateTime.parse("2016-05-24T01:02:50Z"));
+    }
 }
