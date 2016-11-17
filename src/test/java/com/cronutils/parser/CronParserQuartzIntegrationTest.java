@@ -238,7 +238,7 @@ public class CronParserQuartzIntegrationTest {
     public void testMissingExpressionAndInvalidCharsInErrorMessage(){
         thrown.expect(IllegalArgumentException.class);
         String cronexpression = "* * -1 * * ?";
-        thrown.expectMessage("Invalid expression! Expression: -1 does not describe a range. Negative numbers are not allowed.");
+        thrown.expectMessage(String.format("Failed to parse '%s'. Invalid expression! Expression: -1 does not describe a range. Negative numbers are not allowed.", cronexpression));
         assertNotNull(ExecutionTime.forCron(parser.parse(cronexpression)));
     }
 

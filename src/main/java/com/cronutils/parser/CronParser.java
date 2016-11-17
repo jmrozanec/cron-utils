@@ -84,11 +84,15 @@ public class CronParser {
 			throw new IllegalArgumentException(
 					String.format("Cron expression contains %s parts but we expect one of %s", expressionLength, expressions.keySet()));
 		}
-		int size = fields.size();
-		List<CronField> results = new ArrayList<>(size + 1);
-		for (int j = 0; j < size; j++) {
-			results.add(fields.get(j).parse(expressionParts[j]));
+		try{
+			int size = fields.size();
+			List<CronField> results = new ArrayList<>(size + 1);
+			for (int j = 0; j < size; j++) {
+				results.add(fields.get(j).parse(expressionParts[j]));
+			}
+			return new Cron(cronDefinition, results).validate();
+		}catch (IllegalArgumentException e){
+			throw new IllegalArgumentException(String.format("Failed to parse '%s'. %s", expression, e.getMessage()), e);
 		}
-		return new Cron(cronDefinition, results).validate();
 	}
 }
