@@ -104,7 +104,7 @@ class ExecutionTimeBuilder {
             FieldConstraints constraints = getConstraint(CronFieldName.DAY_OF_MONTH);
             daysOfMonthCronField=lowestAssigned?
                     new CronField(CronFieldName.DAY_OF_MONTH, new Always(), constraints):
-                    new CronField(CronFieldName.DAY_OF_MONTH, new On(new IntegerFieldValue(0)), constraints);
+                    new CronField(CronFieldName.DAY_OF_MONTH, new On(new IntegerFieldValue(1)), constraints);
         }else{
             lowestAssigned=true;
         }
@@ -112,12 +112,12 @@ class ExecutionTimeBuilder {
             FieldConstraints constraints = getConstraint(CronFieldName.DAY_OF_WEEK);
             daysOfWeekCronField=lowestAssigned?
                     new CronField(CronFieldName.DAY_OF_WEEK, new Always(), constraints):
-                    new CronField(CronFieldName.DAY_OF_WEEK, new On(new IntegerFieldValue(0)), constraints);
+                    new CronField(CronFieldName.DAY_OF_WEEK, new On(new IntegerFieldValue(1)), constraints);
         }else{
             lowestAssigned=true;
         }
         if(months==null){
-            months=lowestAssigned?timeNodeAlways(CronFieldName.MONTH, 0, 31):timeNodeLowest(CronFieldName.MONTH, 0, 31);
+            months=lowestAssigned?timeNodeAlways(CronFieldName.MONTH, 1, 12):timeNodeLowest(CronFieldName.MONTH, 1, 12);
         }
         if(yearsValueGenerator==null){
             yearsValueGenerator =

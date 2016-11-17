@@ -400,22 +400,22 @@ public class ExecutionTimeQuartzIntegrationTest {
     /**
      * Issue #110: DateTimeException thrown from ExecutionTime.nextExecution
      */
-    //TODO
+    @Test
     public void noDateTimeExceptionIsThrownGeneratingNextExecutionWithDayOfWeekFilters() {
         ZonedDateTime wednesdayNov9 = ZonedDateTime.of(2016, 11, 9, 1, 1, 0, 0, ZoneId.of("UTC"));
         ZonedDateTime startOfThursdayNov10 = wednesdayNov9.plusDays(1).truncatedTo(ChronoUnit.DAYS);
         ZonedDateTime thursdayOct27 = ZonedDateTime.of(2016, 10, 27, 23, 55, 0, 0, ZoneId.of("UTC"));
         String[] cronExpressionsExcludingWednesdayAndIncludingThursday = {
                                     // Non-range type day-of-week filters function as expected...
-                                     "0 0/1 * ? * 5"
-                                    ,"0 0/1 * ? * 2,5"
-                                    ,"0 0/1 * ? * THU"
-                                    ,"0 0/1 * ? * THU,SAT"
+                                     "0 0/1 * ? * 5",
+                                    "0 0/1 * ? * 2,5",
+                                    "0 0/1 * ? * THU",
+                                    "0 0/1 * ? * THU,SAT",
                                     /* Range-based day-of-week filters are consitently broken. Exception thrown:
                                      *  DateTimeException: Invalid value for DayOfMonth (valid values 1 - 28/31): 0
                                      */
-                                    ,"0 0/1 * ? * 5-6"
-                                    ,"0 0/1 * ? * THU-FRI"
+                                    "0 0/1 * ? * 5-6",
+                                    "0 0/1 * ? * THU-FRI"
                                     };
         for(String cronExpression : cronExpressionsExcludingWednesdayAndIncludingThursday) {
             assertExpectedNextExecution(cronExpression, wednesdayNov9, startOfThursdayNov10);
