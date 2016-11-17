@@ -230,6 +230,18 @@ public class CronParserQuartzIntegrationTest {
         assertNotNull(ExecutionTime.forCron(parser.parse("0/1 * * * * *")));
     }
 
+    /**
+     * Issue #109: Missing expression and invalid chars in error message
+     * https://github.com/jmrozanec/cron-utils/issues/109
+     */
+    @Test
+    public void testMissingExpressionAndInvalidCharsInErrorMessage(){
+        thrown.expect(IllegalArgumentException.class);
+        String cronexpression = "* * -1 * * ?";
+        thrown.expectMessage("Invalid expression! Expression: -1 does not describe a range. Negative numbers are not allowed.");
+        assertNotNull(ExecutionTime.forCron(parser.parse(cronexpression)));
+    }
+
     @Test
     public void testErrorAbout2Parts(){
         thrown.expect(IllegalArgumentException.class);

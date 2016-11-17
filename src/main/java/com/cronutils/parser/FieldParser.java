@@ -122,6 +122,9 @@ public class FieldParser {
 
 	@VisibleForTesting
 	protected FieldExpression parseBetween(String[] array) {
+		if(array[0].isEmpty() || array[1].isEmpty()){
+			throw new IllegalArgumentException(String.format("Invalid expression! Expression: %s-%s does not describe a range. Negative numbers are not allowed.", array[0], array[1]));
+		}
 		if (array[1].contains(SLASH)) {
 			String[] every = array[1].split(SLASH);
 			return new Every(new Between(map(array[0]), map(every[0])), mapToIntegerFieldValue(every[1]));

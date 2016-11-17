@@ -67,7 +67,9 @@ public class ValidationFieldExpressionVisitor implements FieldExpressionVisitor 
 			}
 		}
 		throw new IllegalArgumentException(
-				String.format("Invalid chars in expression! Expression: %s Invalid chars: %s", expression.asString(), unsupportedChars));
+				String.format("Invalid chars in expression! Expression: %s Invalid chars: %s",
+						expression.asString(), unsupportedChars)
+		);
 	}
 
 	@Override
