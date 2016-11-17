@@ -6,6 +6,7 @@ import com.cronutils.model.definition.CronDefinitionBuilder;
 import com.cronutils.parser.CronParser;
 import org.junit.Test;
 
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
 import static java.time.ZoneOffset.UTC;
@@ -139,5 +140,32 @@ public class ExecutionTimeCustomDefinitionIntegrationTest {
         assertEquals(1, ExecutionTime.forCron(cron).nextExecution(sameDayBeforeEventStartDateTime).getDayOfMonth());
         ZonedDateTime sameDayAfterEventStartDateTime = ZonedDateTime.parse("1970-01-01T12:00:00.000-03:00");
         assertEquals(2, ExecutionTime.forCron(cron).nextExecution(sameDayAfterEventStartDateTime).getDayOfMonth());
+    }
+
+    /**
+     * Issue #136: Bug exposed at PR #136
+     * https://github.com/jmrozanec/cron-utils/pull/136
+     * Reported case: when executing isMatch for a given range of dates,
+     * if date is invalid, we get an exception, not a boolean as response.
+     */
+    @Test
+    public void testMatchWorksAsExpectedForCustomCronsWhenPreviousOrNextOccurrenceIsMissing() {
+        CronDefinition cronDefinition = CronDefinitionBuilder.defineCron()
+                .withDayOfMonth()
+                .supportsL().supportsW()
+                .and()
+                .withMonth().and()
+                .withYear()
+                .and().instance();
+
+        CronParser parser = new CronParser(cronDefinition);
+        Cron cron = parser.parse("05 05 2004");
+        ExecutionTime executionTime = ExecutionTime.forCron(cron);
+        ZonedDateTime start = ZonedDateTime.of(2004, 5, 5, 23, 55, 0, 0, ZoneId.of("UTC"));
+        ZonedDateTime end = ZonedDateTime.of(2004, 5, 6, 1, 0, 0, 0, ZoneId.of("UTC"));
+        while(start.compareTo(end)<0){
+            assertTrue(executionTime.isMatch(start)==(start.getDayOfMonth()==5));
+            start = start.plusMinutes(1);
+        }
     }
 }

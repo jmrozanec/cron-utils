@@ -472,6 +472,24 @@ public class ExecutionTimeQuartzIntegrationTest {
         assertEquals(ZonedDateTime.of(2016, 8, 31, 10, 11, 0, 0, ZoneId.of("UTC")), nextRun);
     }
 
+    /**
+     * Issue #136: Bug exposed at PR #136
+     * https://github.com/jmrozanec/cron-utils/pull/136
+     * Reported case: when executing isMatch for a given range of dates,
+     * if date is invalid, we get an exception, not a boolean as response.
+     */
+    @Test
+    public void validateIsMatchForRangeOfDates(){
+        Cron cron = parser.parse("* * * 05 05 ? 2004");
+        ExecutionTime executionTime = ExecutionTime.forCron(cron);
+        ZonedDateTime start = ZonedDateTime.of(2004, 5, 5, 23, 55, 0, 0, ZoneId.of("UTC"));
+        ZonedDateTime end = ZonedDateTime.of(2004, 5, 6, 1, 0, 0, 0, ZoneId.of("UTC"));
+        while(start.compareTo(end)<0){
+            executionTime.isMatch(start);
+            start = start.plusMinutes(1);
+        }
+    }
+
     private Duration getMinimumInterval(String quartzPattern) {
         ExecutionTime et = ExecutionTime.forCron(parser.parse(quartzPattern));
         ZonedDateTime coolDay = ZonedDateTime.of(2016, 1, 1, 0, 0, 0, 0, UTC);

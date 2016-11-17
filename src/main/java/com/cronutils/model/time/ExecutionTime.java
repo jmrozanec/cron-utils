@@ -18,7 +18,7 @@ import org.slf4j.LoggerFactory;
 import java.time.*;
 import java.util.*;
 
-import static com.cronutils.model.field.CronFieldName.DAY_OF_WEEK;
+import static com.cronutils.model.field.CronFieldName.*;
 import static com.cronutils.model.field.value.SpecialChar.QUESTION_MARK;
 import static com.cronutils.model.time.generator.FieldValueGeneratorFactory.createDayOfMonthValueGeneratorInstance;
 import static com.cronutils.model.time.generator.FieldValueGeneratorFactory.createDayOfWeekValueGeneratorInstance;
@@ -309,19 +309,30 @@ public class ExecutionTime {
     }
 
     private TimeNode generateDays(CronDefinition cronDefinition, ZonedDateTime date){
+        //If DoW is not supported in custom definition, we just return an empty list.
+        if(cronDefinition.getFieldDefinition(DAY_OF_WEEK)!=null && cronDefinition.getFieldDefinition(DAY_OF_MONTH)!=null){
+            return generateDaysDoWAndDoMSupported(cronDefinition, date);
+        }
+        if(cronDefinition.getFieldDefinition(DAY_OF_WEEK)==null){
+            return generateDayCandidatesUsingDoM(date);
+        }
+        return generateDayCandidatesUsingDoW(date, ((DayOfWeekFieldDefinition)cronDefinition.getFieldDefinition(DAY_OF_WEEK)).getMondayDoWValue());
+    }
+
+    private TimeNode generateDaysDoWAndDoMSupported(CronDefinition cronDefinition, ZonedDateTime date){
         boolean questionMarkSupported =
                 cronDefinition.getFieldDefinition(DAY_OF_WEEK).getConstraints().getSpecialChars().contains(QUESTION_MARK);
         if(questionMarkSupported){
             return new TimeNode(
-                    generateDayCandidatesQuestionMarkSupported(
-                            date.getYear(), 
+                    generateDayCandidatesQuestionMarkSupportedUsingDoWAndDoM(
+                            date.getYear(),
                             date.getMonthValue(),
                             ((DayOfWeekFieldDefinition)cronDefinition.getFieldDefinition(DAY_OF_WEEK)).getMondayDoWValue()
                     )
             );
         }else{
             return new TimeNode(
-                    generateDayCandidatesQuestionMarkNotSupported(
+                    generateDayCandidatesQuestionMarkNotSupportedUsingDoWAndDoM(
                             date.getYear(), date.getMonthValue(),
                             ((DayOfWeekFieldDefinition)
                                     cronDefinition.getFieldDefinition(DAY_OF_WEEK)
@@ -373,10 +384,47 @@ public class ExecutionTime {
      * @return true if date matches cron expression requirements, false otherwise.
      */
     public boolean isMatch(ZonedDateTime date){
-        return nextExecution(lastExecution(date)).equals(date);
+        try{
+            return nextExecution(lastExecution(date)).equals(date);
+        }catch (IllegalArgumentException e) {
+            boolean everythingInRange = false;
+            try {
+                everythingInRange = dateValuesInExpectedRanges(nextClosestMatch(date), date);
+            } catch (NoSuchValueException ignored) {}
+            try {
+                everythingInRange = dateValuesInExpectedRanges(previousClosestMatch(date), date);
+            } catch (NoSuchValueException ignored) {}
+            return everythingInRange;
+        }
     }
 
-	private List<Integer> generateDayCandidatesQuestionMarkNotSupported(int year, int month, WeekDay mondayDoWValue) {
+    private boolean dateValuesInExpectedRanges(ZonedDateTime validCronDate, ZonedDateTime date){
+        boolean everythingInRange = true;
+        if(cronDefinition.getFieldDefinition(YEAR)!=null){
+            everythingInRange = validCronDate.getYear()==date.getYear();
+        }
+        if(cronDefinition.getFieldDefinition(MONTH)!=null){
+            everythingInRange = everythingInRange && validCronDate.getMonthValue()==date.getMonthValue();
+        }
+        if(cronDefinition.getFieldDefinition(DAY_OF_MONTH)!=null){
+            everythingInRange = everythingInRange && validCronDate.getDayOfMonth()==date.getDayOfMonth();
+        }
+        if(cronDefinition.getFieldDefinition(DAY_OF_WEEK)!=null){
+            everythingInRange = everythingInRange && validCronDate.getDayOfWeek().getValue()==date.getDayOfWeek().getValue();
+        }
+        if(cronDefinition.getFieldDefinition(HOUR)!=null){
+            everythingInRange = everythingInRange && validCronDate.getHour()==date.getHour();
+        }
+        if(cronDefinition.getFieldDefinition(MINUTE)!=null){
+            everythingInRange = everythingInRange && validCronDate.getMinute()==date.getMinute();
+        }
+        if(cronDefinition.getFieldDefinition(SECOND)!=null){
+            everythingInRange = everythingInRange && validCronDate.getSecond()==date.getSecond();
+        }
+        return everythingInRange;
+    }
+
+	private List<Integer> generateDayCandidatesQuestionMarkNotSupportedUsingDoWAndDoM(int year, int month, WeekDay mondayDoWValue) {
         LocalDate date = LocalDate.of(year, month, 1);
         int lengthOfMonth = date.lengthOfMonth();
         Set<Integer> candidates = new HashSet<>();
@@ -400,7 +448,7 @@ public class ExecutionTime {
 		return candidatesList;
 	}
 
-    private List<Integer> generateDayCandidatesQuestionMarkSupported(int year, int month, WeekDay mondayDoWValue){
+    private List<Integer> generateDayCandidatesQuestionMarkSupportedUsingDoWAndDoM(int year, int month, WeekDay mondayDoWValue){
         LocalDate date = LocalDate.of(year, month, 1);
         int lengthOfMonth = date.lengthOfMonth();
         Set<Integer> candidates = new HashSet<>();
@@ -425,6 +473,24 @@ public class ExecutionTime {
         List<Integer> candidatesList = new ArrayList<>(candidates);
         Collections.sort(candidatesList);
         return candidatesList;
+    }
+
+    private TimeNode generateDayCandidatesUsingDoM(ZonedDateTime reference) {
+        LocalDate date = LocalDate.of(reference.getYear(), reference.getMonthValue(), 1);
+        int lengthOfMonth = date.lengthOfMonth();
+        Set<Integer> candidates = new HashSet<>(createDayOfMonthValueGeneratorInstance(daysOfMonthCronField, reference.getYear(), reference.getMonthValue()).generateCandidates(1, lengthOfMonth));
+        List<Integer> candidatesList = new ArrayList<>(candidates);
+        Collections.sort(candidatesList);
+        return new TimeNode(candidatesList);
+    }
+
+    private TimeNode generateDayCandidatesUsingDoW(ZonedDateTime reference, WeekDay mondayDoWValue){
+        LocalDate date = LocalDate.of(reference.getYear(), reference.getMonthValue(), 1);
+        int lengthOfMonth = date.lengthOfMonth();
+        Set<Integer> candidates = new HashSet<>(createDayOfWeekValueGeneratorInstance(daysOfWeekCronField, reference.getYear(), reference.getMonthValue(), mondayDoWValue).generateCandidates(0, lengthOfMonth+1));
+        List<Integer> candidatesList = new ArrayList<>(candidates);
+        Collections.sort(candidatesList);
+        return new TimeNode(candidatesList);
     }
 
     private ZonedDateTime initDateTime(int years, int monthsOfYear, int dayOfMonth,
