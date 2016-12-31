@@ -560,11 +560,11 @@ public class ExecutionTimeQuartzIntegrationTest {
         ExecutionTime executionTime = ExecutionTime.forCron(cron);
         ZonedDateTime start = ZonedDateTime.of(2016, 12, 27, 8, 15, 0, 0, ZoneId.of("UTC"));
         ZonedDateTime[] expected = new ZonedDateTime[]{
-            ZonedDateTime.of(2017, 1, 1, 16, 0, 0, 0, ZoneId.of("UTC")),
-            ZonedDateTime.of(2017, 1, 1, 18, 0, 0, 0, ZoneId.of("UTC")),
-            ZonedDateTime.of(2017, 2, 1, 16, 0, 0, 0, ZoneId.of("UTC")),
-            ZonedDateTime.of(2017, 2, 1, 18, 0, 0, 0, ZoneId.of("UTC")),
-            ZonedDateTime.of(2017, 3, 1, 16, 0, 0, 0, ZoneId.of("UTC")),
+            ZonedDateTime.of(2016, 12, 27, 16, 0, 0, 0, ZoneId.of("UTC")),
+            ZonedDateTime.of(2016, 12, 27, 18, 0, 0, 0, ZoneId.of("UTC")),
+            ZonedDateTime.of(2016, 12, 28, 16, 0, 0, 0, ZoneId.of("UTC")),
+            ZonedDateTime.of(2016, 12, 28, 18, 0, 0, 0, ZoneId.of("UTC")),
+            ZonedDateTime.of(2016, 12, 29, 16, 0, 0, 0, ZoneId.of("UTC")),
         };
 
         List<ZonedDateTime> actualList = new ArrayList<>();
