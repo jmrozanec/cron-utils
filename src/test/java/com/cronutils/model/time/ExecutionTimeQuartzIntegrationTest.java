@@ -14,7 +14,6 @@ import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static com.cronutils.model.CronType.QUARTZ;
@@ -576,7 +575,7 @@ public class ExecutionTimeQuartzIntegrationTest {
         }
         Object[] actual = actualList.toArray();
 
-        Assert.assertArrayEquals(expected, actual);
+        assertArrayEquals(expected, actual);
     }
 
     private Duration getMinimumInterval(String quartzPattern) {
