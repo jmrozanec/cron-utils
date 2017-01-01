@@ -1,5 +1,8 @@
 package com.cronutils.descriptor;
 
+import com.cronutils.mapper.WeekDay;
+import com.cronutils.model.field.definition.DayOfWeekFieldDefinition;
+import com.cronutils.model.field.definition.FieldDefinition;
 import com.cronutils.model.field.expression.FieldExpression;
 import com.cronutils.model.field.expression.On;
 
@@ -31,9 +34,13 @@ class DescriptionStrategyFactory {
      * @param expression - CronFieldExpression
      * @return - DescriptionStrategy instance, never null
      */
-    public static DescriptionStrategy daysOfWeekInstance(final ResourceBundle bundle, final FieldExpression expression) {
-        final Function<Integer, String> nominal = integer -> DayOfWeek.of(integer).getDisplayName(TextStyle.FULL, bundle.getLocale());
-
+    public static DescriptionStrategy daysOfWeekInstance(final ResourceBundle bundle, final FieldExpression expression, final FieldDefinition definition) {
+        
+    	final Function<Integer, String> nominal = integer -> {
+    		int diff = definition instanceof DayOfWeekFieldDefinition ? DayOfWeek.MONDAY.getValue() - ((DayOfWeekFieldDefinition) definition).getMondayDoWValue().getMondayDoWValue() : 0;
+        	return DayOfWeek.of(integer + diff < 1 ? 7 : integer + diff).getDisplayName(TextStyle.FULL, bundle.getLocale());
+        };
+        
         NominalDescriptionStrategy dow = new NominalDescriptionStrategy(bundle, nominal, expression);
 
         dow.addDescription(fieldExpression -> {
