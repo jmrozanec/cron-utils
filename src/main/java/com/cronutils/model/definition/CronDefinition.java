@@ -1,10 +1,15 @@
 package com.cronutils.model.definition;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.field.definition.FieldDefinition;
 import com.cronutils.utils.Preconditions;
-
-import java.util.*;
 
 /*
  * Copyright 2014 jmrozanec
@@ -75,6 +80,14 @@ public class CronDefinition {
         return new HashSet<FieldDefinition>(fieldDefinitions.values());
     }
 
+    /**
+     * Retrieve all cron field definitions values as map
+     * @return unmodifiable Map with key CronFieldName and values FieldDefinition, never null
+     */
+    public Map<CronFieldName, FieldDefinition> retrieveFieldDefinitionsAsMap(){
+        return Collections.unmodifiableMap(this.fieldDefinitions);
+    }
+    
     /**
      * Returns field definition for field name of this cron
      * @param cronFieldName cron field name
