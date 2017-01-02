@@ -27,7 +27,7 @@ public class Issue143Test {
         parser = new CronParser(CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ));
     }
     
-    @Test
+//    @Test
     public void testCase1() {
         ExecutionTime et = ExecutionTime.forCron(parser.parse("0 0 12 31 12 ? *"));
         ZonedDateTime actual = et.lastExecution(currentDateTime);
@@ -37,7 +37,7 @@ public class Issue143Test {
         Assert.assertEquals(expected, actual);
     }
     
-    @Test
+//    @Test
     public void testCase2() {
         ExecutionTime et = ExecutionTime.forCron(parser.parse("0 0 12 ? 12 SAT#5 *"));
         ZonedDateTime actual = et.lastExecution(currentDateTime);
@@ -47,7 +47,7 @@ public class Issue143Test {
         Assert.assertEquals(expected, actual);
     }
     
-    @Test
+//    @Test
     public void testCase3() {
         ExecutionTime et = ExecutionTime.forCron(parser.parse("0 0 12 31 1/1 ? *"));
         ZonedDateTime actual = et.lastExecution(currentDateTime);
@@ -57,7 +57,7 @@ public class Issue143Test {
         Assert.assertEquals(expected, actual);
     }
     
-    @Test
+//    @Test
     public void testCase4() {
         ExecutionTime et = ExecutionTime.forCron(parser.parse("0 0 12 ? 1/1 SAT#5 *"));
         ZonedDateTime actual = et.lastExecution(currentDateTime);
