@@ -6,12 +6,15 @@ import com.cronutils.model.definition.CronDefinition;
 import com.cronutils.model.definition.CronDefinitionBuilder;
 import com.cronutils.parser.CronParser;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.List;
 
 import static com.cronutils.model.CronType.QUARTZ;
 import static java.time.ZoneOffset.UTC;
@@ -543,6 +546,36 @@ public class ExecutionTimeQuartzIntegrationTest {
             executionTime.isMatch(start);
             start = start.plusMinutes(1);
         }
+    }
+
+    /**
+     * Issue #144
+     * https://github.com/jmrozanec/cron-utils/issues/144
+     * Reported case: periodic incremental hours does not start and end
+     * at beginning and end of given period
+     */
+    @Test
+    public void testPeriodicIncrementalHoursIgnorePeriodBounds() {
+        Cron cron = parser.parse("0 0 16-19/2 * * ?");
+        ExecutionTime executionTime = ExecutionTime.forCron(cron);
+        ZonedDateTime start = ZonedDateTime.of(2016, 12, 27, 8, 15, 0, 0, ZoneId.of("UTC"));
+        ZonedDateTime[] expected = new ZonedDateTime[]{
+            ZonedDateTime.of(2016, 12, 27, 16, 0, 0, 0, ZoneId.of("UTC")),
+            ZonedDateTime.of(2016, 12, 27, 18, 0, 0, 0, ZoneId.of("UTC")),
+            ZonedDateTime.of(2016, 12, 28, 16, 0, 0, 0, ZoneId.of("UTC")),
+            ZonedDateTime.of(2016, 12, 28, 18, 0, 0, 0, ZoneId.of("UTC")),
+            ZonedDateTime.of(2016, 12, 29, 16, 0, 0, 0, ZoneId.of("UTC")),
+        };
+
+        List<ZonedDateTime> actualList = new ArrayList<>();
+        for (int i = 1; i <= 5; i++) {
+            ZonedDateTime next = executionTime.nextExecution(start);
+            start = next;
+            actualList.add(next);
+        }
+        Object[] actual = actualList.toArray();
+
+        assertArrayEquals(expected, actual);
     }
 
     private Duration getMinimumInterval(String quartzPattern) {
