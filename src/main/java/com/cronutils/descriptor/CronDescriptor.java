@@ -3,6 +3,7 @@ package com.cronutils.descriptor;
 import com.cronutils.model.Cron;
 import com.cronutils.model.field.CronField;
 import com.cronutils.model.field.CronFieldName;
+import com.cronutils.model.field.definition.FieldDefinition;
 import com.cronutils.utils.Preconditions;
 
 import java.util.Locale;
@@ -55,12 +56,14 @@ public class CronDescriptor {
     public String describe(Cron cron) {
         Preconditions.checkNotNull(cron, "Cron must not be null");
         Map<CronFieldName, CronField> expressions = cron.retrieveFieldsAsMap();
+        Map<CronFieldName, FieldDefinition> fieldDefinitions = cron.getCronDefinition().retrieveFieldDefinitionsAsMap();
+        
         return
                 new StringBuilder()
                         .append(describeHHmmss(expressions)).append(" ")
                         .append(describeDayOfMonth(expressions)).append(" ")
                         .append(describeMonth(expressions)).append(" ")
-                        .append(describeDayOfWeek(expressions)).append(" ")
+                        .append(describeDayOfWeek(expressions, fieldDefinitions)).append(" ")
                         .append(describeYear(expressions))
                         .toString().replaceAll("\\s+", " ").trim();
     }
@@ -117,10 +120,12 @@ public class CronDescriptor {
      * @param fields - fields to describe;
      * @return description - String
      */
-    private String describeDayOfWeek(Map<CronFieldName, CronField> fields) {
+    private String describeDayOfWeek(Map<CronFieldName, CronField> fields, Map<CronFieldName, FieldDefinition> definitions) {
+    	
         String description = DescriptionStrategyFactory.daysOfWeekInstance(
 		        bundle,
-		        fields.containsKey(CronFieldName.DAY_OF_WEEK) ? fields.get(CronFieldName.DAY_OF_WEEK).getExpression() : null
+		        fields.containsKey(CronFieldName.DAY_OF_WEEK) ? fields.get(CronFieldName.DAY_OF_WEEK).getExpression() : null,
+		        definitions.containsKey(CronFieldName.DAY_OF_WEEK) ? definitions.get(CronFieldName.DAY_OF_WEEK) : null 
 		).describe();
 		return this.addExpressions(description, bundle.getString("day"), bundle.getString("days"));
     }
