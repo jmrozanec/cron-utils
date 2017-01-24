@@ -75,6 +75,12 @@ public class Cron {
         return cronDefinition;
     }
 
+    /**
+     * Validates this Cron instance by validating its cron expression.
+     * 
+     * @return this Cron instance
+     * @throws IllegalArgumentException if the cron expression is invalid
+     */
     public Cron validate(){
         for(Map.Entry<CronFieldName, CronField> field : retrieveFieldsAsMap().entrySet()){
             CronFieldName fieldName = field.getKey();
