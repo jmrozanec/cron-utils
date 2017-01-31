@@ -11,12 +11,8 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import java.time.LocalDate;
-import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.util.Date;
 import java.util.Locale;
-import java.util.TimeZone;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -88,6 +84,18 @@ public class CronParserQuartzIntegrationTest {
         parser.parse("* * * W-3 * ?");
     }
 
+    /**
+     * Issue #151: L-7 in day of month should work to find the day 7 days prior to the last day of the month.
+     */
+    @Test
+    public void testLSupportedInDoMRangeNextExecutionCalculation() {
+        ExecutionTime executionTime = ExecutionTime.forCron(parser.parse("0 15 10 L-7 * ?"));
+        ZonedDateTime now = ZonedDateTime.parse("2017-01-31T10:00:00Z");
+        ZonedDateTime nextExecution = executionTime.nextExecution(now);
+        ZonedDateTime assertDate = ZonedDateTime.parse("2017-02-21T10:15:00Z");
+        assertEquals(assertDate, nextExecution);
+    }
+
     @Test
     public void testNLSupported() throws Exception {
         parser.parse("* * * 3L * ?");
@@ -105,7 +113,7 @@ public class CronParserQuartzIntegrationTest {
      * Issue #27: month ranges string mapping
      */
     @Test
-    public void testMonthRangeStringMapping(){
+    public void testMonthRangeStringMapping() {
         parser.parse("0 0 0 * JUL-AUG ? *");
         parser.parse("0 0 0 * JAN-FEB ? *");
     }
@@ -114,7 +122,7 @@ public class CronParserQuartzIntegrationTest {
      * Issue #27: month string mapping
      */
     @Test
-    public void testSingleMonthStringMapping(){
+    public void testSingleMonthStringMapping() {
         parser.parse("0 0 0 * JAN ? *");
     }
 
@@ -122,7 +130,7 @@ public class CronParserQuartzIntegrationTest {
      * Issue #27: day of week string ranges mapping
      */
     @Test
-    public void testDoWRangeStringMapping(){
+    public void testDoWRangeStringMapping() {
         parser.parse("0 0 0 ? * MON-FRI *");
     }
 
@@ -130,7 +138,7 @@ public class CronParserQuartzIntegrationTest {
      * Issue #27: day of week string mapping
      */
     @Test
-    public void testSingleDoWStringMapping(){
+    public void testSingleDoWStringMapping() {
         parser.parse("0 0 0 ? * MON *");
     }
 
@@ -138,7 +146,7 @@ public class CronParserQuartzIntegrationTest {
      * Issue #27: July month as string is parsed as some special char occurrence
      */
     @Test
-    public void testJulyMonthAsStringConsideredSpecialChar(){
+    public void testJulyMonthAsStringConsideredSpecialChar() {
         assertNotNull(parser.parse("0 0 0 * JUL ? *"));
     }
 
@@ -147,7 +155,7 @@ public class CronParserQuartzIntegrationTest {
      */
     @Test
     public void testSunToSat() {
-    // FAILS SUN-SAT: SUN = 7 and SAT = 6
+        // FAILS SUN-SAT: SUN = 7 and SAT = 6
         parser.parse("0 0 12 ? * SUN-SAT");
     }
 
@@ -155,7 +163,7 @@ public class CronParserQuartzIntegrationTest {
      * Issue #39: reported issue about exception being raised on parse.
      */
     @Test
-    public void testParseExpressionWithQuestionMarkAndWeekdays(){
+    public void testParseExpressionWithQuestionMarkAndWeekdays() {
         parser.parse("0 0 0 ? * MON,TUE *");
     }
 
@@ -163,7 +171,7 @@ public class CronParserQuartzIntegrationTest {
      * Issue #39: reported issue about exception being raised on parse.
      */
     @Test
-    public void testDescribeExpressionWithQuestionMarkAndWeekdays(){
+    public void testDescribeExpressionWithQuestionMarkAndWeekdays() {
         Cron quartzCron = parser.parse("0 0 0 ? * MON,TUE *");
         CronDescriptor descriptor = CronDescriptor.instance(Locale.ENGLISH);
         descriptor.describe(quartzCron);
@@ -173,7 +181,7 @@ public class CronParserQuartzIntegrationTest {
      * Issue #60: Parser exception when parsing cron:
      */
     @Test
-    public void testDescribeExpression(){
+    public void testDescribeExpression() {
         String expression = "0 * * ? * 1,5";
         CronDefinition definition = CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ);
         CronParser parser = new CronParser(definition);
@@ -185,7 +193,7 @@ public class CronParserQuartzIntegrationTest {
      * Issue #63: Parser exception when parsing cron:
      */
     @Test(expected = IllegalArgumentException.class)
-    public void testDoMAndDoWParametersInvalidForQuartz(){
+    public void testDoMAndDoWParametersInvalidForQuartz() {
         parser.parse("0 30 17 4 1 * 2016");
     }
 
@@ -217,7 +225,7 @@ public class CronParserQuartzIntegrationTest {
      * Issue #89: regression - NumberFormatException: For input string: "$"
      */
     @Test
-    public void testRegressionDifferentMessageForException(){
+    public void testRegressionDifferentMessageForException() {
         thrown.expect(IllegalArgumentException.class);
         thrown.expectMessage("Invalid chars in expression! Expression: $ Invalid chars: $");
         assertNotNull(ExecutionTime.forCron(parser.parse("* * * * $ ?")));
@@ -227,7 +235,7 @@ public class CronParserQuartzIntegrationTest {
      * Issue #90: Reported error contains other expression than the one provided
      */
     @Test
-    public void testReportedErrorContainsSameExpressionAsProvided(){
+    public void testReportedErrorContainsSameExpressionAsProvided() {
         thrown.expect(IllegalArgumentException.class);
         thrown.expectMessage(
                 "Invalid cron expression: 0 * * * * *. Both, a day-of-week AND a day-of-month parameter, are not supported.");
@@ -239,7 +247,7 @@ public class CronParserQuartzIntegrationTest {
      * https://github.com/jmrozanec/cron-utils/issues/109
      */
     @Test
-    public void testMissingExpressionAndInvalidCharsInErrorMessage(){
+    public void testMissingExpressionAndInvalidCharsInErrorMessage() {
         thrown.expect(IllegalArgumentException.class);
         String cronexpression = "* * -1 * * ?";
         thrown.expectMessage(String.format("Failed to parse '%s'. Invalid expression! Expression: -1 does not describe a range. Negative numbers are not allowed.", cronexpression));
@@ -247,14 +255,14 @@ public class CronParserQuartzIntegrationTest {
     }
 
     @Test
-    public void testErrorAbout2Parts(){
+    public void testErrorAbout2Parts() {
         thrown.expect(IllegalArgumentException.class);
         thrown.expectMessage("Cron expression contains 2 parts but we expect one of [6, 7]");
         assertNotNull(ExecutionTime.forCron(parser.parse("* *")));
     }
 
     @Test
-    public void testErrorAboutMissingSteps(){
+    public void testErrorAboutMissingSteps() {
         thrown.expect(IllegalArgumentException.class);
         thrown.expectMessage("Missing steps for expression: */");
         assertNotNull(ExecutionTime.forCron(parser.parse("*/ * * * * ?")));
