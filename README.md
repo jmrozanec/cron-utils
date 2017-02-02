@@ -176,7 +176,8 @@ Contributions are welcome! You can contribute by
  * enhancing documentation
  * providing translations to support new locales
  * bringing suggestions and reporting bugs
- * spreading the word / telling us how you use it!
+ * spreading the word 
+ * telling us how you use it! We look forward to [list you at our wiki](https://github.com/jmrozanec/cron-utils/wiki/Projects-using-cron-utils)!
 
 
 Check [our page](http://cronutils.com)! For stats about the project, you can visit our [OpenHUB profile](https://www.openhub.net/p/cron-utils).
