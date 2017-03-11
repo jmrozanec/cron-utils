@@ -91,7 +91,7 @@ public class CronParserQuartzIntegrationTest {
     public void testLSupportedInDoMRangeNextExecutionCalculation() {
         ExecutionTime executionTime = ExecutionTime.forCron(parser.parse("0 15 10 L-7 * ?"));
         ZonedDateTime now = ZonedDateTime.parse("2017-01-31T10:00:00Z");
-        ZonedDateTime nextExecution = executionTime.nextExecution(now);
+        ZonedDateTime nextExecution = executionTime.nextExecution(now).get();
         ZonedDateTime assertDate = ZonedDateTime.parse("2017-02-21T10:15:00Z");
         assertEquals(assertDate, nextExecution);
     }
@@ -204,7 +204,7 @@ public class CronParserQuartzIntegrationTest {
     public void testIntervalSeconds() {
         ExecutionTime executionTime = ExecutionTime.forCron(parser.parse("0/20 * * * * ?"));
         ZonedDateTime now = ZonedDateTime.parse("2005-08-09T18:32:42Z");
-        ZonedDateTime lastExecution = executionTime.lastExecution(now);
+        ZonedDateTime lastExecution = executionTime.lastExecution(now).get();
         ZonedDateTime assertDate = ZonedDateTime.parse("2005-08-09T18:32:40Z");
         assertEquals(assertDate, lastExecution);
     }
@@ -216,7 +216,7 @@ public class CronParserQuartzIntegrationTest {
     public void testIntervalMinutes() {
         ExecutionTime executionTime = ExecutionTime.forCron(parser.parse("0 0/7 * * * ?"));
         ZonedDateTime now = ZonedDateTime.parse("2005-08-09T18:32:42Z");
-        ZonedDateTime lastExecution = executionTime.lastExecution(now);
+        ZonedDateTime lastExecution = executionTime.lastExecution(now).get();
         ZonedDateTime assertDate = ZonedDateTime.parse("2005-08-09T18:28:00Z");
         assertEquals(assertDate, lastExecution);
     }

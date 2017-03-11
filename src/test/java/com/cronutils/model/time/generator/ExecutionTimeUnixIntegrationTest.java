@@ -46,7 +46,7 @@ public class ExecutionTimeUnixIntegrationTest {
         CronParser parser = new CronParser(CronDefinitionBuilder.instanceDefinitionFor(CronType.UNIX));
         ExecutionTime executionTime = ExecutionTime.forCron(parser.parse("*/10 * * * *"));
         ZonedDateTime time = ZonedDateTime.parse("2015-09-05T13:43:00.000-07:00");
-        assertEquals(ZonedDateTime.parse("2015-09-05T13:50:00.000-07:00"), executionTime.nextExecution(time));
+        assertEquals(ZonedDateTime.parse("2015-09-05T13:50:00.000-07:00"), executionTime.nextExecution(time).get());
     }
 
     /**
@@ -58,8 +58,8 @@ public class ExecutionTimeUnixIntegrationTest {
         Cron cron = new CronParser(cronDefinition).parse("*/2 * * * *");
         ExecutionTime executionTime = ExecutionTime.forCron(cron);
         ZonedDateTime time = ZonedDateTime.parse("2015-09-05T13:56:00.000-07:00");
-        ZonedDateTime next = executionTime.nextExecution(time);
-        ZonedDateTime shouldBeInNextHour = executionTime.nextExecution(next);
+        ZonedDateTime next = executionTime.nextExecution(time).get();
+        ZonedDateTime shouldBeInNextHour = executionTime.nextExecution(next).get();
         assertEquals(next.plusMinutes(2), shouldBeInNextHour);
     }
 
@@ -72,7 +72,7 @@ public class ExecutionTimeUnixIntegrationTest {
         CronParser parser = new CronParser(cronDefinition);
         Cron myCron = parser.parse("0 3 * * 3");
         ZonedDateTime time = ZonedDateTime.parse("2015-09-17T00:00:00.000-07:00");
-        assertEquals(ZonedDateTime.parse("2015-09-23T03:00:00.000-07:00"), ExecutionTime.forCron(myCron).nextExecution(time));
+        assertEquals(ZonedDateTime.parse("2015-09-23T03:00:00.000-07:00"), ExecutionTime.forCron(myCron).nextExecution(time).get());
     }
 
     /**
@@ -84,7 +84,7 @@ public class ExecutionTimeUnixIntegrationTest {
         CronParser parser = new CronParser(cronDefinition);
         Cron myCron = parser.parse("0 3 * * 3");
         ZonedDateTime time = ZonedDateTime.parse("2015-09-17T00:00:00.000-07:00");
-        assertEquals(ZonedDateTime.parse("2015-09-16T03:00:00.000-07:00"), ExecutionTime.forCron(myCron).lastExecution(time));
+        assertEquals(ZonedDateTime.parse("2015-09-16T03:00:00.000-07:00"), ExecutionTime.forCron(myCron).lastExecution(time).get());
     }
 
     /**
@@ -98,7 +98,7 @@ public class ExecutionTimeUnixIntegrationTest {
         Cron cron = parser.parse(crontab);
         ZonedDateTime date = ZonedDateTime.parse("2015-10-13T17:26:54.468-07:00");
         ExecutionTime executionTime = ExecutionTime.forCron(cron);
-        assertEquals(ZonedDateTime.parse("2015-10-12T23:59:00.000-07:00"), executionTime.lastExecution(date));
+        assertEquals(ZonedDateTime.parse("2015-10-12T23:59:00.000-07:00"), executionTime.lastExecution(date).get());
     }
 
     /**
@@ -112,7 +112,7 @@ public class ExecutionTimeUnixIntegrationTest {
         Cron cron = parser.parse(crontab);
         ZonedDateTime date = ZonedDateTime.parse("2015-10-13T17:26:54.468-07:00");
         ExecutionTime executionTime = ExecutionTime.forCron(cron);
-        assertEquals(ZonedDateTime.parse("2015-10-19T00:00:00.000-07:00"), executionTime.nextExecution(date));
+        assertEquals(ZonedDateTime.parse("2015-10-19T00:00:00.000-07:00"), executionTime.nextExecution(date).get());
     }
 
     /**
@@ -126,7 +126,7 @@ public class ExecutionTimeUnixIntegrationTest {
         Cron cron = parser.parse(crontab);
         ZonedDateTime date = ZonedDateTime.parse("2015-11-02T00:10:00Z");
         ExecutionTime executionTime = ExecutionTime.forCron(cron);
-        assertEquals(ZonedDateTime.parse("2015-10-26T11:00:00Z"), executionTime.lastExecution(date));
+        assertEquals(ZonedDateTime.parse("2015-10-26T11:00:00Z"), executionTime.lastExecution(date).get());
     }
 
     /**
@@ -141,7 +141,7 @@ public class ExecutionTimeUnixIntegrationTest {
         Cron cron = parser.parse(crontab);
         ZonedDateTime date = ZonedDateTime.parse("2015-11-10T17:01:00Z");
         ExecutionTime executionTime = ExecutionTime.forCron(cron);
-        assertEquals(ZonedDateTime.parse("2015-11-10T17:00:00Z"), executionTime.lastExecution(date));
+        assertEquals(ZonedDateTime.parse("2015-11-10T17:00:00Z"), executionTime.lastExecution(date).get());
     }
 
     /**
@@ -156,7 +156,7 @@ public class ExecutionTimeUnixIntegrationTest {
         Cron cron = parser.parse(crontab);
         ZonedDateTime date = ZonedDateTime.parse("2015-11-10T17:01:00Z");
         ExecutionTime executionTime = ExecutionTime.forCron(cron);
-        assertEquals(ZonedDateTime.parse("2015-11-10T17:00:00Z"), executionTime.lastExecution(date));
+        assertEquals(ZonedDateTime.parse("2015-11-10T17:00:00Z"), executionTime.lastExecution(date).get());
     }
 
     /**
@@ -171,7 +171,7 @@ public class ExecutionTimeUnixIntegrationTest {
         Cron cron = parser.parse(crontab);
         ExecutionTime executionTime = ExecutionTime.forCron(cron);
         ZonedDateTime scanTime = ZonedDateTime.parse("2015-12-10T16:32:56.586-08:00");
-        ZonedDateTime nextExecutionTime = executionTime.nextExecution(scanTime);
+        ZonedDateTime nextExecutionTime = executionTime.nextExecution(scanTime).get();
         //DoW: 0-6 -> 0, 5 (sunday, friday)
         //DoM: 1-31 -> 1, 4, 7, 10, 13, 16, 19, 22, 25, 28, 31
         //M: 1-12 -> 1, 5, 9
@@ -190,7 +190,7 @@ public class ExecutionTimeUnixIntegrationTest {
         Cron cron = parser.parse(crontab);
         ExecutionTime executionTime = ExecutionTime.forCron(cron);
         ZonedDateTime scanTime = ZonedDateTime.parse("2015-12-10T16:32:56.586-08:00");
-        ZonedDateTime nextExecutionTime = executionTime.nextExecution(scanTime);
+        ZonedDateTime nextExecutionTime = executionTime.nextExecution(scanTime).get();
         assertEquals(ZonedDateTime.parse("2015-12-13T00:00:00.000-08:00"), nextExecutionTime);
     }
 
@@ -207,7 +207,7 @@ public class ExecutionTimeUnixIntegrationTest {
         Cron cron = parser.parse(crontab);
         ExecutionTime executionTime = ExecutionTime.forCron(cron);
         ZonedDateTime scanTime = ZonedDateTime.parse("2016-01-28T16:32:56.586-08:00");
-        ZonedDateTime nextExecutionTime = executionTime.nextExecution(scanTime);
+        ZonedDateTime nextExecutionTime = executionTime.nextExecution(scanTime).get();
         assertEquals(ZonedDateTime.parse("2016-02-04T00:00:00.000-08:00"), nextExecutionTime);
     }
 
@@ -221,7 +221,7 @@ public class ExecutionTimeUnixIntegrationTest {
         //DoW: 0-6 -> 1, 2, 3, 4, 5 -> in this year:
         ExecutionTime executionTime = ExecutionTime.forCron(parser.parse(crontab));
         ZonedDateTime scanTime = ZonedDateTime.parse("2016-02-29T11:00:00.000-06:00");
-        ZonedDateTime nextExecutionTime = executionTime.nextExecution(scanTime);
+        ZonedDateTime nextExecutionTime = executionTime.nextExecution(scanTime).get();
         assertEquals(ZonedDateTime.parse("2016-02-29T12:00:00.000-06:00"), nextExecutionTime);
     }
 
@@ -234,7 +234,7 @@ public class ExecutionTimeUnixIntegrationTest {
         ExecutionTime executionTime = ExecutionTime.forCron(parser.parse("0 17 * * *"));// daily at 17:00
         // Daylight savings for New York 2016 is Mar 13 at 2am
         ZonedDateTime last = ZonedDateTime.of(2016, 3, 12, 17, 0, 0, 0, ZoneId.of("America/New_York"));
-        ZonedDateTime next = executionTime.nextExecution(last);
+        ZonedDateTime next = executionTime.nextExecution(last).get();
         long millis = Duration.between(last, next).toMillis();
         assertEquals(23, (millis / 3600000));
         assertEquals(last.getZone(), next.getZone());
@@ -249,7 +249,7 @@ public class ExecutionTimeUnixIntegrationTest {
         ExecutionTime executionTime = ExecutionTime.forCron(parser.parse("0 17 * * *"));// daily at 17:00
         // Daylight savings for New York 2016 is Mar 13 at 2am
         ZonedDateTime now = ZonedDateTime.of(2016, 3, 12, 17, 0, 0, 0, ZoneId.of("America/Phoenix"));
-        ZonedDateTime last = executionTime.lastExecution(now);
+        ZonedDateTime last = executionTime.lastExecution(now).get();
         long millis = Duration.between(last, now).toMillis();
         assertEquals(24, (millis / 3600000));
         assertEquals(now.getZone(), last.getZone());
@@ -266,7 +266,7 @@ public class ExecutionTimeUnixIntegrationTest {
         Cron cron = parser.parse(crontab);
         ZonedDateTime date = ZonedDateTime.parse("2014-11-30T00:00:00Z");
         ExecutionTime executionTime = ExecutionTime.forCron(cron);
-        assertEquals(ZonedDateTime.parse("2014-12-01T08:00:00Z"), executionTime.nextExecution(date));
+        assertEquals(ZonedDateTime.parse("2014-12-01T08:00:00Z"), executionTime.nextExecution(date).get());
     }
 
     /**
@@ -277,7 +277,7 @@ public class ExecutionTimeUnixIntegrationTest {
         CronParser parser = new CronParser(CronDefinitionBuilder.instanceDefinitionFor(CronType.UNIX));
         ExecutionTime executionTime = ExecutionTime.forCron(parser.parse("1 0 * * tue"));
         ZonedDateTime date = ZonedDateTime.parse("2016-05-24T01:02:50Z");
-        assertEquals(ZonedDateTime.parse("2016-05-31T00:01:00Z"), executionTime.nextExecution(date));
+        assertEquals(ZonedDateTime.parse("2016-05-31T00:01:00Z"), executionTime.nextExecution(date).get());
     }
 
     /**
