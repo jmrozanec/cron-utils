@@ -51,7 +51,7 @@ public class OpenIssuesTest {
 
         ExecutionTime executionTime = ExecutionTime.forCron(cron);
 
-        return executionTime.nextExecution(lastExecution);
+        return executionTime.nextExecution(lastExecution).get();
     }
 }
 
