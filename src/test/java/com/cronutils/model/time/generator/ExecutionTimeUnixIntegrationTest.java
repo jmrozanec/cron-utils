@@ -307,4 +307,32 @@ public class ExecutionTimeUnixIntegrationTest {
         ExecutionTime executionTime = ExecutionTime.forCron(parser.parse("45 1,13 * * *"));
         executionTime.nextExecution(ZonedDateTime.parse("2016-05-24T01:02:50Z"));
     }
+
+    /**
+     * Issue #130: Wrong last execution time if schedule hit is less than one second ago
+     * https://github.com/jmrozanec/cron-utils/issues/130
+     */
+    @Test
+    public void exact_hit_returns_full_interval_duration() {
+        CronParser parser = new CronParser(CronDefinitionBuilder.instanceDefinitionFor(CronType.UNIX));
+        Cron cron = parser.parse("0 12 * * *");
+        final ZonedDateTime time = ZonedDateTime.of(2016, 12, 2, 12, 0, 0, 0, ZoneId.of("Europe/Vienna"));
+        final Duration timeFromLastExecution = ExecutionTime.forCron(cron).timeFromLastExecution(time).get();
+        assertEquals(timeFromLastExecution, Duration.ofHours(24));
+    }
+
+    /**
+     * Issue #130: Wrong last execution time if schedule hit is less than one second ago
+     * https://github.com/jmrozanec/cron-utils/issues/130
+     */
+    @Test
+    public void fuzzy_hit_returns_very_small_interval_duration() {
+        CronParser parser = new CronParser(CronDefinitionBuilder.instanceDefinitionFor(CronType.UNIX));
+        Cron cron = parser.parse("0 12 * * *");
+        ZonedDateTime time = ZonedDateTime.of(2016, 12, 2, 12, 0, 0, 0, ZoneId.of("Europe/Vienna"));
+        Duration diff = Duration.ofMillis(300);
+        time = time.plus(diff);
+        final Duration timeFromLastExecution = ExecutionTime.forCron(cron).timeFromLastExecution(time).get();
+        assertEquals(timeFromLastExecution, Duration.ofDays(1).plus(diff));
+    }
 }
