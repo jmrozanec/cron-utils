@@ -13,9 +13,7 @@ import org.junit.Test;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static com.cronutils.model.CronType.QUARTZ;
 import static java.time.ZoneOffset.UTC;
@@ -556,6 +554,26 @@ public class ExecutionTimeQuartzIntegrationTest {
         Cron parsed = parser.parse("0 0 10 ? * SAT-SUN");
         ExecutionTime executionTime = ExecutionTime.forCron(parsed);
         Optional<ZonedDateTime> next = executionTime.nextExecution(ZonedDateTime.now());
+    }
+
+    /**
+     * Issue #142: https://github.com/jmrozanec/cron-utils/pull/142
+     * Special Character L for day of week behaves differently in Quartz
+     */
+//    @Test //TODO
+    public void lastDayOfTheWeek() throws Exception {
+        Cron cron = new CronParser(CronDefinitionBuilder.instanceDefinitionFor(QUARTZ)).parse("0 0 0 ? * L *");
+
+        ZoneId utc = ZoneId.of("UTC");
+        ZonedDateTime date = LocalDate.parse("2016-12-22").atStartOfDay(utc);
+
+        ZonedDateTime cronUtilsNextTime = ExecutionTime.forCron(cron).nextExecution(date).get();// 2016-12-30T00:00:00Z
+
+        org.quartz.CronExpression cronExpression = new org.quartz.CronExpression(cron.asString());
+        cronExpression.setTimeZone(TimeZone.getTimeZone(utc));
+        Date quartzNextTime = cronExpression.getNextValidTimeAfter(Date.from(date.toInstant()));// 2016-12-24T00:00:00Z
+
+        assertEquals(quartzNextTime.toInstant(), cronUtilsNextTime.toInstant()); // false
     }
 
     /**
