@@ -284,7 +284,7 @@ public class ExecutionTimeUnixIntegrationTest {
      * Issue #112: Calling nextExecution exactly on the first instant of the fallback hour (after the DST ends) makes it go back to DST.
      * https://github.com/jmrozanec/cron-utils/issues/112
      */
-    //TODO
+//    @Test TODO
     public void testWrongNextExecutionOnDSTEnd() throws Exception {
         ZoneId zone = ZoneId.of("America/Sao_Paulo");
 
@@ -294,7 +294,7 @@ public class ExecutionTimeUnixIntegrationTest {
 
         CronParser parser = new CronParser(CronDefinitionBuilder.instanceDefinitionFor(CronType.UNIX));
         ExecutionTime executionTime = ExecutionTime.forCron(parser.parse("* * * * *"));
-        assertEquals(expected, executionTime.nextExecution(date));
+        assertEquals(expected, executionTime.nextExecution(date).get());
     }
 
     /**

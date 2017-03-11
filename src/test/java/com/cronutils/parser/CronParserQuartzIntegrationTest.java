@@ -84,18 +84,6 @@ public class CronParserQuartzIntegrationTest {
         parser.parse("* * * W-3 * ?");
     }
 
-    /**
-     * Issue #151: L-7 in day of month should work to find the day 7 days prior to the last day of the month.
-     */
-//    @Test
-    public void testLSupportedInDoMRangeNextExecutionCalculation() {
-        ExecutionTime executionTime = ExecutionTime.forCron(parser.parse("0 15 10 L-7 * ?"));
-        ZonedDateTime now = ZonedDateTime.parse("2017-01-31T10:00:00Z");
-        ZonedDateTime nextExecution = executionTime.nextExecution(now).get();
-        ZonedDateTime assertDate = ZonedDateTime.parse("2017-02-21T10:15:00Z");
-        assertEquals(assertDate, nextExecution);
-    }
-
     @Test
     public void testNLSupported() throws Exception {
         parser.parse("* * * 3L * ?");
@@ -252,6 +240,38 @@ public class CronParserQuartzIntegrationTest {
         String cronexpression = "* * -1 * * ?";
         thrown.expectMessage(String.format("Failed to parse '%s'. Invalid expression! Expression: -1 does not describe a range. Negative numbers are not allowed.", cronexpression));
         assertNotNull(ExecutionTime.forCron(parser.parse(cronexpression)));
+    }
+
+    /**
+     * Issue #151: L-7 in day of month should work to find the day 7 days prior to the last day of the month.
+     */
+//    @Test TODO
+    public void testLSupportedInDoMRangeNextExecutionCalculation() {
+        ExecutionTime executionTime = ExecutionTime.forCron(parser.parse("0 15 10 L-7 * ?"));
+        ZonedDateTime now = ZonedDateTime.parse("2017-01-31T10:00:00Z");
+        ZonedDateTime nextExecution = executionTime.nextExecution(now).get();
+        ZonedDateTime assertDate = ZonedDateTime.parse("2017-02-21T10:15:00Z");
+        assertEquals(assertDate, nextExecution);
+    }
+
+    /**
+     * Issue #154: Quartz Cron Year Pattern is not fully supported - i.e. increments on years are not supported
+     * https://github.com/jmrozanec/cron-utils/issues/154
+     */
+//    @Test TODO
+    public void supportQuartzCronExpressionIncrementsOnYears() {
+        final String[] sampleCronExpressions = {
+                "0 0 0 1 * ? 2017/2",
+                "0 0 0 1 * ? 2017/3",
+                "0 0 0 1 * ? 2017/10",
+                "0 0 0 1 * ? 2017-2047/2",
+        };
+
+        final CronParser quartzCronParser = new CronParser(CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ));
+        for (final String cronExpression: sampleCronExpressions) {
+            final Cron quartzCron = quartzCronParser.parse(cronExpression);
+            quartzCron.validate();
+        }
     }
 
     @Test
