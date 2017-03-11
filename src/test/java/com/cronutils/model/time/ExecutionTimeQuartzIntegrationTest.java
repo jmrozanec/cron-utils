@@ -15,6 +15,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static com.cronutils.model.CronType.QUARTZ;
 import static java.time.ZoneOffset.UTC;
@@ -542,6 +543,19 @@ public class ExecutionTimeQuartzIntegrationTest {
             executionTime.isMatch(start);
             start = start.plusMinutes(1);
         }
+    }
+
+    /**
+     * Issue #140: https://github.com/jmrozanec/cron-utils/pull/140
+     * IllegalArgumentException: Values must not be empty
+     */
+    @Test
+    public void nextExecutionNotFail(){
+        CronDefinition cronDefinition = CronDefinitionBuilder.instanceDefinitionFor(QUARTZ);
+        CronParser parser = new CronParser(cronDefinition);
+        Cron parsed = parser.parse("0 0 10 ? * SAT-SUN");
+        ExecutionTime executionTime = ExecutionTime.forCron(parsed);
+        Optional<ZonedDateTime> next = executionTime.nextExecution(ZonedDateTime.now());
     }
 
     /**
