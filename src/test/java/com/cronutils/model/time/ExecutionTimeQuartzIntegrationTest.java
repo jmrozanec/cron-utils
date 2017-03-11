@@ -341,7 +341,7 @@ public class ExecutionTimeQuartzIntegrationTest {
         assertEquals("incorrect hour", nextRun.getHour(), 0);
         assertEquals("incorrect minute", nextRun.getMinute(), 2);
     }
-    
+
     @Test
     public void bigNumbersOnDayOfMonthField(){
         Cron cron = parser.parse("0 0 0 31 * ?");
@@ -545,12 +545,23 @@ public class ExecutionTimeQuartzIntegrationTest {
     }
 
     /**
+     * Issue #143: https://github.com/jmrozanec/cron-utils/pull/143
+     * ExecutionTime.lastExecution() throws Exception when cron defines at 31 Dec
+     */
+    @Test
+    public void lastExecutionDec31NotFail(){
+        CronParser parser = new CronParser(CronDefinitionBuilder.instanceDefinitionFor(QUARTZ));
+        ExecutionTime et = ExecutionTime.forCron(parser.parse("0 0 12 31 12 ? *"));
+        System.out.println(et.lastExecution(ZonedDateTime.now()));
+    }
+
+    /**
      * Issue #144
      * https://github.com/jmrozanec/cron-utils/issues/144
      * Reported case: periodic incremental hours does not start and end
      * at beginning and end of given period
      */
-//    @Test
+//    @Test//TODO
     public void testPeriodicIncrementalHoursIgnorePeriodBounds() {
         Cron cron = parser.parse("0 0 16-19/2 * * ?");
         ExecutionTime executionTime = ExecutionTime.forCron(cron);
