@@ -257,6 +257,7 @@ public class CronParserQuartzIntegrationTest {
     /**
      * Issue #154: Quartz Cron Year Pattern is not fully supported - i.e. increments on years are not supported
      * https://github.com/jmrozanec/cron-utils/issues/154
+     * Duplicate of #148
      */
 //    @Test TODO
     public void supportQuartzCronExpressionIncrementsOnYears() {
