@@ -341,12 +341,8 @@ public class ExecutionTimeQuartzIntegrationTest {
         assertEquals("incorrect hour", nextRun.getHour(), 0);
         assertEquals("incorrect minute", nextRun.getMinute(), 2);
     }
-
-    /**
-     * nexExecution()
-     * throw exceptions when DAY-OF-MONTH field bigger than param month length
-     */
-    @Test(expected = java.lang.IllegalArgumentException.class)
+    
+    @Test
     public void bigNumbersOnDayOfMonthField(){
         Cron cron = parser.parse("0 0 0 31 * ?");
         ExecutionTime executionTime = ExecutionTime.forCron(cron);
@@ -576,6 +572,36 @@ public class ExecutionTimeQuartzIntegrationTest {
         Object[] actual = actualList.toArray();
 
         assertArrayEquals(expected, actual);
+    }
+
+    /**
+     * Issue #153
+     * https://github.com/jmrozanec/cron-utils/issues/153
+     * Reported case: executionTime.nextExecution fails to find when current month does not have desired day
+     */
+    @Test
+    public void mustJumpToNextMonthIfCurrentMonthDoesNotHaveDesiredDay() {
+        CronParser parser = new CronParser( CronDefinitionBuilder.instanceDefinitionFor(QUARTZ));
+        ExecutionTime executionTime = ExecutionTime.forCron( parser.parse( "0 0 8 31 * ?" ) );//8:00 on every 31th of Month
+        ZonedDateTime start = ZonedDateTime.of(2017, 04, 10, 0, 0, 0, 0, ZoneId.systemDefault() );
+        ZonedDateTime next = executionTime.nextExecution(start).get();
+        ZonedDateTime expected = ZonedDateTime.of(2017, 05, 31, 8, 0, 0, 0, ZoneId.systemDefault() );
+        assertEquals( expected, next );
+    }
+
+    /**
+     * Issue #153
+     * https://github.com/jmrozanec/cron-utils/issues/153
+     * Reported case: executionTime.nextExecution fails to find when current month does not have desired day
+     */
+    @Test
+    public void mustJumpToEndOfMonthIfCurrentMonthHasDesiredDay() {
+        CronParser parser = new CronParser( CronDefinitionBuilder.instanceDefinitionFor(QUARTZ));
+        ExecutionTime executionTime = ExecutionTime.forCron( parser.parse( "0 0 8 31 * ?" ) );//8:00 on every 31th of Month
+        ZonedDateTime start = ZonedDateTime.of( 2017, 01, 10, 0, 0, 0, 0, ZoneId.systemDefault() );
+        ZonedDateTime next = executionTime.nextExecution(start).get();
+        ZonedDateTime expected = ZonedDateTime.of( 2017, 01, 31, 8, 0, 0, 0, ZoneId.systemDefault() );
+        assertEquals( expected, next );
     }
 
     private Duration getMinimumInterval(String quartzPattern) {
