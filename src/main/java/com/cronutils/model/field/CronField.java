@@ -4,6 +4,7 @@ import com.cronutils.model.field.constraint.FieldConstraints;
 import com.cronutils.model.field.expression.FieldExpression;
 import com.cronutils.utils.Preconditions;
 
+import java.io.Serializable;
 import java.util.Comparator;
 
 /*
@@ -18,7 +19,7 @@ import java.util.Comparator;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-public class CronField {
+public class CronField implements Serializable {
     private CronFieldName field;
     private FieldExpression expression;
     private FieldConstraints constraints;

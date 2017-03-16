@@ -21,12 +21,13 @@ import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.field.expression.visitor.ValidationFieldExpressionVisitor;
 import com.cronutils.utils.Preconditions;
 
+import java.io.Serializable;
 import java.util.*;
 
 /**
  * Represents a cron expression
  */
-public class Cron {
+public class Cron implements Serializable {
     private CronDefinition cronDefinition;
     private Map<CronFieldName, CronField> fields;
     private String asString;
