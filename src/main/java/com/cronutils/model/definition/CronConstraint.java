@@ -14,7 +14,9 @@ package com.cronutils.model.definition;
 
 import com.cronutils.model.Cron;
 
-public abstract class CronConstraint {
+import java.io.Serializable;
+
+public abstract class CronConstraint implements Serializable {
     private String description;
 
     public CronConstraint(String description){

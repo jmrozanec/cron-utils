@@ -1,5 +1,6 @@
 package com.cronutils.model.definition;
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -27,7 +28,7 @@ import com.cronutils.utils.Preconditions;
 /**
  * Defines fields and conditions over each field for a cron
  */
-public class CronDefinition {
+public class CronDefinition implements Serializable {
     private Map<CronFieldName, FieldDefinition> fieldDefinitions;
     private Set<CronConstraint> cronConstraints;
     private boolean lastFieldOptional;
