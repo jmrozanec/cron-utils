@@ -1,10 +1,12 @@
 package com.cronutils.parser;
 
+import com.cronutils.builder.CronBuilder;
 import com.cronutils.descriptor.CronDescriptor;
 import com.cronutils.model.Cron;
 import com.cronutils.model.CronType;
 import com.cronutils.model.definition.CronDefinition;
 import com.cronutils.model.definition.CronDefinitionBuilder;
+import com.cronutils.model.field.expression.FieldExpressionFactory;
 import com.cronutils.model.time.ExecutionTime;
 import org.junit.Before;
 import org.junit.Rule;
@@ -82,18 +84,6 @@ public class CronParserQuartzIntegrationTest {
     @Test(expected = IllegalArgumentException.class)
     public void testLSupportedInRange() throws Exception {
         parser.parse("* * * W-3 * ?");
-    }
-
-    /**
-     * Issue #151: L-7 in day of month should work to find the day 7 days prior to the last day of the month.
-     */
-    //@Test
-    public void testLSupportedInDoMRangeNextExecutionCalculation() {
-        ExecutionTime executionTime = ExecutionTime.forCron(parser.parse("0 15 10 L-7 * ?"));
-        ZonedDateTime now = ZonedDateTime.parse("2017-01-31T10:00:00Z");
-        ZonedDateTime nextExecution = executionTime.nextExecution(now).get();
-        ZonedDateTime assertDate = ZonedDateTime.parse("2017-02-21T10:15:00Z");
-        assertEquals(assertDate, nextExecution);
     }
 
     @Test
@@ -254,6 +244,53 @@ public class CronParserQuartzIntegrationTest {
         assertNotNull(ExecutionTime.forCron(parser.parse(cronexpression)));
     }
 
+    /**
+     * Issue #148: Cron Builder/Parser fails on Every X years
+     */
+//    @Test //TODO
+    public void testEveryXYears(){
+        CronBuilder.cron(CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ)).withDoM(FieldExpressionFactory.on(1))
+                .withDoW(FieldExpressionFactory.questionMark())
+                .withYear(FieldExpressionFactory.every(FieldExpressionFactory.between(1970, 2099), 4))
+                .withMonth(FieldExpressionFactory.on(0))
+                .withHour(FieldExpressionFactory.on(0))
+                .withMinute(FieldExpressionFactory.on(0))
+                .withSecond(FieldExpressionFactory.on(0));
+    }
+
+    /**
+     * Issue #151: L-7 in day of month should work to find the day 7 days prior to the last day of the month.
+     */
+//    @Test TODO
+    public void testLSupportedInDoMRangeNextExecutionCalculation() {
+        ExecutionTime executionTime = ExecutionTime.forCron(parser.parse("0 15 10 L-7 * ?"));
+        ZonedDateTime now = ZonedDateTime.parse("2017-01-31T10:00:00Z");
+        ZonedDateTime nextExecution = executionTime.nextExecution(now).get();
+        ZonedDateTime assertDate = ZonedDateTime.parse("2017-02-21T10:15:00Z");
+        assertEquals(assertDate, nextExecution);
+    }
+
+    /**
+     * Issue #154: Quartz Cron Year Pattern is not fully supported - i.e. increments on years are not supported
+     * https://github.com/jmrozanec/cron-utils/issues/154
+     * Duplicate of #148
+     */
+//    @Test TODO
+    public void supportQuartzCronExpressionIncrementsOnYears() {
+        final String[] sampleCronExpressions = {
+                "0 0 0 1 * ? 2017/2",
+                "0 0 0 1 * ? 2017/3",
+                "0 0 0 1 * ? 2017/10",
+                "0 0 0 1 * ? 2017-2047/2",
+        };
+
+        final CronParser quartzCronParser = new CronParser(CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ));
+        for (final String cronExpression: sampleCronExpressions) {
+            final Cron quartzCron = quartzCronParser.parse(cronExpression);
+            quartzCron.validate();
+        }
+    }
+
     @Test
     public void testErrorAbout2Parts() {
         thrown.expect(IllegalArgumentException.class);
@@ -267,5 +304,4 @@ public class CronParserQuartzIntegrationTest {
         thrown.expectMessage("Missing steps for expression: */");
         assertNotNull(ExecutionTime.forCron(parser.parse("*/ * * * * ?")));
     }
-
 }

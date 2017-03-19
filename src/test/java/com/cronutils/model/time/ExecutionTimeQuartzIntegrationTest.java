@@ -13,8 +13,7 @@ import org.junit.Test;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import static com.cronutils.model.CronType.QUARTZ;
 import static java.time.ZoneOffset.UTC;
@@ -342,11 +341,7 @@ public class ExecutionTimeQuartzIntegrationTest {
         assertEquals("incorrect minute", nextRun.getMinute(), 2);
     }
 
-    /**
-     * nexExecution()
-     * throw exceptions when DAY-OF-MONTH field bigger than param month length
-     */
-    @Test(expected = java.lang.IllegalArgumentException.class)
+    @Test
     public void bigNumbersOnDayOfMonthField(){
         Cron cron = parser.parse("0 0 0 31 * ?");
         ExecutionTime executionTime = ExecutionTime.forCron(cron);
@@ -549,12 +544,56 @@ public class ExecutionTimeQuartzIntegrationTest {
     }
 
     /**
+     * Issue #140: https://github.com/jmrozanec/cron-utils/pull/140
+     * IllegalArgumentException: Values must not be empty
+     */
+    @Test
+    public void nextExecutionNotFail(){
+        CronDefinition cronDefinition = CronDefinitionBuilder.instanceDefinitionFor(QUARTZ);
+        CronParser parser = new CronParser(cronDefinition);
+        Cron parsed = parser.parse("0 0 10 ? * SAT-SUN");
+        ExecutionTime executionTime = ExecutionTime.forCron(parsed);
+        Optional<ZonedDateTime> next = executionTime.nextExecution(ZonedDateTime.now());
+    }
+
+    /**
+     * Issue #142: https://github.com/jmrozanec/cron-utils/pull/142
+     * Special Character L for day of week behaves differently in Quartz
+     */
+//    @Test //TODO
+    public void lastDayOfTheWeek() throws Exception {
+        Cron cron = new CronParser(CronDefinitionBuilder.instanceDefinitionFor(QUARTZ)).parse("0 0 0 ? * L *");
+
+        ZoneId utc = ZoneId.of("UTC");
+        ZonedDateTime date = LocalDate.parse("2016-12-22").atStartOfDay(utc);
+
+        ZonedDateTime cronUtilsNextTime = ExecutionTime.forCron(cron).nextExecution(date).get();// 2016-12-30T00:00:00Z
+
+        org.quartz.CronExpression cronExpression = new org.quartz.CronExpression(cron.asString());
+        cronExpression.setTimeZone(TimeZone.getTimeZone(utc));
+        Date quartzNextTime = cronExpression.getNextValidTimeAfter(Date.from(date.toInstant()));// 2016-12-24T00:00:00Z
+
+        assertEquals(quartzNextTime.toInstant(), cronUtilsNextTime.toInstant()); // false
+    }
+
+    /**
+     * Issue #143: https://github.com/jmrozanec/cron-utils/pull/143
+     * ExecutionTime.lastExecution() throws Exception when cron defines at 31 Dec
+     */
+    @Test
+    public void lastExecutionDec31NotFail(){
+        CronParser parser = new CronParser(CronDefinitionBuilder.instanceDefinitionFor(QUARTZ));
+        ExecutionTime et = ExecutionTime.forCron(parser.parse("0 0 12 31 12 ? *"));
+        System.out.println(et.lastExecution(ZonedDateTime.now()));
+    }
+
+    /**
      * Issue #144
      * https://github.com/jmrozanec/cron-utils/issues/144
      * Reported case: periodic incremental hours does not start and end
      * at beginning and end of given period
      */
-//    @Test
+//    @Test//TODO
     public void testPeriodicIncrementalHoursIgnorePeriodBounds() {
         Cron cron = parser.parse("0 0 16-19/2 * * ?");
         ExecutionTime executionTime = ExecutionTime.forCron(cron);
@@ -576,6 +615,36 @@ public class ExecutionTimeQuartzIntegrationTest {
         Object[] actual = actualList.toArray();
 
         assertArrayEquals(expected, actual);
+    }
+
+    /**
+     * Issue #153
+     * https://github.com/jmrozanec/cron-utils/issues/153
+     * Reported case: executionTime.nextExecution fails to find when current month does not have desired day
+     */
+    @Test
+    public void mustJumpToNextMonthIfCurrentMonthDoesNotHaveDesiredDay() {
+        CronParser parser = new CronParser( CronDefinitionBuilder.instanceDefinitionFor(QUARTZ));
+        ExecutionTime executionTime = ExecutionTime.forCron( parser.parse( "0 0 8 31 * ?" ) );//8:00 on every 31th of Month
+        ZonedDateTime start = ZonedDateTime.of(2017, 04, 10, 0, 0, 0, 0, ZoneId.systemDefault() );
+        ZonedDateTime next = executionTime.nextExecution(start).get();
+        ZonedDateTime expected = ZonedDateTime.of(2017, 05, 31, 8, 0, 0, 0, ZoneId.systemDefault() );
+        assertEquals( expected, next );
+    }
+
+    /**
+     * Issue #153
+     * https://github.com/jmrozanec/cron-utils/issues/153
+     * Reported case: executionTime.nextExecution fails to find when current month does not have desired day
+     */
+    @Test
+    public void mustJumpToEndOfMonthIfCurrentMonthHasDesiredDay() {
+        CronParser parser = new CronParser( CronDefinitionBuilder.instanceDefinitionFor(QUARTZ));
+        ExecutionTime executionTime = ExecutionTime.forCron( parser.parse( "0 0 8 31 * ?" ) );//8:00 on every 31th of Month
+        ZonedDateTime start = ZonedDateTime.of( 2017, 01, 10, 0, 0, 0, 0, ZoneId.systemDefault() );
+        ZonedDateTime next = executionTime.nextExecution(start).get();
+        ZonedDateTime expected = ZonedDateTime.of( 2017, 01, 31, 8, 0, 0, 0, ZoneId.systemDefault() );
+        assertEquals( expected, next );
     }
 
     private Duration getMinimumInterval(String quartzPattern) {

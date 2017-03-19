@@ -1,5 +1,6 @@
+package com.cronutils.model.time.generator;
 /*
- * Copyright 2014 jmrozanec
+ * Copyright 2017 jmrozanec
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -10,22 +11,5 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cronutils.model.definition;
-
-import com.cronutils.model.Cron;
-
-import java.io.Serializable;
-
-public abstract class CronConstraint implements Serializable {
-    private String description;
-
-    public CronConstraint(String description){
-        this.description = description;
-    }
-
-    public abstract boolean validate(Cron cron);
-
-    public String getDescription() {
-        return description;
-    }
+public class NoDaysForMonthException extends Exception {
 }

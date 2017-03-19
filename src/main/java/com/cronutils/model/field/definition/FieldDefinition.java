@@ -17,12 +17,13 @@ import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.field.constraint.FieldConstraints;
 import com.cronutils.utils.Preconditions;
 
+import java.io.Serializable;
 import java.util.Comparator;
 
 /**
  * Represents a definition of allowed values for a cron field.
  */
-public class FieldDefinition {
+public class FieldDefinition implements Serializable {
     private CronFieldName fieldName;
     private FieldConstraints constraints;
 

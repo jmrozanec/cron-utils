@@ -9,6 +9,7 @@ import com.cronutils.model.field.definition.DayOfWeekFieldDefinition;
 import com.cronutils.model.field.expression.Always;
 import com.cronutils.model.field.expression.QuestionMark;
 import com.cronutils.model.time.generator.FieldValueGenerator;
+import com.cronutils.model.time.generator.NoDaysForMonthException;
 import com.cronutils.model.time.generator.NoSuchValueException;
 import com.cronutils.utils.Preconditions;
 import com.cronutils.utils.VisibleForTesting;
@@ -145,7 +146,11 @@ public class ExecutionTime {
         ZonedDateTime newDate;
         if(year.isEmpty()){
             int newYear = yearsValueGenerator.generateNextValue(date.getYear());
-            days = generateDays(cronDefinition, ZonedDateTime.of(LocalDateTime.of(newYear, lowestMonth, 1, 0, 0), date.getZone()));
+            try {
+                days = generateDays(cronDefinition, ZonedDateTime.of(LocalDateTime.of(newYear, lowestMonth, 1, 0, 0), date.getZone()));
+            } catch (NoDaysForMonthException e) {
+                return nextClosestMatch(date.plusMonths(1));
+            }
             return initDateTime(yearsValueGenerator.generateNextValue(date.getYear()), lowestMonth, days.getValues().get(0), lowestHour, lowestMinute, lowestSecond, date.getZone(), true);
         }
         if(!months.getValues().contains(date.getMonthValue())) {
@@ -159,10 +164,18 @@ public class ExecutionTime {
             if (nearestValue.getValue() < date.getMonthValue()) {
             	date = date.plusYears(1);
             }
-            days = generateDays(cronDefinition, ZonedDateTime.of(LocalDateTime.of(date.getYear(), nextMonths, 1, 0, 0), date.getZone()));
+            try {
+                days = generateDays(cronDefinition, ZonedDateTime.of(LocalDateTime.of(date.getYear(), nextMonths, 1, 0, 0), date.getZone()));
+            } catch (NoDaysForMonthException e) {
+                return nextClosestMatch(date.plusMonths(1));
+            }
             return initDateTime(date.getYear(), nextMonths, days.getValues().get(0), lowestHour, lowestMinute, lowestSecond, date.getZone(), true);
         }
-        days = generateDays(cronDefinition, date);       
+        try {
+            days = generateDays(cronDefinition, date);
+        } catch (NoDaysForMonthException e) {
+            return nextClosestMatch(date.plusMonths(1));
+        }
         if(!days.getValues().contains(date.getDayOfMonth())) {
             nearestValue = days.getNextValue(date.getDayOfMonth(), 0);
             if(nearestValue.getShifts()>0){
@@ -229,7 +242,12 @@ public class ExecutionTime {
      */
     private ZonedDateTime previousClosestMatch(ZonedDateTime date) throws NoSuchValueException {
         List<Integer> year = yearsValueGenerator.generateCandidates(date.getYear(), date.getYear());
-        TimeNode days = generateDays(cronDefinition, date);
+        TimeNode days = null;
+        try {
+            days = generateDays(cronDefinition, date);
+        } catch (NoDaysForMonthException e) {
+            return previousClosestMatch(date.minusMonths(1));
+        }
         int highestMonth = months.getValues().get(months.getValues().size()-1);
         int highestDay = days.getValues().get(days.getValues().size()-1);
         int highestHour = hours.getValues().get(hours.getValues().size()-1);
@@ -309,7 +327,7 @@ public class ExecutionTime {
         return date;
     }
 
-    private TimeNode generateDays(CronDefinition cronDefinition, ZonedDateTime date){
+    private TimeNode generateDays(CronDefinition cronDefinition, ZonedDateTime date) throws NoDaysForMonthException {
         //If DoW is not supported in custom definition, we just return an empty list.
         if(cronDefinition.getFieldDefinition(DAY_OF_WEEK)!=null && cronDefinition.getFieldDefinition(DAY_OF_MONTH)!=null){
             return generateDaysDoWAndDoMSupported(cronDefinition, date);
@@ -320,27 +338,28 @@ public class ExecutionTime {
         return generateDayCandidatesUsingDoW(date, ((DayOfWeekFieldDefinition)cronDefinition.getFieldDefinition(DAY_OF_WEEK)).getMondayDoWValue());
     }
 
-    private TimeNode generateDaysDoWAndDoMSupported(CronDefinition cronDefinition, ZonedDateTime date){
+    private TimeNode generateDaysDoWAndDoMSupported(CronDefinition cronDefinition, ZonedDateTime date) throws NoDaysForMonthException {
         boolean questionMarkSupported =
                 cronDefinition.getFieldDefinition(DAY_OF_WEEK).getConstraints().getSpecialChars().contains(QUESTION_MARK);
+        List<Integer> candidates = new ArrayList<>();
         if(questionMarkSupported){
-            return new TimeNode(
-                    generateDayCandidatesQuestionMarkSupportedUsingDoWAndDoM(
-                            date.getYear(),
-                            date.getMonthValue(),
-                            ((DayOfWeekFieldDefinition)cronDefinition.getFieldDefinition(DAY_OF_WEEK)).getMondayDoWValue()
-                    )
+            candidates = generateDayCandidatesQuestionMarkSupportedUsingDoWAndDoM(
+                    date.getYear(),
+                    date.getMonthValue(),
+                    ((DayOfWeekFieldDefinition)cronDefinition.getFieldDefinition(DAY_OF_WEEK)).getMondayDoWValue()
             );
         }else{
-            return new TimeNode(
-                    generateDayCandidatesQuestionMarkNotSupportedUsingDoWAndDoM(
-                            date.getYear(), date.getMonthValue(),
-                            ((DayOfWeekFieldDefinition)
-                                    cronDefinition.getFieldDefinition(DAY_OF_WEEK)
-                            ).getMondayDoWValue()
-                    )
+            candidates = generateDayCandidatesQuestionMarkNotSupportedUsingDoWAndDoM(
+                    date.getYear(), date.getMonthValue(),
+                    ((DayOfWeekFieldDefinition)
+                            cronDefinition.getFieldDefinition(DAY_OF_WEEK)
+                    ).getMondayDoWValue()
             );
         }
+        if(candidates.isEmpty()){
+            throw new NoDaysForMonthException();
+        }
+        return new TimeNode(candidates);
     }
 
     /**
