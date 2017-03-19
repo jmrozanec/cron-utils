@@ -1,5 +1,8 @@
 package com.cronutils.parser;
 
+import android.support.test.runner.AndroidJUnit4;
+
+import com.cronutils.BaseAndroidTest;
 import com.cronutils.model.definition.CronDefinition;
 import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.field.constraint.FieldConstraintsBuilder;
@@ -9,6 +12,7 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
@@ -28,7 +32,8 @@ import static org.mockito.Mockito.when;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-public class CronParserTest {
+@RunWith(AndroidJUnit4.class)
+public class CronParserTest extends BaseAndroidTest{
 
     @Rule
     public ExpectedException expectedException = ExpectedException.none();

@@ -16,7 +16,7 @@ import com.cronutils.utils.VisibleForTesting;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.time.*;
+import org.threeten.bp.*;
 import java.util.*;
 import java.util.function.Function;
 
@@ -24,7 +24,7 @@ import static com.cronutils.model.field.CronFieldName.*;
 import static com.cronutils.model.field.value.SpecialChar.QUESTION_MARK;
 import static com.cronutils.model.time.generator.FieldValueGeneratorFactory.createDayOfMonthValueGeneratorInstance;
 import static com.cronutils.model.time.generator.FieldValueGeneratorFactory.createDayOfWeekValueGeneratorInstance;
-import static java.time.temporal.TemporalAdjusters.lastDayOfMonth;
+import static org.threeten.bp.temporal.TemporalAdjusters.lastDayOfMonth;
 
 /*
  * Copyright 2014 jmrozanec

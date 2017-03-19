@@ -10,7 +10,7 @@ import com.cronutils.model.field.value.SpecialCharFieldValue;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.time.LocalDate;
+import org.threeten.bp.LocalDate;
 import java.util.List;
 
 import static org.junit.Assert.*;

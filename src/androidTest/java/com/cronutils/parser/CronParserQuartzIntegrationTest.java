@@ -13,7 +13,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import java.time.ZonedDateTime;
+import org.threeten.bp.ZonedDateTime;
 import java.util.Locale;
 
 import static org.junit.Assert.assertEquals;

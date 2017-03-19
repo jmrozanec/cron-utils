@@ -6,9 +6,9 @@ import com.cronutils.model.field.definition.FieldDefinition;
 import com.cronutils.model.field.expression.FieldExpression;
 import com.cronutils.model.field.expression.On;
 
-import java.time.DayOfWeek;
-import java.time.Month;
-import java.time.format.TextStyle;
+import org.threeten.bp.DayOfWeek;
+import org.threeten.bp.Month;
+import org.threeten.bp.format.TextStyle;
 import java.util.ResourceBundle;
 import java.util.function.Function;
 

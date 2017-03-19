@@ -10,13 +10,13 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.time.*;
-import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
+import org.threeten.bp.*;
+import org.threeten.bp.format.DateTimeFormatter;
+import org.threeten.bp.temporal.ChronoUnit;
 import java.util.*;
 
 import static com.cronutils.model.CronType.QUARTZ;
-import static java.time.ZoneOffset.UTC;
+import static org.threeten.bp.ZoneOffset.UTC;
 import static org.junit.Assert.*;
 
 /*
