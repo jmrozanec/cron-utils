@@ -1,5 +1,7 @@
 package com.cronutils;
 
+import android.support.test.runner.AndroidJUnit4;
+
 import com.cronutils.model.Cron;
 import com.cronutils.model.CronType;
 import com.cronutils.model.definition.CronDefinitionBuilder;
@@ -8,9 +10,12 @@ import com.cronutils.parser.CronParser;
 import org.junit.Test;
 
 import java.text.ParseException;
+
+import org.junit.runner.RunWith;
 import org.threeten.bp.ZonedDateTime;
 import org.threeten.bp.format.DateTimeFormatter;
 
+@RunWith(AndroidJUnit4.class)
 public class OpenIssuesTest {
     private DateTimeFormatter dfSimple = DateTimeFormatter.ofPattern("hh:mm:ss MM/dd/yyyy a X");
     private DateTimeFormatter df = DateTimeFormatter.ofPattern("hh:mm:ss EEE, MMM dd yyyy a X");

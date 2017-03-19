@@ -1,5 +1,8 @@
 package com.cronutils.model.time.generator;
 
+import android.support.test.runner.AndroidJUnit4;
+
+import com.cronutils.BaseAndroidTest;
 import com.cronutils.model.Cron;
 import com.cronutils.model.CronType;
 import com.cronutils.model.definition.CronDefinition;
@@ -8,6 +11,7 @@ import com.cronutils.model.time.ExecutionTime;
 import com.cronutils.parser.CronParser;
 import org.junit.Test;
 
+import org.junit.runner.RunWith;
 import org.threeten.bp.Duration;
 import org.threeten.bp.Instant;
 import org.threeten.bp.ZoneId;
@@ -16,6 +20,7 @@ import org.threeten.bp.ZonedDateTime;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+@RunWith(AndroidJUnit4.class)
 public class ExecutionTimeUnixIntegrationTest {
 
     @Test

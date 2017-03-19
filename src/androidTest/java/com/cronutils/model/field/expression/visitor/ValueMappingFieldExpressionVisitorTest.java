@@ -1,14 +1,19 @@
 package com.cronutils.model.field.expression.visitor;
 
+import android.support.test.runner.AndroidJUnit4;
+
+import com.cronutils.BaseAndroidTest;
 import com.cronutils.model.field.expression.QuestionMark;
 import com.cronutils.model.field.value.FieldValue;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
-import java.util.function.Function;
+import com.cronutils.Function;
 
 import static org.junit.Assert.assertTrue;
 
+@RunWith(AndroidJUnit4.class)
 public class ValueMappingFieldExpressionVisitorTest {
     private ValueMappingFieldExpressionVisitor valueMappingFieldExpressionVisitor;
 

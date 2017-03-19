@@ -10,7 +10,7 @@ import org.threeten.bp.DayOfWeek;
 import org.threeten.bp.Month;
 import org.threeten.bp.format.TextStyle;
 import java.util.ResourceBundle;
-import java.util.function.Function;
+import com.cronutils.Function;
 
 /*
 * Copyright 2014 jmrozanec

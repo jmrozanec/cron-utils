@@ -1,5 +1,8 @@
 package com.cronutils.parser;
 
+import android.support.test.runner.AndroidJUnit4;
+
+import com.cronutils.BaseAndroidTest;
 import com.cronutils.builder.CronBuilder;
 import com.cronutils.descriptor.CronDescriptor;
 import com.cronutils.model.Cron;
@@ -13,6 +16,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
+import org.junit.runner.RunWith;
 import org.threeten.bp.ZonedDateTime;
 import java.util.Locale;
 
@@ -31,7 +35,8 @@ import static org.junit.Assert.assertNotNull;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-public class CronParserQuartzIntegrationTest {
+@RunWith(AndroidJUnit4.class)
+public class CronParserQuartzIntegrationTest extends BaseAndroidTest {
     private CronParser parser;
 
     @Rule
@@ -39,6 +44,7 @@ public class CronParserQuartzIntegrationTest {
 
     @Before
     public void setUp() throws Exception {
+        super.setUp();
         parser = new CronParser(CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ));
     }
 

@@ -1,5 +1,8 @@
 package com.cronutils.model.time.generator;
 
+import android.support.test.runner.AndroidJUnit4;
+
+import com.cronutils.BaseAndroidTest;
 import com.cronutils.mapper.WeekDay;
 import com.cronutils.model.field.CronField;
 import com.cronutils.model.field.CronFieldName;
@@ -7,11 +10,13 @@ import com.cronutils.model.field.constraint.FieldConstraintsBuilder;
 import com.cronutils.model.field.expression.Between;
 import com.cronutils.model.field.value.IntegerFieldValue;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import java.util.List;
 
 import static org.junit.Assert.assertTrue;
 
+@RunWith(AndroidJUnit4.class)
 public class BetweenDayOfWeekValueGeneratorTest {
 
     @Test

@@ -1,7 +1,11 @@
 package com.cronutils.model.field.expression;
 
+import android.support.test.runner.AndroidJUnit4;
+
+import com.cronutils.BaseAndroidTest;
 import com.cronutils.model.field.value.IntegerFieldValue;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import static org.junit.Assert.assertEquals;
 /*
@@ -16,6 +20,7 @@ import static org.junit.Assert.assertEquals;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+@RunWith(AndroidJUnit4.class)
 public class EveryTest {
     @Test
     public void testGetTime() throws Exception {

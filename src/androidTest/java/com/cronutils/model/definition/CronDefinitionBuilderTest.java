@@ -1,5 +1,8 @@
 package com.cronutils.model.definition;
 
+import android.support.test.runner.AndroidJUnit4;
+
+import com.cronutils.BaseAndroidTest;
 import com.cronutils.model.CronType;
 import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.field.constraint.FieldConstraints;
@@ -9,6 +12,7 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import java.util.Set;
 
@@ -25,6 +29,7 @@ import static org.junit.Assert.*;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+@RunWith(AndroidJUnit4.class)
 public class CronDefinitionBuilderTest {
 
     private CronDefinitionBuilder builder;

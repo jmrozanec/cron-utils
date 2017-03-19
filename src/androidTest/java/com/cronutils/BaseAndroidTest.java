@@ -10,7 +10,6 @@ import com.jakewharton.threetenabp.AndroidThreeTen;
 import org.junit.Before;
 import org.junit.runner.RunWith;
 
-@RunWith(AndroidJUnit4.class)
 public class BaseAndroidTest {
     protected final Application application =
             (Application) InstrumentationRegistry.getTargetContext().getApplicationContext();

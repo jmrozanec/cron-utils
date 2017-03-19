@@ -1,19 +1,30 @@
 package com.cronutils.model.time;
 
+import android.support.test.runner.AndroidJUnit4;
+
+import com.cronutils.BaseAndroidTest;
 import com.cronutils.model.Cron;
 import com.cronutils.model.definition.CronDefinition;
 import com.cronutils.model.definition.CronDefinitionBuilder;
 import com.cronutils.parser.CronParser;
-import org.junit.Test;
 
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.threeten.bp.ZoneId;
 import org.threeten.bp.ZonedDateTime;
 
-import static org.threeten.bp.ZoneOffset.UTC;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.threeten.bp.ZoneOffset.UTC;
 
-public class ExecutionTimeCustomDefinitionIntegrationTest {
+@RunWith(AndroidJUnit4.class)
+public class ExecutionTimeCustomDefinitionIntegrationTest extends BaseAndroidTest {
+
+    @Before
+    public void setUp() throws Exception {
+        super.setUp();
+    }
 
     @Test
     public void testCronExpressionAfterHalf() {

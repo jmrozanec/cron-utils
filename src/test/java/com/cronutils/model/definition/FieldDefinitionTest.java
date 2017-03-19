@@ -1,7 +1,9 @@
-package com.cronutils.model.field.definition;
+package com.cronutils.model.definition;
 
 import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.field.constraint.FieldConstraints;
+import com.cronutils.model.field.definition.FieldDefinition;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;

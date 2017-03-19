@@ -7,7 +7,7 @@ import com.cronutils.utils.Preconditions;
 import java.util.HashSet;
 import java.util.ResourceBundle;
 import java.util.Set;
-import java.util.function.Function;
+import com.cronutils.Function;
 
 /*
  * Copyright 2014 jmrozanec

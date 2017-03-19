@@ -1,11 +1,15 @@
 package com.cronutils.model.definition;
 
+import android.support.test.runner.AndroidJUnit4;
+
+import com.cronutils.BaseAndroidTest;
 import com.cronutils.model.Cron;
 import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.time.ExecutionTime;
 import com.cronutils.parser.CronParser;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import static org.junit.Assert.assertEquals;
 
@@ -21,6 +25,7 @@ import static org.junit.Assert.assertEquals;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+@RunWith(AndroidJUnit4.class)
 public class CronDefinitionIssue25IntegrationTest {
     private CronDefinition cronDefinition;
     final String CRON_EXPRESSION = "0 18 1";

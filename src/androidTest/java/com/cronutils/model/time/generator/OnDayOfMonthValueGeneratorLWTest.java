@@ -1,5 +1,8 @@
 package com.cronutils.model.time.generator;
 
+import android.support.test.runner.AndroidJUnit4;
+
+import com.cronutils.BaseAndroidTest;
 import com.cronutils.model.field.CronField;
 import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.field.constraint.FieldConstraints;
@@ -9,6 +12,7 @@ import com.cronutils.model.field.value.SpecialChar;
 import com.cronutils.model.field.value.SpecialCharFieldValue;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import java.util.List;
 
@@ -26,6 +30,7 @@ import static org.junit.Assert.*;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+@RunWith(AndroidJUnit4.class)
 public class OnDayOfMonthValueGeneratorLWTest {
     private FieldConstraints constraints;
     private OnDayOfMonthValueGenerator fieldValueGenerator;

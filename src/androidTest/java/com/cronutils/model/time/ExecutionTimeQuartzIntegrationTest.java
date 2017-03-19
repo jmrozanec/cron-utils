@@ -5,7 +5,7 @@ import com.cronutils.model.Cron;
 import com.cronutils.model.definition.CronDefinition;
 import com.cronutils.model.definition.CronDefinitionBuilder;
 import com.cronutils.parser.CronParser;
-
+import com.google.common.base.Optional;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -570,10 +570,10 @@ public class ExecutionTimeQuartzIntegrationTest {
         ZonedDateTime cronUtilsNextTime = ExecutionTime.forCron(cron).nextExecution(date).get();// 2016-12-30T00:00:00Z
 
         org.quartz.CronExpression cronExpression = new org.quartz.CronExpression(cron.asString());
-        cronExpression.setTimeZone(TimeZone.getTimeZone(utc));
-        Date quartzNextTime = cronExpression.getNextValidTimeAfter(Date.from(date.toInstant()));// 2016-12-24T00:00:00Z
+        cronExpression.setTimeZone(DateTimeUtils.toTimeZone(utc));
+        Date quartzNextTime = cronExpression.getNextValidTimeAfter(DateTimeUtils.toDate(date.toInstant()));// 2016-12-24T00:00:00Z
 
-        assertEquals(quartzNextTime.toInstant(), cronUtilsNextTime.toInstant()); // false
+        assertEquals(DateTimeUtils.toInstant(quartzNextTime), cronUtilsNextTime.toInstant()); // false
     }
 
     /**

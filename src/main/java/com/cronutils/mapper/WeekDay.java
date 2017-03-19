@@ -4,7 +4,7 @@ import com.cronutils.utils.Preconditions;
 import com.cronutils.utils.VisibleForTesting;
 
 import java.io.Serializable;
-import java.util.function.Function;
+import com.cronutils.Function;
 
 /*
  * Copyright 2015 jmrozanec

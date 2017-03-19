@@ -1,8 +1,11 @@
 package com.cronutils.model.time;
 
+import android.support.test.runner.AndroidJUnit4;
+
 import com.google.common.collect.Lists;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -20,6 +23,7 @@ import static org.junit.Assert.assertEquals;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+@RunWith(AndroidJUnit4.class)
 public class TimeNodeTest {
     private static final int LIST_START_VALUE = 2;
     private static final int LIST_MEDIUM_VALUE = 4;

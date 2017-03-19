@@ -13,12 +13,13 @@ import com.cronutils.model.time.generator.NoDaysForMonthException;
 import com.cronutils.model.time.generator.NoSuchValueException;
 import com.cronutils.utils.Preconditions;
 import com.cronutils.utils.VisibleForTesting;
+import com.google.common.base.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.threeten.bp.*;
 import java.util.*;
-import java.util.function.Function;
+import com.cronutils.Function;
 
 import static com.cronutils.model.field.CronFieldName.*;
 import static com.cronutils.model.field.value.SpecialChar.QUESTION_MARK;
@@ -123,7 +124,7 @@ public class ExecutionTime {
             }
             return Optional.of(nextMatch);
         } catch (NoSuchValueException e) {
-            return Optional.empty();
+            return Optional.absent();
         }
     }
 
@@ -372,7 +373,7 @@ public class ExecutionTime {
         if(next.isPresent()){
             return Optional.of(Duration.between(date, next.get()));
         }
-        return Optional.empty();
+        return Optional.absent();
     }
 
     /**
@@ -389,7 +390,7 @@ public class ExecutionTime {
             }
             return Optional.of(previousMatch);
         } catch (NoSuchValueException e) {
-            return Optional.empty();
+            return Optional.absent();
         }
     }
 
@@ -403,7 +404,7 @@ public class ExecutionTime {
         if(last.isPresent()){
             return Optional.of(Duration.between(last.get(), date));
         }
-        return Optional.empty();
+        return Optional.absent();
     }
 
     /**

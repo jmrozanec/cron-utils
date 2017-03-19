@@ -1,10 +1,14 @@
 package com.cronutils.model.time;
 
+import android.support.test.runner.AndroidJUnit4;
+
+import com.cronutils.BaseAndroidTest;
 import com.cronutils.model.CronType;
 import com.cronutils.model.definition.CronDefinitionBuilder;
 import com.cronutils.parser.CronParser;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,7 +29,8 @@ import static org.junit.Assert.*;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-public class ExecutionTimeCron4jIntegrationTest {
+@RunWith(AndroidJUnit4.class)
+public class ExecutionTimeCron4jIntegrationTest extends BaseAndroidTest {
     private CronParser cron4jCronParser;
     private static final String EVERY_MONDAY_AT_18 = "0 18 * * 1";
     private static final String EVERY_15_MINUTES = "0/15 * * * *";
@@ -34,7 +39,8 @@ public class ExecutionTimeCron4jIntegrationTest {
 	private static final Logger log = LoggerFactory.getLogger(ExecutionTimeCron4jIntegrationTest.class);
 
     @Before
-    public void setUp(){
+    public void setUp() throws Exception {
+        super.setUp();
         cron4jCronParser = new CronParser(CronDefinitionBuilder.instanceDefinitionFor(CronType.CRON4J));
     }
 

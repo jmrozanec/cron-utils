@@ -1,5 +1,8 @@
 package com.cronutils;
 
+import android.support.test.runner.AndroidJUnit4;
+
+import org.junit.runner.RunWith;
 import org.threeten.bp.LocalDateTime;
 import org.threeten.bp.ZoneId;
 import org.threeten.bp.ZonedDateTime;
@@ -13,13 +16,15 @@ import com.cronutils.model.definition.CronDefinitionBuilder;
 import com.cronutils.model.time.ExecutionTime;
 import com.cronutils.parser.CronParser;
 
-public class Issue143Test {
+@RunWith(AndroidJUnit4.class)
+public class Issue143Test extends BaseAndroidTest {
 
     private CronParser    parser;
     private ZonedDateTime currentDateTime;
     
     @Before
-    public void initialize() {
+    public void setUp() throws Exception {
+        super.setUp();
         // Make sure that current date is before Dec-31
         currentDateTime = ZonedDateTime.of(LocalDateTime.of(2016, 12, 20, 12, 00), 
                                            ZoneId.systemDefault());
@@ -27,7 +32,7 @@ public class Issue143Test {
         parser = new CronParser(CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ));
     }
     
-//    @Test
+    @Test
     public void testCase1() {
         ExecutionTime et = ExecutionTime.forCron(parser.parse("0 0 12 31 12 ? *"));
         ZonedDateTime actual = et.lastExecution(currentDateTime).get();
