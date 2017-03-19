@@ -11,3 +11,4 @@ nbproject
 zrefactor
 .gradle/
 build/
+local.properties
