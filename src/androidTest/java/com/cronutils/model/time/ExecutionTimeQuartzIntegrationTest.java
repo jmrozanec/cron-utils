@@ -1,5 +1,8 @@
 package com.cronutils.model.time;
 
+import android.support.test.runner.AndroidJUnit4;
+
+import com.cronutils.BaseAndroidTest;
 import com.cronutils.descriptor.CronDescriptor;
 import com.cronutils.model.Cron;
 import com.cronutils.model.definition.CronDefinition;
@@ -10,6 +13,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import org.junit.runner.RunWith;
 import org.threeten.bp.*;
 import org.threeten.bp.format.DateTimeFormatter;
 import org.threeten.bp.temporal.ChronoUnit;
@@ -31,12 +35,14 @@ import static org.junit.Assert.*;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-public class ExecutionTimeQuartzIntegrationTest {
+@RunWith(AndroidJUnit4.class)
+public class ExecutionTimeQuartzIntegrationTest extends BaseAndroidTest {
     private CronParser parser;
     private static final String EVERY_SECOND = "* * * * * ? *";
 
     @Before
-    public void setUp(){
+    public void setUp() throws Exception {
+        super.setUp();
         parser = new CronParser(CronDefinitionBuilder.instanceDefinitionFor(QUARTZ));
     }
 
