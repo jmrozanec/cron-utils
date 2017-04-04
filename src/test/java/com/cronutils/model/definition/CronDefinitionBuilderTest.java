@@ -1,10 +1,12 @@
 package com.cronutils.model.definition;
 
+import com.cronutils.model.Cron;
 import com.cronutils.model.CronType;
 import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.field.constraint.FieldConstraints;
 import com.cronutils.model.field.definition.FieldDefinition;
 import com.cronutils.model.field.value.SpecialChar;
+import com.cronutils.parser.CronParser;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import org.junit.Before;
@@ -138,5 +140,13 @@ public class CronDefinitionBuilderTest {
     @Test(expected = RuntimeException.class)
     public void testInstanceDefinitionForUnknownValue() throws Exception {
         assertNotNull(CronDefinitionBuilder.instanceDefinitionFor(null));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testCronDefinitionShouldNotAcceptQuestionmark() throws Exception {
+        CronDefinition cronDefinition = CronDefinitionBuilder.instanceDefinitionFor(CronType.UNIX);
+        CronParser parser = new CronParser(cronDefinition);
+        Cron quartzCron = parser.parse("* * * * ?");
+        quartzCron.validate();
     }
 }

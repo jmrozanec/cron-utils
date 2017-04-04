@@ -60,6 +60,9 @@ public class FieldParser {
 	 */
 	public FieldExpression parse(String expression) {
 		if (!StringUtils.containsAny(expression, SPECIAL_CHARS_MINUS_STAR)) {
+			if(expression.contains(QUESTION_MARK_STRING) && !fieldConstraints.getSpecialChars().contains(QUESTION_MARK)){
+				throw new IllegalArgumentException("Invalid expression: " + expression);
+			}
 			return noSpecialCharsNorStar(expression);
 		} else {
 			String[] array = expression.split(",");
