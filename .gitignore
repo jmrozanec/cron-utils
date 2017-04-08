@@ -9,3 +9,6 @@ nb-build.xml
 nbproject
 *.sh
 zrefactor
+.gradle/
+build/
+local.properties

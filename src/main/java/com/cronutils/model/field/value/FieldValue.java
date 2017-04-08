@@ -1,5 +1,7 @@
 package com.cronutils.model.field.value;
 
+import java.io.Serializable;
+
 /*
  * Copyright 2015 jmrozanec
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,7 +20,8 @@ package com.cronutils.model.field.value;
  * manipulate different types of values in a homogeneous way
  * @param <T>
  */
-public abstract class FieldValue<T> {
+public abstract class FieldValue<T extends Serializable>  implements Serializable {
+    
     /**
      * Allows to obtain the value
      * @return some value, never null

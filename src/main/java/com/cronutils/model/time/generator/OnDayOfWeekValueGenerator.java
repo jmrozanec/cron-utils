@@ -8,8 +8,8 @@ import com.cronutils.model.field.expression.FieldExpression;
 import com.cronutils.model.field.expression.On;
 import com.cronutils.utils.Preconditions;
 
-import java.time.DayOfWeek;
-import java.time.LocalDate;
+import org.threeten.bp.DayOfWeek;
+import org.threeten.bp.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 /*

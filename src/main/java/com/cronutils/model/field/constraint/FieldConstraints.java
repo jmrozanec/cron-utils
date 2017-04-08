@@ -3,6 +3,7 @@ package com.cronutils.model.field.constraint;
 import com.cronutils.model.field.value.SpecialChar;
 import com.cronutils.utils.Preconditions;
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
@@ -25,7 +26,7 @@ import java.util.Set;
  * values: int range, valid special characters, valid nominal values. Example for mappings: conversions from nominal values to integers and
  * integer-integer mappings if more than one integer represents the same concept.
  */
-public class FieldConstraints {
+public class FieldConstraints implements Serializable {
 
 	private final Map<String, Integer> stringMapping;
 	private final Map<Integer, Integer> intMapping;

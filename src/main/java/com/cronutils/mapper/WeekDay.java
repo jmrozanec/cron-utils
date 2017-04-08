@@ -3,7 +3,8 @@ package com.cronutils.mapper;
 import com.cronutils.utils.Preconditions;
 import com.cronutils.utils.VisibleForTesting;
 
-import java.util.function.Function;
+import java.io.Serializable;
+import com.cronutils.Function;
 
 /*
  * Copyright 2015 jmrozanec
@@ -18,7 +19,7 @@ import java.util.function.Function;
  * limitations under the License.
  */
 @VisibleForTesting
-public class WeekDay {
+public class WeekDay implements Serializable {
     private int mondayDoWValue;
     private boolean firstDayZero;
 

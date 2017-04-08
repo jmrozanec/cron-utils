@@ -1,0 +1,96 @@
+buildscript {
+    repositories {
+        mavenCentral()
+        jcenter()
+    }
+
+    dependencies {
+        classpath 'com.android.tools.build:gradle:2.2.3'
+        classpath 'me.tatarka:gradle-retrolambda:3.6.0'
+    }
+}
+
+apply plugin: 'com.android.library'
+apply plugin: 'maven'
+apply plugin: 'me.tatarka.retrolambda'
+
+group = 'com.cronutils'
+version = '5.0.6-SNAPSHOT'
+
+description = """cron-utils"""
+
+configurations.all {
+}
+
+repositories {
+        
+     maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
+     maven { url "http://repo.maven.apache.org/maven2" }
+}
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}
+
+android {
+    compileSdkVersion 25
+    buildToolsVersion "25.0.2"
+
+    defaultConfig {
+        minSdkVersion 16
+        targetSdkVersion 25
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    testOptions {
+        unitTests.returnDefaultValues = true
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+dependencies {
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+
+    compile "com.jakewharton.threetenabp:threetenabp:1.0.5"
+    compile group: 'org.slf4j', name: 'slf4j-api', version:'1.7.12'
+    compile group: 'com.google.guava', name: 'guava', version:'18.0'
+
+    testCompile group: 'log4j', name: 'log4j', version:'1.2.17'
+    testCompile ('org.threeten:threetenbp:1.3.2'){
+        exclude group:'com.jakewharton.threetenabp', module:'threetenabp'
+    }
+    testCompile group: 'org.slf4j', name: 'slf4j-log4j12', version:'1.7.12'
+    testCompile group: 'org.mockito', name: 'mockito-core', version:'1.10.19'
+    testCompile group: 'org.powermock', name: 'powermock-module-junit4', version:'1.6.2'
+    testCompile group: 'org.powermock', name: 'powermock-api-mockito', version:'1.6.2'
+    testCompile group: 'org.quartz-scheduler', name: 'quartz', version:'2.2.3'
+    testCompile ('junit:junit:4.12') {
+        exclude group: 'org.hamcrest'
+    }
+
+    //androidTestCompile group: 'log4j', name: 'log4j', version:'1.2.17'
+    androidTestCompile group: 'org.mockito', name: 'mockito-core', version:'1.10.19'
+    androidTestCompile group: 'org.quartz-scheduler', name: 'quartz', version:'2.2.3'
+    androidTestCompile 'eu.lp0.slf4j:slf4j-android:1.7.22-0'
+    androidTestCompile ('com.android.support.test:runner:0.5') {
+        exclude (group: 'org.hamcrest', module: 'hamcrest-core')
+    }
+    androidTestCompile ('com.android.support.test:rules:0.5') {
+        exclude (group: 'org.hamcrest', module: 'hamcrest-core')
+    }
+    androidTestCompile "junit:junit:4.12"
+}

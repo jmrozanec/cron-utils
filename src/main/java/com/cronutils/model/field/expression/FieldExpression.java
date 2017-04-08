@@ -1,5 +1,7 @@
 package com.cronutils.model.field.expression;
 
+import java.io.Serializable;
+
 import com.cronutils.model.field.expression.visitor.FieldExpressionVisitor;
 import com.cronutils.utils.Preconditions;
 
@@ -16,9 +18,9 @@ import com.cronutils.utils.Preconditions;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-public abstract class FieldExpression {
+public abstract class FieldExpression implements Serializable {
 
-	public And and(FieldExpression exp) {
+    public And and(FieldExpression exp) {
 		return new And().and(this).and(exp);
 	}
 

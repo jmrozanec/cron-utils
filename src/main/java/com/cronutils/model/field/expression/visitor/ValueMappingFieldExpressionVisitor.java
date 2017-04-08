@@ -16,7 +16,7 @@ import com.cronutils.model.field.expression.*;
 import com.cronutils.model.field.value.FieldValue;
 import com.cronutils.model.field.value.IntegerFieldValue;
 
-import java.util.function.Function;
+import com.cronutils.Function;
 
 /**
  * Performs a transformation on FieldExpression values.
