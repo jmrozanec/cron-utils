@@ -76,11 +76,26 @@
             <artifactId>slf4j-api</artifactId>
             <version>${slf4j.version}</version>
         </dependency>
-
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
             <version>${guava.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.jakewharton.threetenabp</groupId>
+            <artifactId>threetenabp</artifactId>
+            <version>1.0.5</version>
+	    <type>aar</type>
+        </dependency>
+        <dependency>
+            <groupId>eu.lp0.slf4j</groupId>
+            <artifactId>slf4j-android</artifactId>
+            <version>1.7.22-0</version>
             <scope>test</scope>
         </dependency>
         <dependency>
