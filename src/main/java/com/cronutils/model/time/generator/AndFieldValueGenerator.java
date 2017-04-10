@@ -6,8 +6,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.function.Function;
+import com.cronutils.Function;
 import java.util.stream.Collectors;
 
 /*
@@ -102,7 +103,12 @@ class AndFieldValueGenerator extends FieldValueGenerator {
         for (FieldExpression expression : and.getExpressions()) {
             candidates.add(function.apply(createCandidateGeneratorInstance(new CronField(cronField.getField(), expression, cronField.getConstraints()))));
         }
-        return candidates.parallelStream().filter(integer -> integer>=0).sorted().collect(Collectors.toList());
+        List<Integer> filteredCandidates = new ArrayList<>();
+        for (Integer candidate : candidates) {
+            if(candidate >= 0)  filteredCandidates.add(candidate);
+        }
+        Collections.sort(filteredCandidates);
+        return filteredCandidates;
     }
 
     private FieldValueGenerator createCandidateGeneratorInstance(CronField cronField){

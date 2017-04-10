@@ -9,7 +9,7 @@ import com.cronutils.model.field.expression.FieldExpression;
 import com.cronutils.parser.CronParserField;
 import com.cronutils.utils.Preconditions;
 
-import java.time.LocalDate;
+import org.threeten.bp.LocalDate;
 import java.util.*;
 /*
  * Copyright 2015 jmrozanec
