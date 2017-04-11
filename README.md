@@ -165,10 +165,14 @@ DateTimeFormatter formatter =
 String formattedDateTime = formatter.print(lastExecution);
 // formattedDateTime will be lastExecution in "dayOfWeek, Month day, Year" format
 ```
+
 ***cron-utils CLI***
+
 We provide a simple CLI interface to use cron-utils right from console, without writing a new project!
-Usage: java -jar cron-utils.jar com.cronutils.cli.CronUtilsCLI -f [CRON4J|QUARTZ|UNIX] -e <cron expression>
-Example: java -jar cron-utils.jar com.cronutils.cli.CronUtilsCLI UNIX '* 1 * * *'
+
+- Usage: java -jar cron-utils.jar com.cronutils.cli.CronUtilsCLI -f [CRON4J|QUARTZ|UNIX] -e <cron expression>
+
+- Example: java -jar cron-utils.jar com.cronutils.cli.CronUtilsCLI UNIX '* 1 * * *'
 
 **Contribute & Support!**
 
