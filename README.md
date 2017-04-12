@@ -170,9 +170,9 @@ String formattedDateTime = formatter.print(lastExecution);
 
 We provide a simple CLI interface to use cron-utils right from console, without writing a new project!
 
-- Usage: java -jar cron-utils.jar com.cronutils.cli.CronUtilsCLI -f [CRON4J|QUARTZ|UNIX] -e <cron expression>
+- Usage: java -jar cron-utils.jar com.cronutils.cli.CronUtilsCLI -a validate -f [CRON4J|QUARTZ|UNIX] -e '<cron expression>'
 
-- Example: java -jar cron-utils.jar com.cronutils.cli.CronUtilsCLI UNIX '* 1 * * *'
+- Example: java -jar cron-utils.jar com.cronutils.cli.CronUtilsCLI -a validate -f UNIX -e '* 1 * * *'
 
 **Contribute & Support!**
 
