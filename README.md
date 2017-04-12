@@ -170,9 +170,18 @@ String formattedDateTime = formatter.print(lastExecution);
 
 We provide a simple CLI interface to use cron-utils right from console, without writing a new project!
 
-- Usage: java -jar cron-utils.jar com.cronutils.cli.CronUtilsCLI -a validate -f [CRON4J|QUARTZ|UNIX] -e '<cron expression>'
+- Usage: `java -jar cron-utils.jar com.cronutils.cli.CronUtilsCLI --validate -f [CRON4J|QUARTZ|UNIX] -e '<cron expression>'`
 
-- Example: java -jar cron-utils.jar com.cronutils.cli.CronUtilsCLI -a validate -f UNIX -e '* 1 * * *'
+- Example: `java -jar cron-utils.jar com.cronutils.cli.CronUtilsCLI --validate -f UNIX -e '* 1 * * *'`
+
+If you want a standalone jar without requiring the 'cp', build an uber jar with :
+```bash
+mvn assembly:assembly -DdescriptorId=jar-with-dependencies
+```
+Then, launch cli-utils (built in the `target` directory) with :
+```bash
+java -jar cron-utils-<version>-jar-with-dependencies.jar com.cronutils.cli.CronUtilsCLI --validate -f [CRON4J|QUARTZ|UNIX] -e '<cron expression>'`
+```
 
 **Contribute & Support!**
 

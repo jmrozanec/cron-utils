@@ -38,7 +38,7 @@ public class CronUtilsCLI {
 
 	private static void cronValidation(String[] args) throws ParseException {
 		Options options = new Options();
-		options.addOption("a", "action", true, "Action to be performed. Possible values are: 'validate'");
+		options.addOption("v", "validate", false, "Action of validation (default)");
 		options.addOption("f", "format", true,
 				"Cron expression format to validate. Possible values are: CRON4J, QUARTZ, UNIX");
 		options.addOption("e", "expression", true, "Cron expression to validate. Example: '* 1 * * *'");
@@ -53,11 +53,11 @@ public class CronUtilsCLI {
 			showHelp(options, header, footer);
 			return;
 		}
-		if (!cmd.hasOption("action")) {
+		if (!cmd.hasOption("validate")) {
 			showHelp(options, header, footer);
 			return;
 		}
-		if (cmd.getOptionValue("a").equalsIgnoreCase("validate")) {
+		if (cmd.hasOption('v')) {
 			String format = cmd.getOptionValue("f");
 			String expression = cmd.getOptionValue("e");
 
