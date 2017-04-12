@@ -1,11 +1,17 @@
 package com.cronutils.cli;
 
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.HelpFormatter;
+import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
+
 import com.cronutils.model.Cron;
 import com.cronutils.model.CronType;
 import com.cronutils.model.definition.CronDefinition;
 import com.cronutils.model.definition.CronDefinitionBuilder;
 import com.cronutils.parser.CronParser;
-import org.apache.commons.cli.*;
 
 /*
  * Copyright 2017 bflorat, jmrozanec
@@ -20,36 +26,38 @@ import org.apache.commons.cli.*;
  * limitations under the License.
  */
 public class CronUtilsCLI {
-	private CronUtilsCLI() {}
+	private static final String HELP = "help";
+
+	private CronUtilsCLI() {
+		super();
+	}
 
 	public static void main(String[] args) throws Exception {
 		cronValidation(args);
 	}
 
-	/**
-	 * Arguments:
-	 * <li>f: cron format as CronType enum name. Example: 'UNIX', 'QUARTZ' or 'CRON4J'
-	 * <li>e: the cron expression. Example: '* 1 * * *'
-	 * <li>h: help
-	 *
-	 * @param args
-	 */
 	private static void cronValidation(String[] args) throws ParseException {
 		Options options = new Options();
-		options.addRequiredOption("a", "action",true, "Action to be performed. Possible values are: 'validation'");
-		options.addOption("f", "format",true, "Cron expression format to validate. Possible values are: CRON4J, QUARTZ, UNIX");
-		options.addOption("e", "expression",true, "Cron expression to validate. Example: '* 1 * * *'");
-		options.addOption("h", "help", false, "Help");
+		options.addOption("a", "action", true, "Action to be performed. Possible values are: 'validate'");
+		options.addOption("f", "format", true,
+				"Cron expression format to validate. Possible values are: CRON4J, QUARTZ, UNIX");
+		options.addOption("e", "expression", true, "Cron expression to validate. Example: '* 1 * * *'");
+		options.addOption("h", HELP, false, "Help");
 
 		String header = "Cron expressions validation by cron-utils\n\n";
 		String footer = "\nPlease report issues at https://github.com/jmrozanec/cron-utils/issues";
 
-		HelpFormatter formatter = new HelpFormatter();
-		formatter.printHelp("cron-validator", header, options, footer, true);
-
 		CommandLineParser parser = new DefaultParser();
 		CommandLine cmd = parser.parse(options, args);
-		if(cmd.getOptionValue("a").equalsIgnoreCase("validation")){
+		if (cmd.hasOption(HELP) || cmd.getOptions().length == 0) {
+			showHelp(options, header, footer);
+			return;
+		}
+		if (!cmd.hasOption("action")) {
+			showHelp(options, header, footer);
+			return;
+		}
+		if (cmd.getOptionValue("a").equalsIgnoreCase("validate")) {
 			String format = cmd.getOptionValue("f");
 			String expression = cmd.getOptionValue("e");
 
@@ -59,5 +67,10 @@ public class CronUtilsCLI {
 			Cron quartzCron = cronParser.parse(expression);
 			quartzCron.validate();
 		}
+	}
+
+	private static void showHelp(Options options, String header, String footer) {
+		HelpFormatter formatter = new HelpFormatter();
+		formatter.printHelp("cron-validator", header, options, footer, true);
 	}
 }
