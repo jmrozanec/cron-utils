@@ -116,7 +116,7 @@ public class ValidationFieldExpressionVisitor implements FieldExpressionVisitor 
 		if (every.getExpression() instanceof On) {
 			visit((On) every.getExpression());
 		}
-		isInRange(every.getPeriod());
+		isPeriodInRange(every.getPeriod());
 		return every;
 	}
 
@@ -153,6 +153,24 @@ public class ValidationFieldExpressionVisitor implements FieldExpressionVisitor 
 			}
 		}
 	}
+	
+	/**
+     * Check if given period is compatible with range
+     * 
+     * @param fieldValue
+     *            - to be validated
+     * @throws IllegalArgumentException
+     *             - if not in range
+     */
+    @VisibleForTesting
+    protected void isPeriodInRange(FieldValue<?> fieldValue) {
+        if (fieldValue instanceof IntegerFieldValue) {
+            int value = ((IntegerFieldValue) fieldValue).getValue();
+            if (!constraints.isPeriodInRange(value)) {
+                throw new IllegalArgumentException(String.format("Period %s not in range (0, %s]", value, constraints.getEndRange()-constraints.getStartRange()));
+            }
+        }
+    }
 
 	@VisibleForTesting
 	protected boolean isDefault(FieldValue<?> fieldValue) {

@@ -72,6 +72,17 @@ public class FieldConstraints implements Serializable {
 	public boolean isInRange(int value) {
 		return value >= getStartRange() && value <= getEndRange();
 	}
+	
+
+    /**
+     * Check if given period is compatible with the given range
+     * 
+     * @param period - to be checked
+     * @return {@code true} if period is compatible, {@code false} otherwise.
+     */
+    public boolean isPeriodInRange(int period) {
+        return period > 0 && period <= getEndRange() - getStartRange();
+    }
 
 	public Set<String> getStringMappingKeySet() {
 		return stringMapping.keySet();
