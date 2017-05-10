@@ -175,6 +175,9 @@
                                <mainClass>com.cronutils.cli.CronUtilsCLI</mainClass>
                           </manifest>
                      </archive>
+			<descriptorRefs>
+          			<descriptorRef>jar-with-dependencies</descriptorRef>
+        		</descriptorRefs>
                 </configuration>
             </plugin>
 	    <plugin>
