@@ -1,6 +1,8 @@
 package com.cronutils.parser;
 
+import com.cronutils.model.CronType;
 import com.cronutils.model.definition.CronDefinition;
+import com.cronutils.model.definition.CronDefinitionBuilder;
 import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.field.constraint.FieldConstraintsBuilder;
 import com.cronutils.model.field.definition.FieldDefinition;
@@ -106,5 +108,33 @@ public class CronParserTest {
         parser = new CronParser(definition);
 
         parser.parse("* *   * * *");
+    }
+    
+    /**
+     * Corresponds to issue#148
+     * https://github.com/jmrozanec/cron-utils/issues/148
+     */
+    @Test
+    public void testParseEveryXyears() {
+        CronDefinition quartzDefinition = CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ);
+        parser = new CronParser(quartzDefinition);
+        
+        parser.parse("0/59 0/59 0/23 1/30 1/11 ? 2017/3");
+    }
+    
+    @Test(expected=IllegalArgumentException.class)
+    public void testRejectionOfZeroPeriod() {
+        CronDefinition quartzDefinition = CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ);
+        parser = new CronParser(quartzDefinition);
+        
+        parser.parse("0/0 0 0 1 1 ? 2017/3");
+    }
+    
+    @Test(expected=IllegalArgumentException.class)
+    public void testRejectionOfPeriodUpperLimitExceedance() {
+        CronDefinition quartzDefinition = CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ);
+        parser = new CronParser(quartzDefinition);
+        
+        parser.parse("0/60 0 0 1 1 ? 2017/3");
     }
 }
