@@ -25,17 +25,31 @@ import java.util.Comparator;
 public class FieldDefinition {
     private CronFieldName fieldName;
     private FieldConstraints constraints;
+    private final boolean optional;
 
+    /**
+     * Mandatory field Constructor
+     * @param fieldName - CronFieldName; name of the field
+     *                  if null, a NullPointerException will be raised.
+     * @param constraints - FieldConstraints, constraints;
+     *                    if null, a NullPointerException will be raised.
+     */                    
+    public FieldDefinition(CronFieldName fieldName, FieldConstraints constraints){
+        this(fieldName, constraints, false);
+    }
+    
     /**
      * Constructor
      * @param fieldName - CronFieldName; name of the field
      *                  if null, a NullPointerException will be raised.
      * @param constraints - FieldConstraints, constraints;
      *                    if null, a NullPointerException will be raised.
+     * @param optional - if {@code false} the field is mandatory, optional otheriwse.                   
      */
-    public FieldDefinition(CronFieldName fieldName, FieldConstraints constraints){
+    public FieldDefinition(CronFieldName fieldName, FieldConstraints constraints, boolean optional){
         this.fieldName = Preconditions.checkNotNull(fieldName, "CronFieldName must not be null");
         this.constraints = Preconditions.checkNotNull(constraints, "FieldConstraints must not be null");
+        this.optional = optional;
     }
 
     /**
@@ -52,6 +66,14 @@ public class FieldDefinition {
      */
     public FieldConstraints getConstraints() {
         return constraints;
+    }
+    
+    /**
+     * Get optional tag
+     * @return optional tag
+     */
+    public boolean isOptional() {
+        return optional;
     }
 
     /**

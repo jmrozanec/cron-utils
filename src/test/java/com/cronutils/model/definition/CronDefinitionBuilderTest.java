@@ -100,7 +100,6 @@ public class CronDefinitionBuilderTest {
     public void testLastFieldOptionalFalseByDefault() throws Exception {
         CronDefinition definition = builder.withHours().and().instance();
         assertNotNull(definition);
-        assertFalse(definition.isLastFieldOptional());
     }
 
     @Test

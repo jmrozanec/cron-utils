@@ -9,3 +9,4 @@ nb-build.xml
 nbproject
 *.sh
 zrefactor
+/bin/

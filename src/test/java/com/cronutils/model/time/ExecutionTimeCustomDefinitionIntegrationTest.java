@@ -131,8 +131,8 @@ public class ExecutionTimeCustomDefinitionIntegrationTest {
                 .withValidRange(1, 7)
                 .supportsHash().supportsL()
                 .and()
-                .withYear().and()
-                .lastFieldOptional().instance();
+                .withYear().optional().and()
+                .instance();
 
         CronParser parser = new CronParser(cronDefinition);
         Cron cron = parser.parse("30 3 * * MON-FRI");

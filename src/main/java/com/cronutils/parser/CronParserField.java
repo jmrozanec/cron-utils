@@ -27,17 +27,35 @@ public class CronParserField {
 	private final CronFieldName field;
 	private final FieldConstraints constraints;
 	private final FieldParser parser;
+	private final boolean optional;
+	
+	/**
+     * Mandatory CronParserField Constructor
+     * 
+     * @param fieldName
+     *            - CronFieldName instance
+     * @param constraints
+     *            - FieldConstraints, constraints
+     */
+    public CronParserField(CronFieldName fieldName, FieldConstraints constraints) {
+        this(fieldName, constraints, false);
+    }
 
 	/**
 	 * Constructor
 	 * 
 	 * @param fieldName
 	 *            - CronFieldName instance
+	 * @param constraints
+	 *            - FieldConstraints, constraints
+	 * @param optional
+	 *            - optional tag
 	 */
-	public CronParserField(CronFieldName fieldName, FieldConstraints constraints) {
+	public CronParserField(CronFieldName fieldName, FieldConstraints constraints, boolean optional) {
 		this.field = Preconditions.checkNotNull(fieldName, "CronFieldName must not be null");
 		this.constraints = Preconditions.checkNotNull(constraints, "FieldConstraints must not be null");
 		this.parser = new FieldParser(constraints);
+		this.optional = optional;
 	}
 
 	/**
@@ -48,6 +66,15 @@ public class CronParserField {
 	public CronFieldName getField() {
 		return field;
 	}
+	
+	/**
+     * Returns optional tag
+     * 
+     * @return optional tag
+     */
+    public final boolean isOptional() {
+        return optional;
+    }
 
 	/**
 	 * Parses a String cron expression

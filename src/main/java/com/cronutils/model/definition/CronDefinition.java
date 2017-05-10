@@ -25,7 +25,6 @@ import java.util.*;
 public class CronDefinition {
     private Map<CronFieldName, FieldDefinition> fieldDefinitions;
     private Set<CronConstraint> cronConstraints;
-    private boolean lastFieldOptional;
     private boolean strictRanges;
 
     /**
@@ -35,28 +34,17 @@ public class CronDefinition {
      *                         Throws an IllegalArgumentException if an empty list is received
      * @param lastFieldOptional - boolean, value stating if last field is optional
      */
-    public CronDefinition(List<FieldDefinition> fieldDefinitions, Set<CronConstraint> cronConstraints, boolean lastFieldOptional, boolean strictRanges){
+    public CronDefinition(List<FieldDefinition> fieldDefinitions, Set<CronConstraint> cronConstraints, boolean strictRanges){
         Preconditions.checkNotNull(fieldDefinitions, "Field definitions must not be null");
         Preconditions.checkNotNull(cronConstraints, "Cron validations must not be null");
         Preconditions.checkNotNullNorEmpty(fieldDefinitions, "Field definitions must not be empty");
-        if(lastFieldOptional){
-            Preconditions.checkArgument(fieldDefinitions.size() > 1, "If last field is optional, field definition must hold at least two fields");
-        }
+        Preconditions.checkArgument(!fieldDefinitions.get(0).isOptional(), "The first field must not be optional");
         this.fieldDefinitions = new HashMap<>();
         for(FieldDefinition field : fieldDefinitions){
             this.fieldDefinitions.put(field.getFieldName(), field);
         }
         this.cronConstraints = Collections.unmodifiableSet(cronConstraints);
-        this.lastFieldOptional = lastFieldOptional;
         this.strictRanges = strictRanges;
-    }
-
-    /**
-     * If last field of a cron expression is optional
-     * @return true if has an optional field, false otherwise.
-     */
-    public boolean isLastFieldOptional() {
-        return lastFieldOptional;
     }
 
     /**
