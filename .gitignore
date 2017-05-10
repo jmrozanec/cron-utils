@@ -12,3 +12,4 @@ zrefactor
 .gradle/
 build/
 local.properties
+bin/

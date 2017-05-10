@@ -1,21 +1,23 @@
 package com.cronutils.parser;
 
+import com.cronutils.model.CronType;
 import com.cronutils.model.definition.CronDefinition;
+import com.cronutils.model.definition.CronDefinitionBuilder;
 import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.field.constraint.FieldConstraintsBuilder;
 import com.cronutils.model.field.definition.FieldDefinition;
 import com.google.common.collect.Sets;
-
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 import java.util.Set;
+
+import static org.junit.Assert.assertNotNull;
+import static org.mockito.Mockito.when;
 /*
  * Copyright 2015 jmrozanec
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -46,7 +48,7 @@ public class CronParserTest {
     @Test(expected = IllegalArgumentException.class)
     public void testParseEmptyExpression() throws Exception {
         Set<FieldDefinition> set = Sets.newHashSet();
-        Mockito.when(definition.getFieldDefinitions()).thenReturn(set);
+        when(definition.getFieldDefinitions()).thenReturn(set);
         parser = new CronParser(definition);
 
         parser.parse("");
@@ -56,7 +58,7 @@ public class CronParserTest {
     public void testParseNoMatchingExpression() throws Exception {
         Set<FieldDefinition> set = Sets.newHashSet();
         set.add(new FieldDefinition(CronFieldName.SECOND, FieldConstraintsBuilder.instance().createConstraintsInstance()));
-        Mockito.when(definition.getFieldDefinitions()).thenReturn(set);
+        when(definition.getFieldDefinitions()).thenReturn(set);
         parser = new CronParser(definition);
 
         parser.parse("* *");
@@ -66,13 +68,13 @@ public class CronParserTest {
     public void testParseIncompleteEvery() throws Exception {
         Set<FieldDefinition> set = Sets.newHashSet();
         set.add(new FieldDefinition(CronFieldName.SECOND, FieldConstraintsBuilder.instance().createConstraintsInstance()));
-        Mockito.when(definition.getFieldDefinitions()).thenReturn(set);
+        when(definition.getFieldDefinitions()).thenReturn(set);
         parser = new CronParser(definition);
 
         expectedException.expect(IllegalArgumentException.class);
         expectedException.expectMessage("Missing steps for expression: */");
 
-        Assert.assertNotNull(parser.parse("*/"));
+        assertNotNull(parser.parse("*/"));
     }
 
 
@@ -97,14 +99,42 @@ public class CronParserTest {
         set.add(dom);
         set.add(month);
         set.add(dow);
-        Mockito.when(definition.getFieldDefinitions()).thenReturn(set);
-        Mockito.when(definition.getFieldDefinition(CronFieldName.MINUTE)).thenReturn(minute);
-        Mockito.when(definition.getFieldDefinition(CronFieldName.HOUR)).thenReturn(hour);
-        Mockito.when(definition.getFieldDefinition(CronFieldName.DAY_OF_MONTH)).thenReturn(dom);
-        Mockito.when(definition.getFieldDefinition(CronFieldName.MONTH)).thenReturn(month);
-        Mockito.when(definition.getFieldDefinition(CronFieldName.DAY_OF_WEEK)).thenReturn(dow);
+        when(definition.getFieldDefinitions()).thenReturn(set);
+        when(definition.getFieldDefinition(CronFieldName.MINUTE)).thenReturn(minute);
+        when(definition.getFieldDefinition(CronFieldName.HOUR)).thenReturn(hour);
+        when(definition.getFieldDefinition(CronFieldName.DAY_OF_MONTH)).thenReturn(dom);
+        when(definition.getFieldDefinition(CronFieldName.MONTH)).thenReturn(month);
+        when(definition.getFieldDefinition(CronFieldName.DAY_OF_WEEK)).thenReturn(dow);
         parser = new CronParser(definition);
 
         parser.parse("* *   * * *");
+    }
+    
+    /**
+     * Corresponds to issue#148
+     * https://github.com/jmrozanec/cron-utils/issues/148
+     */
+    @Test
+    public void testParseEveryXyears() {
+        CronDefinition quartzDefinition = CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ);
+        parser = new CronParser(quartzDefinition);
+        
+        parser.parse("0/59 0/59 0/23 1/30 1/11 ? 2017/3");
+    }
+    
+    @Test(expected=IllegalArgumentException.class)
+    public void testRejectionOfZeroPeriod() {
+        CronDefinition quartzDefinition = CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ);
+        parser = new CronParser(quartzDefinition);
+        
+        parser.parse("0/0 0 0 1 1 ? 2017/3");
+    }
+    
+    @Test(expected=IllegalArgumentException.class)
+    public void testRejectionOfPeriodUpperLimitExceedance() {
+        CronDefinition quartzDefinition = CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ);
+        parser = new CronParser(quartzDefinition);
+        
+        parser.parse("0/60 0 0 1 1 ? 2017/3");
     }
 }
