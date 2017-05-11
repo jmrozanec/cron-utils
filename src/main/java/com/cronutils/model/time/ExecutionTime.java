@@ -16,10 +16,9 @@ import com.cronutils.utils.VisibleForTesting;
 import com.google.common.base.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import org.threeten.bp.*;
+
 import java.util.*;
-import com.cronutils.Function;
 
 import static com.cronutils.model.field.CronFieldName.*;
 import static com.cronutils.model.field.value.SpecialChar.QUESTION_MARK;
@@ -44,8 +43,6 @@ import static org.threeten.bp.temporal.TemporalAdjusters.lastDayOfMonth;
  * Calculates execution time given a cron pattern
  */
 public class ExecutionTime {
-	private static final Logger log = LoggerFactory.getLogger(ExecutionTime.class);
-
 	private CronDefinition cronDefinition;
     private FieldValueGenerator yearsValueGenerator;
     private CronField daysOfWeekCronField;

@@ -1,5 +1,6 @@
 package com.cronutils.model.time.generator;
 
+import com.cronutils.Function;
 import com.cronutils.model.field.CronField;
 import com.cronutils.model.field.expression.*;
 import org.slf4j.Logger;
@@ -8,8 +9,6 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import com.cronutils.Function;
-import java.util.stream.Collectors;
 
 /*
  * Copyright 2015 jmrozanec

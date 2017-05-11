@@ -1,7 +1,6 @@
 package com.cronutils.parser;
 
 import android.support.test.runner.AndroidJUnit4;
-
 import com.cronutils.BaseAndroidTest;
 import com.cronutils.builder.CronBuilder;
 import com.cronutils.descriptor.CronDescriptor;
@@ -15,9 +14,9 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-
 import org.junit.runner.RunWith;
 import org.threeten.bp.ZonedDateTime;
+
 import java.util.Locale;
 
 import static org.junit.Assert.assertEquals;

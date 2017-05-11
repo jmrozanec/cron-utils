@@ -1,10 +1,7 @@
 package com.cronutils.model.field;
 
 import android.support.test.runner.AndroidJUnit4;
-
-import com.cronutils.BaseAndroidTest;
 import com.cronutils.model.field.constraint.FieldConstraintsBuilder;
-import com.cronutils.model.field.expression.*;
 import com.cronutils.model.field.value.IntegerFieldValue;
 import com.cronutils.model.field.value.SpecialChar;
 import com.cronutils.parser.FieldParser;

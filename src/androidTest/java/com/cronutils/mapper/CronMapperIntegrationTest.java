@@ -1,8 +1,6 @@
 package com.cronutils.mapper;
 
 import android.support.test.runner.AndroidJUnit4;
-
-import com.cronutils.BaseAndroidTest;
 import com.cronutils.model.CronType;
 import com.cronutils.model.definition.CronDefinitionBuilder;
 import com.cronutils.parser.CronParser;

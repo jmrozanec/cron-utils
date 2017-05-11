@@ -454,8 +454,8 @@ public class ExecutionTimeQuartzIntegrationTest {
      */
     @Test
     public void descriptionForExpressionTellsWrongDoW(){
-        CronDescriptor descriptor = CronDescriptor.instance();
-        Cron quartzCron = parser.parse("0 0 8 ? * SUN *");
+        //CronDescriptor descriptor = CronDescriptor.instance();
+        //Cron quartzCron = parser.parse("0 0 8 ? * SUN *");
         //TODO enable: assertEquals("at 08:00 at Sunday day", descriptor.describe(quartzCron));
     }
 

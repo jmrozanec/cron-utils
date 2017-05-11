@@ -1,16 +1,15 @@
 package com.cronutils.descriptor;
 
-import com.cronutils.mapper.WeekDay;
+import com.cronutils.Function;
 import com.cronutils.model.field.definition.DayOfWeekFieldDefinition;
 import com.cronutils.model.field.definition.FieldDefinition;
 import com.cronutils.model.field.expression.FieldExpression;
 import com.cronutils.model.field.expression.On;
-
 import org.threeten.bp.DayOfWeek;
 import org.threeten.bp.Month;
 import org.threeten.bp.format.TextStyle;
+
 import java.util.ResourceBundle;
-import com.cronutils.Function;
 
 /*
 * Copyright 2014 jmrozanec

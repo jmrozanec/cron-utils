@@ -1,16 +1,15 @@
 package com.cronutils.validator;
 
 import android.support.test.runner.AndroidJUnit4;
-
 import com.cronutils.model.CronType;
 import com.cronutils.model.definition.CronDefinitionBuilder;
 import com.cronutils.parser.CronParser;
 import org.junit.Before;
 import org.junit.Test;
-
 import org.junit.runner.RunWith;
 import org.threeten.bp.LocalDate;
 import org.threeten.bp.format.DateTimeFormatter;
+
 import java.util.Locale;
 
 import static org.junit.Assert.assertNotNull;

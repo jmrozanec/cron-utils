@@ -1,13 +1,11 @@
 package com.cronutils.model.time;
 
 import android.support.test.runner.AndroidJUnit4;
-
 import com.cronutils.BaseAndroidTest;
 import com.cronutils.model.Cron;
 import com.cronutils.model.definition.CronDefinition;
 import com.cronutils.model.definition.CronDefinitionBuilder;
 import com.cronutils.parser.CronParser;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

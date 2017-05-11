@@ -1,8 +1,6 @@
 package com.cronutils.model.time.generator;
 
 import android.support.test.runner.AndroidJUnit4;
-
-import com.cronutils.BaseAndroidTest;
 import com.cronutils.mapper.ConstantsMapper;
 import com.cronutils.mapper.WeekDay;
 import com.cronutils.model.field.CronField;
