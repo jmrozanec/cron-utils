@@ -38,8 +38,7 @@ public class Issue55UnexpectedExecutionTimes extends BaseAndroidTest {
                 .withDayOfWeek()//Monday=1
                 .withIntMapping(7, 0) //we support non-standard non-zero-based numbers!
                 .supportsHash().supportsL().supportsW().supportsQuestionMark().and()
-                .withYear().and()
-                .lastFieldOptional()
+                .withYear().optional().and()
                 .withCronValidation(
                         //both a day-of-week AND a day-of-month parameter should fail for this case; otherwise returned values are correct
                         new CronConstraint("Both, a day-of-week AND a day-of-month parameter, are not supported.") {

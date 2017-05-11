@@ -24,6 +24,7 @@ public class FieldDefinitionBuilder {
     protected CronDefinitionBuilder cronDefinitionBuilder;
     protected final CronFieldName fieldName;
     protected FieldConstraintsBuilder constraints;
+    protected boolean optional;
 
     /**
      * Constructor
@@ -60,13 +61,22 @@ public class FieldDefinitionBuilder {
         constraints.withValidRange(startRange, endRange);
         return this;
     }
+    
+    /**
+     * Allows to tag a field as optional.
+     * @return this instance
+     */
+    public FieldDefinitionBuilder optional(){
+        optional = true;
+        return this;
+    }
 
     /**
      * Registers CronField in ParserDefinitionBuilder and returns its instance
      * @return ParserDefinitionBuilder instance obtained from constructor
      */
     public CronDefinitionBuilder and(){
-        cronDefinitionBuilder.register(new FieldDefinition(fieldName, constraints.createConstraintsInstance()));
+        cronDefinitionBuilder.register(new FieldDefinition(fieldName, constraints.createConstraintsInstance(), optional));
         return cronDefinitionBuilder;
     }
 }
