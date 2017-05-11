@@ -1,7 +1,6 @@
 package com.cronutils.model.time;
 
 import android.support.test.runner.AndroidJUnit4;
-
 import com.google.common.collect.Lists;
 import org.junit.Before;
 import org.junit.Test;

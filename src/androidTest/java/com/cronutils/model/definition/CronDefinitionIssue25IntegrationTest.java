@@ -1,8 +1,6 @@
 package com.cronutils.model.definition;
 
 import android.support.test.runner.AndroidJUnit4;
-
-import com.cronutils.BaseAndroidTest;
 import com.cronutils.model.Cron;
 import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.time.ExecutionTime;

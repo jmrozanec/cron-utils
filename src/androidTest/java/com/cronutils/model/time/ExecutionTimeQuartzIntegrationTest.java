@@ -1,7 +1,6 @@
 package com.cronutils.model.time;
 
 import android.support.test.runner.AndroidJUnit4;
-
 import com.cronutils.BaseAndroidTest;
 import com.cronutils.descriptor.CronDescriptor;
 import com.cronutils.model.Cron;
@@ -9,19 +8,15 @@ import com.cronutils.model.definition.CronDefinition;
 import com.cronutils.model.definition.CronDefinitionBuilder;
 import com.cronutils.parser.CronParser;
 import com.google.common.base.Optional;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-
 import org.junit.runner.RunWith;
-import org.threeten.bp.*;
 import org.threeten.bp.format.DateTimeFormatter;
 import org.threeten.bp.temporal.ChronoUnit;
-import java.util.*;
 
 import static com.cronutils.model.CronType.QUARTZ;
-import static org.threeten.bp.ZoneOffset.UTC;
 import static org.junit.Assert.*;
+import static org.threeten.bp.ZoneOffset.UTC;
 
 /*
  * Copyright 2015 jmrozanec

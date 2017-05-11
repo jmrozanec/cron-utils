@@ -4,7 +4,6 @@ import com.cronutils.model.Cron;
 import com.cronutils.model.definition.CronDefinition;
 import com.cronutils.model.definition.CronDefinitionBuilder;
 import com.cronutils.parser.CronParser;
-import org.junit.Before;
 import org.junit.Test;
 import org.threeten.bp.ZoneId;
 import org.threeten.bp.ZonedDateTime;

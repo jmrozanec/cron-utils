@@ -1,8 +1,6 @@
 package com.cronutils.model.field.expression;
 
 import android.support.test.runner.AndroidJUnit4;
-
-import com.cronutils.BaseAndroidTest;
 import com.cronutils.model.field.value.IntegerFieldValue;
 import com.cronutils.model.field.value.SpecialChar;
 import com.cronutils.model.field.value.SpecialCharFieldValue;

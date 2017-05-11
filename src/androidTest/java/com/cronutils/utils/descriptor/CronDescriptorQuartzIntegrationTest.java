@@ -1,7 +1,6 @@
 package com.cronutils.utils.descriptor;
 
 import android.support.test.runner.AndroidJUnit4;
-
 import com.cronutils.descriptor.CronDescriptor;
 import com.cronutils.model.CronType;
 import com.cronutils.model.definition.CronDefinitionBuilder;

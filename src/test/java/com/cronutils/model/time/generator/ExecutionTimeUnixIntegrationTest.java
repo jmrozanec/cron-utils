@@ -6,7 +6,6 @@ import com.cronutils.model.definition.CronDefinition;
 import com.cronutils.model.definition.CronDefinitionBuilder;
 import com.cronutils.model.time.ExecutionTime;
 import com.cronutils.parser.CronParser;
-import org.junit.Before;
 import org.junit.Test;
 import org.threeten.bp.Duration;
 import org.threeten.bp.Instant;

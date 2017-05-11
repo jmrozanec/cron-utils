@@ -1,8 +1,6 @@
 package com.cronutils.model.field.expression;
 
 import android.support.test.runner.AndroidJUnit4;
-
-import com.cronutils.BaseAndroidTest;
 import com.cronutils.model.field.value.IntegerFieldValue;
 import org.junit.Test;
 import org.junit.runner.RunWith;

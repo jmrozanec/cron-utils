@@ -1,9 +1,6 @@
 package com.cronutils.mapper;
 
 import android.support.test.runner.AndroidJUnit4;
-
-import com.cronutils.BaseAndroidTest;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 

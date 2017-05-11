@@ -1,5 +1,6 @@
 package com.cronutils.mapper;
 
+import com.cronutils.Function;
 import com.cronutils.model.Cron;
 import com.cronutils.model.CronType;
 import com.cronutils.model.definition.CronDefinition;
@@ -24,7 +25,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import com.cronutils.Function;
 
 /*
  * Copyright 2014 jmrozanec

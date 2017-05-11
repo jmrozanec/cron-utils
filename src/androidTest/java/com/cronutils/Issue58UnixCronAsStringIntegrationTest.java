@@ -1,7 +1,6 @@
 package com.cronutils;
 
 import android.support.test.runner.AndroidJUnit4;
-
 import com.cronutils.model.Cron;
 import com.cronutils.model.CronType;
 import com.cronutils.model.definition.CronDefinition;

@@ -1,8 +1,6 @@
 package com.cronutils.model.field.constraints;
 
 import android.support.test.runner.AndroidJUnit4;
-
-import com.cronutils.BaseAndroidTest;
 import com.cronutils.model.field.constraint.FieldConstraints;
 import com.cronutils.model.field.value.SpecialChar;
 import com.google.common.collect.Maps;

@@ -1,7 +1,6 @@
 package com.cronutils.model.time;
 
 import android.support.test.runner.AndroidJUnit4;
-
 import com.cronutils.BaseAndroidTest;
 import com.cronutils.model.CronType;
 import com.cronutils.model.definition.CronDefinitionBuilder;
@@ -11,7 +10,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import org.threeten.bp.ZoneId;
 import org.threeten.bp.ZonedDateTime;
 

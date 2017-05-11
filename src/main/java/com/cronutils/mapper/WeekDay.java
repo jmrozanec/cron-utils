@@ -1,10 +1,10 @@
 package com.cronutils.mapper;
 
+import com.cronutils.Function;
 import com.cronutils.utils.Preconditions;
 import com.cronutils.utils.VisibleForTesting;
 
 import java.io.Serializable;
-import com.cronutils.Function;
 
 /*
  * Copyright 2015 jmrozanec

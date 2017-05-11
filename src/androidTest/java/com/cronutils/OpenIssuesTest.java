@@ -1,19 +1,17 @@
 package com.cronutils;
 
 import android.support.test.runner.AndroidJUnit4;
-
 import com.cronutils.model.Cron;
 import com.cronutils.model.CronType;
 import com.cronutils.model.definition.CronDefinitionBuilder;
 import com.cronutils.model.time.ExecutionTime;
 import com.cronutils.parser.CronParser;
 import org.junit.Test;
-
-import java.text.ParseException;
-
 import org.junit.runner.RunWith;
 import org.threeten.bp.ZonedDateTime;
 import org.threeten.bp.format.DateTimeFormatter;
+
+import java.text.ParseException;
 
 @RunWith(AndroidJUnit4.class)
 public class OpenIssuesTest {
