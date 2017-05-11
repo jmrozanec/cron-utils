@@ -6,12 +6,10 @@ import com.cronutils.model.definition.CronDefinitionBuilder;
 import com.cronutils.model.time.ExecutionTime;
 import com.cronutils.parser.CronParser;
 import org.junit.Test;
-
-import java.text.ParseException;
-
-import org.junit.runner.RunWith;
 import org.threeten.bp.ZonedDateTime;
 import org.threeten.bp.format.DateTimeFormatter;
+
+import java.text.ParseException;
 
 public class OpenIssuesTest {
     private DateTimeFormatter dfSimple = DateTimeFormatter.ofPattern("hh:mm:ss MM/dd/yyyy a X");

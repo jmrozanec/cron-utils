@@ -37,7 +37,6 @@ import static org.junit.Assert.assertEquals;
  * limitations under the License.
  */
 public class CronDescriptorTest {
-
     private CronDescriptor descriptor;
     private FieldConstraints nullFieldConstraints;
     @Mock

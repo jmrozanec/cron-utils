@@ -1,12 +1,10 @@
 package com.cronutils.model.field;
 
 import com.cronutils.model.definition.CronDefinitionBuilder;
-import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.field.constraint.FieldConstraints;
 import com.cronutils.model.field.constraint.FieldConstraintsBuilder;
 import com.cronutils.model.field.definition.FieldDefinition;
 import com.cronutils.model.field.definition.FieldDefinitionBuilder;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

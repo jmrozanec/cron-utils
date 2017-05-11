@@ -1,5 +1,6 @@
 package com.cronutils.mapper;
 
+import com.cronutils.Function;
 import com.cronutils.model.Cron;
 import com.cronutils.model.definition.CronDefinition;
 import com.cronutils.model.field.CronField;
@@ -10,8 +11,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-
-import com.cronutils.Function;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;

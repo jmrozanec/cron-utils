@@ -4,7 +4,6 @@ import com.cronutils.model.field.CronField;
 import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.field.constraint.FieldConstraints;
 import com.cronutils.model.field.expression.FieldExpression;
-
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;

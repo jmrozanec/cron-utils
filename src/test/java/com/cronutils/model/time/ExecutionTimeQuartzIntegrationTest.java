@@ -8,15 +8,17 @@ import com.cronutils.parser.CronParser;
 import com.google.common.base.Optional;
 import org.junit.Before;
 import org.junit.Test;
-
 import org.threeten.bp.*;
 import org.threeten.bp.format.DateTimeFormatter;
 import org.threeten.bp.temporal.ChronoUnit;
-import java.util.*;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 import static com.cronutils.model.CronType.QUARTZ;
-import static org.threeten.bp.ZoneOffset.UTC;
 import static org.junit.Assert.*;
+import static org.threeten.bp.ZoneOffset.UTC;
 
 /*
  * Copyright 2015 jmrozanec

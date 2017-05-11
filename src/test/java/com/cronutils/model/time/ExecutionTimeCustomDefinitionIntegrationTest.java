@@ -4,7 +4,6 @@ import com.cronutils.model.Cron;
 import com.cronutils.model.definition.CronDefinition;
 import com.cronutils.model.definition.CronDefinitionBuilder;
 import com.cronutils.parser.CronParser;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.threeten.bp.ZoneId;
@@ -15,9 +14,6 @@ import static org.junit.Assert.assertTrue;
 import static org.threeten.bp.ZoneOffset.UTC;
 
 public class ExecutionTimeCustomDefinitionIntegrationTest {
-
-    @Before
-    public void setUp() throws Exception {}
 
     @Test
     public void testCronExpressionAfterHalf() {

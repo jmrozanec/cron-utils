@@ -31,7 +31,6 @@ import static org.mockito.Mockito.when;
  * limitations under the License.
  */
 public class CronParserTest {
-
     @Rule
     public ExpectedException expectedException = ExpectedException.none();
 

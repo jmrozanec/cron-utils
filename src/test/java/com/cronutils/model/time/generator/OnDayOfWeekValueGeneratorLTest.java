@@ -46,9 +46,6 @@ public class OnDayOfWeekValueGeneratorLTest {
     private int lastDayDoWEqualToRequestedDoW_Value = 6;
     private int lastDayDoWEqualToRequestedDoW_Day = 31;
 
-    @Before
-    public void setUp(){}
-
     @Test(expected = NoSuchValueException.class)
     public void testGenerateNextValueLastDayDoWGreaterThanRequestedDoW() throws Exception {
         fieldValueGenerator = createFieldValueGeneratorInstanceLastDayDoWGreaterThanRequestedDoW();

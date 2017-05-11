@@ -23,7 +23,6 @@ import static org.junit.Assert.assertEquals;
  * limitations under the License.
  */
 public class CronDescriptorQuartzIntegrationTest {
-
     private CronDescriptor descriptor;
     private CronParser parser;
 
