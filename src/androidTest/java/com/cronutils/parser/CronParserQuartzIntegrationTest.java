@@ -257,7 +257,7 @@ public class CronParserQuartzIntegrationTest extends BaseAndroidTest {
         CronBuilder.cron(CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ)).withDoM(FieldExpressionFactory.on(1))
                 .withDoW(FieldExpressionFactory.questionMark())
                 .withYear(FieldExpressionFactory.every(FieldExpressionFactory.between(1970, 2099), 4))
-                .withMonth(FieldExpressionFactory.on(0))
+                .withMonth(FieldExpressionFactory.on(1))
                 .withHour(FieldExpressionFactory.on(0))
                 .withMinute(FieldExpressionFactory.on(0))
                 .withSecond(FieldExpressionFactory.on(0));
