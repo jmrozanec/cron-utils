@@ -247,15 +247,21 @@ public class CronParserQuartzIntegrationTest {
     /**
      * Issue #148: Cron Builder/Parser fails on Every X years
      */
-    //@Test
+    @Test
     public void testEveryXYears(){
         CronBuilder.cron(CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ)).withDoM(FieldExpressionFactory.on(1))
                 .withDoW(FieldExpressionFactory.questionMark())
                 .withYear(FieldExpressionFactory.every(FieldExpressionFactory.between(1970, 2099), 4))
-                .withMonth(FieldExpressionFactory.on(0))
+                .withMonth(FieldExpressionFactory.on(1))
                 .withHour(FieldExpressionFactory.on(0))
                 .withMinute(FieldExpressionFactory.on(0))
                 .withSecond(FieldExpressionFactory.on(0));
+    }
+    
+    @Test
+    public void testRejectIllegalMonthArgument(){
+        thrown.expect(IllegalArgumentException.class);
+        CronBuilder.cron(CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ)).withMonth(FieldExpressionFactory.on(0));
     }
 
     /**
