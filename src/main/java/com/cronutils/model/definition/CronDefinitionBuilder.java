@@ -28,21 +28,14 @@ import java.util.*;
  * Builder that allows to define and create CronDefinition instances
  */
 public class CronDefinitionBuilder {
-    private Map<CronFieldName, FieldDefinition> fields;
-    private Set<CronConstraint> cronConstraints;
-    private boolean lastFieldOptional;
+    private final Map<CronFieldName, FieldDefinition> fields = new HashMap<>();
+    private final Set<CronConstraint> cronConstraints = new HashSet<>();
     private boolean enforceStrictRanges;
 
     /**
      * Constructor.
-     * lastFieldOptional is defined false.
      */
-    private CronDefinitionBuilder() {
-        fields = new HashMap<>();
-        cronConstraints = new HashSet<>();
-        lastFieldOptional = false;
-        enforceStrictRanges = false;
-    }
+    private CronDefinitionBuilder() {/*NOP*/}
 
     /**
      * Creates a builder instance
@@ -109,15 +102,6 @@ public class CronDefinitionBuilder {
     }
 
     /**
-     * Sets lastFieldOptional value to true
-     * @return this CronDefinitionBuilder instance
-     */
-    public CronDefinitionBuilder lastFieldOptional() {
-        lastFieldOptional = true;
-        return this;
-    }
-
-    /**
      * Sets enforceStrictRanges value to true
      * @return this CronDefinitionBuilder instance
      */
@@ -140,6 +124,9 @@ public class CronDefinitionBuilder {
      * @param definition - FieldDefinition  instance, never null
      */
     public void register(FieldDefinition definition) {
+        //ensure that we can't register a mandatory definition if there are already optional ones
+        if (!definition.isOptional() && fields.values().stream().anyMatch(def -> def.isOptional()))
+            throw new IllegalArgumentException("Can't register mandatory definition after a optional definition.");
         fields.put(definition.getFieldName(), definition);
     }
 
@@ -150,7 +137,7 @@ public class CronDefinitionBuilder {
     public CronDefinition instance() {
         Set<CronConstraint> validations = new HashSet<CronConstraint>();
         validations.addAll(cronConstraints);
-        return new CronDefinition(new ArrayList<>(this.fields.values()), validations, lastFieldOptional, enforceStrictRanges);
+        return new CronDefinition(new ArrayList<>(this.fields.values()), validations, enforceStrictRanges);
     }
 
     /**
@@ -180,8 +167,7 @@ public class CronDefinitionBuilder {
                 .withDayOfMonth().supportsHash().supportsL().supportsW().supportsLW().supportsQuestionMark().and()
                 .withMonth().and()
                 .withDayOfWeek().withValidRange(1, 7).withMondayDoWValue(2).supportsHash().supportsL().supportsW().supportsQuestionMark().and()
-                .withYear().withValidRange(1970, 2099).and()
-                .lastFieldOptional()
+                .withYear().withValidRange(1970, 2099).optional().and()
                 .withCronValidation(
                         //Solves issue #63: https://github.com/jmrozanec/cron-utils/issues/63
                         //both a day-of-week AND a day-of-month parameter should fail for QUARTZ
