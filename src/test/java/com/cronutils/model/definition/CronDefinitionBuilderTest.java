@@ -102,7 +102,6 @@ public class CronDefinitionBuilderTest {
     public void testLastFieldOptionalFalseByDefault() throws Exception {
         CronDefinition definition = builder.withHours().and().instance();
         assertNotNull(definition);
-        assertFalse(definition.isLastFieldOptional());
     }
 
     @Test
@@ -148,5 +147,17 @@ public class CronDefinitionBuilderTest {
         CronParser parser = new CronParser(cronDefinition);
         Cron quartzCron = parser.parse("* * * * ?");
         quartzCron.validate();
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testCronDefinitionShouldNotAcceptMultipleOptionalFields() throws Exception {
+        CronDefinitionBuilder.defineCron()
+                .withMinutes().and()
+                .withHours().and()
+                .withDayOfMonth().optional().and()
+                .withMonth().optional().and()
+                .withDayOfWeek().withValidRange(0,7).withMondayDoWValue(1).withIntMapping(7,0).and()
+                .enforceStrictRanges()
+                .instance();
     }
 }

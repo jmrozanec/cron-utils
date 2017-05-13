@@ -49,7 +49,7 @@ public class FieldDayOfWeekDefinitionBuilder extends FieldSpecialCharsDefinition
      */
     public CronDefinitionBuilder and(){
         boolean zeroInRange = constraints.createConstraintsInstance().isInRange(0);
-        cronDefinitionBuilder.register(new DayOfWeekFieldDefinition(fieldName, constraints.createConstraintsInstance(), new WeekDay(mondayDoWValue, zeroInRange)));
+        cronDefinitionBuilder.register(new DayOfWeekFieldDefinition(fieldName, constraints.createConstraintsInstance(), optional, new WeekDay(mondayDoWValue, zeroInRange)));
         return cronDefinitionBuilder;
     }
 
