@@ -43,6 +43,10 @@ public class FieldValueGeneratorFactory {
         }
         return new NullFieldValueGenerator(cronField);
     }
+    
+    public static FieldValueGenerator createDayOfYearValueGeneratorInstance(CronField cronField, int year){
+        return forCronField(cronField);
+    }
 
     public static FieldValueGenerator createDayOfMonthValueGeneratorInstance(CronField cronField, int year, int month){
         FieldExpression fieldExpression = cronField.getExpression();

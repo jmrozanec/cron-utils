@@ -79,6 +79,15 @@ public class CronDefinition implements Serializable {
     public FieldDefinition getFieldDefinition(CronFieldName cronFieldName){
         return fieldDefinitions.get(cronFieldName);
     }
+    
+    /**
+     * Returns {@code true} if this cron contains a field definition for field name.
+     * @param cronFieldName cron field name
+     * @return {@code true} if this cron contains a field definition for field name
+     */
+    public boolean containsFieldDefinition(CronFieldName cronFieldName){
+        return fieldDefinitions.containsKey(cronFieldName);
+    }
 
     public Set<CronConstraint> getCronConstraints() {
         return cronConstraints;

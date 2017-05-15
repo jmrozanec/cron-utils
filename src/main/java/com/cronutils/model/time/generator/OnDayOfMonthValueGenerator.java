@@ -8,9 +8,6 @@ import com.cronutils.utils.Preconditions;
 import org.threeten.bp.DayOfWeek;
 import org.threeten.bp.LocalDate;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /*
  * Copyright 2015 jmrozanec
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,16 +20,11 @@ import java.util.List;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class OnDayOfMonthValueGenerator extends FieldValueGenerator {
-    private int year;
-    private int month;
+class OnDayOfMonthValueGenerator extends OnDayOfCalendarValueGenerator {
 
     public OnDayOfMonthValueGenerator(CronField cronField, int year, int month) {
-        super(cronField);
-        Preconditions.checkArgument(CronFieldName.DAY_OF_MONTH.equals(cronField.getField()), "CronField does not belong to day of" +
-                " month");
-        this.year = year;
-        this.month = month;
+        super(cronField, year, month);
+        Preconditions.checkArgument(CronFieldName.DAY_OF_MONTH.equals(cronField.getField()), "CronField does not belong to day of month");
     }
 
     @Override
@@ -57,26 +49,13 @@ class OnDayOfMonthValueGenerator extends FieldValueGenerator {
     }
 
     @Override
-    protected List<Integer> generateCandidatesNotIncludingIntervalExtremes(int start, int end) {
-        List<Integer> values = new ArrayList<>();
-        try {
-            int reference = generateNextValue(start);
-            while (reference < end) {
-                values.add(reference);
-                reference = generateNextValue(reference);
-            }
-        } catch (NoSuchValueException e) {
-        }
-        return values;
-    }
-
-    @Override
     public boolean isMatch(int value) {
         On on = ((On) cronField.getExpression());
         try {
             return value == generateValue(on, year, month);
         } catch (NoSuchValueException ignored) {
-        }//we just skip, since we generate values until we get the exception
+            //we just skip, since we generate values until we get the exception
+        }
         return false;
     }
 

@@ -8,8 +8,8 @@ import com.cronutils.model.field.definition.FieldDefinition;
 import com.cronutils.model.field.definition.FieldDefinitionBuilder;
 import com.cronutils.model.field.definition.FieldSpecialCharsDefinitionBuilder;
 import com.cronutils.model.field.expression.QuestionMark;
-
 import java.util.*;
+import java.util.stream.Collectors;
 
 /*
  * Copyright 2014 jmrozanec
@@ -100,6 +100,14 @@ public class CronDefinitionBuilder {
     public FieldDefinitionBuilder withYear() {
         return new FieldDefinitionBuilder(this, CronFieldName.YEAR);
     }
+    
+    /**
+     * Adds definition for day of year field
+     * @return new FieldDefinitionBuilder instance
+     */
+    public FieldDefinitionBuilder withDayOfYear() {
+        return new FieldDefinitionBuilder(this, CronFieldName.DAY_OF_YEAR);
+    }
 
     /**
      * Sets enforceStrictRanges value to true
@@ -137,7 +145,7 @@ public class CronDefinitionBuilder {
     public CronDefinition instance() {
         Set<CronConstraint> validations = new HashSet<CronConstraint>();
         validations.addAll(cronConstraints);
-        return new CronDefinition(new ArrayList<>(this.fields.values()), validations, enforceStrictRanges);
+        return new CronDefinition(fields.values().stream().sorted((o1,o2) -> o1.getFieldName().getOrder() - o2.getFieldName().getOrder()).collect(Collectors.toList()), validations, enforceStrictRanges);
     }
 
     /**
