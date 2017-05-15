@@ -148,4 +148,16 @@ public class CronDefinitionBuilderTest {
         Cron quartzCron = parser.parse("* * * * ?");
         quartzCron.validate();
     }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testCronDefinitionShouldNotAcceptMultipleOptionalFields() throws Exception {
+        CronDefinitionBuilder.defineCron()
+                .withMinutes().and()
+                .withHours().and()
+                .withDayOfMonth().optional().and()
+                .withMonth().optional().and()
+                .withDayOfWeek().withValidRange(0,7).withMondayDoWValue(1).withIntMapping(7,0).and()
+                .enforceStrictRanges()
+                .instance();
+    }
 }

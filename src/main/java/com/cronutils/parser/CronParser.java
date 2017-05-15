@@ -3,12 +3,9 @@ package com.cronutils.parser;
 import com.cronutils.model.Cron;
 import com.cronutils.model.definition.CronDefinition;
 import com.cronutils.model.field.CronField;
-import com.cronutils.model.field.definition.FieldDefinition;
 import com.cronutils.utils.Preconditions;
 import com.cronutils.utils.StringUtils;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Lists;
-
 import java.util.*;
 import java.util.stream.Collectors;
 

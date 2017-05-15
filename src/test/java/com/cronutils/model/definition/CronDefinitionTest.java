@@ -2,7 +2,6 @@ package com.cronutils.model.definition;
 
 import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.field.definition.FieldDefinition;
-import com.cronutils.parser.CronParserField;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import org.junit.Before;
