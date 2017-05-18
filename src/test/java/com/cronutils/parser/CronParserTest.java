@@ -143,7 +143,7 @@ public class CronParserTest {
     @Test
     public void testParseExtendedQuartzCron() {
         parser = new CronParser(CronDefinitions.quartzWithDayOfYearExtension());
-        parser.parse("0 0 0 * * ? 2017 1/14");
+        parser.parse("0 0 0 ? * ? 2017 1/14");
     }
 
     //@Test TODO: issue #180

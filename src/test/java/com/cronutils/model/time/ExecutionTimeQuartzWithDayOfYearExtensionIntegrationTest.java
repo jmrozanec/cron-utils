@@ -23,7 +23,10 @@ import static org.junit.Assert.*;
  */
 public class ExecutionTimeQuartzWithDayOfYearExtensionIntegrationTest {
     private CronParser parser;
-    private static final String BI_WEEKLY_STARTING_WITH_FIRST_DAY_OF_YEAR = "0 0 0 ? * * * 1/14";   /* "0 0 1 ? ? ? * 1/14" TODO: force use of question marks?*/
+    private static final String BI_WEEKLY_STARTING_WITH_FIRST_DAY_OF_YEAR = "0 0 0 ? * ? * 1/14";
+    private static final String FIRST_QUATER_BI_WEEKLY_STARTING_WITH_FIRST_DAY_OF_YEAR = "0 0 0 ? 1-3 ? * 1/14";
+    private static final String WITHOUT_DAY_OF_YEAR = "0 0 0 * * ? *";
+    private static final String WITHOUT_SPECIFIC_DAY_OF_YEAR = "0 0 0 * * ? * ?";
 
     @Before
     public void setUp() throws Exception {
@@ -33,6 +36,9 @@ public class ExecutionTimeQuartzWithDayOfYearExtensionIntegrationTest {
     @Test
     public void testForCron() throws Exception {
         assertEquals(ExecutionTime.class, ExecutionTime.forCron(parser.parse(BI_WEEKLY_STARTING_WITH_FIRST_DAY_OF_YEAR)).getClass());
+        assertEquals(ExecutionTime.class, ExecutionTime.forCron(parser.parse(FIRST_QUATER_BI_WEEKLY_STARTING_WITH_FIRST_DAY_OF_YEAR)).getClass());
+        assertEquals(ExecutionTime.class, ExecutionTime.forCron(parser.parse(WITHOUT_DAY_OF_YEAR)).getClass());
+        assertEquals(ExecutionTime.class, ExecutionTime.forCron(parser.parse(WITHOUT_SPECIFIC_DAY_OF_YEAR)).getClass());
     }
 
     @Test

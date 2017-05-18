@@ -19,7 +19,7 @@ import com.cronutils.model.field.CronFieldName;
 /**
  * Builder that allows to specify properties for a cron field supporting non-standard characters
  */
-public class FieldSpecialCharsDefinitionBuilder extends FieldDefinitionBuilder {
+public class FieldSpecialCharsDefinitionBuilder extends FieldQuestionMarkDefinitionBuilder {
 
     /**
      * Constructor
@@ -63,15 +63,6 @@ public class FieldSpecialCharsDefinitionBuilder extends FieldDefinitionBuilder {
      */
     public FieldSpecialCharsDefinitionBuilder supportsLW(){
         constraints.addLWSupport();
-        return this;
-    }
-
-    /**
-     * Registers the field supports the LW (LW) special char
-     * @return this FieldSpecialCharsDefinitionBuilder instance
-     */
-    public FieldSpecialCharsDefinitionBuilder supportsQuestionMark(){
-        constraints.addQuestionMarkSupport();
         return this;
     }
 
