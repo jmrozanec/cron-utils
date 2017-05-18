@@ -1,5 +1,6 @@
 package com.cronutils.parser;
 
+import com.cronutils.model.Cron;
 import com.cronutils.model.CronType;
 import com.cronutils.model.definition.CronDefinition;
 import com.cronutils.model.definition.CronDefinitionBuilder;
@@ -17,6 +18,7 @@ import org.mockito.MockitoAnnotations;
 
 import java.util.Set;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.when;
 /*
@@ -142,5 +144,14 @@ public class CronParserTest {
     public void testParseExtendedQuartzCron() {
         parser = new CronParser(CronDefinitions.quartzWithDayOfYearExtension());
         parser.parse("0 0 0 * * ? 2017 1/14");
+    }
+
+    //@Test TODO: issue #180
+    public void testThatEveryMinuteIsPreserved() {
+        CronDefinition quartzDefinition = CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ);
+        parser = new CronParser(quartzDefinition);
+        
+        Cron expression = parser.parse("0 0/1 * 1/1 * ? *");
+        assertEquals("0 0/1 * 1/1 * ? *", expression.asString());
     }
 }
