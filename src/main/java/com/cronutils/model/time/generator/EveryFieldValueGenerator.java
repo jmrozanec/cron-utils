@@ -1,16 +1,17 @@
 package com.cronutils.model.time.generator;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.threeten.bp.ZonedDateTime;
+
 import com.cronutils.model.field.CronField;
 import com.cronutils.model.field.expression.Every;
 import com.cronutils.model.field.expression.FieldExpression;
 import com.cronutils.model.field.expression.On;
 import com.cronutils.utils.VisibleForTesting;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.threeten.bp.ZonedDateTime;
-
-import java.util.ArrayList;
-import java.util.List;
 /*
  * Copyright 2015 jmrozanec
  * Licensed under the Apache License, Version 2.0 (the "License");

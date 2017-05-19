@@ -1,16 +1,22 @@
 package com.cronutils.descriptor.refactor;
 
-import com.cronutils.model.field.expression.*;
+import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.ResourceBundle;
+
+import com.cronutils.model.field.expression.Always;
+import com.cronutils.model.field.expression.And;
+import com.cronutils.model.field.expression.Between;
+import com.cronutils.model.field.expression.Every;
+import com.cronutils.model.field.expression.FieldExpression;
+import com.cronutils.model.field.expression.On;
+import com.cronutils.model.field.expression.QuestionMark;
 import com.cronutils.model.field.expression.visitor.FieldExpressionVisitor;
 import com.cronutils.model.field.value.FieldValue;
 import com.cronutils.model.field.value.IntegerFieldValue;
 import com.cronutils.utils.Preconditions;
 import com.cronutils.utils.VisibleForTesting;
-
-import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ResourceBundle;
 
 class SecondsDescriptor implements FieldExpressionVisitor {
     protected ResourceBundle bundle;

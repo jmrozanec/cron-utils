@@ -1,5 +1,8 @@
 package com.cronutils.model.field.definition;
 
+import java.io.Serializable;
+import java.util.Comparator;
+
 /*
  * Copyright 2014 jmrozanec
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,9 +19,6 @@ package com.cronutils.model.field.definition;
 import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.field.constraint.FieldConstraints;
 import com.cronutils.utils.Preconditions;
-
-import java.io.Serializable;
-import java.util.Comparator;
 
 /**
  * Represents a definition of allowed values for a cron field.

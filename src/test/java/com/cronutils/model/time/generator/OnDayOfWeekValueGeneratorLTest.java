@@ -1,5 +1,13 @@
 package com.cronutils.model.time.generator;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
+import java.util.List;
+
+import org.junit.Test;
+
 import com.cronutils.mapper.ConstantsMapper;
 import com.cronutils.mapper.WeekDay;
 import com.cronutils.model.field.CronField;
@@ -10,11 +18,6 @@ import com.cronutils.model.field.expression.On;
 import com.cronutils.model.field.value.IntegerFieldValue;
 import com.cronutils.model.field.value.SpecialChar;
 import com.cronutils.model.field.value.SpecialCharFieldValue;
-import org.junit.Test;
-
-import java.util.List;
-
-import static org.junit.Assert.*;
 /*
  * Copyright 2015 jmrozanec
  * Licensed under the Apache License, Version 2.0 (the "License");

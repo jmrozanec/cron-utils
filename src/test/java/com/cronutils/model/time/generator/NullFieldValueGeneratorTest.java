@@ -1,12 +1,15 @@
 package com.cronutils.model.time.generator;
 
-import com.cronutils.model.field.CronField;
-import com.cronutils.model.field.expression.FieldExpression;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.mock;
+import com.cronutils.model.field.CronField;
+import com.cronutils.model.field.expression.FieldExpression;
 /*
  * Copyright 2015 jmrozanec
  * Licensed under the Apache License, Version 2.0 (the "License");

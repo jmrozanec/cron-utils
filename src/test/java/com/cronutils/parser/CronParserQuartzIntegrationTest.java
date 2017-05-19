@@ -1,5 +1,16 @@
 package com.cronutils.parser;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
+import java.util.Locale;
+
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.ExpectedException;
+import org.threeten.bp.ZonedDateTime;
+
 import com.cronutils.builder.CronBuilder;
 import com.cronutils.descriptor.CronDescriptor;
 import com.cronutils.model.Cron;
@@ -8,16 +19,6 @@ import com.cronutils.model.definition.CronDefinition;
 import com.cronutils.model.definition.CronDefinitionBuilder;
 import com.cronutils.model.field.expression.FieldExpressionFactory;
 import com.cronutils.model.time.ExecutionTime;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
-import org.threeten.bp.ZonedDateTime;
-
-import java.util.Locale;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 
 /*
  * Copyright 2015 jmrozanec
@@ -267,7 +268,7 @@ public class CronParserQuartzIntegrationTest {
     /**
      * Issue #151: L-7 in day of month should work to find the day 7 days prior to the last day of the month.
      */
-//    @Test TODO
+    @Test
     public void testLSupportedInDoMRangeNextExecutionCalculation() {
         ExecutionTime executionTime = ExecutionTime.forCron(parser.parse("0 15 10 L-7 * ?"));
         ZonedDateTime now = ZonedDateTime.parse("2017-01-31T10:00:00Z");

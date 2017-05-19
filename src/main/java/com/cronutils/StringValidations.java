@@ -12,9 +12,9 @@
  */
 package com.cronutils;
 
-import com.cronutils.model.field.constraint.FieldConstraints;
-import com.cronutils.model.field.value.SpecialChar;
-import com.cronutils.utils.VisibleForTesting;
+import static com.cronutils.model.field.value.SpecialChar.L;
+import static com.cronutils.model.field.value.SpecialChar.LW;
+import static com.cronutils.model.field.value.SpecialChar.W;
 
 import java.util.HashSet;
 import java.util.Iterator;
@@ -22,7 +22,9 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.cronutils.model.field.value.SpecialChar.*;
+import com.cronutils.model.field.constraint.FieldConstraints;
+import com.cronutils.model.field.value.SpecialChar;
+import com.cronutils.utils.VisibleForTesting;
 
 public class StringValidations {
 	private static final String ESCAPED_END = ")\\b";

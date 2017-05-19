@@ -1,10 +1,10 @@
 package com.cronutils.model.time.generator;
 
+import java.util.List;
+
 import com.cronutils.model.field.CronField;
 import com.cronutils.model.field.expression.FieldExpression;
 import com.google.common.collect.Lists;
-
-import java.util.List;
 /*
  * Copyright 2015 jmrozanec
  * Licensed under the Apache License, Version 2.0 (the "License");

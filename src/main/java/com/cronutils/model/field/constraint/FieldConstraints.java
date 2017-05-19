@@ -1,12 +1,12 @@
 package com.cronutils.model.field.constraint;
 
-import com.cronutils.model.field.value.SpecialChar;
-import com.cronutils.utils.Preconditions;
-
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
+
+import com.cronutils.model.field.value.SpecialChar;
+import com.cronutils.utils.Preconditions;
 
 /*
  * Copyright 2014 jmrozanec

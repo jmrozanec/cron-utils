@@ -1,11 +1,11 @@
 package com.cronutils.model.field;
 
+import java.io.Serializable;
+import java.util.Comparator;
+
 import com.cronutils.model.field.constraint.FieldConstraints;
 import com.cronutils.model.field.expression.FieldExpression;
 import com.cronutils.utils.Preconditions;
-
-import java.io.Serializable;
-import java.util.Comparator;
 
 /*
  * Copyright 2014 jmrozanec

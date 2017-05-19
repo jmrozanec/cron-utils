@@ -1,23 +1,38 @@
 package com.cronutils.model.time;
 
-import com.cronutils.model.Cron;
-import com.cronutils.model.definition.CronDefinition;
-import com.cronutils.model.definition.CronDefinitionBuilder;
-import com.cronutils.parser.CronParser;
-import com.google.common.base.Optional;
-import org.junit.Before;
-import org.junit.Test;
-import org.threeten.bp.*;
-import org.threeten.bp.format.DateTimeFormatter;
-import org.threeten.bp.temporal.ChronoUnit;
+import static com.cronutils.model.CronType.QUARTZ;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+import static org.threeten.bp.ZoneOffset.UTC;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import static com.cronutils.model.CronType.QUARTZ;
-import static org.junit.Assert.*;
-import static org.threeten.bp.ZoneOffset.UTC;
+import org.junit.Before;
+import org.junit.Test;
+import org.threeten.bp.DateTimeException;
+import org.threeten.bp.DateTimeUtils;
+import org.threeten.bp.DayOfWeek;
+import org.threeten.bp.Duration;
+import org.threeten.bp.LocalDate;
+import org.threeten.bp.LocalDateTime;
+import org.threeten.bp.LocalTime;
+import org.threeten.bp.ZoneId;
+import org.threeten.bp.ZoneOffset;
+import org.threeten.bp.ZonedDateTime;
+import org.threeten.bp.format.DateTimeFormatter;
+import org.threeten.bp.temporal.ChronoUnit;
+
+import com.cronutils.model.Cron;
+import com.cronutils.model.definition.CronDefinition;
+import com.cronutils.model.definition.CronDefinitionBuilder;
+import com.cronutils.parser.CronParser;
+import com.google.common.base.Optional;
 
 /*
  * Copyright 2015 jmrozanec
