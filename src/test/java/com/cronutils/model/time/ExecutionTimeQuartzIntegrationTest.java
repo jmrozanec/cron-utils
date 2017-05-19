@@ -560,9 +560,9 @@ public class ExecutionTimeQuartzIntegrationTest {
      * Issue #142: https://github.com/jmrozanec/cron-utils/pull/142
      * Special Character L for day of week behaves differently in Quartz
      */
-//    @Test //TODO
+    @Test
     public void lastDayOfTheWeek() throws Exception {
-        Cron cron = new CronParser(CronDefinitionBuilder.instanceDefinitionFor(QUARTZ)).parse("0 0 0 ? * L *");
+        Cron cron = new CronParser(CronDefinitionBuilder.instanceDefinitionFor(QUARTZ)).parse("0 0 0 L * ? *");
 
         ZoneId utc = ZoneId.of("UTC");
         ZonedDateTime date = LocalDate.parse("2016-12-22").atStartOfDay(utc);
