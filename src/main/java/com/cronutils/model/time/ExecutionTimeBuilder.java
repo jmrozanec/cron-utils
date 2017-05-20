@@ -31,6 +31,7 @@ class ExecutionTimeBuilder {
     private FieldValueGenerator yearsValueGenerator;
     private CronField daysOfWeekCronField;
     private CronField daysOfMonthCronField;
+    private CronField daysOfYearCronField;
 
     private TimeNode months;
     private TimeNode hours;
@@ -82,6 +83,12 @@ class ExecutionTimeBuilder {
         daysOfMonthCronField = cronField;
         return this;
     }
+    
+    protected ExecutionTimeBuilder forDaysOfYearMatching(CronField cronField){
+        validate(CronFieldName.DAY_OF_YEAR, cronField);
+        daysOfYearCronField = cronField;
+        return this;
+    }
 
     protected ExecutionTime build(){
         boolean lowestAssigned = false;
@@ -125,9 +132,13 @@ class ExecutionTimeBuilder {
                             new CronField(CronFieldName.YEAR,new Always(), getConstraint(CronFieldName.YEAR))
                     );
         }
+        if(daysOfYearCronField == null){
+           FieldConstraints constraints = getConstraint(CronFieldName.DAY_OF_YEAR);
+           daysOfYearCronField=new CronField(CronFieldName.DAY_OF_YEAR, new Always(), constraints);
+        }
 
         return new ExecutionTime(cronDefinition,
-                yearsValueGenerator, daysOfWeekCronField, daysOfMonthCronField,
+                yearsValueGenerator, daysOfWeekCronField, daysOfMonthCronField, daysOfYearCronField,
                 months, hours, minutes, seconds
         );
     }

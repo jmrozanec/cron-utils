@@ -70,6 +70,10 @@ public class FieldConstraintsBuilder {
                 startRange = 1;
                 endRange = 12;
                 return this;
+            case DAY_OF_YEAR:
+                startRange = 1;
+                endRange = 366;
+                return this;
             default:
                 return this;
         }

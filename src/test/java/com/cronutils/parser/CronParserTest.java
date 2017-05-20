@@ -4,6 +4,7 @@ import com.cronutils.model.Cron;
 import com.cronutils.model.CronType;
 import com.cronutils.model.definition.CronDefinition;
 import com.cronutils.model.definition.CronDefinitionBuilder;
+import com.cronutils.model.definition.CronDefinitions;
 import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.field.constraint.FieldConstraintsBuilder;
 import com.cronutils.model.field.definition.FieldDefinition;
@@ -139,6 +140,12 @@ public class CronParserTest {
         parser.parse("0/60 0 0 1 1 ? 2017/3");
     }
     
+    @Test
+    public void testParseExtendedQuartzCron() {
+        parser = new CronParser(CronDefinitions.quartzWithDayOfYearExtension());
+        parser.parse("0 0 0 ? * ? 2017 1/14");
+    }
+
     //@Test TODO: issue #180
     public void testThatEveryMinuteIsPreserved() {
         CronDefinition quartzDefinition = CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ);
