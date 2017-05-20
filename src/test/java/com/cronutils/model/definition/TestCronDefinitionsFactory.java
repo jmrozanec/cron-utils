@@ -28,4 +28,19 @@ public class TestCronDefinitionsFactory {
                 .withCronValidation(CronConstraintsFactory.ensureEitherDayOfWeekOrDayOfMonth())
                 .instance();
     }
+
+    public static CronDefinition withDayOfYearDefinitionWhereYearAndDoYOptionals(){
+        return CronDefinitionBuilder.defineCron()
+                .withSeconds().and()
+                .withMinutes().and()
+                .withHours().and()
+                .withDayOfMonth().supportsHash().supportsL().supportsW().supportsLW().supportsQuestionMark().and()
+                .withMonth().and()
+                .withDayOfWeek().withValidRange(1, 7).withMondayDoWValue(2).supportsHash().supportsL().supportsW().supportsQuestionMark().and()
+                .withYear().withValidRange(1970, 5000).optional().and()
+                .withDayOfYear().supportsQuestionMark().withValidRange(1, LEAP_YEAR_DAY_COUNT).optional().and()
+                .withCronValidation(CronConstraintsFactory.ensureEitherDayOfYearOrMonth())
+                .withCronValidation(CronConstraintsFactory.ensureEitherDayOfWeekOrDayOfMonth())
+                .instance();
+    }
 }

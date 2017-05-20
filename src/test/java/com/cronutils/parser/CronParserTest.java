@@ -147,6 +147,12 @@ public class CronParserTest {
         parser.parse("0 0 0 ? * ? 2017 1/14");
     }
 
+    //@Test(expected=IllegalArgumentException.class) TODO: Issue #185
+    public void testRejectionTwoOptionalFields() {
+        parser = new CronParser(TestCronDefinitionsFactory.withDayOfYearDefinitionWhereYearAndDoYOptionals());
+        parser.parse("0 0 0 ? * ? 2017 1/14");
+    }
+
     //@Test TODO: issue #180
     public void testThatEveryMinuteIsPreserved() {
         CronDefinition quartzDefinition = CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ);
