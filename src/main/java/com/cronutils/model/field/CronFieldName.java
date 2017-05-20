@@ -17,7 +17,9 @@ package com.cronutils.model.field;
  * Enumerates cron field names
  */
 public enum CronFieldName {
-    SECOND(0), MINUTE(1), HOUR(2), DAY_OF_MONTH(3), MONTH(4), DAY_OF_WEEK(5), YEAR(6), /*DAY_OF_YEAR(7) /** Similar to DAY_OF_MONTH whose main purpose would be the definition of effective bi-, tri- or quad-weekly schedules via proprietary cron expressions. */;
+    SECOND(0), MINUTE(1), HOUR(2), DAY_OF_MONTH(3), MONTH(4), DAY_OF_WEEK(5), YEAR(6), 
+    /** Similar to DAY_OF_MONTH whose main purpose is the definition of effective bi-, tri- or quad-weekly schedules via proprietary cron expressions. */
+    DAY_OF_YEAR(7) ;
 
     private int order;
 

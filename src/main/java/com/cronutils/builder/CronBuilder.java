@@ -40,6 +40,10 @@ public class CronBuilder {
 	public static CronBuilder cron(CronDefinition definition) {
 		return new CronBuilder(definition);
 	}
+	
+	public CronBuilder withDoY(FieldExpression expression) {
+	    return addField(DAY_OF_YEAR, expression);
+	}
 
 	public CronBuilder withYear(FieldExpression expression) {
 		return addField(YEAR, expression);

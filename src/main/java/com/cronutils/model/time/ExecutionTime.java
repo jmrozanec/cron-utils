@@ -14,12 +14,16 @@ import com.cronutils.model.time.generator.NoSuchValueException;
 import com.cronutils.utils.Preconditions;
 import com.cronutils.utils.VisibleForTesting;
 import com.google.common.base.Optional;
-import org.threeten.bp.*;
+import com.google.common.collect.Range;
 
+import org.threeten.bp.*;
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static com.cronutils.model.field.CronFieldName.*;
 import static com.cronutils.model.field.value.SpecialChar.QUESTION_MARK;
+import static com.cronutils.model.time.generator.FieldValueGeneratorFactory.createDayOfYearValueGeneratorInstance;
 import static com.cronutils.model.time.generator.FieldValueGeneratorFactory.createDayOfMonthValueGeneratorInstance;
 import static com.cronutils.model.time.generator.FieldValueGeneratorFactory.createDayOfWeekValueGeneratorInstance;
 import static org.threeten.bp.temporal.TemporalAdjusters.lastDayOfMonth;
@@ -45,6 +49,7 @@ public class ExecutionTime {
     private FieldValueGenerator yearsValueGenerator;
     private CronField daysOfWeekCronField;
     private CronField daysOfMonthCronField;
+    private CronField daysOfYearCronField;
 
     private TimeNode months;
     private TimeNode hours;
@@ -53,12 +58,13 @@ public class ExecutionTime {
 
     @VisibleForTesting
     ExecutionTime(CronDefinition cronDefinition, FieldValueGenerator yearsValueGenerator, CronField daysOfWeekCronField,
-                  CronField daysOfMonthCronField, TimeNode months, TimeNode hours,
+                  CronField daysOfMonthCronField, CronField daysOfYearCronField, TimeNode months, TimeNode hours,
                   TimeNode minutes, TimeNode seconds) {
         this.cronDefinition = Preconditions.checkNotNull(cronDefinition);
         this.yearsValueGenerator = Preconditions.checkNotNull(yearsValueGenerator);
         this.daysOfWeekCronField = Preconditions.checkNotNull(daysOfWeekCronField);
         this.daysOfMonthCronField = Preconditions.checkNotNull(daysOfMonthCronField);
+        this.daysOfYearCronField = daysOfYearCronField;
         this.months = Preconditions.checkNotNull(months);
         this.hours = Preconditions.checkNotNull(hours);
         this.minutes = Preconditions.checkNotNull(minutes);
@@ -96,6 +102,9 @@ public class ExecutionTime {
                         break;
                     case YEAR:
                         executionTimeBuilder.forYearsMatching(fields.get(name));
+                        break;
+                    case DAY_OF_YEAR:
+                        executionTimeBuilder.forDaysOfYearMatching(fields.get(name));
                         break;
                     default:
                         break;
@@ -345,6 +354,9 @@ public class ExecutionTime {
     }
 
     private TimeNode generateDays(CronDefinition cronDefinition, ZonedDateTime date) throws NoDaysForMonthException {
+        if(cronDefinition.containsFieldDefinition(DAY_OF_YEAR)){
+            return generateDayCandidatesUsingDoY(date);
+        }
         //If DoW is not supported in custom definition, we just return an empty list.
         if(cronDefinition.getFieldDefinition(DAY_OF_WEEK)!=null && cronDefinition.getFieldDefinition(DAY_OF_MONTH)!=null){
             return generateDaysDoWAndDoMSupported(cronDefinition, date);
@@ -354,6 +366,23 @@ public class ExecutionTime {
         }
         return generateDayCandidatesUsingDoW(date, ((DayOfWeekFieldDefinition)cronDefinition.getFieldDefinition(DAY_OF_WEEK)).getMondayDoWValue());
     }
+    
+    private TimeNode generateDayCandidatesUsingDoY(ZonedDateTime reference) {
+        final int year = reference.getYear();
+        final int month = reference.getMonthValue();
+        LocalDate date = LocalDate.of(year, 1, 1);
+        int lengthOfYear = date.lengthOfYear();
+
+        List<Integer> candidates = createDayOfYearValueGeneratorInstance(daysOfYearCronField, year).generateCandidates(1, lengthOfYear);
+        
+        Range<Integer> rangeOfMonth = Range.closedOpen(LocalDate.of(year, month, 1).getDayOfYear(), LocalDate.of(year, month + 1, 1).getDayOfYear());
+        Stream<Integer> candidatesFilteredByMonth = candidates.stream().filter(dayOfYear -> rangeOfMonth.contains(dayOfYear));
+        Stream<Integer> uniqueCandidates = candidatesFilteredByMonth.distinct();
+        Stream<Integer> candidatesMappedToDayOfMonth = uniqueCandidates.map(dayOfYear -> LocalDate.ofYearDay(reference.getYear(), dayOfYear).getDayOfMonth());
+        
+        return new TimeNode(candidatesMappedToDayOfMonth.collect(Collectors.toList()));
+    }
+    
 
     private TimeNode generateDaysDoWAndDoMSupported(CronDefinition cronDefinition, ZonedDateTime date) throws NoDaysForMonthException {
         boolean questionMarkSupported =
