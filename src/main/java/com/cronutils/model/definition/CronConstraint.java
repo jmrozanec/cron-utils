@@ -12,9 +12,9 @@
  */
 package com.cronutils.model.definition;
 
-import com.cronutils.model.Cron;
-
 import java.io.Serializable;
+
+import com.cronutils.model.Cron;
 
 public abstract class CronConstraint implements Serializable {
     private String description;

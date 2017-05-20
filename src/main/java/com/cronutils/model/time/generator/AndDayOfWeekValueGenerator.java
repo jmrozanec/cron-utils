@@ -1,14 +1,14 @@
 package com.cronutils.model.time.generator;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.cronutils.mapper.WeekDay;
 import com.cronutils.model.field.CronField;
 import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.field.expression.And;
 import com.cronutils.model.field.expression.FieldExpression;
 import com.cronutils.utils.Preconditions;
-
-import java.util.ArrayList;
-import java.util.List;
 
 class AndDayOfWeekValueGenerator extends FieldValueGenerator {
     private int year;

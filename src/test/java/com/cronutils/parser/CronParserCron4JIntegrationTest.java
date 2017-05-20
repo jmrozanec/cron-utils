@@ -1,10 +1,11 @@
 package com.cronutils.parser;
 
+import org.junit.Before;
+import org.junit.Test;
+
 import com.cronutils.model.CronType;
 import com.cronutils.model.definition.CronDefinition;
 import com.cronutils.model.definition.CronDefinitionBuilder;
-import org.junit.Before;
-import org.junit.Test;
 
 public class CronParserCron4JIntegrationTest {
     private CronParser cron4jParser;

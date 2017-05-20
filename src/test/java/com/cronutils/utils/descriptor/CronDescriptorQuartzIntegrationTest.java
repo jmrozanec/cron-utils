@@ -1,15 +1,16 @@
 package com.cronutils.utils.descriptor;
 
+import static org.junit.Assert.assertEquals;
+
+import java.util.Locale;
+
+import org.junit.Before;
+import org.junit.Test;
+
 import com.cronutils.descriptor.CronDescriptor;
 import com.cronutils.model.CronType;
 import com.cronutils.model.definition.CronDefinitionBuilder;
 import com.cronutils.parser.CronParser;
-import org.junit.Before;
-import org.junit.Test;
-
-import java.util.Locale;
-
-import static org.junit.Assert.assertEquals;
 /*
  * Copyright 2015 jmrozanec
  * Licensed under the Apache License, Version 2.0 (the "License");

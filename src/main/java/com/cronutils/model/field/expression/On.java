@@ -1,11 +1,11 @@
 package com.cronutils.model.field.expression;
 
+import static com.cronutils.utils.Preconditions.checkArgument;
+
 import com.cronutils.model.field.value.IntegerFieldValue;
 import com.cronutils.model.field.value.SpecialChar;
 import com.cronutils.model.field.value.SpecialCharFieldValue;
 import com.cronutils.utils.Preconditions;
-
-import static com.cronutils.utils.Preconditions.checkArgument;
 
 /*
  * Copyright 2014 jmrozanec
@@ -74,7 +74,7 @@ public class On extends FieldExpression {
 		case W:
 			return isDefault(getTime())?"W":String.format("%sW", getTime());
 		case L:
-			return isDefault(getTime())?"L":String.format("%sL", getTime());
+			return isDefault(getTime())?"L" + (getNth().getValue() > 0 ? String.format("-%sL", getNth()) : "") : String.format("%sL", getTime());
 		default:
 			return specialChar.toString();
 		}

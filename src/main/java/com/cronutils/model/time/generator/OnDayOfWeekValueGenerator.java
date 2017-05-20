@@ -1,4 +1,6 @@
 package com.cronutils.model.time.generator;
+import org.threeten.bp.DayOfWeek;
+import org.threeten.bp.LocalDate;
 
 import com.cronutils.mapper.ConstantsMapper;
 import com.cronutils.mapper.WeekDay;
@@ -7,8 +9,6 @@ import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.field.expression.FieldExpression;
 import com.cronutils.model.field.expression.On;
 import com.cronutils.utils.Preconditions;
-import org.threeten.bp.DayOfWeek;
-import org.threeten.bp.LocalDate;
 /*
  * Copyright 2015 jmrozanec
  * Licensed under the Apache License, Version 2.0 (the "License");

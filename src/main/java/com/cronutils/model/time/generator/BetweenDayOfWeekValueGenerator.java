@@ -1,16 +1,5 @@
 package com.cronutils.model.time.generator;
 
-import com.cronutils.mapper.WeekDay;
-import com.cronutils.model.field.CronField;
-import com.cronutils.model.field.CronFieldName;
-import com.cronutils.model.field.constraint.FieldConstraintsBuilder;
-import com.cronutils.model.field.expression.Between;
-import com.cronutils.model.field.expression.FieldExpression;
-import com.cronutils.parser.CronParserField;
-import com.cronutils.utils.Preconditions;
-import org.threeten.bp.LocalDate;
-
-import java.util.*;
 /*
  * Copyright 2015 jmrozanec
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,6 +12,22 @@ import java.util.*;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import org.threeten.bp.LocalDate;
+
+import com.cronutils.mapper.WeekDay;
+import com.cronutils.model.field.CronField;
+import com.cronutils.model.field.CronFieldName;
+import com.cronutils.model.field.constraint.FieldConstraintsBuilder;
+import com.cronutils.model.field.expression.Between;
+import com.cronutils.model.field.expression.FieldExpression;
+import com.cronutils.parser.CronParserField;
+import com.cronutils.utils.Preconditions;
 
 /**
  * This class generates the actual days of month matching the "days of week" specification if the

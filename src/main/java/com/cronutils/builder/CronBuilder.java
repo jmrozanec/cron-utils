@@ -12,6 +12,13 @@
  */
 package com.cronutils.builder;
 
+import static com.cronutils.model.field.CronFieldName.*;
+import static com.cronutils.utils.Preconditions.checkState;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
 import com.cronutils.model.Cron;
 import com.cronutils.model.definition.CronDefinition;
 import com.cronutils.model.field.CronField;
@@ -20,13 +27,6 @@ import com.cronutils.model.field.constraint.FieldConstraints;
 import com.cronutils.model.field.expression.FieldExpression;
 import com.cronutils.model.field.expression.visitor.ValidationFieldExpressionVisitor;
 import com.cronutils.utils.VisibleForTesting;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-
-import static com.cronutils.model.field.CronFieldName.*;
-import static com.cronutils.utils.Preconditions.checkState;
 
 public class CronBuilder {
 
