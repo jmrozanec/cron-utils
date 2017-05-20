@@ -6,6 +6,7 @@ import static org.mockito.Mockito.when;
 
 import java.util.Set;
 
+import com.cronutils.model.definition.CronConstraintsFactory;
 import com.cronutils.model.definition.TestCronDefinitionsFactory;
 import org.junit.Before;
 import org.junit.Rule;
@@ -147,10 +148,25 @@ public class CronParserTest {
         parser.parse("0 0 0 ? * ? 2017 1/14");
     }
 
-    //@Test(expected=IllegalArgumentException.class) TODO: Issue #185
-    public void testRejectionTwoOptionalFields() {
+    @Test//TODO: Issue #185
+    public void testNoRejectionTwoOptionalFields() {
         parser = new CronParser(TestCronDefinitionsFactory.withDayOfYearDefinitionWhereYearAndDoYOptionals());
         parser.parse("0 0 0 ? * ? 2017 1/14");
+    }
+
+    //@Test(expected=IllegalArgumentException.class)//TODO: Issue #185
+    public void testRejectionTwoOptionalFieldsAmbiguous(){
+        CronDefinitionBuilder.defineCron()
+                .withSeconds().and()
+                .withMinutes().and()
+                .withHours().and()
+                .withDayOfMonth().supportsHash().supportsL().supportsW().supportsLW().supportsQuestionMark().and()
+                .withMonth().and()
+                .withDayOfWeek().withValidRange(1, 7).withMondayDoWValue(2).supportsHash().supportsL().supportsW().supportsQuestionMark().optional().and()
+                .withDayOfYear().supportsQuestionMark().withValidRange(1, 366).optional().and()
+                .withCronValidation(CronConstraintsFactory.ensureEitherDayOfYearOrMonth())
+                .withCronValidation(CronConstraintsFactory.ensureEitherDayOfWeekOrDayOfMonth())
+                .instance();
     }
 
     //@Test TODO: issue #180
