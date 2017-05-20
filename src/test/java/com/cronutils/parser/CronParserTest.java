@@ -6,6 +6,7 @@ import static org.mockito.Mockito.when;
 
 import java.util.Set;
 
+import com.cronutils.model.definition.TestCronDefinitionsFactory;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -17,7 +18,6 @@ import com.cronutils.model.Cron;
 import com.cronutils.model.CronType;
 import com.cronutils.model.definition.CronDefinition;
 import com.cronutils.model.definition.CronDefinitionBuilder;
-import com.cronutils.model.definition.CronDefinitions;
 import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.field.constraint.FieldConstraintsBuilder;
 import com.cronutils.model.field.definition.FieldDefinition;
@@ -143,7 +143,7 @@ public class CronParserTest {
     
     @Test
     public void testParseExtendedQuartzCron() {
-        parser = new CronParser(CronDefinitions.quartzWithDayOfYearExtension());
+        parser = new CronParser(TestCronDefinitionsFactory.withDayOfYearDefinition());
         parser.parse("0 0 0 ? * ? 2017 1/14");
     }
 
