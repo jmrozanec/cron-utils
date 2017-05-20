@@ -1,12 +1,13 @@
 package com.cronutils.model.time.generator;
 
+import org.threeten.bp.DayOfWeek;
+import org.threeten.bp.LocalDate;
+
 import com.cronutils.model.field.CronField;
 import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.field.expression.FieldExpression;
 import com.cronutils.model.field.expression.On;
 import com.cronutils.utils.Preconditions;
-import org.threeten.bp.DayOfWeek;
-import org.threeten.bp.LocalDate;
 
 /*
  * Copyright 2015 jmrozanec
@@ -68,7 +69,8 @@ class OnDayOfMonthValueGenerator extends OnDayOfCalendarValueGenerator {
         int dayOfMonth = on.getTime().getValue();
         switch (on.getSpecialChar().getValue()) {
             case L:
-                return LocalDate.of(year, month, 1).lengthOfMonth();
+                int daysBefore = on.getNth().getValue();
+                return LocalDate.of(year, month, 1).lengthOfMonth() - (daysBefore > 0 ? daysBefore : 0);
             case W: // First work day of the week
                 LocalDate doM = LocalDate.of(year, month, dayOfMonth);
                 if (doM.getDayOfWeek() == DayOfWeek.SATURDAY) {//dayOfWeek is Saturday!

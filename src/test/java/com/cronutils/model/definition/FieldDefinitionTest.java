@@ -1,15 +1,19 @@
 package com.cronutils.model.definition;
 
-import com.cronutils.model.field.CronFieldName;
-import com.cronutils.model.field.constraint.FieldConstraints;
-import com.cronutils.model.field.definition.FieldDefinition;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.mock;
+import com.cronutils.model.field.CronFieldName;
+import com.cronutils.model.field.constraint.FieldConstraints;
+import com.cronutils.model.field.definition.FieldDefinition;
 /*
  * Copyright 2015 jmrozanec
  * Licensed under the Apache License, Version 2.0 (the "License");

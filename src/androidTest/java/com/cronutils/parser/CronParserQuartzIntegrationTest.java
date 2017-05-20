@@ -266,7 +266,7 @@ public class CronParserQuartzIntegrationTest extends BaseAndroidTest {
     /**
      * Issue #151: L-7 in day of month should work to find the day 7 days prior to the last day of the month.
      */
-//    @Test TODO
+    @Test
     public void testLSupportedInDoMRangeNextExecutionCalculation() {
         ExecutionTime executionTime = ExecutionTime.forCron(parser.parse("0 15 10 L-7 * ?"));
         ZonedDateTime now = ZonedDateTime.parse("2017-01-31T10:00:00Z");

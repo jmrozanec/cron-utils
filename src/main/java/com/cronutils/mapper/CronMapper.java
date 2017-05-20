@@ -1,5 +1,10 @@
 package com.cronutils.mapper;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import com.cronutils.Function;
 import com.cronutils.model.Cron;
 import com.cronutils.model.CronType;
@@ -20,11 +25,6 @@ import com.cronutils.model.field.value.IntegerFieldValue;
 import com.cronutils.model.field.value.SpecialChar;
 import com.cronutils.utils.Preconditions;
 import com.cronutils.utils.VisibleForTesting;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /*
  * Copyright 2014 jmrozanec

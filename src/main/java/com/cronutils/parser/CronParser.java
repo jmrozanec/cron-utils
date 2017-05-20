@@ -1,13 +1,17 @@
 package com.cronutils.parser;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 import com.cronutils.model.Cron;
 import com.cronutils.model.definition.CronDefinition;
 import com.cronutils.model.field.CronField;
 import com.cronutils.utils.Preconditions;
 import com.cronutils.utils.StringUtils;
 import com.google.common.collect.ImmutableList;
-import java.util.*;
-import java.util.stream.Collectors;
 
 /*
  * Copyright 2014 jmrozanec

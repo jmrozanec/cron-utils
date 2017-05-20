@@ -1,5 +1,30 @@
 package com.cronutils.model.time;
 
+import static com.cronutils.model.field.CronFieldName.DAY_OF_MONTH;
+import static com.cronutils.model.field.CronFieldName.DAY_OF_WEEK;
+import static com.cronutils.model.field.CronFieldName.HOUR;
+import static com.cronutils.model.field.CronFieldName.MINUTE;
+import static com.cronutils.model.field.CronFieldName.MONTH;
+import static com.cronutils.model.field.CronFieldName.SECOND;
+import static com.cronutils.model.field.CronFieldName.YEAR;
+import static com.cronutils.model.field.value.SpecialChar.QUESTION_MARK;
+import static com.cronutils.model.time.generator.FieldValueGeneratorFactory.createDayOfMonthValueGeneratorInstance;
+import static com.cronutils.model.time.generator.FieldValueGeneratorFactory.createDayOfWeekValueGeneratorInstance;
+import static org.threeten.bp.temporal.TemporalAdjusters.lastDayOfMonth;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.threeten.bp.Duration;
+import org.threeten.bp.LocalDate;
+import org.threeten.bp.LocalDateTime;
+import org.threeten.bp.ZoneId;
+import org.threeten.bp.ZonedDateTime;
+
 import com.cronutils.mapper.WeekDay;
 import com.cronutils.model.Cron;
 import com.cronutils.model.definition.CronDefinition;
@@ -16,17 +41,11 @@ import com.cronutils.utils.VisibleForTesting;
 import com.google.common.base.Optional;
 import com.google.common.collect.Range;
 
-import org.threeten.bp.*;
-import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static com.cronutils.model.field.CronFieldName.*;
-import static com.cronutils.model.field.value.SpecialChar.QUESTION_MARK;
 import static com.cronutils.model.time.generator.FieldValueGeneratorFactory.createDayOfYearValueGeneratorInstance;
-import static com.cronutils.model.time.generator.FieldValueGeneratorFactory.createDayOfMonthValueGeneratorInstance;
-import static com.cronutils.model.time.generator.FieldValueGeneratorFactory.createDayOfWeekValueGeneratorInstance;
-import static org.threeten.bp.temporal.TemporalAdjusters.lastDayOfMonth;
 
 /*
  * Copyright 2014 jmrozanec

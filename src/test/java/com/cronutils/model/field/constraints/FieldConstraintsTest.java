@@ -1,14 +1,15 @@
 package com.cronutils.model.field.constraints;
 
+import java.util.Map;
+import java.util.Set;
+
+import org.junit.Before;
+import org.junit.Test;
+
 import com.cronutils.model.field.constraint.FieldConstraints;
 import com.cronutils.model.field.value.SpecialChar;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import org.junit.Before;
-import org.junit.Test;
-
-import java.util.Map;
-import java.util.Set;
 /*
  * Copyright 2015 jmrozanec
  * Licensed under the Apache License, Version 2.0 (the "License");

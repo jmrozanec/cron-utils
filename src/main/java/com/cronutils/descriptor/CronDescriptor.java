@@ -1,14 +1,14 @@
 package com.cronutils.descriptor;
 
+import java.util.Locale;
+import java.util.Map;
+import java.util.ResourceBundle;
+
 import com.cronutils.model.Cron;
 import com.cronutils.model.field.CronField;
 import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.field.definition.FieldDefinition;
 import com.cronutils.utils.Preconditions;
-
-import java.util.Locale;
-import java.util.Map;
-import java.util.ResourceBundle;
 
 /*
  * Copyright 2014 jmrozanec

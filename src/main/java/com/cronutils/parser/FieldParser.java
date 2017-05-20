@@ -13,9 +13,24 @@
  */
 package com.cronutils.parser;
 
+import static com.cronutils.model.field.value.SpecialChar.HASH;
+import static com.cronutils.model.field.value.SpecialChar.L;
+import static com.cronutils.model.field.value.SpecialChar.LW;
+import static com.cronutils.model.field.value.SpecialChar.NONE;
+import static com.cronutils.model.field.value.SpecialChar.QUESTION_MARK;
+import static com.cronutils.model.field.value.SpecialChar.W;
+
+import java.util.regex.Pattern;
+
 import com.cronutils.StringValidations;
 import com.cronutils.model.field.constraint.FieldConstraints;
-import com.cronutils.model.field.expression.*;
+import com.cronutils.model.field.expression.Always;
+import com.cronutils.model.field.expression.And;
+import com.cronutils.model.field.expression.Between;
+import com.cronutils.model.field.expression.Every;
+import com.cronutils.model.field.expression.FieldExpression;
+import com.cronutils.model.field.expression.On;
+import com.cronutils.model.field.expression.QuestionMark;
 import com.cronutils.model.field.value.FieldValue;
 import com.cronutils.model.field.value.IntegerFieldValue;
 import com.cronutils.model.field.value.SpecialChar;
@@ -23,10 +38,6 @@ import com.cronutils.model.field.value.SpecialCharFieldValue;
 import com.cronutils.utils.Preconditions;
 import com.cronutils.utils.StringUtils;
 import com.cronutils.utils.VisibleForTesting;
-
-import java.util.regex.Pattern;
-
-import static com.cronutils.model.field.value.SpecialChar.*;
 
 /**
  * Parses a field from a cron expression.
@@ -69,15 +80,15 @@ public class FieldParser {
 			if (array.length > 1) {
 				return commaSplitResult(array);
 			} else {
-				String[] betWeenArray = expression.split("-");
-				return dashSplitResult(expression, betWeenArray);
+				String[] splitted = expression.split("-");
+				return splitted[0].equalsIgnoreCase(L_STRING) ? parseOnWithL(splitted[0], mapToIntegerFieldValue(splitted[1])) : dashSplitResult(expression, splitted);
 			}
 		}
 	}
 
-	private FieldExpression dashSplitResult(String expression, String[] betWeenArray) {
-		if (betWeenArray.length > 1) {
-			return parseBetween(betWeenArray);
+	private FieldExpression dashSplitResult(String expression, String[] betweenArray) {
+		if (betweenArray.length > 1) {
+			return parseBetween(betweenArray);
 		} else {
 			return slashSplit(expression, expression.split(SLASH));
 		}
@@ -188,13 +199,17 @@ public class FieldParser {
 
 	@VisibleForTesting
 	protected On parseOnWithL(String exp) {
+	    return parseOnWithL(exp, new IntegerFieldValue(-1));
+	}
+	        
+	protected On parseOnWithL(String exp, IntegerFieldValue daysBefore) {
 		SpecialCharFieldValue specialChar = new SpecialCharFieldValue(L);
 		String lExpression = exp.replace(L_STRING, EMPTY_STRING);
 		IntegerFieldValue time = new IntegerFieldValue(-1);
 		if (!EMPTY_STRING.equals(lExpression)) {
 			time = mapToIntegerFieldValue(lExpression);
 		}
-		return new On(time, specialChar, new IntegerFieldValue(-1));
+		return new On(time, specialChar, daysBefore);
 	}
 
 	@VisibleForTesting

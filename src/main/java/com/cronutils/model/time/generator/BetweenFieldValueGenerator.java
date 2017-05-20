@@ -1,13 +1,13 @@
 package com.cronutils.model.time.generator;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.cronutils.model.field.CronField;
 import com.cronutils.model.field.expression.Between;
 import com.cronutils.model.field.expression.FieldExpression;
 import com.cronutils.model.field.value.FieldValue;
 import com.cronutils.model.field.value.IntegerFieldValue;
-
-import java.util.ArrayList;
-import java.util.List;
 /*
  * Copyright 2015 jmrozanec
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -93,7 +93,6 @@ class BetweenFieldValueGenerator extends FieldValueGenerator {
     public boolean isMatch(int value) {
         Between between = (Between)cronField.getExpression();
         return value >= map(between.getFrom()) && value <= map(between.getTo());
-        //TODO validate quartz ranges: L-3, 5-1, etc.
     }
 
     @Override

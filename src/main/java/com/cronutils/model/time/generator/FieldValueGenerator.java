@@ -1,11 +1,11 @@
 package com.cronutils.model.time.generator;
 
+import java.util.Collections;
+import java.util.List;
+
 import com.cronutils.model.field.CronField;
 import com.cronutils.model.field.expression.FieldExpression;
 import com.cronutils.utils.Preconditions;
-
-import java.util.Collections;
-import java.util.List;
 
 /*
  * Copyright 2015 jmrozanec

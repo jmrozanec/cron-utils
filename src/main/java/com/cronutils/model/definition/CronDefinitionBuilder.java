@@ -1,5 +1,10 @@
 package com.cronutils.model.definition;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
 import com.cronutils.model.CronType;
 import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.field.definition.FieldDayOfWeekDefinitionBuilder;
@@ -7,8 +12,9 @@ import com.cronutils.model.field.definition.FieldDefinition;
 import com.cronutils.model.field.definition.FieldDefinitionBuilder;
 import com.cronutils.model.field.definition.FieldQuestionMarkDefinitionBuilder;
 import com.cronutils.model.field.definition.FieldSpecialCharsDefinitionBuilder;
-import java.util.*;
+
 import java.util.stream.Collectors;
+
 
 /*
  * Copyright 2014 jmrozanec

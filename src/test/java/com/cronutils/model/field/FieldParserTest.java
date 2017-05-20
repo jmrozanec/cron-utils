@@ -1,15 +1,20 @@
 package com.cronutils.model.field;
 
-import com.cronutils.model.field.constraint.FieldConstraintsBuilder;
-import com.cronutils.model.field.expression.*;
-import com.cronutils.model.field.value.IntegerFieldValue;
-import com.cronutils.model.field.value.SpecialChar;
-import com.cronutils.parser.FieldParser;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import com.cronutils.model.field.constraint.FieldConstraintsBuilder;
+import com.cronutils.model.field.expression.Always;
+import com.cronutils.model.field.expression.And;
+import com.cronutils.model.field.expression.Between;
+import com.cronutils.model.field.expression.Every;
+import com.cronutils.model.field.expression.On;
+import com.cronutils.model.field.value.IntegerFieldValue;
+import com.cronutils.model.field.value.SpecialChar;
+import com.cronutils.parser.FieldParser;
 
 /*
  * Copyright 2015 jmrozanec
