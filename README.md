@@ -60,8 +60,7 @@ CronDefinition cronDefinition =
         .withDayOfWeek()
             .withIntMapping(7, 0) //we support non-standard non-zero-based numbers!
             .supportsHash().supportsL().supportsW().and()
-        .withYear().and()
-        .lastFieldOptional()
+        .withYear().optional().and()
         .instance();
 
 // or get a predefined instance
