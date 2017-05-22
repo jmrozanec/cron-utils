@@ -394,7 +394,7 @@ public class ExecutionTime {
 
         List<Integer> candidates = createDayOfYearValueGeneratorInstance(daysOfYearCronField, year).generateCandidates(1, lengthOfYear);
         
-        Range<Integer> rangeOfMonth = Range.closedOpen(LocalDate.of(year, month, 1).getDayOfYear(), LocalDate.of(year, month + 1, 1).getDayOfYear());
+        Range<Integer> rangeOfMonth = Range.closedOpen(LocalDate.of(year, month, 1).getDayOfYear(), month == 12 ? LocalDate.of(year, 12, 31).getDayOfYear() + 1 : LocalDate.of(year, month + 1, 1).getDayOfYear());
         Stream<Integer> candidatesFilteredByMonth = candidates.stream().filter(dayOfYear -> rangeOfMonth.contains(dayOfYear));
         Stream<Integer> uniqueCandidates = candidatesFilteredByMonth.distinct();
         Stream<Integer> candidatesMappedToDayOfMonth = uniqueCandidates.map(dayOfYear -> LocalDate.ofYearDay(reference.getYear(), dayOfYear).getDayOfMonth());
