@@ -49,6 +49,7 @@ public class CronMapper {
      *             if null a NullPointerException will be raised
      * @param to - target CronDefinition;
      *             if null a NullPointerException will be raised
+     * @param cronRules - cron rules
      */
     public CronMapper(CronDefinition from, CronDefinition to, Function<Cron, Cron> cronRules){
         Preconditions.checkNotNull(from, "Source CronDefinition must not be null");

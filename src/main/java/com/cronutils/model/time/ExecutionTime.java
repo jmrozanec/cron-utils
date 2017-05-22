@@ -136,7 +136,7 @@ public class ExecutionTime {
     /**
      * Provide nearest date for next execution.
      * @param date - ZonedDateTime instance. If null, a NullPointerException will be raised.
-     * @return Optional<ZonedDateTime> instance, never null. Contains next execution time or empty.
+     * @return Optional ZonedDateTime instance, never null. Contains next execution time or empty.
      */
     public Optional<ZonedDateTime> nextExecution(ZonedDateTime date) {
         Preconditions.checkNotNull(date);
@@ -443,7 +443,7 @@ public class ExecutionTime {
     /**
      * Provide nearest date for last execution.
      * @param date - ZonedDateTime instance. If null, a NullPointerException will be raised.
-     * @return Optional<ZonedDateTime> instance, never null. Last execution time or empty.
+     * @return Optional ZonedDateTime instance, never null. Last execution time or empty.
      */
     public Optional<ZonedDateTime> lastExecution(ZonedDateTime date){
         Preconditions.checkNotNull(date);
