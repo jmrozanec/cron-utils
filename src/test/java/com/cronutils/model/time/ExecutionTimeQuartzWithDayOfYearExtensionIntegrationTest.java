@@ -1,16 +1,14 @@
 package com.cronutils.model.time;
 
-import com.cronutils.model.definition.CronConstraintsFactory;
-import com.cronutils.model.definition.CronDefinition;
-import com.cronutils.model.definition.CronDefinitionBuilder;
+import static org.junit.Assert.*;
+import static org.threeten.bp.ZoneOffset.UTC;
+
 import com.cronutils.model.definition.TestCronDefinitionsFactory;
 import com.cronutils.parser.CronParser;
 import org.junit.Before;
 import org.junit.Test;
 import org.threeten.bp.*;
 import org.threeten.bp.temporal.ChronoUnit;
-
-import static org.junit.Assert.*;
 
 /*
  * Copyright 2015 jmrozanec
@@ -37,31 +35,60 @@ public class ExecutionTimeQuartzWithDayOfYearExtensionIntegrationTest {
     }
 
     @Test
-    public void testForCron() throws Exception {
+    public void testForCron() {
         assertEquals(ExecutionTime.class, ExecutionTime.forCron(parser.parse(BI_WEEKLY_STARTING_WITH_FIRST_DAY_OF_YEAR)).getClass());
         assertEquals(ExecutionTime.class, ExecutionTime.forCron(parser.parse(FIRST_QUATER_BI_WEEKLY_STARTING_WITH_FIRST_DAY_OF_YEAR)).getClass());
         assertEquals(ExecutionTime.class, ExecutionTime.forCron(parser.parse(WITHOUT_DAY_OF_YEAR)).getClass());
         assertEquals(ExecutionTime.class, ExecutionTime.forCron(parser.parse(WITHOUT_SPECIFIC_DAY_OF_YEAR)).getClass());
     }
-
-    //@Test TODO #Issue #184
-    public void testNextExecutionEveryTwoWeeksStartingWithFirstDayOfYear() throws Exception {
+    
+    @Test
+    public void testNextExecutionEveryTwoWeeksStartingWithFirstDayOfYear() {
         ZonedDateTime now = truncateToDays(ZonedDateTime.now());
         int dayOfYear = now.getDayOfYear();
         int dayOfMostRecentPeriod = dayOfYear % 14;
-        ZonedDateTime expected = dayOfMostRecentPeriod == 1 ? now : now.plusDays(15-dayOfMostRecentPeriod);
+        ZonedDateTime expected = now.plusDays(15-dayOfMostRecentPeriod);
         ExecutionTime executionTime = ExecutionTime.forCron(parser.parse(BI_WEEKLY_STARTING_WITH_FIRST_DAY_OF_YEAR));
         assertEquals(expected, executionTime.nextExecution(now).get());
     }
     
-    //@Test TODO #Issue #184
-    public void testLastExecutionEveryTwoWeeksStartingWithFirstDayOfYear() throws Exception {
+    @Test
+    public void testLastExecutionEveryTwoWeeksStartingWithFirstDayOfYear() {
         ZonedDateTime now = truncateToDays(ZonedDateTime.now());
         int dayOfYear = now.getDayOfYear();
         int dayOfMostRecentPeriod = dayOfYear % 14;
-        ZonedDateTime expected = dayOfMostRecentPeriod == 1 ? now : now.minusDays(dayOfMostRecentPeriod-1);
+        ZonedDateTime expected = dayOfMostRecentPeriod == 1 ? now.minusDays(14) : now.minusDays(dayOfMostRecentPeriod-1);
         ExecutionTime executionTime = ExecutionTime.forCron(parser.parse(BI_WEEKLY_STARTING_WITH_FIRST_DAY_OF_YEAR));
         assertEquals(expected, executionTime.lastExecution(now).get());
+    }
+    
+    @Test
+    public void testExecutionTimesEveryTwoWeeksStartingWithFirstDayOfYear() {
+        ZonedDateTime[] expectedExecutionTimes = new ZonedDateTime[]{
+            ZonedDateTime.of(2017, 1, 1, 0, 0, 0, 0, UTC),
+            ZonedDateTime.of(2017, 1, 15, 0, 0, 0, 0, UTC),
+            ZonedDateTime.of(2017, 1, 29, 0, 0, 0, 0, UTC),
+            ZonedDateTime.of(2017, 2, 12, 0, 0, 0, 0, UTC),
+            ZonedDateTime.of(2017, 2, 26, 0, 0, 0, 0, UTC),
+            ZonedDateTime.of(2017, 3, 12, 0, 0, 0, 0, UTC),
+            ZonedDateTime.of(2017, 3, 26, 0, 0, 0, 0, UTC),
+            ZonedDateTime.of(2017, 4, 9, 0, 0, 0, 0, UTC),
+            ZonedDateTime.of(2017, 4, 23, 0, 0, 0, 0, UTC),
+            ZonedDateTime.of(2017, 5, 7, 0, 0, 0, 0, UTC),
+            ZonedDateTime.of(2017, 5, 21, 0, 0, 0, 0, UTC),
+            ZonedDateTime.of(2017, 6, 4, 0, 0, 0, 0, UTC)
+        };
+        
+        ExecutionTime executionTime = ExecutionTime.forCron(parser.parse(BI_WEEKLY_STARTING_WITH_FIRST_DAY_OF_YEAR));
+        
+        for (ZonedDateTime expectedExecutionTime : expectedExecutionTimes)
+          assertEquals(expectedExecutionTime, executionTime.nextExecution(expectedExecutionTime.minusDays(1)).get());
+        
+        for (int i = 1; i < expectedExecutionTimes.length; i++)
+            assertEquals(expectedExecutionTimes[i], executionTime.nextExecution(expectedExecutionTimes[i-1]).get());
+        
+        for (int i = 1; i < expectedExecutionTimes.length; i++)
+            assertEquals(expectedExecutionTimes[i-1], executionTime.lastExecution(expectedExecutionTimes[i]).get());
     }
     
     private static ZonedDateTime truncateToDays(ZonedDateTime dateTime){
