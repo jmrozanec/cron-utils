@@ -166,4 +166,16 @@ public class CronParserTest {
         Cron expression = parser.parse("0 0/1 * 1/1 * ? *");
         assertEquals("0 0/1 * 1/1 * ? *", expression.asString());
     }
+    
+    @Test
+    public void testParseExtendedQuartzCronWithAsterixDoY() {
+        parser = new CronParser(TestCronDefinitionsFactory.withDayOfYearDefinitionWhereYearAndDoYOptionals());
+        parser.parse("0 0 0 ? * ? 2017 *"); //i.e. same as "0 0 0 * * ? 2017" or "0 0 0 ? * * 2017"
+    }
+    
+    @Test
+    public void testParseExtendedQuartzCronWithQuestionMarkDoY() {
+        parser = new CronParser(TestCronDefinitionsFactory.withDayOfYearDefinitionWhereYearAndDoYOptionals());
+        parser.parse("0 0 0 1 * ? 2017 ?"); //i.e. same as "0 0 0 1 * ? 2017" with question mark being omitted
+    }
 }
