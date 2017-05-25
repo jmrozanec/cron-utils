@@ -14,21 +14,6 @@ package com.cronutils.model.definition;
 public class TestCronDefinitionsFactory {
     private static final int LEAP_YEAR_DAY_COUNT = 366;
 
-    public static CronDefinition withDayOfYearDefinition(){
-        return CronDefinitionBuilder.defineCron()
-                .withSeconds().and()
-                .withMinutes().and()
-                .withHours().and()
-                .withDayOfMonth().supportsHash().supportsL().supportsW().supportsLW().supportsQuestionMark().and()
-                .withMonth().and()
-                .withDayOfWeek().withValidRange(1, 7).withMondayDoWValue(2).supportsHash().supportsL().supportsW().supportsQuestionMark().and()
-                .withYear().withValidRange(1970, 5000).and()
-                .withDayOfYear().supportsQuestionMark().withValidRange(1, LEAP_YEAR_DAY_COUNT).optional().and()
-                .withCronValidation(CronConstraintsFactory.ensureEitherDayOfYearOrMonth())
-                .withCronValidation(CronConstraintsFactory.ensureEitherDayOfWeekOrDayOfMonth())
-                .instance();
-    }
-
     /**
      * Provides a <code>CronDefinition</code> that extends the Quartz Cron definition by an optional DoY field at the end.
      <p>
@@ -108,7 +93,7 @@ public class TestCronDefinitionsFactory {
                 .withDayOfMonth().supportsL().supportsW().supportsLW().supportsQuestionMark().and()
                 .withMonth().and()
                 .withDayOfWeek().withValidRange(1, 7).withMondayDoWValue(2).supportsHash().supportsL().supportsQuestionMark().and()
-                .withYear().withValidRange(1970, 5000).optional().and()
+                .withYear().withValidRange(1970, 2099).optional().and()
                 .withDayOfYear().supportsQuestionMark().withValidRange(1, LEAP_YEAR_DAY_COUNT).optional().and()
                 .withCronValidation(CronConstraintsFactory.ensureEitherDayOfYearOrMonth())
                 .withCronValidation(CronConstraintsFactory.ensureEitherDayOfWeekOrDayOfMonth())

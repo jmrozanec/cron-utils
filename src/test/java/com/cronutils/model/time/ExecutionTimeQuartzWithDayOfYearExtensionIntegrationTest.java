@@ -31,7 +31,7 @@ public class ExecutionTimeQuartzWithDayOfYearExtensionIntegrationTest {
 
     @Before
     public void setUp() throws Exception {
-        parser = new CronParser(TestCronDefinitionsFactory.withDayOfYearDefinition());
+        parser = new CronParser(TestCronDefinitionsFactory.withDayOfYearDefinitionWhereYearAndDoYOptionals());
     }
 
     @Test
