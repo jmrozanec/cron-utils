@@ -95,7 +95,7 @@ public class ExecutionTimeQuartzWithDayOfYearExtensionIntegrationTest {
             assertEquals(expectedExecutionTimes[i-1], executionTime.lastExecution(expectedExecutionTimes[i]).get());
     }
     
-    @Test
+    @Test //issue #188
     public void testQuartzCompatibilityIfDoYisOmitted() {
         ExecutionTime executionTime = ExecutionTime.forCron(parser.parse(WITHOUT_DAY_OF_YEAR));
         ExecutionTime quartzExecutionTime = ExecutionTime.forCron(quartzParser.parse(WITHOUT_DAY_OF_YEAR));
@@ -108,7 +108,7 @@ public class ExecutionTimeQuartzWithDayOfYearExtensionIntegrationTest {
         }
     }
     
-    @Test
+    @Test //issue #188
     public void testQuartzCompatibilityIfDoYisQuestionMark() {
         ExecutionTime executionTime = ExecutionTime.forCron(parser.parse(WITHOUT_SPECIFIC_DAY_OF_YEAR));
         ExecutionTime quartzExecutionTime = ExecutionTime.forCron(quartzParser.parse(WITHOUT_DAY_OF_YEAR));

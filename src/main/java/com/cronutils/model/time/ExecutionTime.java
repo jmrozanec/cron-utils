@@ -31,6 +31,7 @@ import com.cronutils.model.definition.CronDefinition;
 import com.cronutils.model.field.CronField;
 import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.field.definition.DayOfWeekFieldDefinition;
+import com.cronutils.model.field.definition.FieldDefinition;
 import com.cronutils.model.field.expression.Always;
 import com.cronutils.model.field.expression.QuestionMark;
 import com.cronutils.model.time.generator.FieldValueGenerator;
@@ -373,7 +374,7 @@ public class ExecutionTime {
     }
 
     private TimeNode generateDays(CronDefinition cronDefinition, ZonedDateTime date) throws NoDaysForMonthException {
-        if(cronDefinition.containsFieldDefinition(DAY_OF_YEAR)){
+        if(isGenerateDaysAsDoY(cronDefinition)){
             return generateDayCandidatesUsingDoY(date);
         }
         //If DoW is not supported in custom definition, we just return an empty list.
@@ -384,6 +385,16 @@ public class ExecutionTime {
             return generateDayCandidatesUsingDoM(date);
         }
         return generateDayCandidatesUsingDoW(date, ((DayOfWeekFieldDefinition)cronDefinition.getFieldDefinition(DAY_OF_WEEK)).getMondayDoWValue());
+    }
+    
+    private boolean isGenerateDaysAsDoY(CronDefinition cronDefinition) {
+        if (!cronDefinition.containsFieldDefinition(DAY_OF_YEAR))
+            return false;
+        
+        if (!cronDefinition.getFieldDefinition(DAY_OF_YEAR).getConstraints().getSpecialChars().contains(QUESTION_MARK))
+            return true;
+        
+        return !(daysOfYearCronField.getExpression() instanceof QuestionMark);
     }
     
     private TimeNode generateDayCandidatesUsingDoY(ZonedDateTime reference) {
