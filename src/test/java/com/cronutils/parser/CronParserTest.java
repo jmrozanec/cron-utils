@@ -6,7 +6,6 @@ import static org.mockito.Mockito.when;
 
 import java.util.Set;
 
-import com.cronutils.model.definition.CronConstraintsFactory;
 import com.cronutils.model.definition.TestCronDefinitionsFactory;
 import org.junit.Before;
 import org.junit.Rule;

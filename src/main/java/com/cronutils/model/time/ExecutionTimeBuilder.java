@@ -8,7 +8,6 @@ import com.cronutils.model.field.constraint.FieldConstraintsBuilder;
 import com.cronutils.model.field.expression.Always;
 import com.cronutils.model.field.expression.FieldExpression;
 import com.cronutils.model.field.expression.On;
-import com.cronutils.model.field.expression.QuestionMark;
 import com.cronutils.model.field.value.IntegerFieldValue;
 import com.cronutils.model.time.generator.FieldValueGenerator;
 import com.cronutils.model.time.generator.FieldValueGeneratorFactory;

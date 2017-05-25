@@ -31,7 +31,6 @@ import com.cronutils.model.definition.CronDefinition;
 import com.cronutils.model.field.CronField;
 import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.field.definition.DayOfWeekFieldDefinition;
-import com.cronutils.model.field.definition.FieldDefinition;
 import com.cronutils.model.field.expression.Always;
 import com.cronutils.model.field.expression.QuestionMark;
 import com.cronutils.model.time.generator.FieldValueGenerator;
