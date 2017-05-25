@@ -25,7 +25,7 @@ public class Always extends FieldExpression {
 
     /**
      * Should be package private and not be instantiated elsewhere. Class should become package private too.
-     * @deprecated rather use {@link FieldExpression#always()()}
+     * @deprecated rather use {@link FieldExpression#always()}
      */
     @Deprecated
 	public Always(){}
