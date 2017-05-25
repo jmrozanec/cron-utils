@@ -3,6 +3,8 @@ package com.cronutils.model.time;
 import static org.junit.Assert.*;
 import static org.threeten.bp.ZoneOffset.UTC;
 
+import com.cronutils.model.CronType;
+import com.cronutils.model.definition.CronDefinitionBuilder;
 import com.cronutils.model.definition.TestCronDefinitionsFactory;
 import com.cronutils.parser.CronParser;
 import org.junit.Before;
@@ -25,13 +27,15 @@ import org.threeten.bp.temporal.ChronoUnit;
 public class ExecutionTimeQuartzWithDayOfYearExtensionIntegrationTest {
     private static final String BI_WEEKLY_STARTING_WITH_FIRST_DAY_OF_YEAR = "0 0 0 ? * ? * 1/14";
     private static final String FIRST_QUATER_BI_WEEKLY_STARTING_WITH_FIRST_DAY_OF_YEAR = "0 0 0 ? 1-3 ? * 1/14";
-    private static final String WITHOUT_DAY_OF_YEAR = "0 0 0 * * ? *";
-    private static final String WITHOUT_SPECIFIC_DAY_OF_YEAR = "0 0 0 * * ? * ?";
+    private static final String WITHOUT_DAY_OF_YEAR = "0 0 0 1 * ? *"; // i.e. DoY field omitted
+    private static final String WITHOUT_SPECIFIC_DAY_OF_YEAR = "0 0 0 1 * ? * ?"; // i.e. DoY field set to question mark
     private CronParser parser;
+    private CronParser quartzParser;
 
     @Before
     public void setUp() throws Exception {
-        parser = new CronParser(TestCronDefinitionsFactory.withDayOfYearDefinition());
+        parser = new CronParser(TestCronDefinitionsFactory.withDayOfYearDefinitionWhereYearAndDoYOptionals());
+        quartzParser = new CronParser(CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ));
     }
 
     @Test
@@ -90,6 +94,33 @@ public class ExecutionTimeQuartzWithDayOfYearExtensionIntegrationTest {
         for (int i = 1; i < expectedExecutionTimes.length; i++)
             assertEquals(expectedExecutionTimes[i-1], executionTime.lastExecution(expectedExecutionTimes[i]).get());
     }
+    
+    @Test //issue #188
+    public void testQuartzCompatibilityIfDoYisOmitted() {
+        ExecutionTime executionTime = ExecutionTime.forCron(parser.parse(WITHOUT_DAY_OF_YEAR));
+        ExecutionTime quartzExecutionTime = ExecutionTime.forCron(quartzParser.parse(WITHOUT_DAY_OF_YEAR));
+        
+        ZonedDateTime start = ZonedDateTime.of(2017, 1, 1, 0, 0, 0, 0, UTC).minusSeconds(1); 
+        for (int i = 0; i < 12; i++) {
+            ZonedDateTime expectedDateTime = quartzExecutionTime.nextExecution(start).get();
+            assertEquals(quartzExecutionTime.nextExecution(start).get(), executionTime.nextExecution(start).get());
+            start = expectedDateTime.plusSeconds(1);
+        }
+    }
+    
+    @Test //issue #188
+    public void testQuartzCompatibilityIfDoYisQuestionMark() {
+        ExecutionTime executionTime = ExecutionTime.forCron(parser.parse(WITHOUT_SPECIFIC_DAY_OF_YEAR));
+        ExecutionTime quartzExecutionTime = ExecutionTime.forCron(quartzParser.parse(WITHOUT_DAY_OF_YEAR));
+        
+        ZonedDateTime start = ZonedDateTime.of(2017, 1, 1, 0, 0, 0, 0, UTC).minusSeconds(1); 
+        for (int i = 0; i < 12; i++) {
+            ZonedDateTime expectedDateTime = quartzExecutionTime.nextExecution(start).get();
+            assertEquals(quartzExecutionTime.nextExecution(start).get(), executionTime.nextExecution(start).get());
+            start = expectedDateTime.plusSeconds(1);
+        }
+    }
+    
     
     private static ZonedDateTime truncateToDays(ZonedDateTime dateTime){
         return dateTime.truncatedTo(ChronoUnit.DAYS);

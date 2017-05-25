@@ -6,6 +6,7 @@ import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.field.constraint.FieldConstraints;
 import com.cronutils.model.field.constraint.FieldConstraintsBuilder;
 import com.cronutils.model.field.expression.Always;
+import com.cronutils.model.field.expression.FieldExpression;
 import com.cronutils.model.field.expression.On;
 import com.cronutils.model.field.value.IntegerFieldValue;
 import com.cronutils.model.time.generator.FieldValueGenerator;
@@ -134,7 +135,7 @@ class ExecutionTimeBuilder {
         }
         if(daysOfYearCronField == null){
            FieldConstraints constraints = getConstraint(CronFieldName.DAY_OF_YEAR);
-           daysOfYearCronField=new CronField(CronFieldName.DAY_OF_YEAR, new Always(), constraints);
+           daysOfYearCronField=new CronField(CronFieldName.DAY_OF_YEAR, lowestAssigned ? FieldExpression.questionMark() :FieldExpression.always(), constraints);
         }
 
         return new ExecutionTime(cronDefinition,
