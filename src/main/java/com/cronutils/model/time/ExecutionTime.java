@@ -488,22 +488,20 @@ public class ExecutionTime {
      */
     public boolean isMatch(ZonedDateTime date){
         Optional<ZonedDateTime> last = lastExecution(date);
-        if(last.isPresent()){
-            Optional<ZonedDateTime> next = nextExecution(last.get());
-            if(next.isPresent()){
-                return next.get().equals(date);
-            }else{
-                boolean everythingInRange = false;
-                try {
-                    everythingInRange = dateValuesInExpectedRanges(nextClosestMatch(date), date);
-                } catch (NoSuchValueException ignored) {}
-                try {
-                    everythingInRange = dateValuesInExpectedRanges(previousClosestMatch(date), date);
-                } catch (NoSuchValueException ignored) {}
-                return everythingInRange;
-            }
-        }
-        return false;
+        Optional<ZonedDateTime> next = nextExecution(last.isPresent() ? last.get() : date.minusSeconds(1));
+        
+        if(next.isPresent())
+            return next.get().equals(date);
+        
+        boolean everythingInRange = false;
+        try {
+            everythingInRange = dateValuesInExpectedRanges(nextClosestMatch(date), date);
+        } catch (NoSuchValueException ignored) {}
+        try {
+            everythingInRange = dateValuesInExpectedRanges(previousClosestMatch(date), date);
+        } catch (NoSuchValueException ignored) {}
+        
+        return everythingInRange;
     }
 
     private boolean dateValuesInExpectedRanges(ZonedDateTime validCronDate, ZonedDateTime date){
