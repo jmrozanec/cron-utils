@@ -646,6 +646,16 @@ public class ExecutionTimeQuartzIntegrationTest {
         ZonedDateTime expected = ZonedDateTime.of( 2017, 01, 31, 8, 0, 0, 0, ZoneId.systemDefault() );
         assertEquals( expected, next );
     }
+    
+    @Test //#192
+    public void mustMatchLowerBoundDateMatchingCronExpressionRequirements() {
+        CronParser parser = new CronParser( CronDefinitionBuilder.instanceDefinitionFor(QUARTZ));
+        ZonedDateTime start = ZonedDateTime.of( 2017, 01, 1, 0, 0, 0, 0, ZoneId.systemDefault() );
+        ExecutionTime executionTime = ExecutionTime.forCron( parser.parse( "0 0 0 1 * ?" ) ); // every 1st of Month 1970-2099
+        ExecutionTime constraintExecutionTime = ExecutionTime.forCron( parser.parse( "0 0 0 1 * ? 2017" ) ); // every 1st of Month for 2017
+        assertEquals("year constraint shouldn't have an impact on next execution", executionTime.nextExecution(start.minusSeconds(1)), constraintExecutionTime.nextExecution(start.minusSeconds(1)));
+        assertEquals("year constraint shouldn't have an impact on match result", executionTime.isMatch(start),  constraintExecutionTime.isMatch(start));
+    }
 
     private Duration getMinimumInterval(String quartzPattern) {
         ExecutionTime et = ExecutionTime.forCron(parser.parse(quartzPattern));
