@@ -396,7 +396,7 @@ public class ExecutionTime {
         return !(daysOfYearCronField.getExpression() instanceof QuestionMark);
     }
     
-    private TimeNode generateDayCandidatesUsingDoY(ZonedDateTime reference) {
+    private TimeNode generateDayCandidatesUsingDoY(ZonedDateTime reference) throws NoDaysForMonthException {
         final int year = reference.getYear();
         final int month = reference.getMonthValue();
         LocalDate date = LocalDate.of(year, 1, 1);
@@ -409,7 +409,11 @@ public class ExecutionTime {
         Stream<Integer> uniqueCandidates = candidatesFilteredByMonth.distinct();
         Stream<Integer> candidatesMappedToDayOfMonth = uniqueCandidates.map(dayOfYear -> LocalDate.ofYearDay(reference.getYear(), dayOfYear).getDayOfMonth());
         
-        return new TimeNode(candidatesMappedToDayOfMonth.collect(Collectors.toList()));
+        List<Integer> collectedCandidates = candidatesMappedToDayOfMonth.collect(Collectors.toList());
+        if(collectedCandidates.isEmpty())
+            throw new NoDaysForMonthException();    //TODO try to avoid programming by exception, maybe we should better return Optional<TimeNode> and test on presence
+        
+        return new TimeNode(collectedCandidates);
     }
     
 

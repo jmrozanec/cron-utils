@@ -29,6 +29,8 @@ public class ExecutionTimeQuartzWithDayOfYearExtensionIntegrationTest {
     private static final String FIRST_QUATER_BI_WEEKLY_STARTING_WITH_FIRST_DAY_OF_YEAR = "0 0 0 ? 1-3 ? * 1/14";
     private static final String WITHOUT_DAY_OF_YEAR = "0 0 0 1 * ? *"; // i.e. DoY field omitted
     private static final String WITHOUT_SPECIFIC_DAY_OF_YEAR = "0 0 0 1 * ? * ?"; // i.e. DoY field set to question mark
+    
+    
     private CronParser parser;
     private CronParser quartzParser;
 
@@ -118,6 +120,20 @@ public class ExecutionTimeQuartzWithDayOfYearExtensionIntegrationTest {
             ZonedDateTime expectedDateTime = quartzExecutionTime.nextExecution(start).get();
             assertEquals(quartzExecutionTime.nextExecution(start).get(), executionTime.nextExecution(start).get());
             start = expectedDateTime.plusSeconds(1);
+        }
+    }
+    
+    @Test //issue #190
+    public void testExecutionTimesWithIncrementsGreaterThanDaysOfMonth() {
+        final int increment = 56;
+        final String incrementGreaterDaysOfMonthStartingWithFirstDayOfYear = "0 0 0 ? * ? * 1/" + String.valueOf(increment);
+        ExecutionTime executionTime = ExecutionTime.forCron(parser.parse(incrementGreaterDaysOfMonthStartingWithFirstDayOfYear));
+        ZonedDateTime start = ZonedDateTime.of(2017, 1, 1, 0, 0, 0, 0, UTC); 
+        for (int i = 0; i < 6; i++) {
+            ZonedDateTime expected = start;
+            ZonedDateTime actual = executionTime.nextExecution(start.minusSeconds(1)).get();
+            assertEquals(expected, actual);
+            start = expected.plusDays(increment);
         }
     }
     
