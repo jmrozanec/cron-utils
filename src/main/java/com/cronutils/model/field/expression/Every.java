@@ -2,7 +2,6 @@ package com.cronutils.model.field.expression;
 
 import com.cronutils.model.field.value.IntegerFieldValue;
 import com.cronutils.utils.Preconditions;
-import com.google.common.base.Strings;
 
 /*
  * Copyright 2014 jmrozanec
