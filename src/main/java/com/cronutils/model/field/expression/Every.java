@@ -2,6 +2,7 @@ package com.cronutils.model.field.expression;
 
 import com.cronutils.model.field.value.IntegerFieldValue;
 import com.cronutils.utils.Preconditions;
+import com.google.common.base.Strings;
 
 /*
  * Copyright 2014 jmrozanec
@@ -46,9 +47,10 @@ public class Every extends FieldExpression {
 
 	@Override
 	public String asString() {
-		if (period.getValue() == 1) {
-			return expression.asString() != null ? expression.asString() : "";
+	    String expressionAsString = expression.asString();
+		if ("*".equals(expressionAsString) && period.getValue() == 1) {
+			return expressionAsString;
 		}
-		return String.format("%s/%s", expression.asString(), getPeriod());
+		return String.format("%s/%s", expressionAsString, period);
 	}
 }
