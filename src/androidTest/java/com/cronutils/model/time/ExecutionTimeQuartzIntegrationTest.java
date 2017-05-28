@@ -563,10 +563,12 @@ public class ExecutionTimeQuartzIntegrationTest extends BaseAndroidTest {
      */
     @Test
     public void lastDayOfTheWeek() throws Exception {
-        Cron cron = new CronParser(CronDefinitionBuilder.instanceDefinitionFor(QUARTZ)).parse("0 0 0 L * *");
+        // L (“last”) - If used in the day-of-week field by itself, it simply means “7” or “SAT”.
+        Cron cron = new CronParser(CronDefinitionBuilder.instanceDefinitionFor(QUARTZ)).parse("0 0 0 ? * L *");
 
         ZoneId utc = ZoneId.of("UTC");
-        ZonedDateTime date = LocalDate.parse("2016-12-22").atStartOfDay(utc);
+        ZonedDateTime date = LocalDate.parse("2016-12-22").atStartOfDay(utc);   // Thursday
+        ZonedDateTime expected = date.plusDays(2);   // Saturday
 
         ZonedDateTime cronUtilsNextTime = ExecutionTime.forCron(cron).nextExecution(date).get();// 2016-12-30T00:00:00Z
 
@@ -574,7 +576,8 @@ public class ExecutionTimeQuartzIntegrationTest extends BaseAndroidTest {
         cronExpression.setTimeZone(DateTimeUtils.toTimeZone(utc));
         Date quartzNextTime = cronExpression.getNextValidTimeAfter(DateTimeUtils.toDate(date.toInstant()));// 2016-12-24T00:00:00Z
 
-        assertEquals(DateTimeUtils.toInstant(quartzNextTime), cronUtilsNextTime.toInstant()); // false
+        assertEquals(expected.toInstant(), DateTimeUtils.toInstant(quartzNextTime));    // test the reference implementation
+        assertEquals(expected.toInstant(), cronUtilsNextTime.toInstant()); // and compare with cronUtils
     }
 
     /**
