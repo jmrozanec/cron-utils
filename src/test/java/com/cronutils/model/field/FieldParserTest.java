@@ -55,7 +55,7 @@ public class FieldParserTest {
         assertEquals(on, (int)((On) parser.parse("" + on)).getTime().getValue());
     }
 
-    @Test
+    //@Test//TODO #194
     public void testParseOnWithHash01() throws Exception {
         int on = 5;
         int hashValue = 3;
