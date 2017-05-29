@@ -8,6 +8,7 @@ import com.cronutils.model.field.CronField;
 import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.field.expression.FieldExpression;
 import com.cronutils.model.field.expression.On;
+import com.cronutils.model.field.value.IntegerFieldValue;
 import com.cronutils.utils.Preconditions;
 /*
  * Copyright 2015 jmrozanec
@@ -23,6 +24,7 @@ import com.cronutils.utils.Preconditions;
  */
 class OnDayOfWeekValueGenerator extends OnDayOfCalendarValueGenerator {
 
+    private static final On ON_SATURDAY = new On(new IntegerFieldValue(7));
     private WeekDay mondayDoWValue;
     
     public OnDayOfWeekValueGenerator(CronField cronField, int year, int month, WeekDay mondayDoWValue) {
@@ -72,7 +74,7 @@ class OnDayOfWeekValueGenerator extends OnDayOfCalendarValueGenerator {
             case HASH:
                 return generateHashValues(on, year, month);
             case L:
-                return generateLValues(on, year, month);
+                return on.getTime().getValue() == -1 ? /* L by itself simply means “7” or “SAT” */ generateNoneValues(ON_SATURDAY, year, month, reference) : generateLValues(on, year, month);
             case NONE:
                 return generateNoneValues(on, year, month, reference);
             default:
