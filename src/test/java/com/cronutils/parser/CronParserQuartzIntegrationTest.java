@@ -229,7 +229,7 @@ public class CronParserQuartzIntegrationTest {
     public void testReportedErrorContainsSameExpressionAsProvided() {
         thrown.expect(IllegalArgumentException.class);
         thrown.expectMessage(
-                "Invalid cron expression: 0 * * * * *. Both, a day-of-week AND a day-of-month parameter, are not supported.");
+                "Invalid cron expression: 0/1 * * * * *. Both, a day-of-week AND a day-of-month parameter, are not supported.");
         assertNotNull(ExecutionTime.forCron(parser.parse("0/1 * * * * *")));
     }
 
@@ -310,15 +310,5 @@ public class CronParserQuartzIntegrationTest {
         thrown.expect(IllegalArgumentException.class);
         thrown.expectMessage("Missing steps for expression: */");
         assertNotNull(ExecutionTime.forCron(parser.parse("*/ * * * * ?")));
-    }
-    
-    @Test(expected = IllegalArgumentException.class) // issue #194
-    public void rejectHashInDoM() {
-        parser.parse("* * * 6#3 * ?");
-    }
-    
-    @Test(expected = IllegalArgumentException.class) // issue #194
-    public void rejectWInDoW() {
-        parser.parse("* * * ? * W");
     }
 }
