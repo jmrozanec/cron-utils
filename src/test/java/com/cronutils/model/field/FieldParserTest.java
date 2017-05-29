@@ -33,7 +33,7 @@ public class FieldParserTest {
 
     @Before
     public void setUp() {
-        parser = new FieldParser(FieldConstraintsBuilder.instance().createConstraintsInstance());
+        parser = new FieldParser(FieldConstraintsBuilder.instance().addHashSupport().createConstraintsInstance());
     }
 
     @Test
@@ -55,7 +55,7 @@ public class FieldParserTest {
         assertEquals(on, (int)((On) parser.parse("" + on)).getTime().getValue());
     }
 
-    //@Test//TODO #194
+    @Test //#194
     public void testParseOnWithHash01() throws Exception {
         int on = 5;
         int hashValue = 3;
