@@ -1,5 +1,7 @@
 package com.cronutils.model.field.expression;
 
+import com.google.common.base.MoreObjects;
+
 /*
  * Copyright 2014 jmrozanec
  * 
@@ -19,14 +21,24 @@ package com.cronutils.model.field.expression;
  */
 public class Always extends FieldExpression {
 
-	public Always(){}
+    static final Always INSTANCE = new Always();
 
-	private Always(Always always) {
-		this();
-	}
+    /**
+     * Should be package private and not be instantiated elsewhere. Class should become package private too.
+     * @deprecated rather use {@link FieldExpression#always()}
+     */
+    @Deprecated
+	public Always(){}
+    
 
 	@Override
 	public String asString() {
 		return "*";
 	}
+	
+	 
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this).toString();
+    }
 }

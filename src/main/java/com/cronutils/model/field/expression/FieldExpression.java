@@ -43,4 +43,12 @@ public abstract class FieldExpression implements Serializable {
 		Preconditions.checkNotNull(visitor, "FieldExpressionVisitor must not be null");
 		return visitor.visit(this);
 	}
+	
+	public static FieldExpression always() {
+        return Always.INSTANCE;
+    }
+	
+	public static FieldExpression questionMark() {
+	    return QuestionMark.INSTANCE;
+	}
 }

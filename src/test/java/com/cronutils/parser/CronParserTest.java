@@ -6,7 +6,6 @@ import static org.mockito.Mockito.when;
 
 import java.util.Set;
 
-import com.cronutils.model.definition.CronConstraintsFactory;
 import com.cronutils.model.definition.TestCronDefinitionsFactory;
 import org.junit.Before;
 import org.junit.Rule;
@@ -144,29 +143,18 @@ public class CronParserTest {
     
     @Test
     public void testParseExtendedQuartzCron() {
-        parser = new CronParser(TestCronDefinitionsFactory.withDayOfYearDefinition());
-        parser.parse("0 0 0 ? * ? 2017 1/14");
-    }
-
-    @Test//TODO: Issue #185
-    public void testNoRejectionTwoOptionalFields() {
         parser = new CronParser(TestCronDefinitionsFactory.withDayOfYearDefinitionWhereYearAndDoYOptionals());
         parser.parse("0 0 0 ? * ? 2017 1/14");
     }
 
-    //@Test(expected=IllegalArgumentException.class)//TODO: Issue #185
-    public void testRejectionTwoOptionalFieldsAmbiguous(){
-        CronDefinitionBuilder.defineCron()
-                .withSeconds().and()
-                .withMinutes().and()
-                .withHours().and()
-                .withDayOfMonth().supportsHash().supportsL().supportsW().supportsLW().supportsQuestionMark().and()
-                .withMonth().and()
-                .withDayOfWeek().withValidRange(1, 7).withMondayDoWValue(2).supportsHash().supportsL().supportsW().supportsQuestionMark().optional().and()
-                .withDayOfYear().supportsQuestionMark().withValidRange(1, 366).optional().and()
-                .withCronValidation(CronConstraintsFactory.ensureEitherDayOfYearOrMonth())
-                .withCronValidation(CronConstraintsFactory.ensureEitherDayOfWeekOrDayOfMonth())
-                .instance();
+    /**
+     * Corresponds to issue#185
+     * https://github.com/jmrozanec/cron-utils/issues/185
+     */ 
+    @Test
+    public void testNoRejectionTwoOptionalFields() {
+        parser = new CronParser(TestCronDefinitionsFactory.withDayOfYearDefinitionWhereYearAndDoYOptionals());
+        parser.parse("0 0 0 ? * ? 2017 1/14");
     }
 
     //@Test TODO: issue #180
@@ -176,5 +164,17 @@ public class CronParserTest {
         
         Cron expression = parser.parse("0 0/1 * 1/1 * ? *");
         assertEquals("0 0/1 * 1/1 * ? *", expression.asString());
+    }
+    
+    @Test
+    public void testParseExtendedQuartzCronWithAsterixDoY() {
+        parser = new CronParser(TestCronDefinitionsFactory.withDayOfYearDefinitionWhereYearAndDoYOptionals());
+        parser.parse("0 0 0 ? * ? 2017 *"); //i.e. same as "0 0 0 * * ? 2017" or "0 0 0 ? * * 2017"
+    }
+    
+    @Test
+    public void testParseExtendedQuartzCronWithQuestionMarkDoY() {
+        parser = new CronParser(TestCronDefinitionsFactory.withDayOfYearDefinitionWhereYearAndDoYOptionals());
+        parser.parse("0 0 0 1 * ? 2017 ?"); //i.e. same as "0 0 0 1 * ? 2017" with question mark being omitted
     }
 }
