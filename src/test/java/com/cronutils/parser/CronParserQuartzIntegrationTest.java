@@ -311,4 +311,14 @@ public class CronParserQuartzIntegrationTest {
         thrown.expectMessage("Missing steps for expression: */");
         assertNotNull(ExecutionTime.forCron(parser.parse("*/ * * * * ?")));
     }
+    
+    @Test(expected = IllegalArgumentException.class) // issue #194
+    public void rejectHashInDoM() {
+        parser.parse("* * * 6#3 * ?");
+    }
+    
+    @Test(expected = IllegalArgumentException.class) // issue #194
+    public void rejectWInDoW() {
+        parser.parse("* * * ? * W");
+    }
 }

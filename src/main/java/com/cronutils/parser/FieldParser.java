@@ -74,6 +74,7 @@ public class FieldParser {
 			if(expression.contains(QUESTION_MARK_STRING) && !fieldConstraints.getSpecialChars().contains(QUESTION_MARK)){
 				throw new IllegalArgumentException("Invalid expression: " + expression);
 			}
+			
 			return noSpecialCharsNorStar(expression);
 		} else {
 			String[] array = expression.split(",");
@@ -166,6 +167,8 @@ public class FieldParser {
 
 	@VisibleForTesting
 	protected On parseOnWithHash(String exp) {
+	    if (!fieldConstraints.getSpecialChars().contains(HASH))
+	        throw new IllegalArgumentException("Invalid expression: " + exp);
 		SpecialCharFieldValue specialChar = new SpecialCharFieldValue(HASH);
 		String[] array = exp.split(HASH_TAG);
 		IntegerFieldValue nth = mapToIntegerFieldValue(array[1]);

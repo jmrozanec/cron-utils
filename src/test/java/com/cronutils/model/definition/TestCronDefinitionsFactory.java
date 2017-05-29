@@ -16,7 +16,7 @@ public class TestCronDefinitionsFactory {
 
     /**
      * Provides a <code>CronDefinition</code> that extends the Quartz Cron definition by an optional DoY field at the end.
-     <p>
+     * <p>
      * The cron expression is expected to be a string comprised of 6, 7 or 8
      * fields separated by white space. Fields can contain any of the allowed
      * values, along with various combinations of the allowed special characters
