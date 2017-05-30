@@ -13,3 +13,4 @@ script: "mvn deploy --settings target/travis/settings.xml -Dsettings.security=ta
 
 after_success:
   - mvn cobertura:cobertura coveralls:cobertura
+  - bash <(curl -s https://codecov.io/bash)
