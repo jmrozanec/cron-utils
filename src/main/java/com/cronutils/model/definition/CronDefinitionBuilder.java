@@ -159,7 +159,7 @@ public class CronDefinitionBuilder {
         return CronDefinitionBuilder.defineCron()
                 .withMinutes().and()
                 .withHours().and()
-                .withDayOfMonth().and()
+                .withDayOfMonth().supportsL().and()
                 .withMonth().and()
                 .withDayOfWeek().withValidRange(0,6).withMondayDoWValue(1).and()
                 .enforceStrictRanges()
