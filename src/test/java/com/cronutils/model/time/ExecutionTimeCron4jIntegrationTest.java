@@ -193,12 +193,13 @@ public class ExecutionTimeCron4jIntegrationTest {
         for (int expectedYear : expectedYears) {
             assert (executionTime.nextExecution(next).isPresent());
             next = executionTime.nextExecution(next).get();
-            log.debug("Expecting Tuesday January 1, {}", expectedYear);
-            String expectedDate = "Tuesday, January 1, " + expectedYear;
-            assertEquals("Expected " + expectedDate, DayOfWeek.TUESDAY, next.getDayOfWeek());
-            assertEquals(1, next.getDayOfMonth());
-            assertEquals(expectedYear, next.getYear());
-            assertEquals(9, next.getHour());
+            ZonedDateTime expectedDate = ZonedDateTime.of(expectedYear, 1, 1, 9, 0, 0 , 0, ZoneId.systemDefault());
+            String expectedMessage = String.format("Expected next execution time: %s, Actual next execution time: %s", expectedDate, next);
+            assertEquals(expectedMessage, DayOfWeek.TUESDAY, next.getDayOfWeek());
+            assertEquals(expectedMessage, 1, next.getDayOfMonth());
+            assertEquals(expectedMessage, expectedYear, next.getYear());
+            assertEquals(expectedMessage, 9, next.getHour());
+            assertEquals(expectedMessage, expectedDate, next);
         }
     }
 
@@ -229,8 +230,9 @@ public class ExecutionTimeCron4jIntegrationTest {
             assert(nextExecution.isPresent());
             next = nextExecution.get();
             log.debug("Execution #{} date: {}", i, next);
-            assertEquals(dayOfWeek, next.getDayOfWeek());
-            assertEquals(dayOfMonth, next.getDayOfMonth());
+            assertEquals("Incorrect day of the week", dayOfWeek, next.getDayOfWeek());
+            assertEquals("Incorrect day of the month", dayOfMonth, next.getDayOfMonth());
+            assertEquals("Incorrect month", month, next.getMonthValue());
         }
     }
 }
