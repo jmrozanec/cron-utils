@@ -4,16 +4,21 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 
+import com.google.common.base.Optional;
 import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.threeten.bp.DayOfWeek;
+import org.threeten.bp.Month;
 import org.threeten.bp.ZoneId;
 import org.threeten.bp.ZonedDateTime;
 
 import com.cronutils.model.CronType;
 import com.cronutils.model.definition.CronDefinitionBuilder;
 import com.cronutils.parser.CronParser;
+
+import java.util.Random;
 
 /*
  * Copyright 2015 jmrozanec
@@ -168,5 +173,64 @@ public class ExecutionTimeCron4jIntegrationTest {
         ZonedDateTime nextNext = executionTime.nextExecution(next).get();
         assertTrue(now.isBefore(next));
         assertTrue(next.isBefore(nextNext));
+    }
+
+    /**
+     * Issue #203: cron4j definition should generate next execution times matching both the day of month and day of week
+     * when both are restricted
+     */
+    @Test
+    public void testFixedDayOfMonthAndDayOfWeek() throws Exception {
+        // Run only on January 1st if it is a Tuesday, at 9:00AM
+        // The next four Tuesday January 1 after January 1, 2017 are:
+        // Tue Jan 01 09:00:00 EST 2019
+        // Tue Jan 01 09:00:00 EST 2030
+        // Tue Jan 01 09:00:00 EST 2036
+        // Tue Jan 01 09:00:00 EST 2041
+        int[] expectedYears = {2019, 2030, 2036, 2041};
+        ExecutionTime executionTime = ExecutionTime.forCron(cron4jCronParser.parse("0 9 1 1 tue"));
+        ZonedDateTime next = ZonedDateTime.of(2017, 1, 1, 0, 0, 0, 0, ZoneId.systemDefault());
+        for (int expectedYear : expectedYears) {
+            assert (executionTime.nextExecution(next).isPresent());
+            next = executionTime.nextExecution(next).get();
+            log.debug("Expecting Tuesday January 1, {}", expectedYear);
+            String expectedDate = "Tuesday, January 1, " + expectedYear;
+            assertEquals("Expected " + expectedDate, DayOfWeek.TUESDAY, next.getDayOfWeek());
+            assertEquals(1, next.getDayOfMonth());
+            assertEquals(expectedYear, next.getYear());
+            assertEquals(9, next.getHour());
+        }
+    }
+
+    /**
+     * Issue #203: cron4j definition should generate next execution times matching both the day of month and day of week
+     * when both are restricted
+     */
+    @Test
+    public void testRandomDayOfMonthAndDayOfWeek() throws Exception {
+        // pick a random day of week and day of month
+        // DayOfWeek uses 1 (Mon) to 7 (Sun) while cron4j allows 0 (Sun) to 6 (Sat)
+        Random random = new Random();
+        DayOfWeek dayOfWeek = DayOfWeek.of(random.nextInt(7) + 1);
+        int dayOfWeekValue = dayOfWeek.getValue();
+        if (dayOfWeekValue == 7){
+            dayOfWeekValue = 0;
+        }
+        int month = random.nextInt(12) + 1;
+        // using max length so it is possible to use February 29 (leap-year)
+        int dayOfMonth = random.nextInt(Month.of(month).maxLength()) + 1;
+        String expression = "0 0 " + dayOfMonth + " " + month + " " + dayOfWeekValue;
+        ExecutionTime executionTime = ExecutionTime.forCron(cron4jCronParser.parse(expression));
+        log.debug("cron4j expression: {}", expression);
+        ZonedDateTime next = ZonedDateTime.now();
+        log.debug("Start date: {}", next);
+        for(int i = 1; i <= 20; i++) {
+            Optional<ZonedDateTime> nextExecution = executionTime.nextExecution(next);
+            assert(nextExecution.isPresent());
+            next = nextExecution.get();
+            log.debug("Execution #{} date: {}", i, next);
+            assertEquals(dayOfWeek, next.getDayOfWeek());
+            assertEquals(dayOfMonth, next.getDayOfMonth());
+        }
     }
 }
