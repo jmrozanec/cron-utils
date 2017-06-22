@@ -45,7 +45,7 @@ public class CronParserCron4JIntegrationTest {
         String cronExpr = "* * L * *";
     }
 
-    @Test
+    //@Test TODO issue 202
     public void testParseSunday() throws Exception {
         String cronExpr = "* * * * sun";
         cron4jParser.parse(cronExpr);
