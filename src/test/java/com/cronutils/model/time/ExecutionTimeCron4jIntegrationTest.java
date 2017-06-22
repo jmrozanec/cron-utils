@@ -182,18 +182,14 @@ public class ExecutionTimeCron4jIntegrationTest {
     @Test
     public void testFixedDayOfMonthAndDayOfWeek() throws Exception {
         // Run only on January 1st if it is a Tuesday, at 9:00AM
-        // The next four Tuesday January 1 after January 1, 2017 are:
-        // Tue Jan 01 09:00:00 EST 2019
-        // Tue Jan 01 09:00:00 EST 2030
-        // Tue Jan 01 09:00:00 EST 2036
-        // Tue Jan 01 09:00:00 EST 2041
-        int[] expectedYears = {2019, 2030, 2036, 2041};
         ExecutionTime executionTime = ExecutionTime.forCron(cron4jCronParser.parse("0 9 1 1 tue"));
+        // The next four Tuesday January 1 after January 1, 2017 are in 2019, 2030, 2036, and 2041
+        int[] expectedYears = {2019, 2030, 2036, 2041};
         ZonedDateTime next = ZonedDateTime.of(2017, 1, 1, 0, 0, 0, 0, ZoneId.systemDefault());
         for (int expectedYear : expectedYears) {
             assert (executionTime.nextExecution(next).isPresent());
             next = executionTime.nextExecution(next).get();
-            ZonedDateTime expectedDate = ZonedDateTime.of(expectedYear, 1, 1, 9, 0, 0 , 0, ZoneId.systemDefault());
+            ZonedDateTime expectedDate = ZonedDateTime.of(expectedYear, 1, 1, 9, 0, 0, 0, ZoneId.systemDefault());
             String expectedMessage = String.format("Expected next execution time: %s, Actual next execution time: %s", expectedDate, next);
             assertEquals(expectedMessage, DayOfWeek.TUESDAY, next.getDayOfWeek());
             assertEquals(expectedMessage, 1, next.getDayOfMonth());
@@ -220,7 +216,7 @@ public class ExecutionTimeCron4jIntegrationTest {
         int month = random.nextInt(12) + 1;
         // using max length so it is possible to use February 29 (leap-year)
         int dayOfMonth = random.nextInt(Month.of(month).maxLength()) + 1;
-        String expression = "0 0 " + dayOfMonth + " " + month + " " + dayOfWeekValue;
+        String expression = String.format("0 0 %d %d %d", dayOfMonth, month, dayOfWeekValue);
         ExecutionTime executionTime = ExecutionTime.forCron(cron4jCronParser.parse(expression));
         log.debug("cron4j expression: {}", expression);
         ZonedDateTime next = ZonedDateTime.now();
