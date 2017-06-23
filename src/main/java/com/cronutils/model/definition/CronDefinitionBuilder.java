@@ -34,6 +34,7 @@ public class CronDefinitionBuilder {
     private final Map<CronFieldName, FieldDefinition> fields = new HashMap<>();
     private final Set<CronConstraint> cronConstraints = new HashSet<>();
     private boolean enforceStrictRanges;
+    private boolean matchDayOfWeekAndDayOfMonth;
 
     /**
      * Constructor.
@@ -122,6 +123,15 @@ public class CronDefinitionBuilder {
     }
 
     /**
+     * Sets matchDayOfWeekAndDayOfMonth value to true
+     * @return this CronDefinitionBuilder instance
+     */
+    public CronDefinitionBuilder matchDayOfWeekAndDayOfMonth(){
+        matchDayOfWeekAndDayOfMonth = true;
+        return this;
+    }
+
+    /**
      * Adds a cron validation
      * @return this CronDefinitionBuilder instance
      */
@@ -148,7 +158,7 @@ public class CronDefinitionBuilder {
     public CronDefinition instance() {
         Set<CronConstraint> validations = new HashSet<CronConstraint>();
         validations.addAll(cronConstraints);
-        return new CronDefinition(fields.values().stream().sorted((o1,o2) -> o1.getFieldName().getOrder() - o2.getFieldName().getOrder()).collect(Collectors.toList()), validations, enforceStrictRanges);
+        return new CronDefinition(fields.values().stream().sorted((o1,o2) -> o1.getFieldName().getOrder() - o2.getFieldName().getOrder()).collect(Collectors.toList()), validations, enforceStrictRanges, matchDayOfWeekAndDayOfMonth);
     }
 
     /**
@@ -163,6 +173,7 @@ public class CronDefinitionBuilder {
                 .withMonth().and()
                 .withDayOfWeek().withValidRange(0,6).withMondayDoWValue(1).and()
                 .enforceStrictRanges()
+                .matchDayOfWeekAndDayOfMonth()
                 .instance();
     }
 

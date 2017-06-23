@@ -32,6 +32,7 @@ public class CronDefinition implements Serializable {
     private Map<CronFieldName, FieldDefinition> fieldDefinitions;
     private Set<CronConstraint> cronConstraints;
     private boolean strictRanges;
+    private boolean matchDayOfWeekAndDayOfMonth;
 
     /**
      * Constructor
@@ -39,7 +40,7 @@ public class CronDefinition implements Serializable {
      *                         Throws a NullPointerException if a null values is received
      *                         Throws an IllegalArgumentException if an empty list is received
      */
-    public CronDefinition(List<FieldDefinition> fieldDefinitions, Set<CronConstraint> cronConstraints, boolean strictRanges){
+    public CronDefinition(List<FieldDefinition> fieldDefinitions, Set<CronConstraint> cronConstraints, boolean strictRanges, boolean matchDayOfWeekAndDayOfMonth){
         Preconditions.checkNotNull(fieldDefinitions, "Field definitions must not be null");
         Preconditions.checkNotNull(cronConstraints, "Cron validations must not be null");
         Preconditions.checkNotNullNorEmpty(fieldDefinitions, "Field definitions must not be empty");
@@ -50,6 +51,7 @@ public class CronDefinition implements Serializable {
         }
         this.cronConstraints = Collections.unmodifiableSet(cronConstraints);
         this.strictRanges = strictRanges;
+        this.matchDayOfWeekAndDayOfMonth = matchDayOfWeekAndDayOfMonth;
     }
 
     /**
@@ -58,6 +60,14 @@ public class CronDefinition implements Serializable {
      */
     public boolean isStrictRanges() {
         return strictRanges;
+    }
+
+    /**
+     * If both the day of the week and day of the month should be matched
+     * @return true if both should be matched, false otherwise
+     */
+    public boolean isMatchDayOfWeekAndDayOfMonth() {
+        return matchDayOfWeekAndDayOfMonth;
     }
 
     /**

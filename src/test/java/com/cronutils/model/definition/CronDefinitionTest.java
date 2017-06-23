@@ -32,6 +32,7 @@ import com.google.common.collect.Sets;
  */
 public class CronDefinitionTest {
     private boolean enforceStrictRange;
+    private boolean matchDayOfWeekAndDayOfMonth;
     private CronFieldName testFieldName1;
     private CronFieldName testFieldName2;
     private CronFieldName testFieldName3;
@@ -54,22 +55,23 @@ public class CronDefinitionTest {
         when(mockFieldDefinition3optional.isOptional()).thenReturn(Boolean.TRUE);
 
         enforceStrictRange = false;
+        matchDayOfWeekAndDayOfMonth = false;
     }
 
 
     @Test(expected = NullPointerException.class)
     public void testConstructorNullFieldsParameter() throws Exception {
-        new CronDefinition(null, Sets.newHashSet(), enforceStrictRange);
+        new CronDefinition(null, Sets.newHashSet(), enforceStrictRange, matchDayOfWeekAndDayOfMonth);
     }
 
     @Test(expected = NullPointerException.class)
     public void testConstructorNullConstraintsParameter() throws Exception {
-        new CronDefinition(Lists.newArrayList(), null, enforceStrictRange);
+        new CronDefinition(Lists.newArrayList(), null, enforceStrictRange, matchDayOfWeekAndDayOfMonth);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testConstructorEmptyFieldsParameter() throws Exception {
-        new CronDefinition(new ArrayList<>(), Sets.newHashSet(), enforceStrictRange);
+        new CronDefinition(new ArrayList<>(), Sets.newHashSet(), enforceStrictRange, matchDayOfWeekAndDayOfMonth);
     }
 
     @Test
@@ -78,21 +80,21 @@ public class CronDefinitionTest {
         fields.add(mockFieldDefinition1);
         fields.add(mockFieldDefinition2);
         fields.add(mockFieldDefinition3optional);
-        assertTrue(new CronDefinition(fields, Sets.newHashSet(), enforceStrictRange).getFieldDefinitions().stream().sorted((o1,o2) -> o1.getFieldName().getOrder() - o2.getFieldName().getOrder()).collect(Collectors.toList()).get(fields.size()-1).isOptional());
+        assertTrue(new CronDefinition(fields, Sets.newHashSet(), enforceStrictRange, matchDayOfWeekAndDayOfMonth).getFieldDefinitions().stream().sorted((o1,o2) -> o1.getFieldName().getOrder() - o2.getFieldName().getOrder()).collect(Collectors.toList()).get(fields.size()-1).isOptional());
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testLastFieldOptionalNotAllowedOnSingleFieldDefinition() throws Exception {
         List<FieldDefinition> fields = Lists.newArrayList();
         fields.add(mockFieldDefinition3optional);
-        new CronDefinition(fields, Sets.newHashSet(), enforceStrictRange);
+        new CronDefinition(fields, Sets.newHashSet(), enforceStrictRange, matchDayOfWeekAndDayOfMonth);
     }
 
     @Test
     public void testGetFieldDefinitions() throws Exception {
         List<FieldDefinition> fields = Lists.newArrayList();
         fields.add(mockFieldDefinition1);
-        CronDefinition cronDefinition = new CronDefinition(fields, Sets.newHashSet(), enforceStrictRange);
+        CronDefinition cronDefinition = new CronDefinition(fields, Sets.newHashSet(), enforceStrictRange, matchDayOfWeekAndDayOfMonth);
         assertNotNull(cronDefinition.getFieldDefinitions());
         assertEquals(1, cronDefinition.getFieldDefinitions().size());
         assertTrue(cronDefinition.getFieldDefinitions().contains(mockFieldDefinition1));
