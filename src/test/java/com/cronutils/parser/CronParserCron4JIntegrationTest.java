@@ -3,13 +3,9 @@ package com.cronutils.parser;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.cronutils.model.Cron;
 import com.cronutils.model.CronType;
 import com.cronutils.model.definition.CronDefinition;
 import com.cronutils.model.definition.CronDefinitionBuilder;
-
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
 
 
 public class CronParserCron4JIntegrationTest {
@@ -44,12 +40,16 @@ public class CronParserCron4JIntegrationTest {
         String cronExpr = "* 1 5-2 * 4";
         cron4jParser.parse(cronExpr);
     }
-    
-    //issue 202
+
+
     @Test
-    public void testSunday() throws Exception {
-      CronParser cronParser = new CronParser(CronDefinitionBuilder.instanceDefinitionFor(CronType.CRON4J));
-      Cron cron = cronParser.parse("* * * * sun");
-      assertThat(cron.asString(), is("* * * * 0"));
+    public void testParseLastDayOfMonth() throws Exception {
+        String cronExpr = "* * L * *";
+    }
+
+    @Test //issue 202
+    public void testParseSunday() {
+        String cronExpr = "* * * * sun";
+        cron4jParser.parse(cronExpr);
     }
 }

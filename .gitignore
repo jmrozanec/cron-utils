@@ -13,3 +13,4 @@ zrefactor
 build/
 local.properties
 bin/
+/.metadata/
