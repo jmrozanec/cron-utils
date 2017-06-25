@@ -3,9 +3,14 @@ package com.cronutils.parser;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.cronutils.model.Cron;
 import com.cronutils.model.CronType;
 import com.cronutils.model.definition.CronDefinition;
 import com.cronutils.model.definition.CronDefinitionBuilder;
+
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
+
 
 public class CronParserCron4JIntegrationTest {
     private CronParser cron4jParser;
@@ -38,5 +43,13 @@ public class CronParserCron4JIntegrationTest {
     public void testParseStrictRangeEnforced02() throws Exception {
         String cronExpr = "* 1 5-2 * 4";
         cron4jParser.parse(cronExpr);
+    }
+    
+    //issue 202
+    @Test
+    public void testSunday() throws Exception {
+      CronParser cronParser = new CronParser(CronDefinitionBuilder.instanceDefinitionFor(CronType.CRON4J));
+      Cron cron = cronParser.parse("* * * * sun");
+      assertThat(cron.asString(), is("* * * * 0"));
     }
 }
