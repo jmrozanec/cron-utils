@@ -157,7 +157,7 @@ public class CronParserTest {
         parser.parse("0 0 0 ? * ? 2017 1/14");
     }
 
-    //@Test TODO: issue #180
+    @Test // issue #180
     public void testThatEveryMinuteIsPreserved() {
         CronDefinition quartzDefinition = CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ);
         parser = new CronParser(quartzDefinition);
