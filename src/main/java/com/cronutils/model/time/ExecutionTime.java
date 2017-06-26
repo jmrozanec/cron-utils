@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.google.common.collect.Sets;
 import org.threeten.bp.Duration;
 import org.threeten.bp.LocalDate;
 import org.threeten.bp.LocalDateTime;
@@ -550,10 +551,19 @@ public class ExecutionTime {
             candidates.addAll(createDayOfMonthValueGeneratorInstance(daysOfMonthCronField,
                     year, month).generateCandidates(1, lengthOfMonth));
         } else {
-            candidates.addAll(createDayOfWeekValueGeneratorInstance(daysOfWeekCronField, 
-                    year, month, mondayDoWValue).generateCandidates(1, lengthOfMonth));
-            candidates.addAll(createDayOfMonthValueGeneratorInstance(daysOfMonthCronField, year, month)
-                    .generateCandidates(1, lengthOfMonth));
+            List<Integer> dayOfWeekCandidates = createDayOfWeekValueGeneratorInstance(daysOfWeekCronField,
+                year, month, mondayDoWValue).generateCandidates(1, lengthOfMonth);
+            List<Integer> dayOfMonthCandidates = createDayOfMonthValueGeneratorInstance(daysOfMonthCronField, year, month)
+                .generateCandidates(1, lengthOfMonth);
+            if (cronDefinition.isMatchDayOfWeekAndDayOfMonth()){
+                Set<Integer> dayOfWeekCandidatesSet = Sets.newHashSet(dayOfWeekCandidates);
+                Set<Integer> dayOfMonthCandidatesSet = Sets.newHashSet(dayOfMonthCandidates);
+                candidates.addAll(Sets.intersection(dayOfMonthCandidatesSet, dayOfWeekCandidatesSet));
+            }
+            else {
+                candidates.addAll(dayOfWeekCandidates);
+                candidates.addAll(dayOfMonthCandidates);
+            }
         }
         List<Integer> candidatesList = new ArrayList<>(candidates);
 		Collections.sort(candidatesList);
