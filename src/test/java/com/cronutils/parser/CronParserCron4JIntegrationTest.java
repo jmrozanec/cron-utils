@@ -7,6 +7,7 @@ import com.cronutils.model.CronType;
 import com.cronutils.model.definition.CronDefinition;
 import com.cronutils.model.definition.CronDefinitionBuilder;
 
+
 public class CronParserCron4JIntegrationTest {
     private CronParser cron4jParser;
 
@@ -45,8 +46,8 @@ public class CronParserCron4JIntegrationTest {
         String cronExpr = "* * L * *";
     }
 
-    //@Test TODO issue 202
-    public void testParseSunday() throws Exception {
+    @Test //issue 202
+    public void testParseSunday() {
         String cronExpr = "* * * * sun";
         cron4jParser.parse(cronExpr);
     }

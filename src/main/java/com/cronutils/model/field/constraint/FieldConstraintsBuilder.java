@@ -3,6 +3,7 @@ package com.cronutils.model.field.constraint;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import com.cronutils.model.field.CronFieldName;
@@ -153,17 +154,18 @@ public class FieldConstraintsBuilder {
      * @return same FieldConstraintsBuilder instance
      */
     public FieldConstraintsBuilder withShiftedStringMapping(int shiftSize){
-        for(String key : this.stringMapping.keySet()) {
-            Integer value = this.stringMapping.get(key);
-            value += shiftSize;
-            if(value > endRange) {
-                value -= endRange;
+        if (shiftSize > 0 || endRange < stringMapping.size())
+            for(Entry<String, Integer> entry : stringMapping.entrySet()) {
+                int value = entry.getValue().intValue();
+                value += shiftSize;
+                if(value > endRange) {
+                    value -= stringMapping.size();
+                }
+                else if(value < startRange) {
+                    value += (startRange - endRange);
+                }
+                stringMapping.put(entry.getKey(), Integer.valueOf(value));
             }
-            if(value < startRange) {
-                value += (startRange - endRange);
-            }
-            this.stringMapping.put(key, value);
-        }
         return this;
     }
 
