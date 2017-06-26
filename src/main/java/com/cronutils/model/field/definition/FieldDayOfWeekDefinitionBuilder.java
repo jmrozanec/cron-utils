@@ -36,9 +36,7 @@ public class FieldDayOfWeekDefinitionBuilder extends FieldSpecialCharsDefinition
      * @return this FieldSpecialCharsDefinitionBuilder instance
      */
     public FieldDayOfWeekDefinitionBuilder withMondayDoWValue(int mondayDoW){
-        if(mondayDoW != this.mondayDoWValue) {
-            this.constraints.withShiftedStringMapping(mondayDoW - this.mondayDoWValue);
-        }
+        this.constraints.withShiftedStringMapping(mondayDoW - this.mondayDoWValue);
         this.mondayDoWValue = mondayDoW;
         return this;
     }
