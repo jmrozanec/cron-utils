@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.threeten.bp.ZonedDateTime;
 
 import com.cronutils.model.field.CronField;
+import com.cronutils.model.field.expression.Between;
 import com.cronutils.model.field.expression.Every;
 import com.cronutils.model.field.expression.FieldExpression;
 import com.cronutils.model.field.expression.On;
@@ -26,9 +27,26 @@ import com.cronutils.utils.VisibleForTesting;
  */
 class EveryFieldValueGenerator extends FieldValueGenerator {
     private static final Logger log = LoggerFactory.getLogger(EveryFieldValueGenerator.class);
+    
+    private final int from;
+    private final int to;
 
     public EveryFieldValueGenerator(CronField cronField) {
         super(cronField);
+        
+        Every every = (Every)cronField.getExpression();
+        FieldExpression everyExpression = every.getExpression();
+        if (everyExpression instanceof Between ) {
+            Between between = (Between)everyExpression;
+            
+            from = Math.max(cronField.getConstraints().getStartRange(), BetweenFieldValueGenerator.map(between.getFrom()));
+            to = Math.min(cronField.getConstraints().getEndRange(), BetweenFieldValueGenerator.map(between.getTo()));
+        }
+        else {
+            from =cronField.getConstraints().getStartRange();
+            to = cronField.getConstraints().getEndRange();
+        }
+        
         log.trace(String.format(
                 "processing \"%s\" at %s",
                 cronField.getExpression().asString(), ZonedDateTime.now()
@@ -38,21 +56,23 @@ class EveryFieldValueGenerator extends FieldValueGenerator {
     @Override
     public int generateNextValue(int reference) throws NoSuchValueException {
         //intuition: for valid values, we have: offset+period*i
-        if(reference>=cronField.getConstraints().getEndRange()){
+        if(reference>=to){
             throw new NoSuchValueException();
         }
         Every every = (Every)cronField.getExpression();
+
         int referenceWithoutOffset = reference-offset();
         int period = every.getPeriod().getValue();
         int remainder = referenceWithoutOffset % period;
 
         int next = reference+(period-remainder);
-        if(next<cronField.getConstraints().getStartRange()){
-            return cronField.getConstraints().getStartRange();
+        if(next<from){
+            return from;
         }
-        if(next>cronField.getConstraints().getEndRange()){
+        if(next>to){
             throw new NoSuchValueException();
         }
+
         return next;
     }
 
@@ -72,12 +92,14 @@ class EveryFieldValueGenerator extends FieldValueGenerator {
     protected List<Integer> generateCandidatesNotIncludingIntervalExtremes(int start, int end) {
         List<Integer>values = new ArrayList<>();
         try {
-            if(start!=offset()){
-                values.add(offset());
+            int offset = offset();
+            if(start!=offset){
+                values.add(offset);
             }
             int reference = generateNextValue(start);
             while(reference<end){
-                values.add(reference);
+                if (reference != offset)
+                    values.add(reference);
                 reference=generateNextValue(reference);
             }
         } catch (NoSuchValueException ignored) {}//we just skip, since we generate values until we get the exception
@@ -88,7 +110,7 @@ class EveryFieldValueGenerator extends FieldValueGenerator {
     public boolean isMatch(int value) {
         Every every = (Every)cronField.getExpression();
         int start = offset();
-        return ((value-start) % every.getPeriod().getValue()) == 0;
+        return ((value-start) % every.getPeriod().getValue()) == 0 && value >= from && value <= to;
     }
 
     @Override
@@ -102,6 +124,6 @@ class EveryFieldValueGenerator extends FieldValueGenerator {
         if(expression instanceof On){
             return ((On) expression).getTime().getValue();
         }
-        return cronField.getConstraints().getStartRange();
+        return from;
     }
 }
