@@ -597,12 +597,12 @@ public class ExecutionTimeQuartzIntegrationTest extends BaseAndroidTest {
      * Reported case: periodic incremental hours does not start and end
      * at beginning and end of given period
      */
-//    @Test//TODO
+    @Test
     public void testPeriodicIncrementalHoursIgnorePeriodBounds() {
         Cron cron = parser.parse("0 0 16-19/2 * * ?");
         ExecutionTime executionTime = ExecutionTime.forCron(cron);
         ZonedDateTime start = ZonedDateTime.of(2016, 12, 27, 8, 15, 0, 0, ZoneId.of("UTC"));
-        ZonedDateTime[] expected = new ZonedDateTime[]{
+        ZonedDateTime[] expectedDateTimes = new ZonedDateTime[]{
             ZonedDateTime.of(2016, 12, 27, 16, 0, 0, 0, ZoneId.of("UTC")),
             ZonedDateTime.of(2016, 12, 27, 18, 0, 0, 0, ZoneId.of("UTC")),
             ZonedDateTime.of(2016, 12, 28, 16, 0, 0, 0, ZoneId.of("UTC")),
@@ -610,15 +610,17 @@ public class ExecutionTimeQuartzIntegrationTest extends BaseAndroidTest {
             ZonedDateTime.of(2016, 12, 29, 16, 0, 0, 0, ZoneId.of("UTC")),
         };
 
-        List<ZonedDateTime> actualList = new ArrayList<>();
-        for (int i = 1; i <= 5; i++) {
+        for (ZonedDateTime expectedDateTime : expectedDateTimes) {
             ZonedDateTime next = executionTime.nextExecution(start).get();
             start = next;
-            actualList.add(next);
+            assertEquals(expectedDateTime, next);
         }
-        Object[] actual = actualList.toArray();
-
-        assertArrayEquals(expected, actual);
+        start = start.plusSeconds(1);
+        for (int i = expectedDateTimes.length - 1; i >= 0; i--) {
+            ZonedDateTime last = executionTime.lastExecution(start).get();
+            start = last;
+            assertEquals(expectedDateTimes[i], last);
+        }
     }
 
     /**

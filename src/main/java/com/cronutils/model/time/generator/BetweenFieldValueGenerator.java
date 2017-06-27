@@ -100,7 +100,7 @@ class BetweenFieldValueGenerator extends FieldValueGenerator {
         return fieldExpression instanceof Between;
     }
 
-    private int map(FieldValue fieldValue){
+    static int map(FieldValue fieldValue){
         if(fieldValue instanceof IntegerFieldValue){
             return ((IntegerFieldValue)fieldValue).getValue();
         }
