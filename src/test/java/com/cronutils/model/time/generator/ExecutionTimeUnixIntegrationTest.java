@@ -3,11 +3,9 @@ package com.cronutils.model.time.generator;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import com.google.common.base.Optional;
 import org.junit.Test;
-import org.threeten.bp.Duration;
-import org.threeten.bp.Instant;
-import org.threeten.bp.ZoneId;
-import org.threeten.bp.ZonedDateTime;
+import org.threeten.bp.*;
 
 import com.cronutils.model.Cron;
 import com.cronutils.model.CronType;
@@ -15,6 +13,9 @@ import com.cronutils.model.definition.CronDefinition;
 import com.cronutils.model.definition.CronDefinitionBuilder;
 import com.cronutils.model.time.ExecutionTime;
 import com.cronutils.parser.CronParser;
+
+import java.util.HashSet;
+import java.util.Set;
 
 public class ExecutionTimeUnixIntegrationTest {
 
@@ -284,7 +285,7 @@ public class ExecutionTimeUnixIntegrationTest {
      * Issue #112: Calling nextExecution exactly on the first instant of the fallback hour (after the DST ends) makes it go back to DST.
      * https://github.com/jmrozanec/cron-utils/issues/112
      */
-//    @Test TODO
+    @Test
     public void testWrongNextExecutionOnDSTEnd() throws Exception {
         ZoneId zone = ZoneId.of("America/Sao_Paulo");
 
@@ -295,6 +296,83 @@ public class ExecutionTimeUnixIntegrationTest {
         CronParser parser = new CronParser(CronDefinitionBuilder.instanceDefinitionFor(CronType.UNIX));
         ExecutionTime executionTime = ExecutionTime.forCron(parser.parse("* * * * *"));
         assertEquals(expected, executionTime.nextExecution(date).get());
+    }
+
+    /**
+     * Issue #112: Calling nextExecution on a date-time during the overlap hour of DST causes an incorrect offset
+     * to be returned
+     */
+    @Test
+    public void testDSTOverlap() throws Exception {
+        ZoneId zoneId = ZoneId.of("America/New_York");
+
+        // For the America/New_York time zone, DST ends (UTC-4:00 to UTC-5:00 / EDT -> EST) at 2:00 AM
+        // on the these days for the years 2015-2026:
+        Set<LocalDate> dstDates = new HashSet<>();
+        dstDates.add(LocalDate.of(2015, Month.NOVEMBER, 1));
+        dstDates.add(LocalDate.of(2016, Month.NOVEMBER, 6));
+        dstDates.add(LocalDate.of(2017, Month.NOVEMBER, 5));
+        dstDates.add(LocalDate.of(2018, Month.NOVEMBER, 4));
+        dstDates.add(LocalDate.of(2019, Month.NOVEMBER, 3));
+        dstDates.add(LocalDate.of(2020, Month.NOVEMBER, 1));
+        dstDates.add(LocalDate.of(2021, Month.NOVEMBER, 7));
+        dstDates.add(LocalDate.of(2022, Month.NOVEMBER, 6));
+        dstDates.add(LocalDate.of(2023, Month.NOVEMBER, 5));
+        dstDates.add(LocalDate.of(2024, Month.NOVEMBER, 3));
+        dstDates.add(LocalDate.of(2025, Month.NOVEMBER, 2));
+        dstDates.add(LocalDate.of(2026, Month.NOVEMBER, 1));
+
+        // Starting at 12 AM Nov. 1, 2015
+        ZonedDateTime date = ZonedDateTime.of(2015, 11, 1, 0, 0, 0, 0, zoneId);
+
+        CronParser parser = new CronParser(CronDefinitionBuilder.instanceDefinitionFor(CronType.UNIX));
+        // Scheduling pattern for 1:30 AM for the first 7 days of every November
+        ExecutionTime executionTime = ExecutionTime.forCron(parser.parse("30 1 1-7 11 *"));
+
+        int dayOfMonth = 1;
+        final ZoneOffset EDT = ZoneOffset.ofHours(-4);
+        final ZoneOffset EST = ZoneOffset.ofHours(-5);
+        boolean pastDSTEnd = false;
+        for(int year = 2015; year <= 2026; year++){
+            while(dayOfMonth < 8){
+                LocalDateTime expectedLocalDateTime = LocalDateTime.of(year, Month.NOVEMBER, dayOfMonth, 1, 30);
+                Optional<ZonedDateTime> nextExecution = executionTime.nextExecution(date);
+                assert(nextExecution.isPresent());
+                date = nextExecution.get();
+
+                ZoneOffset expectedOffset = pastDSTEnd ? EST : EDT;
+
+                if (dstDates.contains(LocalDate.of(year, Month.NOVEMBER, dayOfMonth))){
+                    if (!pastDSTEnd){
+                        // next iteration should be past the DST transition
+                        pastDSTEnd = true;
+                    }
+                    else {
+                        dayOfMonth++;
+                    }
+                }
+                else {
+                    dayOfMonth++;
+                }
+                assertEquals(ZonedDateTime.ofInstant(expectedLocalDateTime, expectedOffset, zoneId), date);
+            }
+            dayOfMonth = 1;
+            pastDSTEnd = false;
+        }
+    }
+
+    @Test
+    public void testDSTGap() throws Exception{
+        ZoneId zoneId = ZoneId.of("America/New_York");
+        CronParser parser = new CronParser(CronDefinitionBuilder.instanceDefinitionFor(CronType.UNIX));
+        ExecutionTime executionTime = ExecutionTime.forCron(parser.parse("15 2 7-14 3 *"));
+
+        // Starting at 12 AM Nov. 1, 2015
+        ZonedDateTime date = ZonedDateTime.of(2015, 3, 7, 0, 0, 0, 0, zoneId);
+        for(int i = 0; i < 20; i++) {
+            date = executionTime.nextExecution(date).get();
+            System.out.println(date);
+        }
     }
 
     /**
