@@ -1,8 +1,5 @@
 package com.cronutils.model.time.generator;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 import com.google.common.base.Optional;
 import org.junit.Test;
 import org.threeten.bp.*;
@@ -14,8 +11,9 @@ import com.cronutils.model.definition.CronDefinitionBuilder;
 import com.cronutils.model.time.ExecutionTime;
 import com.cronutils.parser.CronParser;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
+
+import static org.junit.Assert.*;
 
 public class ExecutionTimeUnixIntegrationTest {
 
@@ -329,11 +327,13 @@ public class ExecutionTimeUnixIntegrationTest {
         // Scheduling pattern for 1:30 AM for the first 7 days of every November
         ExecutionTime executionTime = ExecutionTime.forCron(parser.parse("30 1 1-7 11 *"));
 
-        int dayOfMonth = 1;
+
         final ZoneOffset EDT = ZoneOffset.ofHours(-4);
         final ZoneOffset EST = ZoneOffset.ofHours(-5);
-        boolean pastDSTEnd = false;
+
         for(int year = 2015; year <= 2026; year++){
+            boolean pastDSTEnd = false;
+            int dayOfMonth = 1;
             while(dayOfMonth < 8){
                 LocalDateTime expectedLocalDateTime = LocalDateTime.of(year, Month.NOVEMBER, dayOfMonth, 1, 30);
                 Optional<ZonedDateTime> nextExecution = executionTime.nextExecution(date);
@@ -356,22 +356,64 @@ public class ExecutionTimeUnixIntegrationTest {
                 }
                 assertEquals(ZonedDateTime.ofInstant(expectedLocalDateTime, expectedOffset, zoneId), date);
             }
-            dayOfMonth = 1;
-            pastDSTEnd = false;
         }
     }
 
+    /**
+     * Test that a cron expression that only runs at a certain time that falls inside the DST start gap
+     * does not run on the DST start day. Ex. 2:15 AM is an invalid local time for the America/New_York
+     * time zone on the DST start days.
+     */
     @Test
     public void testDSTGap() throws Exception{
         ZoneId zoneId = ZoneId.of("America/New_York");
         CronParser parser = new CronParser(CronDefinitionBuilder.instanceDefinitionFor(CronType.UNIX));
+        // Run at 2:15 AM each day for March 7 to 14
         ExecutionTime executionTime = ExecutionTime.forCron(parser.parse("15 2 7-14 3 *"));
 
-        // Starting at 12 AM Nov. 1, 2015
+        // Starting at 12 AM March. 7, 2015
         ZonedDateTime date = ZonedDateTime.of(2015, 3, 7, 0, 0, 0, 0, zoneId);
-        for(int i = 0; i < 20; i++) {
-            date = executionTime.nextExecution(date).get();
-            System.out.println(date);
+
+        // For America/New_York timezone, DST starts at 2 AM local time and moves forward 1 hour
+        // DST dates for 2015-2026
+        Map<Integer, LocalDate> dstDates = new HashMap<>();
+        dstDates.put(2015, LocalDate.of(2015, Month.MARCH, 8));
+        dstDates.put(2016, LocalDate.of(2016, Month.MARCH, 13));
+        dstDates.put(2017, LocalDate.of(2017, Month.MARCH, 12));
+        dstDates.put(2018, LocalDate.of(2018, Month.MARCH, 11));
+        dstDates.put(2019, LocalDate.of(2019, Month.MARCH, 10));
+        dstDates.put(2020, LocalDate.of(2020, Month.MARCH, 8));
+        dstDates.put(2021, LocalDate.of(2021, Month.MARCH, 14));
+        dstDates.put(2022, LocalDate.of(2022, Month.MARCH, 13));
+        dstDates.put(2023, LocalDate.of(2023, Month.MARCH, 12));
+        dstDates.put(2024, LocalDate.of(2024, Month.MARCH, 10));
+        dstDates.put(2025, LocalDate.of(2025, Month.MARCH, 9));
+        dstDates.put(2026, LocalDate.of(2026, Month.MARCH, 8));
+
+
+        final ZoneOffset EDT = ZoneOffset.ofHours(-4);
+        final ZoneOffset EST = ZoneOffset.ofHours(-5);
+        for(int year = 2015; year <= 2026; year++){
+            LocalDate dstDateForYear = dstDates.get(year);
+            boolean isPastDSTStart = false;
+            int dayOfMonth = 7;
+            while(dayOfMonth < 15) {
+                LocalDateTime localDateTime = LocalDateTime.of(year, Month.MARCH, dayOfMonth, 2, 15);
+                // skip the DST start days... 2:15 AM does not exist in the local time
+                if (localDateTime.toLocalDate().isEqual(dstDateForYear)){
+                    dayOfMonth++;
+                    isPastDSTStart = true;
+                    continue;
+                }
+                ZoneOffset expectedOffset = isPastDSTStart ? EDT : EST;
+                ZonedDateTime expectedDateTime = ZonedDateTime.ofLocal(localDateTime, zoneId, expectedOffset);
+
+                Optional<ZonedDateTime> nextExecution = executionTime.nextExecution(date);
+                assert (nextExecution.isPresent());
+                date = nextExecution.get();
+                assertEquals(expectedDateTime, date);
+                dayOfMonth++;
+            }
         }
     }
 
