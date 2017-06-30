@@ -65,7 +65,7 @@ import static com.cronutils.model.time.generator.FieldValueGeneratorFactory.crea
  * Calculates execution time given a cron pattern
  */
 public class ExecutionTime {
-	private CronDefinition cronDefinition;
+	  private CronDefinition cronDefinition;
     private FieldValueGenerator yearsValueGenerator;
     private CronField daysOfWeekCronField;
     private CronField daysOfMonthCronField;
@@ -191,7 +191,7 @@ public class ExecutionTime {
             int nextMonths = nearestValue.getValue();
             if(nearestValue.getShifts()>0){
                 newDate =
-                        ZonedDateTime.of(LocalDateTime.of(date.getYear(), 1, 1, 0, 0, 0), date.getZone()).plusYears(nearestValue.getShifts());
+                    ZonedDateTime.of(LocalDateTime.of(date.getYear(), 1, 1, 0, 0, 0), date.getZone()).plusYears(nearestValue.getShifts());
                 return new ExecutionTimeResult(newDate, false);
             }
             if (nearestValue.getValue() < date.getMonthValue()) {
@@ -227,8 +227,8 @@ public class ExecutionTime {
             int nextHours = nearestValue.getValue();
             if(nearestValue.getShifts()>0){
                 newDate =
-                        ZonedDateTime.of(LocalDateTime.of(date.getYear(), date.getMonthValue(),
-                                date.getDayOfMonth(), 0, 0, 0), date.getZone()).plusDays(nearestValue.getShifts());
+                    ZonedDateTime.of(LocalDateTime.of(date.getYear(), date.getMonthValue(),
+                        date.getDayOfMonth(), 0, 0, 0), date.getZone()).plusDays(nearestValue.getShifts());
                 return new ExecutionTimeResult(newDate, false);
             }
             if (nearestValue.getValue() < date.getHour()) {
@@ -242,31 +242,35 @@ public class ExecutionTime {
             int nextMinutes = nearestValue.getValue();
             if(nearestValue.getShifts()>0){
                 newDate =
-                        ZonedDateTime.of(LocalDateTime.of(date.getYear(), date.getMonthValue(), date.getDayOfMonth(), date.getHour(),
-                                0, 0), date.getZone()).plusHours(nearestValue.getShifts());
+                    ZonedDateTime.ofLocal(LocalDateTime.of(date.getYear(), date.getMonthValue(), date.getDayOfMonth(), date.getHour(),
+                        0, 0), date.getZone(), date.getOffset()).plusHours(nearestValue.getShifts());
                 return new ExecutionTimeResult(newDate, false);
             }
             if (nearestValue.getValue() < date.getMinute()) {
                 date = date.plusHours(1);
-                return initDateTime(date.getYear(), date.getMonthValue(), date.getDayOfMonth(), date.getHour(), nextMinutes, lowestSecond, date.getZone());
             }
-            return initDateTime(date.getYear(), date.getMonthValue(), date.getDayOfMonth(), date.getHour(), nextMinutes, lowestSecond, date.getZone());
+            newDate = ZonedDateTime.ofLocal(
+                LocalDateTime.of(date.getYear(), date.getMonthValue(), date.getDayOfMonth(), date.getHour(), nextMinutes, lowestSecond),
+                date.getZone(), date.getOffset());
+            return new ExecutionTimeResult(newDate, true);
         }
         if(!seconds.getValues().contains(date.getSecond())) {
             nearestValue = seconds.getNextValue(date.getSecond(), 0);
             int nextSeconds = nearestValue.getValue();
             if(nearestValue.getShifts()>0){
                 newDate =
-                        ZonedDateTime.of(LocalDateTime.of(date.getYear(), date.getMonthValue(),
-                                date.getDayOfMonth(), date.getHour(),
-                                date.getMinute(),0), date.getZone()).plusMinutes(nearestValue.getShifts());
+                    ZonedDateTime.ofLocal(LocalDateTime.of(date.getYear(), date.getMonthValue(),
+                        date.getDayOfMonth(), date.getHour(),
+                        date.getMinute(),0), date.getZone(), date.getOffset()).plusMinutes(nearestValue.getShifts());
                 return new ExecutionTimeResult(newDate, false);
             }
             if (nearestValue.getValue() < date.getSecond()) {
                 date = date.plusMinutes(1);
-                return initDateTime(date.getYear(), date.getMonthValue(), date.getDayOfMonth(), date.getHour(), date.getMinute(), nextSeconds, date.getZone());
             }
-            return initDateTime(date.getYear(), date.getMonthValue(), date.getDayOfMonth(), date.getHour(), date.getMinute(), nextSeconds, date.getZone());
+            newDate = ZonedDateTime.ofLocal(
+                LocalDateTime.of(date.getYear(), date.getMonthValue(), date.getDayOfMonth(), date.getHour(), date.getMinute(), nextSeconds),
+                date.getZone(), date.getOffset());
+            return new ExecutionTimeResult(newDate, true);
         }
         return new ExecutionTimeResult(date, true);
     }
