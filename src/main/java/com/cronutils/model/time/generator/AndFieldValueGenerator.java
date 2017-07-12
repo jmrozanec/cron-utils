@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import com.cronutils.Function;
-import java.util.stream.Collectors;
 
 /*
  * Copyright 2015 jmrozanec
