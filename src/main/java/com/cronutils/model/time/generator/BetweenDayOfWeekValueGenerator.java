@@ -125,6 +125,19 @@ class BetweenDayOfWeekValueGenerator extends FieldValueGenerator {
 
 	@Override
 	public boolean isMatch(int value) {
-        return dowValidValues.contains(LocalDate.of(year, month, value).getDayOfWeek().getValue());
+        // DayOfWeek getValue returns 1 (Monday) - 7 (Sunday),
+        // so we should factor in the monday DoW used to generate
+        // the valid DoW values
+        int localDateDoW = LocalDate.of(year, month, value).getDayOfWeek().getValue();
+
+        // Sunday's value is mondayDoWValue-1 when generating the valid values
+        // Ex.
+        // cron4j 0(Sun)-6(Sat), mondayDoW = 1
+        // quartz 1(Sun)-7(Sat), mondayDoW = 2
+
+        // modulo 7 to convert Sunday from 7 to 0 and adjust to match the mondayDoWValue
+        int cronDoW = localDateDoW % 7 + (mondayDoWValue.getMondayDoWValue() - 1);
+
+        return dowValidValues.contains(cronDoW);
 	}
 }
