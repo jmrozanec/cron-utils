@@ -253,7 +253,10 @@ class TimeDescriptionStrategy extends DescriptionStrategy {
                         //every hour
                         if(((On) timeFields.minutes).getTime().getValue()==0 &&
                                 ((On) timeFields.seconds).getTime().getValue()==0){
-                            return String.format("%s %s", bundle.getString("every"), bundle.getString("hour"));
+                            Integer period = ((Every) timeFields.hours).getPeriod().getValue();
+                            if (period == null || period == 1) {
+                                return String.format("%s %s", bundle.getString("every"), bundle.getString("hour"));
+                            }
                         }
                         String result = String.format("%s %s %s %s %s %s ",
                                 bundle.getString("every"), ((Every) hours).getPeriod().getValue(), bundle.getString("hours"),

@@ -103,9 +103,9 @@ public class CronDescriptorQuartzIntegrationTest {
      * Issue #43: getting bad description for expression
      * @throws Exception
      */
-    //TODO enable
+    @Test
     public void testEveryDayEveryFourHoursFromHour2() throws Exception {
-        assertExpression("0 0 2/4 * * ?", "");
+        assertExpression("0 0 2/4 * * ?", "every 4 hours at minute 0");
     }
     
     /*
