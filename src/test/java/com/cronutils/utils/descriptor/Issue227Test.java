@@ -37,8 +37,18 @@ public class Issue227Test {
     public void testProperDescriptorOutput() {
         Cron cron = parser.parse("0 5-35/30 * * * ?");
         CronDescriptor descriptor = CronDescriptor.instance(Locale.US);
+        String description = descriptor.describe(cron);
 
-        assertEquals("every 30 minutes between 5 and 35", descriptor.describe(cron));
+        assertEquals("every 30 minutes between 5 and 35", description);
+    }
+
+    @Test
+    public void testProperDescriptorOutputWithSeconds() {
+        Cron cron = parser.parse("5-35/30 * * * * ?");
+        CronDescriptor descriptor = CronDescriptor.instance(Locale.US);
+        String description = descriptor.describe(cron);
+
+        assertEquals("every 30 seconds between 5 and 35", description);
     }
 
 }
