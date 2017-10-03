@@ -15,7 +15,7 @@ public class Issue223Test {
     /**
      * Issue #223: for dayOfWeek value == 3 && division of day, nextExecution do not return correct results
      */
-    //@Test
+    @Test
     public void testEveryWednesdayOfEveryDayNextExecution() {
         CronDefinition cronDefinition = CronDefinitionBuilder.instanceDefinitionFor(CronType.UNIX);
         CronParser parser = new CronParser(cronDefinition);
@@ -23,9 +23,10 @@ public class Issue223Test {
         ZonedDateTime time = ZonedDateTime.parse("2017-09-05T11:31:55.407-05:00");
         assertEquals(ZonedDateTime.parse("2017-09-06T00:00-05:00"), ExecutionTime.forCron(myCron).nextExecution(time).get());
 
-        myCron = parser.parse("* * */1 * 3");
+        Cron myCron2 = parser.parse("* * */1 * 3");
         time = ZonedDateTime.parse("2017-09-05T11:31:55.407-05:00");
-        assertEquals(ZonedDateTime.parse("2017-09-06T00:00-05:00"), ExecutionTime.forCron(myCron).nextExecution(time).get());
+        assertEquals(ZonedDateTime.parse("2017-09-06T00:00-05:00"), ExecutionTime.forCron(myCron2).nextExecution
+                (time).get());
     }
 
 }
