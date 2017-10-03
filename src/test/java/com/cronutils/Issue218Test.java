@@ -20,7 +20,7 @@ public class Issue218Test {
     private final String CRON_EXPRESSION = "0-59 7-16 MON-FRI";
 
     @Test
-    public void testProperDescriptorOutput() {
+    public void testCronDefinitionExecutionTimeGenerator() {
         CronDefinition cronDefinition = defineCron().withMinutes().and()
                 .withHours().and()
                 .withDayOfWeek()
