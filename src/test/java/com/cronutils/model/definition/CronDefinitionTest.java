@@ -5,9 +5,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.*;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -80,7 +78,11 @@ public class CronDefinitionTest {
         fields.add(mockFieldDefinition1);
         fields.add(mockFieldDefinition2);
         fields.add(mockFieldDefinition3optional);
-        assertTrue(new CronDefinition(fields, Sets.newHashSet(), enforceStrictRange, matchDayOfWeekAndDayOfMonth).getFieldDefinitions().stream().sorted((o1,o2) -> o1.getFieldName().getOrder() - o2.getFieldName().getOrder()).collect(Collectors.toList()).get(fields.size()-1).isOptional());
+        Set<FieldDefinition> fieldDefinitions = new CronDefinition(fields, Sets.newHashSet(), enforceStrictRange, matchDayOfWeekAndDayOfMonth)
+            .getFieldDefinitions();
+        List<FieldDefinition> sortedFieldDefinitions = new ArrayList<>(fieldDefinitions);
+        sortedFieldDefinitions.sort(FieldDefinition.createFieldDefinitionComparator());
+        assertTrue(sortedFieldDefinitions.get(fields.size()-1).isOptional());
     }
 
     @Test(expected = IllegalArgumentException.class)

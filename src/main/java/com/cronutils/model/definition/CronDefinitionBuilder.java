@@ -12,10 +12,7 @@
  */
 package com.cronutils.model.definition;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import com.cronutils.model.CronType;
 import com.cronutils.model.field.CronFieldName;
@@ -24,8 +21,6 @@ import com.cronutils.model.field.definition.FieldDefinition;
 import com.cronutils.model.field.definition.FieldDefinitionBuilder;
 import com.cronutils.model.field.definition.FieldQuestionMarkDefinitionBuilder;
 import com.cronutils.model.field.definition.FieldSpecialCharsDefinitionBuilder;
-
-import java.util.stream.Collectors;
 
 /**
  * Builder that allows to define and create CronDefinition instances
@@ -158,7 +153,9 @@ public class CronDefinitionBuilder {
     public CronDefinition instance() {
         Set<CronConstraint> validations = new HashSet<CronConstraint>();
         validations.addAll(cronConstraints);
-        return new CronDefinition(fields.values().stream().sorted((o1,o2) -> o1.getFieldName().getOrder() - o2.getFieldName().getOrder()).collect(Collectors.toList()), validations, enforceStrictRanges, matchDayOfWeekAndDayOfMonth);
+        List<FieldDefinition> values = new ArrayList<>(fields.values());
+        values.sort(FieldDefinition.createFieldDefinitionComparator());
+        return new CronDefinition(values, validations, enforceStrictRanges, matchDayOfWeekAndDayOfMonth);
     }
 
     /**
