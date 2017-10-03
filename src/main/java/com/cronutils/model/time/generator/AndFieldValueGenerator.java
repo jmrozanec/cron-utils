@@ -38,13 +38,16 @@ class AndFieldValueGenerator extends FieldValueGenerator {
     public int generateNextValue(final int reference) throws NoSuchValueException {
         List<Integer> candidates =
                 computeCandidates(
-                        fieldValueGenerator -> {
+                    new Function<FieldValueGenerator, Integer>() {
+                        @Override
+                        public Integer apply(FieldValueGenerator fieldValueGenerator) {
                             try {
                                 return fieldValueGenerator.generateNextValue(reference);
                             } catch (NoSuchValueException e) {
                                 return NO_VALUE;
                             }
                         }
+                    }
                 );
         if(candidates.isEmpty()){
             throw new NoSuchValueException();
@@ -57,13 +60,16 @@ class AndFieldValueGenerator extends FieldValueGenerator {
     public int generatePreviousValue(final int reference) throws NoSuchValueException {
         List<Integer> candidates =
                 computeCandidates(
-                        candidateGenerator -> {
+                    new Function<FieldValueGenerator, Integer>() {
+                        @Override
+                        public Integer apply(FieldValueGenerator candidateGenerator) {
                             try {
                                 return candidateGenerator.generatePreviousValue(reference);
                             } catch (NoSuchValueException e) {
                                 return NO_VALUE;
                             }
                         }
+                    }
                 );
         if(candidates.isEmpty()){
             throw new NoSuchValueException();
