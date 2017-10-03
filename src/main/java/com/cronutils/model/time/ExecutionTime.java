@@ -41,6 +41,7 @@ import com.cronutils.utils.Preconditions;
 import com.cronutils.utils.VisibleForTesting;
 import com.google.common.base.Optional;
 import com.google.common.collect.Range;
+import org.threeten.bp.temporal.ChronoUnit;
 
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -496,6 +497,15 @@ public class ExecutionTime {
      * @return true if date matches cron expression requirements, false otherwise.
      */
     public boolean isMatch(ZonedDateTime date){
+        // Issue #200: Truncating the date to the least granular precision supported by different cron systems.
+        // For Quartz, it's seconds while for Unix & Cron4J it's minutes.
+        boolean isSecondGranularity = cronDefinition.containsFieldDefinition(CronFieldName.SECOND);
+        if(isSecondGranularity) {
+            date = date.truncatedTo(ChronoUnit.SECONDS);
+        } else {
+            date = date.truncatedTo(ChronoUnit.MINUTES);
+        }
+
         Optional<ZonedDateTime> last = lastExecution(date);
         if(last.isPresent()){
             Optional<ZonedDateTime> next = nextExecution(last.get());

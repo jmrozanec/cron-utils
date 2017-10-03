@@ -16,8 +16,8 @@ import static org.junit.Assert.*;
  * Created by johnpatrick.manalo on 6/19/17.
  */
 public class Issue200Test {
-    // Does not pass!
-    //@Test
+
+    @Test
     public void testMustMatchCronEvenIfNanoSecondsVaries() {
         CronDefinition cronDefinition =
                 CronDefinitionBuilder.instanceDefinitionFor(QUARTZ);
