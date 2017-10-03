@@ -48,7 +48,7 @@ public class ExecutionTimeQuartzWithDayOfYearExtensionIntegrationTest {
         assertEquals(ExecutionTime.class, ExecutionTime.forCron(parser.parse(WITHOUT_SPECIFIC_DAY_OF_YEAR)).getClass());
     }
     
-    //@Test
+    @Test
     public void testNextExecutionEveryTwoWeeksStartingWithFirstDayOfYear() {
         ZonedDateTime now = truncateToDays(ZonedDateTime.now());
         int dayOfYear = now.getDayOfYear();
@@ -58,7 +58,7 @@ public class ExecutionTimeQuartzWithDayOfYearExtensionIntegrationTest {
         assertEquals(expected, executionTime.nextExecution(now).get());
     }
     
-    //@Test
+    @Test
     public void testLastExecutionEveryTwoWeeksStartingWithFirstDayOfYear() {
         ZonedDateTime now = truncateToDays(ZonedDateTime.now());
         int dayOfYear = now.getDayOfYear();
