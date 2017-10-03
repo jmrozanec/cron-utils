@@ -121,9 +121,7 @@ public class CronDescriptorQuartzIntegrationTest {
      */
     @Test
     public void testDoWRange() {
-        CronDescriptor descriptor = CronDescriptor.instance();
-        String description = descriptor.describe(parser.parse("0 0 0 ? * MON-FRI *"));
-        assertEquals("at 00:00 every day between Monday and Friday", description);
+        assertExpression("0 0 0 ? * MON-FRI *", "at 00:00 every day between Monday and Friday");
     }
 
     private void assertExpression(String cron, String description){
