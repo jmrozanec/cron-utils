@@ -225,7 +225,7 @@ class TimeDescriptionStrategy extends DescriptionStrategy {
         descriptions.add(
                 timeFields -> {
                     if (timeFields.hours instanceof Always &&
-                            timeFields.minutes instanceof Every  &&
+                            timeFields.minutes instanceof Every &&
                             timeFields.seconds instanceof On) {
                         Every minute = (Every) timeFields.minutes;
                         String desc;
@@ -237,7 +237,7 @@ class TimeDescriptionStrategy extends DescriptionStrategy {
                                     minute.getPeriod().getValue(), bundle.getString("minutes"));
                         }
                         if(minute.getExpression() instanceof Between){
-                            desc = String.format("%s %s", desc, describe((minute.getExpression())));
+                            return "";
                         }
                         return desc;
                     }
