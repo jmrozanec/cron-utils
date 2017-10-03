@@ -1,17 +1,14 @@
 package com.cronutils.parser;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
 import com.cronutils.model.Cron;
 import com.cronutils.model.definition.CronDefinition;
 import com.cronutils.model.field.CronField;
+import com.cronutils.model.field.definition.FieldDefinition;
 import com.cronutils.utils.Preconditions;
 import com.cronutils.utils.StringUtils;
 import com.google.common.collect.ImmutableList;
+
+import java.util.*;
 
 /*
  * Copyright 2014 jmrozanec
@@ -51,18 +48,23 @@ public class CronParser {
 	 *            - cron definition instance
 	 */
 	private void buildPossibleExpressions(CronDefinition cronDefinition) {
-	    List<CronParserField> sortedExpression = cronDefinition.getFieldDefinitions().stream().map(fieldDefinition -> new CronParserField(fieldDefinition.getFieldName(), fieldDefinition.getConstraints(), fieldDefinition.isOptional())).sorted(CronParserField.createFieldTypeComparator()).collect(Collectors.toList());
-	    ImmutableList.Builder<CronParserField> expressionBuilder = ImmutableList.builder();
-	    for (CronParserField field : sortedExpression) {
-	        if (field.isOptional()) {
-	            List<CronParserField> possibleExpression = expressionBuilder.build();
-	            expressions.put(possibleExpression.size(), possibleExpression);
-	        }
-	            
-	        expressionBuilder.add(field);
-	    }
-	    List<CronParserField> longestPossibleExpression = expressionBuilder.build();
-	    expressions.put(longestPossibleExpression.size(), longestPossibleExpression);
+		List<CronParserField> sortedExpression = new ArrayList<>();
+		Set<FieldDefinition> fieldDefinitions = cronDefinition.getFieldDefinitions();
+		for(FieldDefinition fieldDefinition: fieldDefinitions){
+			sortedExpression.add(new CronParserField(fieldDefinition.getFieldName(), fieldDefinition.getConstraints(), fieldDefinition.isOptional()));
+		}
+		sortedExpression.sort(CronParserField.createFieldTypeComparator());
+		ImmutableList.Builder<CronParserField> expressionBuilder = ImmutableList.builder();
+		for (CronParserField field : sortedExpression) {
+			if (field.isOptional()) {
+				List<CronParserField> possibleExpression = expressionBuilder.build();
+				expressions.put(possibleExpression.size(), possibleExpression);
+			}
+
+			expressionBuilder.add(field);
+		}
+		List<CronParserField> longestPossibleExpression = expressionBuilder.build();
+		expressions.put(longestPossibleExpression.size(), longestPossibleExpression);
 	}
 
 	/**

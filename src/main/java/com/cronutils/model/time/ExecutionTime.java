@@ -42,9 +42,6 @@ import com.cronutils.utils.VisibleForTesting;
 import com.google.common.base.Optional;
 import com.google.common.collect.Range;
 
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 import static com.cronutils.model.field.CronFieldName.*;
 import static com.cronutils.model.time.generator.FieldValueGeneratorFactory.createDayOfYearValueGeneratorInstance;
 
@@ -410,11 +407,17 @@ public class ExecutionTime {
         List<Integer> candidates = createDayOfYearValueGeneratorInstance(daysOfYearCronField, year).generateCandidates(1, lengthOfYear);
         
         Range<Integer> rangeOfMonth = Range.closedOpen(LocalDate.of(year, month, 1).getDayOfYear(), month == 12 ? LocalDate.of(year, 12, 31).getDayOfYear() + 1 : LocalDate.of(year, month + 1, 1).getDayOfYear());
-        Stream<Integer> candidatesFilteredByMonth = candidates.stream().filter(dayOfYear -> rangeOfMonth.contains(dayOfYear));
-        Stream<Integer> uniqueCandidates = candidatesFilteredByMonth.distinct();
-        Stream<Integer> candidatesMappedToDayOfMonth = uniqueCandidates.map(dayOfYear -> LocalDate.ofYearDay(reference.getYear(), dayOfYear).getDayOfMonth());
-        
-        List<Integer> collectedCandidates = candidatesMappedToDayOfMonth.collect(Collectors.toList());
+        Set<Integer> uniqueCanidatesFilteredByMonth = new HashSet<>();
+        for(Integer dayOfYear: candidates){
+            if (rangeOfMonth.contains(dayOfYear)){
+                uniqueCanidatesFilteredByMonth.add(dayOfYear);
+            }
+        }
+        List<Integer> collectedCandidates = new ArrayList<>(uniqueCanidatesFilteredByMonth.size());
+        for(Integer dayOfYear: uniqueCanidatesFilteredByMonth){
+            collectedCandidates.add(LocalDate.ofYearDay(reference.getYear(), dayOfYear).getDayOfMonth());
+        }
+
         if(collectedCandidates.isEmpty())
             throw new NoDaysForMonthException();    //TODO try to avoid programming by exception, maybe we should better return Optional<TimeNode> and test on presence
         
