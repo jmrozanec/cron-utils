@@ -94,7 +94,12 @@ public class CronParserField {
 	 * @return Comparator for CronField instance, never null.
 	 */
 	public static Comparator<CronParserField> createFieldTypeComparator() {
-		return (o1, o2) -> o1.getField().getOrder() - o2.getField().getOrder();
+		return new Comparator<CronParserField>() {
+			@Override
+			public int compare(CronParserField o1, CronParserField o2) {
+				return o1.getField().getOrder() - o2.getField().getOrder();
+			}
+		};
 	}
 	
 	@Override
