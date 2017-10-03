@@ -55,6 +55,7 @@ public class FieldParser {
 
 	private static final Pattern L_PATTERN = Pattern.compile("[0-9]L", Pattern.CASE_INSENSITIVE);
 	private static final Pattern W_PATTERN = Pattern.compile("[0-9]W", Pattern.CASE_INSENSITIVE);
+	private static final String ASTERISK_ALWAYS_VALUE = "1";
 
 	private FieldConstraints fieldConstraints;
 
@@ -117,6 +118,9 @@ public class FieldParser {
 
 	private FieldExpression asteriskOrempty(String start, String value) {
 		String trimmedStart = start.trim();
+		if (ASTERISK.equals(trimmedStart) && value.equals(ASTERISK_ALWAYS_VALUE)) {
+			return noSpecialCharsNorStar(start);
+		}
 		if (ASTERISK.equals(trimmedStart) || EMPTY_STRING.equals(start.trim())) {
 			return new Every(new IntegerFieldValue(Integer.parseInt(value)));
 		} else {
