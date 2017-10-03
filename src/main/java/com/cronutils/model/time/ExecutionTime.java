@@ -612,7 +612,8 @@ public class ExecutionTime {
     private TimeNode generateDayCandidatesUsingDoW(ZonedDateTime reference, WeekDay mondayDoWValue){
         LocalDate date = LocalDate.of(reference.getYear(), reference.getMonthValue(), 1);
         int lengthOfMonth = date.lengthOfMonth();
-        Set<Integer> candidates = new HashSet<>(createDayOfWeekValueGeneratorInstance(daysOfWeekCronField, reference.getYear(), reference.getMonthValue(), mondayDoWValue).generateCandidates(0, lengthOfMonth+1));
+        Set<Integer> candidates = new HashSet<>(createDayOfWeekValueGeneratorInstance(daysOfWeekCronField, reference
+                .getYear(), reference.getMonthValue(), mondayDoWValue).generateCandidates(1, lengthOfMonth));
         List<Integer> candidatesList = new ArrayList<>(candidates);
         Collections.sort(candidatesList);
         return new TimeNode(candidatesList);
