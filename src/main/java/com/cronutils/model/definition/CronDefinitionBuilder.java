@@ -141,8 +141,16 @@ public class CronDefinitionBuilder {
      */
     public void register(FieldDefinition definition) {
         //ensure that we can't register a mandatory definition if there are already optional ones
-        if (!definition.isOptional() && fields.values().stream().anyMatch(def -> def.isOptional()))
+        boolean hasOptionalField = false;
+        for(FieldDefinition fieldDefinition: fields.values()){
+            if (fieldDefinition.isOptional()){
+                hasOptionalField = true;
+                break;
+            }
+        }
+        if (!definition.isOptional() && hasOptionalField) {
             throw new IllegalArgumentException("Can't register mandatory definition after a optional definition.");
+        }
         fields.put(definition.getFieldName(), definition);
     }
 
@@ -154,7 +162,7 @@ public class CronDefinitionBuilder {
         Set<CronConstraint> validations = new HashSet<CronConstraint>();
         validations.addAll(cronConstraints);
         List<FieldDefinition> values = new ArrayList<>(fields.values());
-        values.sort(FieldDefinition.createFieldDefinitionComparator());
+        Collections.sort(values, FieldDefinition.createFieldDefinitionComparator());
         return new CronDefinition(values, validations, enforceStrictRanges, matchDayOfWeekAndDayOfMonth);
     }
 

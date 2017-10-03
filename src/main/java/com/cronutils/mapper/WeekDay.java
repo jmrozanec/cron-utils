@@ -62,26 +62,29 @@ public class WeekDay implements Serializable {
     }
 
     private Function<Integer, Integer> bothSameStartOfRange(final int startRange, final int endRange, final WeekDay source, final WeekDay target){
-        return integer -> {
-            int diff = target.getMondayDoWValue() - source.getMondayDoWValue();
-            int result = integer;
-            if(diff == 0){
-                return integer;
-            }
-            if(diff < 0){
-                result = integer + diff;
-                int distanceToStartRange = startRange - result;
-                if(result < startRange){
-                    result = endRange + 1 - distanceToStartRange;
+        return new Function<Integer, Integer>() {
+            @Override
+            public Integer apply(Integer integer) {
+                int diff = target.getMondayDoWValue() - source.getMondayDoWValue();
+                int result = integer;
+                if (diff == 0) {
+                    return integer;
                 }
-            }
-            if(diff > 0){
-                result = integer + diff;
-                if(result > endRange){
-                    result -= endRange;
+                if (diff < 0) {
+                    result = integer + diff;
+                    int distanceToStartRange = startRange - result;
+                    if (result < startRange) {
+                        result = endRange + 1 - distanceToStartRange;
+                    }
                 }
+                if (diff > 0) {
+                    result = integer + diff;
+                    if (result > endRange) {
+                        result -= endRange;
+                    }
+                }
+                return result;
             }
-            return result;
         };
     }
 }
