@@ -9,15 +9,28 @@ import com.cronutils.parser.CronParser;
 import org.junit.Test;
 import org.threeten.bp.ZonedDateTime;
 
+import org.junit.Before;
 import static org.junit.Assert.assertEquals;
 
 public class Issue228Test {
+	private CronDefinition cronDefinition;
+	@Before
+	public void setUp(){
+		cronDefinition = CronDefinitionBuilder.defineCron()
+        	.withMinutes().and()
+        	.withHours().and()
+        	.withDayOfMonth().supportsL().and()
+        	.withMonth().and()
+        	.withDayOfWeek().withValidRange(0,7).withMondayDoWValue(1).and()
+        	.enforceStrictRanges()
+        	.matchDayOfWeekAndDayOfMonth()
+        	.instance();
+	}
     /**
      * Issue #228: dayOfWeek just isn't honored in the cron next execution evaluation and needs to be
      */
-    //@Test
+    @Test
     public void testFirstMondayOfTheMonthNextExecution() {
-        CronDefinition cronDefinition = CronDefinitionBuilder.instanceDefinitionFor(CronType.UNIX);
         CronParser parser = new CronParser(cronDefinition);
 
         // This is 9am on a day between the 1st and 7th which is a Monday (in this case it should be Oct 2
@@ -26,9 +39,8 @@ public class Issue228Test {
         assertEquals(ZonedDateTime.parse("2017-10-02T09:00-07:00"), ExecutionTime.forCron(myCron).nextExecution(time).get());
     }
 
-    //@Test
+    @Test
     public void testEveryWeekdayFirstWeekOfMonthNextExecution() {
-        CronDefinition cronDefinition = CronDefinitionBuilder.instanceDefinitionFor(CronType.UNIX);
         CronParser parser = new CronParser(cronDefinition);
 
         // This is 9am on Mon-Fri day between the 1st and 7th (in this case it should be Oct 2)
@@ -37,9 +49,8 @@ public class Issue228Test {
         assertEquals(ZonedDateTime.parse("2017-10-02T09:00-07:00"), ExecutionTime.forCron(myCron).nextExecution(time).get());
     }
 
-    //@Test
+    @Test
     public void testEveryWeekendFirstWeekOfMonthNextExecution() {
-        CronDefinition cronDefinition = CronDefinitionBuilder.instanceDefinitionFor(CronType.UNIX);
         CronParser parser = new CronParser(cronDefinition);
 
         // This is 9am on Sat and Sun day between the 1st and 7th (in this case it should be Oct 1)
@@ -48,9 +59,8 @@ public class Issue228Test {
         assertEquals(ZonedDateTime.parse("2017-10-01T09:00-07:00"), ExecutionTime.forCron(myCron).nextExecution(time).get());
     }
 
-    //@Test
+    @Test
     public void testEveryWeekdaySecondWeekOfMonthNextExecution() {
-        CronDefinition cronDefinition = CronDefinitionBuilder.instanceDefinitionFor(CronType.UNIX);
         CronParser parser = new CronParser(cronDefinition);
 
         // This is 9am on Mon-Fri day between the 8th and 14th (in this case it should be Oct 9 Mon)
@@ -59,9 +69,8 @@ public class Issue228Test {
         assertEquals(ZonedDateTime.parse("2017-10-09T09:00-07:00"), ExecutionTime.forCron(myCron).nextExecution(time).get());
     }
 
-    //@Test
+    @Test
     public void testEveryWeekendForthWeekOfMonthNextExecution() {
-        CronDefinition cronDefinition = CronDefinitionBuilder.instanceDefinitionFor(CronType.UNIX);
         CronParser parser = new CronParser(cronDefinition);
 
         // This is 9am on Sat and Sun day between the 22nd and 28th (in this case it should be Oct 22)
