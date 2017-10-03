@@ -499,7 +499,7 @@ public class ExecutionTime {
     public boolean isMatch(ZonedDateTime date){
         // Issue #200: Truncating the date to the least granular precision supported by different cron systems.
         // For Quartz, it's seconds while for Unix & Cron4J it's minutes.
-        boolean isSecondGranularity = cronDefinition.containsFieldDefinition(CronFieldName.SECOND);
+        boolean isSecondGranularity = cronDefinition.containsFieldDefinition(SECOND);
         if(isSecondGranularity) {
             date = date.truncatedTo(ChronoUnit.SECONDS);
         } else {
