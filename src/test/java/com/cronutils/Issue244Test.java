@@ -24,7 +24,7 @@ public class Issue244Test {
             .matchDayOfWeekAndDayOfMonth() // the regular UNIX cron definition permits matching either DoW or DoM
             .instance();
 
-    @Test
+    //@Test
     public void testLastDayOfMonth() {
         CronParser parser = new CronParser(cronDefinition);
 
