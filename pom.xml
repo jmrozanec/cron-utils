@@ -88,16 +88,17 @@
             <version>${commonscli.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.jakewharton.threetenabp</groupId>
-            <artifactId>threetenabp</artifactId>
-            <version>1.0.5</version>
-	    <type>aar</type>
+            <groupId>org.threeten</groupId>
+            <artifactId>threetenbp</artifactId>
+            <version>1.3.3</version>
+	    <scope>compile</scope>
+	    <classifier>no-tzdb</classifier>
         </dependency>
         <dependency>
             <groupId>org.threeten</groupId>
             <artifactId>threetenbp</artifactId>
             <version>1.3.3</version>
-	    <scope>compile</scope>
+            <scope>test</scope>
         </dependency>
         <!--dependency>
             <groupId>eu.lp0.slf4j</groupId>
