@@ -424,29 +424,21 @@ public class ExecutionTime {
         
         return new TimeNode(collectedCandidates);
     }
-    
 
     private TimeNode generateDaysDoWAndDoMSupported(CronDefinition cronDefinition, ZonedDateTime date) throws NoDaysForMonthException {
-        boolean questionMarkSupported =
-                cronDefinition.getFieldDefinition(DAY_OF_WEEK).getConstraints().getSpecialChars().contains(QUESTION_MARK);
-        List<Integer> candidates = new ArrayList<>();
-        if(questionMarkSupported){
-            candidates = generateDayCandidatesQuestionMarkSupportedUsingDoWAndDoM(
-                    date.getYear(),
-                    date.getMonthValue(),
-                    ((DayOfWeekFieldDefinition)cronDefinition.getFieldDefinition(DAY_OF_WEEK)).getMondayDoWValue()
-            );
-        }else{
-            candidates = generateDayCandidatesQuestionMarkNotSupportedUsingDoWAndDoM(
-                    date.getYear(), date.getMonthValue(),
-                    ((DayOfWeekFieldDefinition)
-                            cronDefinition.getFieldDefinition(DAY_OF_WEEK)
-                    ).getMondayDoWValue()
-            );
-        }
-        if(candidates.isEmpty()){
+        boolean questionMarkSupported = cronDefinition.getFieldDefinition(DAY_OF_WEEK)
+                .getConstraints().getSpecialChars().contains(QUESTION_MARK);
+
+        final List<Integer> candidates = generateDayCandidatesUsingDoWAndDoM(
+                date.getYear(),
+                date.getMonthValue(),
+                ((DayOfWeekFieldDefinition) cronDefinition.getFieldDefinition(DAY_OF_WEEK)).getMondayDoWValue(),
+                questionMarkSupported);
+
+        if (candidates.isEmpty()) {
             throw new NoDaysForMonthException();
         }
+
         return new TimeNode(candidates);
     }
 
@@ -554,27 +546,43 @@ public class ExecutionTime {
         return everythingInRange;
     }
 
-	private List<Integer> generateDayCandidatesQuestionMarkNotSupportedUsingDoWAndDoM(int year, int month, WeekDay mondayDoWValue) {
-        LocalDate date = LocalDate.of(year, month, 1);
-        int lengthOfMonth = date.lengthOfMonth();
-        Set<Integer> candidates = new HashSet<>();
+    private List<Integer> generateDayCandidatesUsingDoWAndDoM(final int year,
+                                                              final int month,
+                                                              final WeekDay mondayDoWValue,
+                                                              final boolean questionMarkSupported) {
+
+        final LocalDate date = LocalDate.of(year, month, 1);
+        final int lengthOfMonth = date.lengthOfMonth();
+        final Set<Integer> candidates = new HashSet<>();
+
         if (daysOfMonthCronField.getExpression() instanceof Always && daysOfWeekCronField.getExpression() instanceof Always) {
-            candidates.addAll(createDayOfMonthValueGeneratorInstance(daysOfMonthCronField,
-                    year, month).generateCandidates(1, lengthOfMonth));
+            candidates.addAll(createDayOfMonthValueGeneratorInstance(daysOfMonthCronField, year, month)
+                    .generateCandidates(1, lengthOfMonth));
+
+        } else if (questionMarkSupported && daysOfMonthCronField.getExpression() instanceof QuestionMark) {
+            candidates.addAll(createDayOfWeekValueGeneratorInstance(daysOfWeekCronField, year, month, mondayDoWValue)
+                    .generateCandidates(1, lengthOfMonth));
+
+        } else if (questionMarkSupported && daysOfWeekCronField.getExpression() instanceof QuestionMark) {
+            candidates.addAll(createDayOfMonthValueGeneratorInstance(daysOfMonthCronField, year, month)
+                    .generateCandidates(1, lengthOfMonth));
+
         } else if (daysOfMonthCronField.getExpression() instanceof Always) {
-            candidates.addAll(createDayOfWeekValueGeneratorInstance(daysOfWeekCronField, 
-                    year, month, mondayDoWValue).generateCandidates(1, lengthOfMonth));
+            candidates.addAll(createDayOfWeekValueGeneratorInstance(daysOfWeekCronField, year, month, mondayDoWValue)
+                    .generateCandidates(1, lengthOfMonth));
+
         } else if (daysOfWeekCronField.getExpression() instanceof Always) {
-            candidates.addAll(createDayOfMonthValueGeneratorInstance(daysOfMonthCronField,
-                    year, month).generateCandidates(1, lengthOfMonth));
+            candidates.addAll(createDayOfMonthValueGeneratorInstance(daysOfMonthCronField, year, month)
+                    .generateCandidates(1, lengthOfMonth));
+
         } else {
-            List<Integer> dayOfWeekCandidates = createDayOfWeekValueGeneratorInstance(daysOfWeekCronField,
-                year, month, mondayDoWValue).generateCandidates(1, lengthOfMonth);
-            List<Integer> dayOfMonthCandidates = createDayOfMonthValueGeneratorInstance(daysOfMonthCronField, year, month)
-                .generateCandidates(1, lengthOfMonth);
+            final List<Integer> dayOfWeekCandidates = createDayOfWeekValueGeneratorInstance(daysOfWeekCronField,
+                    year, month, mondayDoWValue).generateCandidates(1, lengthOfMonth);
+            final List<Integer> dayOfMonthCandidates = createDayOfMonthValueGeneratorInstance(daysOfMonthCronField, year, month)
+                    .generateCandidates(1, lengthOfMonth);
             if (cronDefinition.isMatchDayOfWeekAndDayOfMonth()){
-                Set<Integer> dayOfWeekCandidatesSet = Sets.newHashSet(dayOfWeekCandidates);
-                Set<Integer> dayOfMonthCandidatesSet = Sets.newHashSet(dayOfMonthCandidates);
+                final Set<Integer> dayOfWeekCandidatesSet = Sets.newHashSet(dayOfWeekCandidates);
+                final Set<Integer> dayOfMonthCandidatesSet = Sets.newHashSet(dayOfMonthCandidates);
                 candidates.addAll(Sets.intersection(dayOfMonthCandidatesSet, dayOfWeekCandidatesSet));
             }
             else {
@@ -582,30 +590,8 @@ public class ExecutionTime {
                 candidates.addAll(dayOfMonthCandidates);
             }
         }
-        List<Integer> candidatesList = new ArrayList<>(candidates);
-		Collections.sort(candidatesList);
-		return candidatesList;
-	}
 
-    private List<Integer> generateDayCandidatesQuestionMarkSupportedUsingDoWAndDoM(int year, int month, WeekDay mondayDoWValue){
-        LocalDate date = LocalDate.of(year, month, 1);
-        int lengthOfMonth = date.lengthOfMonth();
-        Set<Integer> candidates = new HashSet<>();
-        if (daysOfMonthCronField.getExpression() instanceof Always && daysOfWeekCronField.getExpression() instanceof Always) {
-            candidates.addAll(createDayOfMonthValueGeneratorInstance(daysOfMonthCronField, year, month)
-                    .generateCandidates(1, lengthOfMonth));
-        } else if (daysOfMonthCronField.getExpression() instanceof QuestionMark) {
-            candidates.addAll(createDayOfWeekValueGeneratorInstance(daysOfWeekCronField, year, month, mondayDoWValue).generateCandidates(1, lengthOfMonth));
-        } else if (daysOfWeekCronField.getExpression() instanceof QuestionMark) {
-            candidates.addAll(createDayOfMonthValueGeneratorInstance(daysOfMonthCronField, year, month)
-                    .generateCandidates(1, lengthOfMonth));
-        } else {
-            candidates.addAll(createDayOfWeekValueGeneratorInstance(daysOfWeekCronField, year, month, mondayDoWValue)
-                    .generateCandidates(1, lengthOfMonth));
-            candidates.addAll(createDayOfMonthValueGeneratorInstance(daysOfMonthCronField, year, month)
-                    .generateCandidates(1, lengthOfMonth));
-        }
-        List<Integer> candidatesList = new ArrayList<>(candidates);
+        final List<Integer> candidatesList = new ArrayList<>(candidates);
         Collections.sort(candidatesList);
         return candidatesList;
     }

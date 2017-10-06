@@ -1,6 +1,7 @@
 package com.cronutils.model.time;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.threeten.bp.ZoneOffset.UTC;
 
@@ -167,5 +168,49 @@ public class ExecutionTimeCustomDefinitionIntegrationTest {
             assertTrue(executionTime.isMatch(start)==(start.getDayOfMonth()==5));
             start = start.plusMinutes(1);
         }
+    }
+
+    /**
+     * If the question mark is supported on the day of week, make sure that specific days of the month / days of the week
+     * still work in the cron definition.
+     */
+    @Test
+    public void testSupportsQuestionMarkDayOfWeekWrongDay() {
+        final CronDefinition cronDefinition = CronDefinitionBuilder.defineCron()
+                .withSeconds().and()
+                .withMinutes().and()
+                .withHours().and()
+                .withDayOfMonth().supportsQuestionMark().and()
+                .withMonth().and()
+                .withDayOfWeek().withValidRange(1, 7).supportsQuestionMark().and()
+                .instance();
+
+        final CronParser parser = new CronParser(cronDefinition);
+
+        /*
+         * Put the asterisk on day of week
+         */
+        final Cron dayOfMonthCron = parser.parse("* * 0-10 8 10 *");
+        ExecutionTime dayOfMonthExecutionTime = ExecutionTime.forCron(dayOfMonthCron);
+
+        ZonedDateTime wrongDay = ZonedDateTime.of(2017, 10, 5, 7, 0, 0,
+                0, ZoneId.of("US/Eastern"));
+
+        assertFalse(dayOfMonthExecutionTime.isMatch(wrongDay));
+
+        ZonedDateTime rightDay = ZonedDateTime.of(2017, 10, 8, 7, 0, 0,
+                0, ZoneId.of("US/Eastern"));
+
+        assertTrue(dayOfMonthExecutionTime.isMatch(rightDay));
+
+        /*
+         * Now put the asterisk on day of month
+         */
+        final Cron dayOfWeekCron = parser.parse("* * 0-10 * 10 SUN,MON,TUE,WED");
+        ExecutionTime executionTime = ExecutionTime.forCron(dayOfWeekCron);
+
+        assertFalse(executionTime.isMatch(wrongDay));
+
+        assertTrue(executionTime.isMatch(rightDay));
     }
 }
