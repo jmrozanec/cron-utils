@@ -303,7 +303,7 @@ public class ExecutionTime {
         try {
             days = generateDays(cronDefinition, date);
         } catch (NoDaysForMonthException e) {
-            return new ExecutionTimeResult(date.minusMonths(1), false);
+            return new ExecutionTimeResult(toEndOfPreviousMonth(date), false);
         }
         int highestMonth = months.getValues().get(months.getValues().size()-1);
         int highestDay = days.getValues().get(days.getValues().size()-1);
@@ -382,6 +382,14 @@ public class ExecutionTime {
             return initDateTime(date.getYear(), date.getMonthValue(), date.getDayOfMonth(), date.getHour(), date.getMinute(), previousSeconds, date.getZone());
         }
         return new ExecutionTimeResult(date, true);
+    }
+    
+    private ZonedDateTime toEndOfPreviousMonth(final ZonedDateTime datetime) {
+        final ZonedDateTime previousMonth = datetime.minusMonths(1).with(lastDayOfMonth());
+        int highestHour = hours.getValues().get(hours.getValues().size()-1);
+        int highestMinute = minutes.getValues().get(minutes.getValues().size()-1);
+        int highestSecond = seconds.getValues().get(seconds.getValues().size()-1);
+        return ZonedDateTime.of(previousMonth.getYear(), previousMonth.getMonth().getValue(), previousMonth.getDayOfMonth(), highestHour, highestMinute, highestSecond, 0, previousMonth.getZone());
     }
 
     private TimeNode generateDays(CronDefinition cronDefinition, ZonedDateTime date) throws NoDaysForMonthException {

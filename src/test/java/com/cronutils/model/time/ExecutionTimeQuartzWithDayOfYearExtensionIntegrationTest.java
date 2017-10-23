@@ -10,6 +10,7 @@ import com.cronutils.parser.CronParser;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.threeten.bp.ZoneId;
 import org.threeten.bp.ZonedDateTime;
 import org.threeten.bp.temporal.ChronoUnit;
 
@@ -62,6 +63,15 @@ public class ExecutionTimeQuartzWithDayOfYearExtensionIntegrationTest {
         assertEquals(expected, executionTime.nextExecution(now).get());
     }
 
+    @Test
+    public void testNextExecutionEveryTwoWeeksStartingWithFirstDayOfYearIssue249() {
+        ZonedDateTime now = truncateToDays(ZonedDateTime.now());
+        int dayOfYear = now.getDayOfYear();
+        int dayOfMostRecentPeriod = dayOfYear % 14;
+        ZonedDateTime expected = now.plusDays(15-dayOfMostRecentPeriod);
+        ExecutionTime executionTime = ExecutionTime.forCron(parser.parse(BI_WEEKLY_STARTING_WITH_FIRST_DAY_OF_YEAR));
+        assertEquals(expected, executionTime.nextExecution(now).get());
+    }
 
     @Test
     public void testLastExecutionEveryTwoWeeksStartingWithFirstDayOfYear() {
@@ -73,7 +83,16 @@ public class ExecutionTimeQuartzWithDayOfYearExtensionIntegrationTest {
         assertEquals(expected, executionTime.lastExecution(now).get());
     }
 
-
+    @Test
+    public void testLastExecutionEveryTwoWeeksStartingWithFirstDayOfYearIssue249() {
+        //s m H DoM M DoW Y DoY
+        ZonedDateTime now = truncateToDays(ZonedDateTime.of(2017, 10, 7, 0, 0, 0, 0, ZoneId.of("America/Argentina/Buenos_Aires")));
+        int dayOfYear = now.getDayOfYear();
+        ZonedDateTime expected = truncateToDays(ZonedDateTime.of(2017, 9, 24, 0, 0, 0, 0, ZoneId.of("America/Argentina/Buenos_Aires")));
+        ExecutionTime executionTime = ExecutionTime.forCron(parser.parse(BI_WEEKLY_STARTING_WITH_FIRST_DAY_OF_YEAR));
+        assertEquals(expected, executionTime.lastExecution(now).get());
+    }
+    
     @Test
     public void testExecutionTimesEveryTwoWeeksStartingWithFirstDayOfYear() {
         final ZonedDateTime[] expectedExecutionTimes = new ZonedDateTime[] {
