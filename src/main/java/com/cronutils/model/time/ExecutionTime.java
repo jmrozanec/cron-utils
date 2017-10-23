@@ -25,6 +25,7 @@ import org.threeten.bp.LocalDate;
 import org.threeten.bp.LocalDateTime;
 import org.threeten.bp.ZoneId;
 import org.threeten.bp.ZonedDateTime;
+import org.threeten.bp.temporal.ChronoUnit;
 
 import com.cronutils.mapper.WeekDay;
 import com.cronutils.model.Cron;
@@ -41,7 +42,7 @@ import com.cronutils.utils.Preconditions;
 import com.cronutils.utils.VisibleForTesting;
 import com.google.common.base.Optional;
 import com.google.common.collect.Range;
-import org.threeten.bp.temporal.ChronoUnit;
+import com.google.common.base.MoreObjects;
 
 import static com.cronutils.model.field.CronFieldName.*;
 import static com.cronutils.model.time.generator.FieldValueGeneratorFactory.createDayOfYearValueGeneratorInstance;
@@ -63,7 +64,7 @@ import static com.cronutils.model.time.generator.FieldValueGeneratorFactory.crea
  * Calculates execution time given a cron pattern
  */
 public class ExecutionTime {
-	  private CronDefinition cronDefinition;
+	private CronDefinition cronDefinition;
     private FieldValueGenerator yearsValueGenerator;
     private CronField daysOfWeekCronField;
     private CronField daysOfMonthCronField;
@@ -175,21 +176,21 @@ public class ExecutionTime {
 
         NearestValue nearestValue;
         ZonedDateTime newDate;
-        if(year.isEmpty()){
+        if (year.isEmpty()) {
             int newYear = yearsValueGenerator.generateNextValue(date.getYear());
             try {
                 days = generateDays(cronDefinition, ZonedDateTime.of(LocalDateTime.of(newYear, lowestMonth, 1, 0, 0), date.getZone()));
             } catch (NoDaysForMonthException e) {
-                return new ExecutionTimeResult(date.plusMonths(1), false);
+                return new ExecutionTimeResult(toBeginOfNextMonth(date), false);
             }
             return initDateTime(yearsValueGenerator.generateNextValue(date.getYear()), lowestMonth, days.getValues().get(0), lowestHour, lowestMinute, lowestSecond, date.getZone());
         }
-        if(!months.getValues().contains(date.getMonthValue())) {
+        if (!months.getValues().contains(date.getMonthValue())) {
             nearestValue = months.getNextValue(date.getMonthValue(), 0);
             int nextMonths = nearestValue.getValue();
             if(nearestValue.getShifts()>0){
                 newDate =
-                    ZonedDateTime.of(LocalDateTime.of(date.getYear(), 1, 1, 0, 0, 0), date.getZone()).plusYears(nearestValue.getShifts());
+                        ZonedDateTime.of(LocalDateTime.of(date.getYear(), 1, 1, 0, 0, 0), date.getZone()).plusYears(nearestValue.getShifts());
                 return new ExecutionTimeResult(newDate, false);
             }
             if (nearestValue.getValue() < date.getMonthValue()) {
@@ -199,14 +200,14 @@ public class ExecutionTime {
             try {
                 days = generateDays(cronDefinition, ZonedDateTime.of(LocalDateTime.of(date.getYear(), nextMonths, 1, 0, 0), date.getZone()));
             } catch (NoDaysForMonthException e) {
-                return new ExecutionTimeResult(date.plusMonths(1), false);
+                return new ExecutionTimeResult(toBeginOfNextMonth(date), false);
             }
             return initDateTime(date.getYear(), nextMonths, days.getValues().get(0), lowestHour, lowestMinute, lowestSecond, date.getZone());
         }
         try {
             days = generateDays(cronDefinition, date);
         } catch (NoDaysForMonthException e) {
-            return new ExecutionTimeResult(date.plusMonths(1), false);
+            return new ExecutionTimeResult(toBeginOfNextMonth(date), false);
         }
         if(!days.getValues().contains(date.getDayOfMonth())) {
             nearestValue = days.getNextValue(date.getDayOfMonth(), 0);
@@ -272,6 +273,14 @@ public class ExecutionTime {
         }
         return new ExecutionTimeResult(date, true);
     }
+    
+    private ZonedDateTime toBeginOfNextMonth(final ZonedDateTime datetime) {
+        final ZonedDateTime nextMonth = datetime.plusMonths(1);
+        final int lowestHour = hours.getValues().get(0).intValue();
+        final int lowestMinute = minutes.getValues().get(0).intValue();
+        final int lowestSecond = seconds.getValues().get(0).intValue();
+        return ZonedDateTime.of(nextMonth.getYear(), nextMonth.getMonth().getValue(), 1, lowestHour, lowestMinute, lowestSecond, 0, nextMonth.getZone());
+    }
 
     /**
      * If date is not match, will return previous closest match.
@@ -294,7 +303,7 @@ public class ExecutionTime {
         try {
             days = generateDays(cronDefinition, date);
         } catch (NoDaysForMonthException e) {
-            return new ExecutionTimeResult(date.minusMonths(1), false);
+            return new ExecutionTimeResult(toEndOfPreviousMonth(date), false);
         }
         int highestMonth = months.getValues().get(months.getValues().size()-1);
         int highestDay = days.getValues().get(days.getValues().size()-1);
@@ -373,6 +382,14 @@ public class ExecutionTime {
             return initDateTime(date.getYear(), date.getMonthValue(), date.getDayOfMonth(), date.getHour(), date.getMinute(), previousSeconds, date.getZone());
         }
         return new ExecutionTimeResult(date, true);
+    }
+    
+    private ZonedDateTime toEndOfPreviousMonth(final ZonedDateTime datetime) {
+        final ZonedDateTime previousMonth = datetime.minusMonths(1).with(lastDayOfMonth());
+        int highestHour = hours.getValues().get(hours.getValues().size()-1);
+        int highestMinute = minutes.getValues().get(minutes.getValues().size()-1);
+        int highestSecond = seconds.getValues().get(seconds.getValues().size()-1);
+        return ZonedDateTime.of(previousMonth.getYear(), previousMonth.getMonth().getValue(), previousMonth.getDayOfMonth(), highestHour, highestMinute, highestSecond, 0, previousMonth.getZone());
     }
 
     private TimeNode generateDays(CronDefinition cronDefinition, ZonedDateTime date) throws NoDaysForMonthException {
@@ -680,7 +697,7 @@ public class ExecutionTime {
                 date.getMonthValue()==monthsOfYear && date.getYear()==years;
     }
 
-    private static class ExecutionTimeResult {
+    private static final class ExecutionTimeResult {
         private ZonedDateTime time;
         private boolean isMatch;
 
@@ -695,6 +712,11 @@ public class ExecutionTime {
 
         public boolean isMatch() {
             return isMatch;
+        }
+
+        @Override
+        public String toString() {
+            return MoreObjects.toStringHelper(this).add("time", time).add("isMatch", isMatch).toString();
         }
     }
 }
