@@ -6,6 +6,7 @@ import com.cronutils.model.definition.CronDefinitionBuilder;
 import com.cronutils.parser.CronParser;
 import com.google.common.base.Optional;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.threeten.bp.*;
 import org.threeten.bp.format.DateTimeFormatter;
@@ -649,7 +650,8 @@ public class ExecutionTimeQuartzIntegrationTest {
         assertEquals( expected, next );
     }
     
-    //@Test //#192
+    @Ignore("bug fix pending")
+    @Test //#192
     public void mustMatchLowerBoundDateMatchingCronExpressionRequirements() {
         CronParser parser = new CronParser( CronDefinitionBuilder.instanceDefinitionFor(QUARTZ));
         ZonedDateTime start = ZonedDateTime.of( 2017, 01, 1, 0, 0, 0, 0, ZoneId.systemDefault() );
