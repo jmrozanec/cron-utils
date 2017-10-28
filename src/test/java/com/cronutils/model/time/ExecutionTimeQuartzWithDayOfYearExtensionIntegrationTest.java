@@ -172,7 +172,11 @@ public class ExecutionTimeQuartzWithDayOfYearExtensionIntegrationTest {
         final ZonedDateTime startWithLastDayOf2015 = ZonedDateTime.of(2015, 12, 31, 0, 0, 0, 0, UTC);
         final String customQuaterlyStartingWithDay47OfYear = "0 0 0 ? * ? * 47/91";
         final ExecutionTime executionTime = ExecutionTime.forCron(parser.parse(customQuaterlyStartingWithDay47OfYear));
-        final ZonedDateTime[] expectedExecutionTimes = IntStream.range(0, 4).mapToObj(i -> firstDayOf2016.withDayOfYear(47 + i * 91)).toArray(ZonedDateTime[]::new);
+        //final ZonedDateTime[] expectedExecutionTimes = IntStream.range(0, 4).mapToObj(i -> firstDayOf2016.withDayOfYear(47 + i * 91)).toArray(ZonedDateTime[]::new);
+        ZonedDateTime[] expectedExecutionTimes = new ZonedDateTime[4];
+        for(int j=0; j<4; j++){
+            expectedExecutionTimes[j] = firstDayOf2016.withDayOfYear(47 + j * 91);
+        }
         ZonedDateTime start = startWithLastDayOf2015;
         for (final ZonedDateTime expectedExecutionTime: expectedExecutionTimes) {
             final ZonedDateTime actual = executionTime.nextExecution(start).get();
