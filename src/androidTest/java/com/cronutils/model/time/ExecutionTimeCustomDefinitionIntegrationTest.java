@@ -9,12 +9,12 @@ import com.cronutils.parser.CronParser;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.threeten.bp.ZoneId;
-import org.threeten.bp.ZonedDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.threeten.bp.ZoneOffset.UTC;
+import static java.time.ZoneOffset.UTC;
 
 @RunWith(AndroidJUnit4.class)
 public class ExecutionTimeCustomDefinitionIntegrationTest extends BaseAndroidTest {

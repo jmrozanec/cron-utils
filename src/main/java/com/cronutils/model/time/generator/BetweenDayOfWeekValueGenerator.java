@@ -18,7 +18,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.threeten.bp.LocalDate;
+import java.time.LocalDate;
 
 import com.cronutils.mapper.WeekDay;
 import com.cronutils.model.field.CronField;

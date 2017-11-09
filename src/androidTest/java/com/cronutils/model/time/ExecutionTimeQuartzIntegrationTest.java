@@ -11,12 +11,12 @@ import com.google.common.base.Optional;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.threeten.bp.format.DateTimeFormatter;
-import org.threeten.bp.temporal.ChronoUnit;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 
 import static com.cronutils.model.CronType.QUARTZ;
 import static org.junit.Assert.*;
-import static org.threeten.bp.ZoneOffset.UTC;
+import static java.time.ZoneOffset.UTC;
 
 /*
  * Copyright 2015 jmrozanec

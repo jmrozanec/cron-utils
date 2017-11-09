@@ -2,9 +2,9 @@ package com.cronutils.descriptor;
 
 import java.util.ResourceBundle;
 
-import org.threeten.bp.DayOfWeek;
-import org.threeten.bp.Month;
-import org.threeten.bp.format.TextStyle;
+import java.time.DayOfWeek;
+import java.time.Month;
+import java.time.format.TextStyle;
 
 import com.cronutils.Function;
 import com.cronutils.model.field.definition.DayOfWeekFieldDefinition;

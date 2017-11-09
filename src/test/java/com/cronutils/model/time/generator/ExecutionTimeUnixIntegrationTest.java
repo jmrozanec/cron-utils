@@ -2,7 +2,7 @@ package com.cronutils.model.time.generator;
 
 import com.google.common.base.Optional;
 import org.junit.Test;
-import org.threeten.bp.*;
+import java.time.*;
 
 import com.cronutils.model.Cron;
 import com.cronutils.model.CronType;

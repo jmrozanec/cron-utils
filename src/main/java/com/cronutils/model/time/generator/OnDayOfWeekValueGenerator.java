@@ -1,6 +1,6 @@
 package com.cronutils.model.time.generator;
-import org.threeten.bp.DayOfWeek;
-import org.threeten.bp.LocalDate;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
 
 import com.cronutils.mapper.ConstantsMapper;
 import com.cronutils.mapper.WeekDay;

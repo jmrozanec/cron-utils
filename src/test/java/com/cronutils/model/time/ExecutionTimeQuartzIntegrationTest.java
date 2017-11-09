@@ -8,14 +8,16 @@ import com.google.common.base.Optional;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.threeten.bp.*;
-import org.threeten.bp.format.DateTimeFormatter;
-import org.threeten.bp.temporal.ChronoUnit;
+import java.time.*;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 
 import java.util.Date;
+import java.util.TimeZone;
+
 import static com.cronutils.model.CronType.QUARTZ;
 import static org.junit.Assert.*;
-import static org.threeten.bp.ZoneOffset.UTC;
+import static java.time.ZoneOffset.UTC;
 
 /*
  * Copyright 2015 jmrozanec
@@ -570,10 +572,10 @@ public class ExecutionTimeQuartzIntegrationTest {
         ZonedDateTime cronUtilsNextTime = ExecutionTime.forCron(cron).nextExecution(date).get();// 2016-12-30T00:00:00Z
 
         org.quartz.CronExpression cronExpression = new org.quartz.CronExpression(cron.asString());
-        cronExpression.setTimeZone(DateTimeUtils.toTimeZone(utc));
-        Date quartzNextTime = cronExpression.getNextValidTimeAfter(DateTimeUtils.toDate(date.toInstant()));// 2016-12-24T00:00:00Z
+        cronExpression.setTimeZone(TimeZone.getTimeZone(utc));
+        Date quartzNextTime = cronExpression.getNextValidTimeAfter(Date.from(date.toInstant()));// 2016-12-24T00:00:00Z
 
-        assertEquals(expected.toInstant(), DateTimeUtils.toInstant(quartzNextTime));    // test the reference implementation
+        assertEquals(expected.toInstant(), quartzNextTime.toInstant());    // test the reference implementation
         assertEquals(expected.toInstant(), cronUtilsNextTime.toInstant()); // and compare with cronUtils
     }
 

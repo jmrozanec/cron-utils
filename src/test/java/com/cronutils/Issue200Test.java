@@ -6,8 +6,8 @@ import com.cronutils.model.definition.CronDefinitionBuilder;
 import com.cronutils.model.time.ExecutionTime;
 import com.cronutils.parser.CronParser;
 import org.junit.*;
-import org.threeten.bp.ZoneId;
-import org.threeten.bp.ZonedDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 
 import static com.cronutils.model.CronType.QUARTZ;
 import static org.junit.Assert.*;

@@ -9,10 +9,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.threeten.bp.DayOfWeek;
-import org.threeten.bp.Month;
-import org.threeten.bp.ZoneId;
-import org.threeten.bp.ZonedDateTime;
+import java.time.DayOfWeek;
+import java.time.Month;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 
 import com.cronutils.model.CronType;
 import com.cronutils.model.definition.CronDefinitionBuilder;
