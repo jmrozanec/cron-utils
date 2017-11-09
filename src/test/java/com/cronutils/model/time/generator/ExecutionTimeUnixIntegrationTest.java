@@ -1,6 +1,6 @@
 package com.cronutils.model.time.generator;
 
-import com.google.common.base.Optional;
+import java.util.Optional;
 import org.junit.Test;
 import java.time.*;
 

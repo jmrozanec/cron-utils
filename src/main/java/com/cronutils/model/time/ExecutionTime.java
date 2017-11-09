@@ -40,7 +40,7 @@ import com.cronutils.model.time.generator.NoDaysForMonthException;
 import com.cronutils.model.time.generator.NoSuchValueException;
 import com.cronutils.utils.Preconditions;
 import com.cronutils.utils.VisibleForTesting;
-import com.google.common.base.Optional;
+import java.util.Optional;
 import com.google.common.collect.Range;
 import com.google.common.base.MoreObjects;
 
@@ -147,7 +147,7 @@ public class ExecutionTime {
             }
             return Optional.of(nextMatch);
         } catch (NoSuchValueException e) {
-            return Optional.absent();
+            return Optional.empty();
         }
     }
 
@@ -477,7 +477,7 @@ public class ExecutionTime {
         if(next.isPresent()){
             return Optional.of(Duration.between(date, next.get()));
         }
-        return Optional.absent();
+        return Optional.empty();
     }
 
     /**
@@ -494,7 +494,7 @@ public class ExecutionTime {
             }
             return Optional.of(previousMatch);
         } catch (NoSuchValueException e) {
-            return Optional.absent();
+            return Optional.empty();
         }
     }
 
@@ -508,7 +508,7 @@ public class ExecutionTime {
         if(last.isPresent()){
             return Optional.of(Duration.between(last.get(), date));
         }
-        return Optional.absent();
+        return Optional.empty();
     }
 
     /**
