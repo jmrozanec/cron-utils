@@ -27,7 +27,7 @@ public enum CronFieldName {
      * @param order - specified order between cron fields.
      *              Used to be able to compare fields and sort them
      */
-    private CronFieldName(int order) {
+    CronFieldName(int order) {
         this.order = order;
     }
 

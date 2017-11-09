@@ -156,7 +156,7 @@ public class FieldConstraintsBuilder {
     public FieldConstraintsBuilder withShiftedStringMapping(int shiftSize){
         if (shiftSize > 0 || endRange < stringMapping.size())
             for(Entry<String, Integer> entry : stringMapping.entrySet()) {
-                int value = entry.getValue().intValue();
+                int value = entry.getValue();
                 value += shiftSize;
                 if(value > endRange) {
                     value -= stringMapping.size();
@@ -164,7 +164,7 @@ public class FieldConstraintsBuilder {
                 else if(value < startRange) {
                     value += (startRange - endRange);
                 }
-                stringMapping.put(entry.getKey(), Integer.valueOf(value));
+                stringMapping.put(entry.getKey(), value);
             }
         return this;
     }

@@ -2,13 +2,14 @@ package com.cronutils.model.time;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.junit.Before;
 import org.junit.Test;
 
-import com.google.common.collect.Lists;
 /*
  * Copyright 2015 jmrozanec
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -32,7 +33,7 @@ public class TimeNodeTest {
 
     @Before
     public void setUp() throws Exception {
-        values = Lists.newArrayList();
+        values = new ArrayList<>();
         values.add(LIST_START_VALUE);
         values.add(LIST_MEDIUM_VALUE);
         values.add(LIST_END_VALUE);
@@ -78,7 +79,7 @@ public class TimeNodeTest {
         int index = -1;
         int expectedShifts = 1;
         AtomicInteger shift = new AtomicInteger(0);
-        List<Integer> list = Lists.newArrayList(1, 2, 3, 4);
+        List<Integer> list = Arrays.asList(1, 2, 3, 4);
         int value = timeNode.getValueFromList(list, index, shift);
         assertEquals(String.format("Shift was: %s; expected: %s", shift.get(), expectedShifts), expectedShifts, shift.get());
         assertEquals((int)list.get(list.size()+index), value);
@@ -89,7 +90,7 @@ public class TimeNodeTest {
         int index = 1;
         int expectedShifts = 0;
         AtomicInteger shift = new AtomicInteger(0);
-        List<Integer> list = Lists.newArrayList(1, 2, 3, 4);
+        List<Integer> list = Arrays.asList(1, 2, 3, 4);
         int value = timeNode.getValueFromList(list, index, shift);
         assertEquals(String.format("Shift was: %s; expected: %s", shift.get(), expectedShifts), expectedShifts, shift.get());
         assertEquals((int)list.get(index), value);
@@ -97,7 +98,7 @@ public class TimeNodeTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void testGetValueFromListWithEmptyList(){
-        timeNode.getValueFromList(Lists.<Integer>newArrayList(), 0, new AtomicInteger(0));
+        timeNode.getValueFromList(new ArrayList<>(), 0, new AtomicInteger(0));
     }
 
     private void assertResult(int value, int shift, NearestValue nearestValue){

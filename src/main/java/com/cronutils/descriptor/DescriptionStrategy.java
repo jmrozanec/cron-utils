@@ -40,12 +40,7 @@ abstract class DescriptionStrategy {
 
 	public DescriptionStrategy(ResourceBundle bundle) {
 		this.bundle = bundle;
-		nominalValueFunction = new Function<Integer, String>() {
-			@Override
-			public String apply(Integer integer) {
-				return WHITE_SPACE + integer;
-			}
-		};
+		this.nominalValueFunction = integer -> WHITE_SPACE + integer;
 	}
 
 	/**

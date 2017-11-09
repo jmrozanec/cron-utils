@@ -8,7 +8,6 @@ import com.cronutils.parser.CronParser;
 import org.junit.Test;
 import java.time.ZonedDateTime;
 
-import org.junit.Before;
 import static org.junit.Assert.assertEquals;
 
 public class Issue228Test {

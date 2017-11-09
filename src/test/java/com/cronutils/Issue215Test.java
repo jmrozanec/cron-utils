@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.cronutils;
 
 import static org.junit.Assert.*;

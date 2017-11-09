@@ -1,12 +1,5 @@
 package com.cronutils.model.time;
 
-import static com.cronutils.model.field.CronFieldName.DAY_OF_MONTH;
-import static com.cronutils.model.field.CronFieldName.DAY_OF_WEEK;
-import static com.cronutils.model.field.CronFieldName.HOUR;
-import static com.cronutils.model.field.CronFieldName.MINUTE;
-import static com.cronutils.model.field.CronFieldName.MONTH;
-import static com.cronutils.model.field.CronFieldName.SECOND;
-import static com.cronutils.model.field.CronFieldName.YEAR;
 import static com.cronutils.model.field.value.SpecialChar.QUESTION_MARK;
 import static com.cronutils.model.time.generator.FieldValueGeneratorFactory.createDayOfMonthValueGeneratorInstance;
 import static com.cronutils.model.time.generator.FieldValueGeneratorFactory.createDayOfWeekValueGeneratorInstance;
@@ -276,9 +269,9 @@ public class ExecutionTime {
     
     private ZonedDateTime toBeginOfNextMonth(final ZonedDateTime datetime) {
         final ZonedDateTime nextMonth = datetime.plusMonths(1);
-        final int lowestHour = hours.getValues().get(0).intValue();
-        final int lowestMinute = minutes.getValues().get(0).intValue();
-        final int lowestSecond = seconds.getValues().get(0).intValue();
+        final int lowestHour = hours.getValues().get(0);
+        final int lowestMinute = minutes.getValues().get(0);
+        final int lowestSecond = seconds.getValues().get(0);
         return ZonedDateTime.of(nextMonth.getYear(), nextMonth.getMonth().getValue(), 1, lowestHour, lowestMinute, lowestSecond, 0, nextMonth.getZone());
     }
 
@@ -474,10 +467,7 @@ public class ExecutionTime {
      */
     public Optional<Duration> timeToNextExecution(ZonedDateTime date){
         Optional<ZonedDateTime> next = nextExecution(date);
-        if(next.isPresent()){
-            return Optional.of(Duration.between(date, next.get()));
-        }
-        return Optional.empty();
+        return next.map(zonedDateTime -> Duration.between(date, zonedDateTime));
     }
 
     /**
@@ -505,10 +495,7 @@ public class ExecutionTime {
      */
     public Optional<Duration> timeFromLastExecution(ZonedDateTime date){
         Optional<ZonedDateTime> last = lastExecution(date);
-        if(last.isPresent()){
-            return Optional.of(Duration.between(last.get(), date));
-        }
-        return Optional.empty();
+        return last.map(zonedDateTime -> Duration.between(zonedDateTime, date));
     }
 
     /**

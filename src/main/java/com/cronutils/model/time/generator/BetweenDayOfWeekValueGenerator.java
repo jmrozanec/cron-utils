@@ -76,13 +76,11 @@ class BetweenDayOfWeekValueGenerator extends FieldValueGenerator {
         int endDayOfWeek = 0;
         Object obj = between.getFrom().getValue();
         if (obj instanceof Integer) {
-        	Integer i = (Integer)obj;
-        	startDayOfWeek = i.intValue();
+            startDayOfWeek = (Integer)obj;
         }
         obj = between.getTo().getValue();
         if (obj instanceof Integer) {
-        	Integer i = (Integer)obj;
-        	endDayOfWeek = i.intValue();
+            endDayOfWeek = (Integer)obj;
         }
         
         for (int i = startDayOfWeek; i <= endDayOfWeek; i++) {

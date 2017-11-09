@@ -159,10 +159,10 @@ public class CronDefinitionBuilder {
      * @return returns CronDefinition instance, never null
      */
     public CronDefinition instance() {
-        Set<CronConstraint> validations = new HashSet<CronConstraint>();
+        Set<CronConstraint> validations = new HashSet<>();
         validations.addAll(cronConstraints);
         List<FieldDefinition> values = new ArrayList<>(fields.values());
-        Collections.sort(values, FieldDefinition.createFieldDefinitionComparator());
+        values.sort(FieldDefinition.createFieldDefinitionComparator());
         return new CronDefinition(values, validations, enforceStrictRanges, matchDayOfWeekAndDayOfMonth);
     }
 
