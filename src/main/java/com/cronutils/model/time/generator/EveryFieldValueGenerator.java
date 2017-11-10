@@ -3,10 +3,6 @@ package com.cronutils.model.time.generator;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import java.time.ZonedDateTime;
-
 import com.cronutils.model.field.CronField;
 import com.cronutils.model.field.expression.Between;
 import com.cronutils.model.field.expression.Every;
@@ -26,8 +22,7 @@ import com.cronutils.utils.VisibleForTesting;
  * limitations under the License.
  */
 class EveryFieldValueGenerator extends FieldValueGenerator {
-    private static final Logger log = LoggerFactory.getLogger(EveryFieldValueGenerator.class);
-    
+
     private final int from;
     private final int to;
 
@@ -46,11 +41,6 @@ class EveryFieldValueGenerator extends FieldValueGenerator {
             from =cronField.getConstraints().getStartRange();
             to = cronField.getConstraints().getEndRange();
         }
-        
-        log.trace(String.format(
-                "processing \"%s\" at %s",
-                cronField.getExpression().asString(), ZonedDateTime.now()
-        ));
     }
 
     @Override
