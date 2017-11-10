@@ -13,7 +13,6 @@ import com.cronutils.model.CronType;
 import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.field.constraint.FieldConstraints;
 import com.cronutils.model.field.definition.FieldDefinition;
-import com.cronutils.model.field.value.SpecialChar;
 import com.cronutils.parser.CronParser;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
@@ -112,9 +111,9 @@ public class CronDefinitionBuilderTest {
                 new FieldDefinition(
                     CronFieldName.SECOND,
                     new FieldConstraints(
-                            Maps.<String, Integer>newHashMap(),
-                            Maps.<Integer, Integer>newHashMap(),
-                            Sets.<SpecialChar>newHashSet(),0, 1)
+                            Maps.newHashMap(),
+                            Maps.newHashMap(),
+                            Sets.newHashSet(),0, 1)
         );
         builder.register(testFieldDefinition);
         Set<FieldDefinition> definitions = builder.instance().getFieldDefinitions();

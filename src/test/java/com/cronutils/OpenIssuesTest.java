@@ -3,8 +3,8 @@ package com.cronutils;
 import java.text.ParseException;
 
 import org.junit.Test;
-import org.threeten.bp.ZonedDateTime;
-import org.threeten.bp.format.DateTimeFormatter;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 
 import com.cronutils.model.Cron;
 import com.cronutils.model.CronType;

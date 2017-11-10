@@ -7,9 +7,9 @@ import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.threeten.bp.Instant;
-import org.threeten.bp.ZoneOffset;
-import org.threeten.bp.ZonedDateTime;
+import java.time.Instant;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 
 import com.cronutils.model.Cron;
 import com.cronutils.model.definition.CronConstraint;

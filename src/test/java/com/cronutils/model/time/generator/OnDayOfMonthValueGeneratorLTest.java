@@ -8,7 +8,7 @@ import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.threeten.bp.LocalDate;
+import java.time.LocalDate;
 
 import com.cronutils.model.field.CronField;
 import com.cronutils.model.field.CronFieldName;

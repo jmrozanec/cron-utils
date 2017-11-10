@@ -50,7 +50,7 @@ class TimeNode {
      */
     @VisibleForTesting
     NearestValue getNearestForwardValue(int reference, int shiftsToApply){
-        List<Integer> values = new ArrayList<Integer>(this.values);
+        List<Integer> values = new ArrayList<>(this.values);
         int index=0;
         boolean foundGreater = false;
         AtomicInteger shift = new AtomicInteger(0);
@@ -87,7 +87,7 @@ class TimeNode {
      */
     @VisibleForTesting
     NearestValue getNearestBackwardValue(int reference, int shiftsToApply){
-        List<Integer> values = new ArrayList<Integer>(this.values);
+        List<Integer> values = new ArrayList<>(this.values);
         Collections.reverse(values);
         int index=0;
         boolean foundSmaller=false;

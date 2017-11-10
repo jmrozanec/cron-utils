@@ -9,7 +9,7 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-import org.threeten.bp.ZonedDateTime;
+import java.time.ZonedDateTime;
 
 import com.cronutils.builder.CronBuilder;
 import com.cronutils.descriptor.CronDescriptor;

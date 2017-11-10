@@ -14,12 +14,7 @@ public class ValueMappingFieldExpressionVisitorTest {
 
     @Before
     public void setUp() throws Exception {
-        Function<FieldValue, FieldValue> transform = new Function<FieldValue, FieldValue>() {
-            @Override
-            public FieldValue apply(FieldValue input) {
-                return input;
-            }
-        };
+        Function<FieldValue, FieldValue> transform = input -> input;
         this.valueMappingFieldExpressionVisitor = new ValueMappingFieldExpressionVisitor(transform);
     }
 

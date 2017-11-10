@@ -75,7 +75,7 @@ public class CronDefinition implements Serializable {
      * @return Set of FieldDefinition instances, never null.
      */
     public Set<FieldDefinition> getFieldDefinitions(){
-        return new HashSet<FieldDefinition>(fieldDefinitions.values());
+        return new HashSet<>(fieldDefinitions.values());
     }
 
     /**

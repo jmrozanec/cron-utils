@@ -65,11 +65,11 @@ public class Cron implements Serializable {
 
     public String asString(){
         if(asString == null){
-            ArrayList<CronField> fields = new ArrayList<CronField>(this.fields.values());
-            Collections.sort(fields, CronField.createFieldComparator());
+            ArrayList<CronField> fields = new ArrayList<>(this.fields.values());
+            fields.sort(CronField.createFieldComparator());
             StringBuilder builder = new StringBuilder();
-            for(int j =0; j<fields.size(); j++){
-                builder.append(String.format("%s ", fields.get(j).getExpression().asString()));
+            for (CronField field : fields) {
+                builder.append(String.format("%s ", field.getExpression().asString()));
             }
             asString = builder.toString().trim();
         }

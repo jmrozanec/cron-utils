@@ -6,9 +6,8 @@ import com.cronutils.model.definition.CronDefinitionBuilder;
 import com.cronutils.model.time.ExecutionTime;
 import com.cronutils.parser.CronParser;
 import org.junit.Test;
-import org.threeten.bp.ZonedDateTime;
+import java.time.ZonedDateTime;
 
-import org.junit.Before;
 import static org.junit.Assert.assertEquals;
 
 public class Issue228Test {

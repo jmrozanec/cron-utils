@@ -2,11 +2,11 @@ package com.cronutils.model.time;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.threeten.bp.ZoneOffset.UTC;
+import static java.time.ZoneOffset.UTC;
 
 import org.junit.Test;
-import org.threeten.bp.ZoneId;
-import org.threeten.bp.ZonedDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 
 import com.cronutils.model.Cron;
 import com.cronutils.model.definition.CronDefinition;

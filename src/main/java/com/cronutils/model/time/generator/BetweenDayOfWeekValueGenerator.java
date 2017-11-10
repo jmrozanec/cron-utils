@@ -18,7 +18,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.threeten.bp.LocalDate;
+import java.time.LocalDate;
 
 import com.cronutils.mapper.WeekDay;
 import com.cronutils.model.field.CronField;
@@ -76,13 +76,11 @@ class BetweenDayOfWeekValueGenerator extends FieldValueGenerator {
         int endDayOfWeek = 0;
         Object obj = between.getFrom().getValue();
         if (obj instanceof Integer) {
-        	Integer i = (Integer)obj;
-        	startDayOfWeek = i.intValue();
+            startDayOfWeek = (Integer)obj;
         }
         obj = between.getTo().getValue();
         if (obj instanceof Integer) {
-        	Integer i = (Integer)obj;
-        	endDayOfWeek = i.intValue();
+            endDayOfWeek = (Integer)obj;
         }
         
         for (int i = startDayOfWeek; i <= endDayOfWeek; i++) {

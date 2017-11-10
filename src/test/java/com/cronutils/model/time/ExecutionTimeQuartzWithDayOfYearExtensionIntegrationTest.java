@@ -1,7 +1,7 @@
 package com.cronutils.model.time;
 
 import static org.junit.Assert.assertEquals;
-import static org.threeten.bp.ZoneOffset.UTC;
+import static java.time.ZoneOffset.UTC;
 
 import com.cronutils.model.CronType;
 import com.cronutils.model.definition.CronDefinitionBuilder;
@@ -10,11 +10,9 @@ import com.cronutils.parser.CronParser;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.threeten.bp.ZoneId;
-import org.threeten.bp.ZonedDateTime;
-import org.threeten.bp.temporal.ChronoUnit;
-
-import java.util.stream.IntStream;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
 
 
 /*

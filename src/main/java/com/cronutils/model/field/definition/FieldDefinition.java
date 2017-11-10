@@ -82,12 +82,7 @@ public class FieldDefinition implements Serializable {
      * @return Comparator for FieldDefinition instance, never null;
      */
     public static Comparator<FieldDefinition> createFieldDefinitionComparator() {
-        return new Comparator<FieldDefinition>() {
-            @Override
-            public int compare(FieldDefinition o1, FieldDefinition o2) {
-                return o1.getFieldName().getOrder() - o2.getFieldName().getOrder();
-            }
-        };
+        return Comparator.comparingInt(o -> o.getFieldName().getOrder());
     }
 }
 
