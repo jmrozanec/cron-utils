@@ -16,7 +16,7 @@ cron-utils is available on [Maven central](http://search.maven.org/#search%7Cga%
     <dependency>
         <groupId>com.cronutils</groupId>
         <artifactId>cron-utils</artifactId>
-        <version>6.0.4</version>
+        <version>7.0.0</version>
     </dependency>
 
 
