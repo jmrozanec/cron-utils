@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.cronutils.model.field.CronField;
 import com.cronutils.model.field.expression.FieldExpression;
+
 /*
  * Copyright 2015 jmrozanec
  * Licensed under the Apache License, Version 2.0 (the "License");

@@ -46,7 +46,7 @@ public class CronField implements Serializable {
     public static Comparator<CronField> createFieldComparator() {
         return Comparator.comparingInt(o -> o.getField().getOrder());
     }
-    
+
     @Override
     public String toString() {
         return MoreObjects.toStringHelper(this).add("field", field).toString();

@@ -1,8 +1,5 @@
 package com.cronutils.model.field.definition;
 
-import java.io.Serializable;
-import java.util.Comparator;
-
 /*
  * Copyright 2014 jmrozanec
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,6 +12,9 @@ import java.util.Comparator;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+import java.io.Serializable;
+import java.util.Comparator;
 
 import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.field.constraint.FieldConstraints;
@@ -29,32 +29,35 @@ public class FieldDefinition implements Serializable {
     private final boolean optional;
 
     /**
-     * Mandatory field Constructor
-     * @param fieldName - CronFieldName; name of the field
-     *                  if null, a NullPointerException will be raised.
+     * Mandatory field Constructor.
+     *
+     * @param fieldName   - CronFieldName; name of the field
+     *                    if null, a NullPointerException will be raised.
      * @param constraints - FieldConstraints, constraints;
      *                    if null, a NullPointerException will be raised.
-     */                    
-    public FieldDefinition(CronFieldName fieldName, FieldConstraints constraints){
+     */
+    public FieldDefinition(CronFieldName fieldName, FieldConstraints constraints) {
         this(fieldName, constraints, false);
     }
-    
+
     /**
-     * Constructor
-     * @param fieldName - CronFieldName; name of the field
-     *                  if null, a NullPointerException will be raised.
+     * Constructor.
+     *
+     * @param fieldName   - CronFieldName; name of the field
+     *                    if null, a NullPointerException will be raised.
      * @param constraints - FieldConstraints, constraints;
      *                    if null, a NullPointerException will be raised.
-     * @param optional - if {@code false} the field is mandatory, optional otheriwse.                   
+     * @param optional    - if {@code false} the field is mandatory, optional otheriwse.
      */
-    public FieldDefinition(CronFieldName fieldName, FieldConstraints constraints, boolean optional){
+    public FieldDefinition(CronFieldName fieldName, FieldConstraints constraints, boolean optional) {
         this.fieldName = Preconditions.checkNotNull(fieldName, "CronFieldName must not be null");
         this.constraints = Preconditions.checkNotNull(constraints, "FieldConstraints must not be null");
         this.optional = optional;
     }
 
     /**
-     * Retrieve field name
+     * Retrieve field name.
+     *
      * @return CronFieldName instance, never null;
      */
     public CronFieldName getFieldName() {
@@ -62,15 +65,17 @@ public class FieldDefinition implements Serializable {
     }
 
     /**
-     * Get field constraints
+     * Get field constraints.
+     *
      * @return FieldConstraints instance, never null;
      */
     public FieldConstraints getConstraints() {
         return constraints;
     }
-    
+
     /**
-     * Get optional tag
+     * Get optional tag.
+     *
      * @return optional tag
      */
     public boolean isOptional() {
@@ -79,6 +84,7 @@ public class FieldDefinition implements Serializable {
 
     /**
      * Creates a field definition comparator. Will compare by CronFieldName order value;
+     *
      * @return Comparator for FieldDefinition instance, never null;
      */
     public static Comparator<FieldDefinition> createFieldDefinitionComparator() {

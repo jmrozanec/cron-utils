@@ -25,51 +25,47 @@ import com.cronutils.utils.Preconditions;
  */
 public abstract class FieldValueGenerator {
 
-	protected static final int NO_VALUE = Integer.MIN_VALUE;
-	protected CronField cronField;
+    protected static final int NO_VALUE = Integer.MIN_VALUE;
+    protected CronField cronField;
 
-	public FieldValueGenerator(CronField cronField) {
-		this.cronField = Preconditions.checkNotNull(cronField, "CronField must not be null");
-		Preconditions.checkArgument(matchesFieldExpressionClass(cronField.getExpression()), "FieldExpression does not match required class");
-	}
+    public FieldValueGenerator(CronField cronField) {
+        this.cronField = Preconditions.checkNotNull(cronField, "CronField must not be null");
+        Preconditions.checkArgument(matchesFieldExpressionClass(cronField.getExpression()), "FieldExpression does not match required class");
+    }
 
-	/**
-	 * Generates next valid value from reference
-	 * 
-	 * @param reference
-	 *            - reference value
-	 * @return generated value - Integer
-	 * @throws NoSuchValueException
-	 *             - if there is no next value
-	 */
-	public abstract int generateNextValue(int reference) throws NoSuchValueException;
+    /**
+     * Generates next valid value from reference.
+     *
+     * @param reference - reference value
+     * @return generated value - Integer
+     * @throws NoSuchValueException - if there is no next value
+     */
+    public abstract int generateNextValue(int reference) throws NoSuchValueException;
 
-	/**
-	 * Generates previous valid value from reference
-	 * 
-	 * @param reference
-	 *            - reference value
-	 * @return generated value - Integer
-	 * @throws NoSuchValueException
-	 *             - if there is no previous value
-	 */
-	public abstract int generatePreviousValue(int reference) throws NoSuchValueException;
+    /**
+     * Generates previous valid value from reference.
+     *
+     * @param reference - reference value
+     * @return generated value - Integer
+     * @throws NoSuchValueException - if there is no previous value
+     */
+    public abstract int generatePreviousValue(int reference) throws NoSuchValueException;
 
-	protected abstract List<Integer> generateCandidatesNotIncludingIntervalExtremes(int start, int end);
+    protected abstract List<Integer> generateCandidatesNotIncludingIntervalExtremes(int start, int end);
 
-	public abstract boolean isMatch(int value);
+    public abstract boolean isMatch(int value);
 
-	public final List<Integer> generateCandidates(int start, int end) {
-		List<Integer> candidates = generateCandidatesNotIncludingIntervalExtremes(start, end);
-		if (isMatch(start)) {
-			candidates.add(start);
-		}
-		if (isMatch(end)) {
-			candidates.add(end);
-		}
-		Collections.sort(candidates);
-		return candidates;
-	}
+    public final List<Integer> generateCandidates(int start, int end) {
+        List<Integer> candidates = generateCandidatesNotIncludingIntervalExtremes(start, end);
+        if (isMatch(start)) {
+            candidates.add(start);
+        }
+        if (isMatch(end)) {
+            candidates.add(end);
+        }
+        Collections.sort(candidates);
+        return candidates;
+    }
 
-	protected abstract boolean matchesFieldExpressionClass(FieldExpression fieldExpression);
+    protected abstract boolean matchesFieldExpressionClass(FieldExpression fieldExpression);
 }

@@ -12,6 +12,7 @@ package com.cronutils.model.field.expression.visitor;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 import com.cronutils.model.field.expression.Always;
 import com.cronutils.model.field.expression.And;
 import com.cronutils.model.field.expression.Between;
@@ -21,7 +22,7 @@ import com.cronutils.model.field.expression.On;
 import com.cronutils.model.field.expression.QuestionMark;
 
 /**
- * Visitor for custom actions performed on FieldExpression instances
+ * Visitor for custom actions performed on FieldExpression instances.
  */
 public interface FieldExpressionVisitor {
     /**
@@ -29,48 +30,55 @@ public interface FieldExpressionVisitor {
      * If requires to modify some value,
      * should return a new instance with those values.
      * This way we ensure immutability is preserved.
+     *
      * @param expression - FieldExpression, never null
      * @return FieldExpression instance, never null
      */
     FieldExpression visit(FieldExpression expression);
 
     /**
-     * Performs action on Always instance
+     * Performs action on Always instance.
+     *
      * @param always - Always instance, never null
      * @return FieldExpression instance, never null
      */
     FieldExpression visit(Always always);
 
     /**
-     * Performs action on And instance
+     * Performs action on And instance.
+     *
      * @param and - And instance, never null
      * @return FieldExpression instance, never null
      */
     FieldExpression visit(And and);
 
     /**
-     * Performs action on Between instance
+     * Performs action on Between instance.
+     *
      * @param between - Between instance, never null
      * @return FieldExpression instance, never null
      */
     FieldExpression visit(Between between);
 
     /**
-     * Performs action on Every instance
+     * Performs action on Every instance.
+     *
      * @param every - Every instance, never null
      * @return FieldExpression instance, never null
      */
     FieldExpression visit(Every every);
 
     /**
-     * Performs action on On instance
+     * Performs action on On instance.
+     *
      * @param on - On instance, never null
      * @return FieldExpression instance, never null
      */
     FieldExpression visit(On on);
 
     /**
-     * Performs action on QuestionMark instance
+     * Performs action on QuestionMark instance.
+     *
      * @param questionMark - QuestionMark instance, never null
      * @return FieldExpression instance, never null
      */

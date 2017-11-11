@@ -17,38 +17,39 @@ import java.util.List;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 /**
  * Represents a conjunction of cron expressions for a field.
  */
 public class And extends FieldExpression {
-	private final List<FieldExpression> expressions;
+    private final List<FieldExpression> expressions;
 
-	public And() {
-		expressions = new ArrayList<>();
-	}
+    public And() {
+        expressions = new ArrayList<>();
+    }
 
-	private And(And and) {
-		expressions = new ArrayList<>(and.getExpressions());
-	}
+    private And(And and) {
+        expressions = new ArrayList<>(and.getExpressions());
+    }
 
-	@Override
-	public And and(FieldExpression exp) {
-		expressions.add(exp);
-		return this;
-	}
+    @Override
+    public And and(FieldExpression exp) {
+        expressions.add(exp);
+        return this;
+    }
 
-	@Override
-	public String asString() {
-		StringBuilder builder = new StringBuilder();
-		for (int j = 0; j < expressions.size() - 1; j++) {
-			builder.append(expressions.get(j).asString());
-			builder.append(",");
-		}
-		builder.append(expressions.get(expressions.size() - 1).asString());
-		return builder.toString();
-	}
+    @Override
+    public String asString() {
+        StringBuilder builder = new StringBuilder();
+        for (int j = 0; j < expressions.size() - 1; j++) {
+            builder.append(expressions.get(j).asString());
+            builder.append(",");
+        }
+        builder.append(expressions.get(expressions.size() - 1).asString());
+        return builder.toString();
+    }
 
-	public List<FieldExpression> getExpressions() {
-		return Collections.unmodifiableList(expressions);
-	}
+    public List<FieldExpression> getExpressions() {
+        return Collections.unmodifiableList(expressions);
+    }
 }

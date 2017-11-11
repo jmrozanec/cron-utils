@@ -17,7 +17,7 @@
 package com.cronutils.utils;
 
 /**
- * Annotates a program element that exists, or is more widely visible than
+ * Annotates a program element that exists, or is more widely visible than.
  * otherwise necessary, only for use in test code.
  *
  * @author Johannes Henkel

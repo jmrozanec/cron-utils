@@ -19,8 +19,9 @@ import com.cronutils.utils.Preconditions;
  */
 public class FieldDayOfWeekDefinitionBuilder extends FieldSpecialCharsDefinitionBuilder {
     private int mondayDoWValue = 1;//default is cron-utils specification
+
     /**
-     * Constructor
+     * Constructor.
      *
      * @param cronDefinitionBuilder - ParserDefinitionBuilder instance -
      *                              if null, a NullPointerException will be raised
@@ -32,43 +33,48 @@ public class FieldDayOfWeekDefinitionBuilder extends FieldSpecialCharsDefinition
     }
 
     /**
-     * Registers the field supports the W (W) special char
+     * Registers the field supports the W (W) special char.
+     *
      * @return this FieldSpecialCharsDefinitionBuilder instance
      */
-    public FieldDayOfWeekDefinitionBuilder withMondayDoWValue(int mondayDoW){
+    public FieldDayOfWeekDefinitionBuilder withMondayDoWValue(int mondayDoW) {
         this.constraints.withShiftedStringMapping(mondayDoW - this.mondayDoWValue);
         this.mondayDoWValue = mondayDoW;
         return this;
     }
 
     /**
-     * Registers CronField in ParserDefinitionBuilder and returns its instance
+     * Registers CronField in ParserDefinitionBuilder and returns its instance.
+     *
      * @return ParserDefinitionBuilder instance obtained from constructor
      */
-    public CronDefinitionBuilder and(){
+    public CronDefinitionBuilder and() {
         boolean zeroInRange = constraints.createConstraintsInstance().isInRange(0);
-        cronDefinitionBuilder.register(new DayOfWeekFieldDefinition(fieldName, constraints.createConstraintsInstance(), optional, new WeekDay(mondayDoWValue, zeroInRange)));
+        cronDefinitionBuilder
+                .register(new DayOfWeekFieldDefinition(fieldName, constraints.createConstraintsInstance(), optional, new WeekDay(mondayDoWValue, zeroInRange)));
         return cronDefinitionBuilder;
     }
 
     /**
      * Allows to set a range of valid values for field.
+     *
      * @param startRange - start range value
-     * @param endRange - end range value
+     * @param endRange   - end range value
      * @return same FieldDayOfWeekDefinitionBuilder instance
      */
-    public FieldDayOfWeekDefinitionBuilder withValidRange(int startRange, int endRange){
+    public FieldDayOfWeekDefinitionBuilder withValidRange(int startRange, int endRange) {
         super.withValidRange(startRange, endRange);
         return this;
     }
 
     /**
-     * Defines mapping between integer values with equivalent meaning
+     * Defines mapping between integer values with equivalent meaning.
+     *
      * @param source - higher value
-     * @param dest - lower value with equivalent meaning to source
+     * @param dest   - lower value with equivalent meaning to source
      * @return this FieldDayOfWeekDefinitionBuilder instance
      */
-    public FieldDayOfWeekDefinitionBuilder withIntMapping(int source, int dest){
+    public FieldDayOfWeekDefinitionBuilder withIntMapping(int source, int dest) {
         super.withIntMapping(source, dest);
         return this;
     }
