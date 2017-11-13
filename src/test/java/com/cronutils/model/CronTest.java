@@ -1,12 +1,5 @@
 package com.cronutils.model;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -27,6 +20,14 @@ import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.field.expression.FieldExpression;
 import com.cronutils.parser.CronParser;
 import com.google.common.collect.Lists;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 /*
  * Copyright 2015 jmrozanec
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -48,7 +49,7 @@ public class CronTest {
     private CronField mockField;
 
     @Before
-    public void setUp(){
+    public void setUp() {
         MockitoAnnotations.initMocks(this);
         testName = CronFieldName.SECOND;
         when(mockField.getField()).thenReturn(testName);
@@ -59,7 +60,7 @@ public class CronTest {
 
     @Test(expected = NullPointerException.class)
     public void testConstructorNullFieldsParameter() throws Exception {
-        new Cron(mock(CronDefinition.class),null);
+        new Cron(mock(CronDefinition.class), null);
     }
 
     @Test(expected = NullPointerException.class)
@@ -95,7 +96,7 @@ public class CronTest {
     }
 
     @Test
-    public void testEquivalent(){
+    public void testEquivalent() {
         CronDefinition unixcd = CronDefinitionBuilder.instanceDefinitionFor(CronType.UNIX);
         CronDefinition quartzcd = CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ);
         CronParser unix = new CronParser(unixcd);
@@ -109,7 +110,7 @@ public class CronTest {
         assertFalse(cron1.equivalent(CronMapper.sameCron(unixcd), cron3));
         assertTrue(cron1.equivalent(CronMapper.fromQuartzToCron4j(), cron4));
     }
-    
+
     @Test
     public void testSerialization() throws IOException, ClassNotFoundException {
         CronDefinition cron4jcd = CronDefinitionBuilder.instanceDefinitionFor(CronType.CRON4J);
@@ -118,31 +119,31 @@ public class CronTest {
         CronParser unix = new CronParser(unixcd);
         CronParser quartz = new CronParser(quartzcd);
         CronParser cron4j = new CronParser(cron4jcd);
-        
+
         Cron[] toTest = new Cron[] {
-            unix.parse("* * * * MON"),
-            unix.parse("*/1 * * * 1"),
-            unix.parse("0 * * * *"),
-            unix.parse("*/2 * * * *"),
-            quartz.parse("0 * * ? * MON *"),
-            cron4j.parse("* 1 1,2 * 4"),
-            cron4j.parse("* 1 1-2 * 4"),
-            cron4j.parse("0 18 * * 1"),
-            cron4j.parse("0/15 * * * *"),
-            cron4j.parse("0 0/2 * * *"),
-            cron4j.parse("0 6 * * MON-FRI") 
+                unix.parse("* * * * MON"),
+                unix.parse("*/1 * * * 1"),
+                unix.parse("0 * * * *"),
+                unix.parse("*/2 * * * *"),
+                quartz.parse("0 * * ? * MON *"),
+                cron4j.parse("* 1 1,2 * 4"),
+                cron4j.parse("* 1 1-2 * 4"),
+                cron4j.parse("0 18 * * 1"),
+                cron4j.parse("0/15 * * * *"),
+                cron4j.parse("0 0/2 * * *"),
+                cron4j.parse("0 6 * * MON-FRI")
         };
-        
-        for ( Cron expected : toTest ) {
+
+        for (Cron expected : toTest) {
             ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
-            try ( ObjectOutputStream objOut = new ObjectOutputStream( byteOut ) ) {
-                objOut.writeObject( expected );
+            try (ObjectOutputStream objOut = new ObjectOutputStream(byteOut)) {
+                objOut.writeObject(expected);
             }
-            
-            try ( ObjectInputStream objIn = new ObjectInputStream( new ByteArrayInputStream( byteOut.toByteArray() ) ) ) {
+
+            try (ObjectInputStream objIn = new ObjectInputStream(new ByteArrayInputStream(byteOut.toByteArray()))) {
                 Cron actual = (Cron) objIn.readObject();
-                assertEquals( expected.asString() , actual.asString() );
+                assertEquals(expected.asString(), actual.asString());
             }
         }
-    }       
+    }
 }

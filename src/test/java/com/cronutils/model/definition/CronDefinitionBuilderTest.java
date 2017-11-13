@@ -1,8 +1,5 @@
 package com.cronutils.model.definition;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
 import java.util.Set;
 
 import org.junit.Before;
@@ -16,6 +13,10 @@ import com.cronutils.model.field.definition.FieldDefinition;
 import com.cronutils.parser.CronParser;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
 /*
  * Copyright 2015 jmrozanec
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -109,12 +110,12 @@ public class CronDefinitionBuilderTest {
     public void testRegister() throws Exception {
         FieldDefinition testFieldDefinition =
                 new FieldDefinition(
-                    CronFieldName.SECOND,
-                    new FieldConstraints(
-                            Maps.newHashMap(),
-                            Maps.newHashMap(),
-                            Sets.newHashSet(),0, 1)
-        );
+                        CronFieldName.SECOND,
+                        new FieldConstraints(
+                                Maps.newHashMap(),
+                                Maps.newHashMap(),
+                                Sets.newHashSet(), 0, 1)
+                );
         builder.register(testFieldDefinition);
         Set<FieldDefinition> definitions = builder.instance().getFieldDefinitions();
         assertNotNull(definitions);
@@ -157,7 +158,7 @@ public class CronDefinitionBuilderTest {
                 .withHours().and()
                 .withDayOfMonth().optional().and()
                 .withMonth().optional().and()
-                .withDayOfWeek().withValidRange(0,7).withMondayDoWValue(1).withIntMapping(7,0).and()
+                .withDayOfWeek().withValidRange(0, 7).withMondayDoWValue(1).withIntMapping(7, 0).and()
                 .enforceStrictRanges()
                 .instance();
     }

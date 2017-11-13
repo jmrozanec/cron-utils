@@ -1,10 +1,5 @@
 package com.cronutils.model.time.generator;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
-
 import java.util.List;
 
 import org.junit.Before;
@@ -14,6 +9,12 @@ import com.cronutils.model.field.CronField;
 import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.field.constraint.FieldConstraints;
 import com.cronutils.model.field.expression.FieldExpression;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+
 /*
  * Copyright 2015 jmrozanec
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -30,7 +31,7 @@ public class FieldValueGeneratorTest {
     private FieldValueGenerator fieldValueGenerator;
 
     @Before
-    public void setUp(){
+    public void setUp() {
         fieldValueGenerator = new MockFieldValueGenerator(new CronField(CronFieldName.HOUR, mock(FieldExpression.class), mock(FieldConstraints.class)));
     }
 

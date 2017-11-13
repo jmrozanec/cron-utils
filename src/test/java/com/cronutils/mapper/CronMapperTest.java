@@ -1,8 +1,5 @@
 package com.cronutils.mapper;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -15,6 +12,10 @@ import com.cronutils.model.field.CronField;
 import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.field.expression.Always;
 import com.cronutils.model.field.expression.On;
+
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
+
 /*
  * Copyright 2015 jmrozanec
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -31,10 +32,10 @@ public class CronMapperTest {
     private CronFieldName testCronFieldName;
     @Mock
     private CronField mockCronField;
-    private Function<Cron, Cron> cronMapping=null;
+    private Function<Cron, Cron> cronMapping = null;
 
     @Before
-    public void setUp(){
+    public void setUp() {
         MockitoAnnotations.initMocks(this);
         this.testCronFieldName = CronFieldName.SECOND;
     }
@@ -60,8 +61,8 @@ public class CronMapperTest {
         Function<CronField, CronField> function = CronMapper.returnOnZeroExpression(testCronFieldName);
 
         assertEquals(testCronFieldName, function.apply(mockCronField).getField());
-        On result = (On)function.apply(mockCronField).getExpression();
-        assertEquals(0, (int)result.getTime().getValue());
+        On result = (On) function.apply(mockCronField).getExpression();
+        assertEquals(0, (int) result.getTime().getValue());
     }
 
     @Test

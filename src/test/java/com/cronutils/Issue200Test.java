@@ -1,16 +1,18 @@
 package com.cronutils;
 
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+
+import org.junit.Test;
+
 import com.cronutils.model.Cron;
 import com.cronutils.model.definition.CronDefinition;
 import com.cronutils.model.definition.CronDefinitionBuilder;
 import com.cronutils.model.time.ExecutionTime;
 import com.cronutils.parser.CronParser;
-import org.junit.*;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
 
 import static com.cronutils.model.CronType.QUARTZ;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Created by johnpatrick.manalo on 6/19/17.

@@ -1,9 +1,5 @@
 package com.cronutils.model.time.generator;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
-
 import org.junit.Before;
 import org.junit.Test;
 
@@ -14,6 +10,11 @@ import com.cronutils.model.field.constraint.FieldConstraintsBuilder;
 import com.cronutils.model.field.expression.FieldExpression;
 import com.cronutils.model.field.expression.On;
 import com.cronutils.model.field.value.IntegerFieldValue;
+
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+
 /*
  * Copyright 2015 jmrozanec
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -33,7 +34,7 @@ public class OnDayOfMonthValueGeneratorTest {
     private int month = 2;
 
     @Before
-    public void setUp(){
+    public void setUp() {
         constraints = FieldConstraintsBuilder.instance().createConstraintsInstance();
         fieldValueGenerator =
                 new OnDayOfMonthValueGenerator(
@@ -64,7 +65,7 @@ public class OnDayOfMonthValueGeneratorTest {
         new OnDayOfMonthValueGenerator(new CronField(CronFieldName.YEAR, mock(FieldExpression.class), constraints), year, month);
     }
 
-    private int randomNumber(){
-        return (int)(10*Math.random());
+    private int randomNumber() {
+        return (int) (10 * Math.random());
     }
 }

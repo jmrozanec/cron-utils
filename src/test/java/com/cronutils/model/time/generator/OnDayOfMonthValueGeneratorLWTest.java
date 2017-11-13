@@ -1,9 +1,5 @@
 package com.cronutils.model.time.generator;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
 import java.util.List;
 
 import org.junit.Before;
@@ -16,6 +12,10 @@ import com.cronutils.model.field.constraint.FieldConstraintsBuilder;
 import com.cronutils.model.field.expression.On;
 import com.cronutils.model.field.value.SpecialChar;
 import com.cronutils.model.field.value.SpecialCharFieldValue;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 /*
  * Copyright 2015 jmrozanec
@@ -42,7 +42,6 @@ public class OnDayOfMonthValueGeneratorLWTest {
 
     private int fridayValueMonth = 8;//last day in month is Friday (weekday)
     private int fridayValueWeekday = 31;
-
 
     private int outOfScopeValue = 31;
 
@@ -137,6 +136,7 @@ public class OnDayOfMonthValueGeneratorLWTest {
     }
 
     private OnDayOfMonthValueGenerator createFieldValueGeneratorInstance(int month) {
-        return new OnDayOfMonthValueGenerator(new CronField(CronFieldName.DAY_OF_MONTH, new On(new SpecialCharFieldValue(SpecialChar.LW)), constraints), YEAR, month);
+        return new OnDayOfMonthValueGenerator(new CronField(CronFieldName.DAY_OF_MONTH, new On(new SpecialCharFieldValue(SpecialChar.LW)), constraints), YEAR,
+                month);
     }
 }

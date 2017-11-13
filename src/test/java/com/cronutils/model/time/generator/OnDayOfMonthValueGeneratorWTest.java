@@ -1,9 +1,5 @@
 package com.cronutils.model.time.generator;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
 import java.util.List;
 
 import org.junit.Before;
@@ -17,6 +13,11 @@ import com.cronutils.model.field.expression.On;
 import com.cronutils.model.field.value.IntegerFieldValue;
 import com.cronutils.model.field.value.SpecialChar;
 import com.cronutils.model.field.value.SpecialCharFieldValue;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 /*
  * Copyright 2015 jmrozanec
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -44,7 +45,6 @@ public class OnDayOfMonthValueGeneratorWTest {
     private int firstDaySaturdayValueMonth = 8;
     private int firstDaySaturdayValueDay = 1;
     private int firstDaySaturdayValueWeekday = 3;
-
 
     private int outOfScopeValue = 18;
 
@@ -147,6 +147,6 @@ public class OnDayOfMonthValueGeneratorWTest {
                                 new SpecialCharFieldValue(SpecialChar.W), new IntegerFieldValue(-1)
                         ),
                         constraints
-                ),YEAR, month);
+                ), YEAR, month);
     }
 }

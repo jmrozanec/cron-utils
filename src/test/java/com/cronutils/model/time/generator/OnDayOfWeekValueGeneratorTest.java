@@ -1,9 +1,5 @@
 package com.cronutils.model.time.generator;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
-
 import org.junit.Before;
 import org.junit.Test;
 
@@ -15,6 +11,10 @@ import com.cronutils.model.field.constraint.FieldConstraintsBuilder;
 import com.cronutils.model.field.expression.FieldExpression;
 import com.cronutils.model.field.expression.On;
 import com.cronutils.model.field.value.IntegerFieldValue;
+
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
 
 /*
  * Copyright 2015 jmrozanec
@@ -36,10 +36,11 @@ public class OnDayOfWeekValueGeneratorTest {
     private int month = 2;
 
     @Before
-    public void setUp(){
+    public void setUp() {
         constraints = FieldConstraintsBuilder.instance().createConstraintsInstance();
         mondayDoWValue = new WeekDay(1, false);
-        fieldValueGenerator = new OnDayOfWeekValueGenerator(new CronField(CronFieldName.DAY_OF_WEEK, new On(new IntegerFieldValue(3)), constraints), year, month, mondayDoWValue);
+        fieldValueGenerator = new OnDayOfWeekValueGenerator(new CronField(CronFieldName.DAY_OF_WEEK, new On(new IntegerFieldValue(3)), constraints), year,
+                month, mondayDoWValue);
     }
 
     @Test

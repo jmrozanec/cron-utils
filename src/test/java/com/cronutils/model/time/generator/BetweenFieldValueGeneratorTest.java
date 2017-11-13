@@ -1,10 +1,5 @@
 package com.cronutils.model.time.generator;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
-
 import java.util.List;
 
 import org.junit.Before;
@@ -17,6 +12,12 @@ import com.cronutils.model.field.constraint.FieldConstraintsBuilder;
 import com.cronutils.model.field.expression.Between;
 import com.cronutils.model.field.expression.FieldExpression;
 import com.cronutils.model.field.value.IntegerFieldValue;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+
 /*
  * Copyright 2015 jmrozanec
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -37,23 +38,24 @@ public class BetweenFieldValueGeneratorTest {
     private int outOfRange = 7;
 
     @Before
-    public void setUp(){
+    public void setUp() {
         constraints = FieldConstraintsBuilder.instance().createConstraintsInstance();
-        fieldValueGenerator = new BetweenFieldValueGenerator(new CronField(CronFieldName.HOUR, new Between(new IntegerFieldValue(from), new IntegerFieldValue(to)), constraints));
+        fieldValueGenerator = new BetweenFieldValueGenerator(
+                new CronField(CronFieldName.HOUR, new Between(new IntegerFieldValue(from), new IntegerFieldValue(to)), constraints));
     }
 
     @Test(expected = NoSuchValueException.class)
     public void testGenerateNextValue() throws Exception {
-        for(int j=from-1; j<(to+1); j++){
-            assertEquals(j+1, fieldValueGenerator.generateNextValue(j));
+        for (int j = from - 1; j < (to + 1); j++) {
+            assertEquals(j + 1, fieldValueGenerator.generateNextValue(j));
         }
         fieldValueGenerator.generateNextValue(to);
     }
 
     @Test(expected = NoSuchValueException.class)
     public void testGeneratePreviousValue() throws Exception {
-        for(int j=to+1; j>(from-1); j--){
-            assertEquals(j-1, fieldValueGenerator.generatePreviousValue(j));
+        for (int j = to + 1; j > (from - 1); j--) {
+            assertEquals(j - 1, fieldValueGenerator.generatePreviousValue(j));
         }
         fieldValueGenerator.generatePreviousValue(from);
     }
@@ -67,7 +69,7 @@ public class BetweenFieldValueGeneratorTest {
 
     @Test
     public void testGenerateCandidatesNotIncludingIntervalRangesNotIntersectInterval() throws Exception {
-        assertTrue(fieldValueGenerator.generateCandidatesNotIncludingIntervalExtremes(to+1, to+10).isEmpty());
+        assertTrue(fieldValueGenerator.generateCandidatesNotIncludingIntervalExtremes(to + 1, to + 10).isEmpty());
     }
 
     @Test

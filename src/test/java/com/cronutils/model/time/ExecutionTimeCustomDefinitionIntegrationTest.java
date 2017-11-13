@@ -1,17 +1,18 @@
 package com.cronutils.model.time;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static java.time.ZoneOffset.UTC;
-
-import org.junit.Test;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+
+import org.junit.Test;
 
 import com.cronutils.model.Cron;
 import com.cronutils.model.definition.CronDefinition;
 import com.cronutils.model.definition.CronDefinitionBuilder;
 import com.cronutils.parser.CronParser;
+
+import static java.time.ZoneOffset.UTC;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class ExecutionTimeCustomDefinitionIntegrationTest {
 
@@ -52,7 +53,6 @@ public class ExecutionTimeCustomDefinitionIntegrationTest {
 
         CronParser parser = new CronParser(cronDefinition);
         Cron cron = parser.parse("0/30 * * * * *");
-
 
         ZonedDateTime startDateTime = ZonedDateTime.of(2015, 8, 28, 12, 5, 14, 0, UTC);
         ZonedDateTime expectedDateTime = ZonedDateTime.of(2015, 8, 28, 12, 5, 30, 0, UTC);
@@ -163,8 +163,8 @@ public class ExecutionTimeCustomDefinitionIntegrationTest {
         ExecutionTime executionTime = ExecutionTime.forCron(cron);
         ZonedDateTime start = ZonedDateTime.of(2004, 5, 5, 23, 55, 0, 0, ZoneId.of("UTC"));
         ZonedDateTime end = ZonedDateTime.of(2004, 5, 6, 1, 0, 0, 0, ZoneId.of("UTC"));
-        while(start.compareTo(end)<0){
-            assertTrue(executionTime.isMatch(start)==(start.getDayOfMonth()==5));
+        while (start.compareTo(end) < 0) {
+            assertTrue(executionTime.isMatch(start) == (start.getDayOfMonth() == 5));
             start = start.plusMinutes(1);
         }
     }

@@ -1,7 +1,5 @@
 package com.cronutils.model.time;
 
-import static org.junit.Assert.assertEquals;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -9,6 +7,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.junit.Before;
 import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
 
 /*
  * Copyright 2015 jmrozanec
@@ -75,33 +75,33 @@ public class TimeNodeTest {
     }
 
     @Test
-    public void testGetValueFromListWhereIndexLessThanZero(){
+    public void testGetValueFromListWhereIndexLessThanZero() {
         int index = -1;
         int expectedShifts = 1;
         AtomicInteger shift = new AtomicInteger(0);
         List<Integer> list = Arrays.asList(1, 2, 3, 4);
         int value = timeNode.getValueFromList(list, index, shift);
         assertEquals(String.format("Shift was: %s; expected: %s", shift.get(), expectedShifts), expectedShifts, shift.get());
-        assertEquals((int)list.get(list.size()+index), value);
+        assertEquals((int) list.get(list.size() + index), value);
     }
 
     @Test
-    public void testGetValueFromListWhereIndexMoreThanZero(){
+    public void testGetValueFromListWhereIndexMoreThanZero() {
         int index = 1;
         int expectedShifts = 0;
         AtomicInteger shift = new AtomicInteger(0);
         List<Integer> list = Arrays.asList(1, 2, 3, 4);
         int value = timeNode.getValueFromList(list, index, shift);
         assertEquals(String.format("Shift was: %s; expected: %s", shift.get(), expectedShifts), expectedShifts, shift.get());
-        assertEquals((int)list.get(index), value);
+        assertEquals((int) list.get(index), value);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testGetValueFromListWithEmptyList(){
+    public void testGetValueFromListWithEmptyList() {
         timeNode.getValueFromList(new ArrayList<>(), 0, new AtomicInteger(0));
     }
 
-    private void assertResult(int value, int shift, NearestValue nearestValue){
+    private void assertResult(int value, int shift, NearestValue nearestValue) {
         assertEquals(String.format("Values do not match! Expected: %s Found: %s", value, nearestValue.getValue()), value, nearestValue.getValue());
         assertEquals(String.format("Shifts do not match! Expected: %s Found: %s", shift, nearestValue.getShifts()), shift, nearestValue.getShifts());
     }

@@ -1,8 +1,9 @@
 package com.cronutils.model.field.expression;
 
+import org.junit.Test;
+
 import static org.junit.Assert.assertEquals;
 
-import org.junit.Test;
 /*
  * Copyright 2015 jmrozanec
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,7 +19,7 @@ import org.junit.Test;
 public class AlwaysTest {
 
     @Test
-    public void testAsString(){
+    public void testAsString() {
         assertEquals("*", new Always().asString());
     }
 }

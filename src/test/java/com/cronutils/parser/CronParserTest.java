@@ -1,12 +1,7 @@
 package com.cronutils.parser;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.mockito.Mockito.when;
-
 import java.util.Set;
 
-import com.cronutils.model.definition.TestCronDefinitionsFactory;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -18,10 +13,16 @@ import com.cronutils.model.Cron;
 import com.cronutils.model.CronType;
 import com.cronutils.model.definition.CronDefinition;
 import com.cronutils.model.definition.CronDefinitionBuilder;
+import com.cronutils.model.definition.TestCronDefinitionsFactory;
 import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.field.constraint.FieldConstraintsBuilder;
 import com.cronutils.model.field.definition.FieldDefinition;
 import com.google.common.collect.Sets;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.mockito.Mockito.when;
+
 /*
  * Copyright 2015 jmrozanec
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -80,7 +81,6 @@ public class CronParserTest {
         assertNotNull(parser.parse("*/"));
     }
 
-
     /**
      * Corresponds to issue#11
      * https://github.com/jmrozanec/cron-utils/issues/11
@@ -112,7 +112,7 @@ public class CronParserTest {
 
         parser.parse("* *   * * *");
     }
-    
+
     /**
      * Corresponds to issue#148
      * https://github.com/jmrozanec/cron-utils/issues/148
@@ -121,26 +121,26 @@ public class CronParserTest {
     public void testParseEveryXyears() {
         CronDefinition quartzDefinition = CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ);
         parser = new CronParser(quartzDefinition);
-        
+
         parser.parse("0/59 0/59 0/23 1/30 1/11 ? 2017/3");
     }
-    
-    @Test(expected=IllegalArgumentException.class)
+
+    @Test(expected = IllegalArgumentException.class)
     public void testRejectionOfZeroPeriod() {
         CronDefinition quartzDefinition = CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ);
         parser = new CronParser(quartzDefinition);
-        
+
         parser.parse("0/0 0 0 1 1 ? 2017/3");
     }
-    
-    @Test(expected=IllegalArgumentException.class)
+
+    @Test(expected = IllegalArgumentException.class)
     public void testRejectionOfPeriodUpperLimitExceedance() {
         CronDefinition quartzDefinition = CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ);
         parser = new CronParser(quartzDefinition);
-        
+
         parser.parse("0/60 0 0 1 1 ? 2017/3");
     }
-    
+
     @Test
     public void testParseExtendedQuartzCron() {
         parser = new CronParser(TestCronDefinitionsFactory.withDayOfYearDefinitionWhereYearAndDoYOptionals());
@@ -150,7 +150,7 @@ public class CronParserTest {
     /**
      * Corresponds to issue#185
      * https://github.com/jmrozanec/cron-utils/issues/185
-     */ 
+     */
     @Test
     public void testNoRejectionTwoOptionalFields() {
         parser = new CronParser(TestCronDefinitionsFactory.withDayOfYearDefinitionWhereYearAndDoYOptionals());
@@ -161,17 +161,17 @@ public class CronParserTest {
     public void testThatEveryMinuteIsPreserved() {
         CronDefinition quartzDefinition = CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ);
         parser = new CronParser(quartzDefinition);
-        
+
         Cron expression = parser.parse("0 0/1 * 1/1 * ? *");
         assertEquals("0 0/1 * 1/1 * ? *", expression.asString());
     }
-    
+
     @Test
     public void testParseExtendedQuartzCronWithAsterixDoY() {
         parser = new CronParser(TestCronDefinitionsFactory.withDayOfYearDefinitionWhereYearAndDoYOptionals());
         parser.parse("0 0 0 ? * ? 2017 *"); //i.e. same as "0 0 0 * * ? 2017" or "0 0 0 ? * * 2017"
     }
-    
+
     @Test
     public void testParseExtendedQuartzCronWithQuestionMarkDoY() {
         parser = new CronParser(TestCronDefinitionsFactory.withDayOfYearDefinitionWhereYearAndDoYOptionals());

@@ -1,23 +1,36 @@
 package com.cronutils.model.time;
 
+import java.time.DateTimeException;
+import java.time.DayOfWeek;
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
+import java.util.Date;
+import java.util.Optional;
+import java.util.TimeZone;
+
+import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Test;
+
 import com.cronutils.model.Cron;
 import com.cronutils.model.definition.CronDefinition;
 import com.cronutils.model.definition.CronDefinitionBuilder;
 import com.cronutils.parser.CronParser;
-import java.util.Optional;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-import java.time.*;
-import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
-
-import java.util.Date;
-import java.util.TimeZone;
 
 import static com.cronutils.model.CronType.QUARTZ;
-import static org.junit.Assert.*;
 import static java.time.ZoneOffset.UTC;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 /*
  * Copyright 2015 jmrozanec
@@ -84,7 +97,7 @@ public class ExecutionTimeQuartzIntegrationTest {
      * Expected: should not ignore month or day of week field
      */
     @Test
-    public void testDoesNotIgnoreMonthOrDayOfWeek(){
+    public void testDoesNotIgnoreMonthOrDayOfWeek() {
         //seconds, minutes, hours, dayOfMonth, month, dayOfWeek
         ExecutionTime executionTime = ExecutionTime.forCron(parser.parse("0 11 11 11 11 ?"));
         ZonedDateTime now = ZonedDateTime.of(2015, 4, 15, 0, 0, 0, 0, UTC);
@@ -99,6 +112,7 @@ public class ExecutionTimeQuartzIntegrationTest {
 
     /**
      * Test for issue #18
+     *
      * @throws Exception
      */
     @Test
@@ -162,7 +176,7 @@ public class ExecutionTimeQuartzIntegrationTest {
      * Issue #27: execution time properly calculated
      */
     @Test
-    public void testMonthRangeExecutionTime(){
+    public void testMonthRangeExecutionTime() {
         assertNotNull(ExecutionTime.forCron(parser.parse("0 0 0 * JUL-AUG ? *")));
     }
 
@@ -170,7 +184,7 @@ public class ExecutionTimeQuartzIntegrationTest {
      * Issue #30: execution time properly calculated
      */
     @Test
-    public void testSaturdayExecutionTime(){
+    public void testSaturdayExecutionTime() {
         ZonedDateTime now = ZonedDateTime.now();
         ExecutionTime executionTime = ExecutionTime.forCron(parser.parse("0 0 3 ? * 6"));
         ZonedDateTime last = executionTime.lastExecution(now).get();
@@ -182,7 +196,7 @@ public class ExecutionTimeQuartzIntegrationTest {
      * Issue: execution time properly calculated
      */
     @Test
-    public void testWeekdayExecutionTime(){
+    public void testWeekdayExecutionTime() {
         ZonedDateTime now = ZonedDateTime.now();
         ExecutionTime executionTime = ExecutionTime.forCron(parser.parse("0 0 3 ? * *"));
         ZonedDateTime last = executionTime.lastExecution(now).get();
@@ -194,7 +208,7 @@ public class ExecutionTimeQuartzIntegrationTest {
      * Issue #64: Incorrect next execution time for ranges
      */
     @Test
-    public void testExecutionTimeForRanges(){
+    public void testExecutionTimeForRanges() {
         ExecutionTime executionTime = ExecutionTime.forCron(parser.parse("* 10-20 * * * ? 2099"));
         ZonedDateTime scanTime = ZonedDateTime.parse("2016-02-29T11:00:00.000-06:00");
         ZonedDateTime nextTime = executionTime.nextExecution(scanTime).get();
@@ -206,7 +220,7 @@ public class ExecutionTimeQuartzIntegrationTest {
      * Issue #65: Incorrect last execution time for fixed month
      */
     @Test
-    public void testLastExecutionTimeForFixedMonth(){
+    public void testLastExecutionTimeForFixedMonth() {
         ExecutionTime executionTime = ExecutionTime.forCron(parser.parse("0 30 12 1 9 ? 2010"));
         ZonedDateTime scanTime = ZonedDateTime.parse("2016-01-08T11:00:00.000-06:00");
         ZonedDateTime lastTime = executionTime.lastExecution(scanTime).get();
@@ -218,7 +232,7 @@ public class ExecutionTimeQuartzIntegrationTest {
      * Issue #66: Incorrect Day Of Week processing for Quartz when Month or Year isn't '*'.
      */
     @Test
-    public void testNextExecutionRightDoWForFixedMonth(){
+    public void testNextExecutionRightDoWForFixedMonth() {
         //cron format: s,m,H,DoM,M,DoW,Y
         ExecutionTime executionTime = ExecutionTime.forCron(parser.parse("0 * * ? 5 1 *"));
         ZonedDateTime scanTime = ZonedDateTime.parse("2016-03-06T20:17:28.000-03:00");
@@ -231,7 +245,7 @@ public class ExecutionTimeQuartzIntegrationTest {
      * Issue #66: Incorrect Day Of Week processing for Quartz when Month or Year isn't '*'.
      */
     @Test
-    public void testNextExecutionRightDoWForFixedYear(){
+    public void testNextExecutionRightDoWForFixedYear() {
         //cron format: s,m,H,DoM,M,DoW,Y
         ExecutionTime executionTime = ExecutionTime.forCron(parser.parse("0 * * ? * 1 2099"));
         ZonedDateTime scanTime = ZonedDateTime.parse("2016-03-06T20:17:28.000-03:00");
@@ -244,7 +258,7 @@ public class ExecutionTimeQuartzIntegrationTest {
      * Issue #70: Illegal question mark value on cron pattern assumed valid.
      */
     @Test(expected = IllegalArgumentException.class)
-    public void testIllegalQuestionMarkValue(){
+    public void testIllegalQuestionMarkValue() {
         ExecutionTime.forCron(parser.parse("0 0 12 1W ? *"));//s,m,H,DoM,M,DoW
     }
 
@@ -254,7 +268,7 @@ public class ExecutionTimeQuartzIntegrationTest {
      * TODO: We should analyze it and fix the eventual issue.
      */
     @Test//TODO
-    public void testNextExecutionProducingInvalidPrintln(){
+    public void testNextExecutionProducingInvalidPrintln() {
         String cronText = "0 0/15 * * * ?";
         Cron cron = parser.parse(cronText);
         final ExecutionTime executionTime = ExecutionTime.forCron(cron);
@@ -264,7 +278,7 @@ public class ExecutionTimeQuartzIntegrationTest {
      * Issue #73: NextExecution not working as expected
      */
     @Test
-    public void testNextExecutionProducingInvalidValues(){
+    public void testNextExecutionProducingInvalidValues() {
         String cronText = "0 0 18 ? * MON";
         Cron cron = parser.parse(cronText);
         final ExecutionTime executionTime = ExecutionTime.forCron(cron);
@@ -282,6 +296,7 @@ public class ExecutionTimeQuartzIntegrationTest {
      * https://github.com/jmrozanec/cron-utils/issues/83
      * Reported case: Candidate values are false when combining range and multiple patterns
      * Expected: Candidate values should be correctly identified
+     *
      * @throws Exception
      */
     @Test
@@ -300,6 +315,7 @@ public class ExecutionTimeQuartzIntegrationTest {
      * https://github.com/jmrozanec/cron-utils/issues/83
      * Reported case: Candidate values are false when combining range and multiple patterns
      * Expected: Candidate values should be correctly identified
+     *
      * @throws Exception
      */
     @Test
@@ -342,7 +358,7 @@ public class ExecutionTimeQuartzIntegrationTest {
     }
 
     @Test
-    public void bigNumbersOnDayOfMonthField(){
+    public void bigNumbersOnDayOfMonthField() {
         Cron cron = parser.parse("0 0 0 31 * ?");
         ExecutionTime executionTime = ExecutionTime.forCron(cron);
         ZonedDateTime now = ZonedDateTime.of(2016, 11, 1, 0, 0, 0, 0, ZoneId.of("UTC"));
@@ -358,7 +374,7 @@ public class ExecutionTimeQuartzIntegrationTest {
     public void noSpecificDayOfMonthEvaluatedOnLastDay() {
         Cron cron = parser.parse("0 * * ? * *");
         ExecutionTime executionTime = ExecutionTime.forCron(cron);
-        ZonedDateTime now = ZonedDateTime.of(2016, 8, 31, 10, 10, 0,0,ZoneId.of("UTC"));
+        ZonedDateTime now = ZonedDateTime.of(2016, 8, 31, 10, 10, 0, 0, ZoneId.of("UTC"));
         ZonedDateTime nextRun = executionTime.nextExecution(now).get();
 
         assertEquals(ZonedDateTime.of(2016, 8, 31, 10, 11, 0, 0, ZoneId.of("UTC")), nextRun);
@@ -432,7 +448,7 @@ public class ExecutionTimeQuartzIntegrationTest {
                 "0 0/1 * ? * 5-6",
                 "0 0/1 * ? * THU-FRI"
         };
-        for(String cronExpression : cronExpressionsExcludingWednesdayAndIncludingThursday) {
+        for (String cronExpression : cronExpressionsExcludingWednesdayAndIncludingThursday) {
             assertExpectedNextExecution(cronExpression, wednesdayNov9, startOfThursdayNov10);
             assertExpectedNextExecution(cronExpression, thursdayOct27, thursdayOct27.plusMinutes(1));
         }
@@ -452,7 +468,7 @@ public class ExecutionTimeQuartzIntegrationTest {
      * Issue #114: Describe day of week is incorrect
      */
     @Test
-    public void descriptionForExpressionTellsWrongDoW(){
+    public void descriptionForExpressionTellsWrongDoW() {
         //CronDescriptor descriptor = CronDescriptor.instance();
         //Cron quartzCron = parser.parse("0 0 8 ? * SUN *");
         //TODO enable: assertEquals("at 08:00 at Sunday day", descriptor.describe(quartzCron));
@@ -465,10 +481,10 @@ public class ExecutionTimeQuartzIntegrationTest {
     public void noSpecificDayOfMonth() {
         Cron cron = parser.parse("0 * * ? * *");
         ExecutionTime executionTime = ExecutionTime.forCron(cron);
-        ZonedDateTime now = ZonedDateTime.of(2016, 8, 30, 23, 59, 0,0,ZoneId.of("UTC"));
+        ZonedDateTime now = ZonedDateTime.of(2016, 8, 30, 23, 59, 0, 0, ZoneId.of("UTC"));
         ZonedDateTime nextRun = executionTime.nextExecution(now).get();
 
-        assertEquals(ZonedDateTime.of(2016, 8, 31, 0, 0, 0,0, ZoneId.of("UTC")), nextRun);
+        assertEquals(ZonedDateTime.of(2016, 8, 31, 0, 0, 0, 0, ZoneId.of("UTC")), nextRun);
     }
 
     /**
@@ -478,7 +494,7 @@ public class ExecutionTimeQuartzIntegrationTest {
      * Potential duplicate: https://github.com/jmrozanec/cron-utils/issues/124
      */
     @Test
-    public void testNextExecutionTimeProperlySet(){
+    public void testNextExecutionTimeProperlySet() {
         CronParser quartzCronParser = new CronParser(CronDefinitionBuilder.instanceDefinitionFor(QUARTZ));
         String quartzCronExpression2 = "0 5/15 * * * ? *";
         Cron parsedQuartzCronExpression = quartzCronParser.parse(quartzCronExpression2);
@@ -501,7 +517,7 @@ public class ExecutionTimeQuartzIntegrationTest {
      * Potential duplicate: https://github.com/jmrozanec/cron-utils/issues/123
      */
     @Test
-    public void testNextExecutionTimeProperlySet2(){
+    public void testNextExecutionTimeProperlySet2() {
         CronParser quartzCronParser = new CronParser(CronDefinitionBuilder.instanceDefinitionFor(QUARTZ));
         String quartzCronExpression2 = "0 3/27 10-14 * * ? *";
         Cron parsedQuartzCronExpression = quartzCronParser.parse(quartzCronExpression2);
@@ -521,7 +537,7 @@ public class ExecutionTimeQuartzIntegrationTest {
      * Reported case: QUARTZ cron definition: 31 not supported on the day-of-month field
      */
     @Test
-    public void validate31IsSupportedForDoM(){
+    public void validate31IsSupportedForDoM() {
         parser.parse("0 0 0 31 * ?");
     }
 
@@ -532,12 +548,12 @@ public class ExecutionTimeQuartzIntegrationTest {
      * if date is invalid, we get an exception, not a boolean as response.
      */
     @Test
-    public void validateIsMatchForRangeOfDates(){
+    public void validateIsMatchForRangeOfDates() {
         Cron cron = parser.parse("* * * 05 05 ? 2004");
         ExecutionTime executionTime = ExecutionTime.forCron(cron);
         ZonedDateTime start = ZonedDateTime.of(2004, 5, 5, 23, 55, 0, 0, ZoneId.of("UTC"));
         ZonedDateTime end = ZonedDateTime.of(2004, 5, 6, 1, 0, 0, 0, ZoneId.of("UTC"));
-        while(start.compareTo(end)<0){
+        while (start.compareTo(end) < 0) {
             executionTime.isMatch(start);
             start = start.plusMinutes(1);
         }
@@ -548,7 +564,7 @@ public class ExecutionTimeQuartzIntegrationTest {
      * IllegalArgumentException: Values must not be empty
      */
     @Test
-    public void nextExecutionNotFail(){
+    public void nextExecutionNotFail() {
         CronDefinition cronDefinition = CronDefinitionBuilder.instanceDefinitionFor(QUARTZ);
         CronParser parser = new CronParser(cronDefinition);
         Cron parsed = parser.parse("0 0 10 ? * SAT-SUN");
@@ -584,7 +600,7 @@ public class ExecutionTimeQuartzIntegrationTest {
      * ExecutionTime.lastExecution() throws Exception when cron defines at 31 Dec
      */
     @Test
-    public void lastExecutionDec31NotFail(){
+    public void lastExecutionDec31NotFail() {
         CronParser parser = new CronParser(CronDefinitionBuilder.instanceDefinitionFor(QUARTZ));
         ExecutionTime et = ExecutionTime.forCron(parser.parse("0 0 12 31 12 ? *"));
         System.out.println(et.lastExecution(ZonedDateTime.now()));
@@ -601,12 +617,12 @@ public class ExecutionTimeQuartzIntegrationTest {
         Cron cron = parser.parse("0 0 16-19/2 * * ?");
         ExecutionTime executionTime = ExecutionTime.forCron(cron);
         ZonedDateTime start = ZonedDateTime.of(2016, 12, 27, 8, 15, 0, 0, ZoneId.of("UTC"));
-        ZonedDateTime[] expectedDateTimes = new ZonedDateTime[]{
-            ZonedDateTime.of(2016, 12, 27, 16, 0, 0, 0, ZoneId.of("UTC")),
-            ZonedDateTime.of(2016, 12, 27, 18, 0, 0, 0, ZoneId.of("UTC")),
-            ZonedDateTime.of(2016, 12, 28, 16, 0, 0, 0, ZoneId.of("UTC")),
-            ZonedDateTime.of(2016, 12, 28, 18, 0, 0, 0, ZoneId.of("UTC")),
-            ZonedDateTime.of(2016, 12, 29, 16, 0, 0, 0, ZoneId.of("UTC")),
+        ZonedDateTime[] expectedDateTimes = new ZonedDateTime[] {
+                ZonedDateTime.of(2016, 12, 27, 16, 0, 0, 0, ZoneId.of("UTC")),
+                ZonedDateTime.of(2016, 12, 27, 18, 0, 0, 0, ZoneId.of("UTC")),
+                ZonedDateTime.of(2016, 12, 28, 16, 0, 0, 0, ZoneId.of("UTC")),
+                ZonedDateTime.of(2016, 12, 28, 18, 0, 0, 0, ZoneId.of("UTC")),
+                ZonedDateTime.of(2016, 12, 29, 16, 0, 0, 0, ZoneId.of("UTC")),
         };
 
         for (ZonedDateTime expectedDateTime : expectedDateTimes) {
@@ -629,12 +645,12 @@ public class ExecutionTimeQuartzIntegrationTest {
      */
     @Test
     public void mustJumpToNextMonthIfCurrentMonthDoesNotHaveDesiredDay() {
-        CronParser parser = new CronParser( CronDefinitionBuilder.instanceDefinitionFor(QUARTZ));
-        ExecutionTime executionTime = ExecutionTime.forCron( parser.parse( "0 0 8 31 * ?" ) );//8:00 on every 31th of Month
-        ZonedDateTime start = ZonedDateTime.of(2017, 04, 10, 0, 0, 0, 0, ZoneId.systemDefault() );
+        CronParser parser = new CronParser(CronDefinitionBuilder.instanceDefinitionFor(QUARTZ));
+        ExecutionTime executionTime = ExecutionTime.forCron(parser.parse("0 0 8 31 * ?"));//8:00 on every 31th of Month
+        ZonedDateTime start = ZonedDateTime.of(2017, 04, 10, 0, 0, 0, 0, ZoneId.systemDefault());
         ZonedDateTime next = executionTime.nextExecution(start).get();
-        ZonedDateTime expected = ZonedDateTime.of(2017, 05, 31, 8, 0, 0, 0, ZoneId.systemDefault() );
-        assertEquals( expected, next );
+        ZonedDateTime expected = ZonedDateTime.of(2017, 05, 31, 8, 0, 0, 0, ZoneId.systemDefault());
+        assertEquals(expected, next);
     }
 
     /**
@@ -644,23 +660,24 @@ public class ExecutionTimeQuartzIntegrationTest {
      */
     @Test
     public void mustJumpToEndOfMonthIfCurrentMonthHasDesiredDay() {
-        CronParser parser = new CronParser( CronDefinitionBuilder.instanceDefinitionFor(QUARTZ));
-        ExecutionTime executionTime = ExecutionTime.forCron( parser.parse( "0 0 8 31 * ?" ) );//8:00 on every 31th of Month
-        ZonedDateTime start = ZonedDateTime.of( 2017, 01, 10, 0, 0, 0, 0, ZoneId.systemDefault() );
+        CronParser parser = new CronParser(CronDefinitionBuilder.instanceDefinitionFor(QUARTZ));
+        ExecutionTime executionTime = ExecutionTime.forCron(parser.parse("0 0 8 31 * ?"));//8:00 on every 31th of Month
+        ZonedDateTime start = ZonedDateTime.of(2017, 01, 10, 0, 0, 0, 0, ZoneId.systemDefault());
         ZonedDateTime next = executionTime.nextExecution(start).get();
-        ZonedDateTime expected = ZonedDateTime.of( 2017, 01, 31, 8, 0, 0, 0, ZoneId.systemDefault() );
-        assertEquals( expected, next );
+        ZonedDateTime expected = ZonedDateTime.of(2017, 01, 31, 8, 0, 0, 0, ZoneId.systemDefault());
+        assertEquals(expected, next);
     }
-    
+
     @Ignore("bug fix pending")
     @Test //#192
     public void mustMatchLowerBoundDateMatchingCronExpressionRequirements() {
-        CronParser parser = new CronParser( CronDefinitionBuilder.instanceDefinitionFor(QUARTZ));
-        ZonedDateTime start = ZonedDateTime.of( 2017, 01, 1, 0, 0, 0, 0, ZoneId.systemDefault() );
-        ExecutionTime executionTime = ExecutionTime.forCron( parser.parse( "0 0 0 1 * ?" ) ); // every 1st of Month 1970-2099
-        ExecutionTime constraintExecutionTime = ExecutionTime.forCron( parser.parse( "0 0 0 1 * ? 2017" ) ); // every 1st of Month for 2017
-        assertEquals("year constraint shouldn't have an impact on next execution", executionTime.nextExecution(start.minusSeconds(1)), constraintExecutionTime.nextExecution(start.minusSeconds(1)));
-        assertEquals("year constraint shouldn't have an impact on match result", executionTime.isMatch(start),  constraintExecutionTime.isMatch(start));
+        CronParser parser = new CronParser(CronDefinitionBuilder.instanceDefinitionFor(QUARTZ));
+        ZonedDateTime start = ZonedDateTime.of(2017, 01, 1, 0, 0, 0, 0, ZoneId.systemDefault());
+        ExecutionTime executionTime = ExecutionTime.forCron(parser.parse("0 0 0 1 * ?")); // every 1st of Month 1970-2099
+        ExecutionTime constraintExecutionTime = ExecutionTime.forCron(parser.parse("0 0 0 1 * ? 2017")); // every 1st of Month for 2017
+        assertEquals("year constraint shouldn't have an impact on next execution", executionTime.nextExecution(start.minusSeconds(1)),
+                constraintExecutionTime.nextExecution(start.minusSeconds(1)));
+        assertEquals("year constraint shouldn't have an impact on match result", executionTime.isMatch(start), constraintExecutionTime.isMatch(start));
     }
 
     private Duration getMinimumInterval(String quartzPattern) {
@@ -672,12 +689,12 @@ public class ExecutionTimeQuartzIntegrationTest {
         return et.timeToNextExecution(t1).get();
     }
 
-    private ZonedDateTime truncateToSeconds(ZonedDateTime dateTime){
+    private ZonedDateTime truncateToSeconds(ZonedDateTime dateTime) {
         return dateTime.truncatedTo(ChronoUnit.SECONDS);
     }
 
     private void assertExpectedNextExecution(String cronExpression, ZonedDateTime lastRun,
-                                             ZonedDateTime expectedNextRun) {
+            ZonedDateTime expectedNextRun) {
 
         String testCaseDescription = "cron expression '" + cronExpression + "' with zdt " + lastRun;
         System.out.println("TESTING: " + testCaseDescription);
@@ -688,8 +705,7 @@ public class ExecutionTimeQuartzIntegrationTest {
         try {
             ZonedDateTime nextRun = executionTime.nextExecution(lastRun).get();
             assertEquals(testCaseDescription, expectedNextRun, nextRun);
-        }
-        catch(DateTimeException e) {
+        } catch (DateTimeException e) {
             fail("Issue #110: " + testCaseDescription + " led to " + e);
         }
     }

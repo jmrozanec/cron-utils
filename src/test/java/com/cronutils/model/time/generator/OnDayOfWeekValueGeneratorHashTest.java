@@ -1,9 +1,5 @@
 package com.cronutils.model.time.generator;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
 import java.util.List;
 
 import org.junit.Test;
@@ -18,6 +14,11 @@ import com.cronutils.model.field.expression.On;
 import com.cronutils.model.field.value.IntegerFieldValue;
 import com.cronutils.model.field.value.SpecialChar;
 import com.cronutils.model.field.value.SpecialCharFieldValue;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 /*
  * Copyright 2015 jmrozanec
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -96,7 +97,7 @@ public class OnDayOfWeekValueGeneratorHashTest {
     @Test
     public void testGenerateCandidatesNotIncludingIntervalExtremesLastDayDoWGreaterThanRequestedDoW() throws Exception {
         fieldValueGenerator = createFieldValueGeneratorInstanceFirstDayDoWGreaterThanRequestedDoW();
-        List<Integer> values = fieldValueGenerator.generateCandidatesNotIncludingIntervalExtremes(1, firstDayDoWGreaterThanRequestedDoW_Day +1);
+        List<Integer> values = fieldValueGenerator.generateCandidatesNotIncludingIntervalExtremes(1, firstDayDoWGreaterThanRequestedDoW_Day + 1);
         assertFalse(values.isEmpty());
         assertEquals(firstDayDoWGreaterThanRequestedDoW_Day, values.get(0), 0);
     }
@@ -104,7 +105,7 @@ public class OnDayOfWeekValueGeneratorHashTest {
     @Test
     public void testGenerateCandidatesNotIncludingIntervalExtremesLastDayDoWLessThanRequestedDoW() throws Exception {
         fieldValueGenerator = createFieldValueGeneratorInstanceLastDayDoWLessThanRequestedDoW();
-        List<Integer> values = fieldValueGenerator.generateCandidatesNotIncludingIntervalExtremes(1, firstDayDoWLessThanRequestedDoW_Day +1);
+        List<Integer> values = fieldValueGenerator.generateCandidatesNotIncludingIntervalExtremes(1, firstDayDoWLessThanRequestedDoW_Day + 1);
         assertFalse(values.isEmpty());
         assertEquals(firstDayDoWLessThanRequestedDoW_Day, values.get(0), 0);
     }
@@ -112,7 +113,7 @@ public class OnDayOfWeekValueGeneratorHashTest {
     @Test
     public void testGenerateCandidatesNotIncludingIntervalExtremesLastDayDoWEqualToRequestedDoW() throws Exception {
         fieldValueGenerator = createFieldValueGeneratorInstanceLastDayDoWEqualToRequestedDoW();
-        List<Integer> values = fieldValueGenerator.generateCandidatesNotIncludingIntervalExtremes(1, firstDayDoWEqualToRequestedDoW_Day +1);
+        List<Integer> values = fieldValueGenerator.generateCandidatesNotIncludingIntervalExtremes(1, firstDayDoWEqualToRequestedDoW_Day + 1);
         assertFalse(values.isEmpty());
         assertEquals(firstDayDoWEqualToRequestedDoW_Day, values.get(0), 0);
     }
@@ -121,21 +122,21 @@ public class OnDayOfWeekValueGeneratorHashTest {
     public void testIsMatchLastDayDoWGreaterThanRequestedDoW() throws Exception {
         fieldValueGenerator = createFieldValueGeneratorInstanceFirstDayDoWGreaterThanRequestedDoW();
         assertTrue(fieldValueGenerator.isMatch(firstDayDoWGreaterThanRequestedDoW_Day));
-        assertFalse(fieldValueGenerator.isMatch(firstDayDoWGreaterThanRequestedDoW_Day +1));
+        assertFalse(fieldValueGenerator.isMatch(firstDayDoWGreaterThanRequestedDoW_Day + 1));
     }
 
     @Test
     public void testIsMatchLastDayDoWLessThanRequestedDoW() throws Exception {
         fieldValueGenerator = createFieldValueGeneratorInstanceLastDayDoWLessThanRequestedDoW();
         assertTrue(fieldValueGenerator.isMatch(firstDayDoWLessThanRequestedDoW_Day));
-        assertFalse(fieldValueGenerator.isMatch(firstDayDoWLessThanRequestedDoW_Day +1));
+        assertFalse(fieldValueGenerator.isMatch(firstDayDoWLessThanRequestedDoW_Day + 1));
     }
 
     @Test
     public void testIsMatchLastDayDoWEqualToRequestedDoW() throws Exception {
         fieldValueGenerator = createFieldValueGeneratorInstanceLastDayDoWEqualToRequestedDoW();
         assertTrue(fieldValueGenerator.isMatch(firstDayDoWEqualToRequestedDoW_Day));
-        assertFalse(fieldValueGenerator.isMatch(firstDayDoWEqualToRequestedDoW_Day +1));
+        assertFalse(fieldValueGenerator.isMatch(firstDayDoWEqualToRequestedDoW_Day + 1));
     }
 
     private OnDayOfWeekValueGenerator createFieldValueGeneratorInstanceFirstDayDoWGreaterThanRequestedDoW() {

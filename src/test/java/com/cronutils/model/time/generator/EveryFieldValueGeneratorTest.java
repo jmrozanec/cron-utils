@@ -1,10 +1,5 @@
 package com.cronutils.model.time.generator;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
-
 import java.util.List;
 
 import org.junit.Before;
@@ -17,6 +12,12 @@ import com.cronutils.model.field.constraint.FieldConstraintsBuilder;
 import com.cronutils.model.field.expression.Every;
 import com.cronutils.model.field.expression.FieldExpression;
 import com.cronutils.model.field.value.IntegerFieldValue;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+
 /*
  * Copyright 2015 jmrozanec
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -36,32 +37,32 @@ public class EveryFieldValueGeneratorTest {
     private int time = 7;
 
     @Before
-    public void setUp(){
+    public void setUp() {
         constraints = FieldConstraintsBuilder.instance().createConstraintsInstance();
         fieldValueGenerator = new EveryFieldValueGenerator(new CronField(CronFieldName.HOUR, new Every(new IntegerFieldValue(time)), constraints));
     }
 
     @Test
     public void testGenerateNextValue() throws Exception {
-        for(int j=1; j<=10; j++){
-            int value = time*j-(1+((int)(2*Math.random())));
-            assertEquals(j*time, fieldValueGenerator.generateNextValue(value));
+        for (int j = 1; j <= 10; j++) {
+            int value = time * j - (1 + ((int) (2 * Math.random())));
+            assertEquals(j * time, fieldValueGenerator.generateNextValue(value));
         }
     }
 
     @Test
     public void testGeneratePreviousValue() throws Exception {
-        for(int j=0; j<10; j++){
-            int value = time*j+1+((int)(2*Math.random()));
-            assertEquals(j*time, fieldValueGenerator.generatePreviousValue(value));
+        for (int j = 0; j < 10; j++) {
+            int value = time * j + 1 + ((int) (2 * Math.random()));
+            assertEquals(j * time, fieldValueGenerator.generatePreviousValue(value));
         }
     }
 
     @Test
     public void testGenerateCandidatesNotIncludingIntervalExtremes() throws Exception {
         int candidatesQty = 7;
-        List<Integer> candidates = fieldValueGenerator.generateCandidatesNotIncludingIntervalExtremes(0, time*candidatesQty);
-        assertEquals(candidatesQty-1, candidates.size());
+        List<Integer> candidates = fieldValueGenerator.generateCandidatesNotIncludingIntervalExtremes(0, time * candidatesQty);
+        assertEquals(candidatesQty - 1, candidates.size());
     }
 
     @Test

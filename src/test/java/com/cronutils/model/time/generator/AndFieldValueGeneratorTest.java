@@ -1,10 +1,5 @@
 package com.cronutils.model.time.generator;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
-
 import java.util.List;
 
 import org.junit.Before;
@@ -18,6 +13,12 @@ import com.cronutils.model.field.expression.And;
 import com.cronutils.model.field.expression.FieldExpression;
 import com.cronutils.model.field.expression.On;
 import com.cronutils.model.field.value.IntegerFieldValue;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+
 /*
  * Copyright 2015 jmrozanec
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -41,7 +42,7 @@ public class AndFieldValueGeneratorTest {
     private int notConsideredValue = 7;
 
     @Before
-    public void setUp(){
+    public void setUp() {
         constraints = FieldConstraintsBuilder.instance().createConstraintsInstance();
         fieldValueGenerator =
                 new AndFieldValueGenerator(
@@ -57,15 +58,15 @@ public class AndFieldValueGeneratorTest {
 
     @Test(expected = NoSuchValueException.class)
     public void testGenerateNextValue() throws Exception {
-        assertEquals(value0, fieldValueGenerator.generateNextValue(value0-1));
-        assertEquals(value1, fieldValueGenerator.generateNextValue(value1-1));
-        assertEquals(value2, fieldValueGenerator.generateNextValue(value2-1));
+        assertEquals(value0, fieldValueGenerator.generateNextValue(value0 - 1));
+        assertEquals(value1, fieldValueGenerator.generateNextValue(value1 - 1));
+        assertEquals(value2, fieldValueGenerator.generateNextValue(value2 - 1));
         fieldValueGenerator.generateNextValue(value2);
     }
 
     @Test(expected = NoSuchValueException.class)
     public void testGeneratePreviousValue() throws Exception {
-        assertEquals(value2, fieldValueGenerator.generatePreviousValue(value2+1));
+        assertEquals(value2, fieldValueGenerator.generatePreviousValue(value2 + 1));
         assertEquals(value1, fieldValueGenerator.generatePreviousValue(value1 + 1));
         assertEquals(value0, fieldValueGenerator.generatePreviousValue(value0 + 1));
         fieldValueGenerator.generatePreviousValue(value0);

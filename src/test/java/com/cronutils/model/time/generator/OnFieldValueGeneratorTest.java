@@ -1,10 +1,5 @@
 package com.cronutils.model.time.generator;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
-
 import java.util.List;
 
 import org.junit.Before;
@@ -16,6 +11,12 @@ import com.cronutils.model.field.constraint.FieldConstraintsBuilder;
 import com.cronutils.model.field.expression.FieldExpression;
 import com.cronutils.model.field.expression.On;
 import com.cronutils.model.field.value.IntegerFieldValue;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+
 /*
  * Copyright 2015 jmrozanec
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -33,7 +34,7 @@ public class OnFieldValueGeneratorTest {
     private int day = 3;
 
     @Before
-    public void setUp(){
+    public void setUp() {
         fieldValueGenerator =
                 new OnFieldValueGenerator(
                         new CronField(
@@ -52,13 +53,13 @@ public class OnFieldValueGeneratorTest {
 
     @Test(expected = NoSuchValueException.class)
     public void testGeneratePreviousValue() throws Exception {
-        assertEquals(day, fieldValueGenerator.generatePreviousValue(day+1));
+        assertEquals(day, fieldValueGenerator.generatePreviousValue(day + 1));
         fieldValueGenerator.generatePreviousValue(day);
     }
 
     @Test
     public void testGenerateCandidatesNotIncludingIntervalExtremes() throws Exception {
-        List<Integer> candidates = fieldValueGenerator.generateCandidatesNotIncludingIntervalExtremes(1,32);
+        List<Integer> candidates = fieldValueGenerator.generateCandidatesNotIncludingIntervalExtremes(1, 32);
         assertEquals(1, candidates.size());
         assertEquals(day, candidates.get(0), 0);
     }
@@ -66,7 +67,7 @@ public class OnFieldValueGeneratorTest {
     @Test
     public void testIsMatch() throws Exception {
         assertTrue(fieldValueGenerator.isMatch(day));
-        assertFalse(fieldValueGenerator.isMatch(day-1));
+        assertFalse(fieldValueGenerator.isMatch(day - 1));
     }
 
     @Test

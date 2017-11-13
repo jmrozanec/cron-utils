@@ -1,10 +1,5 @@
 package com.cronutils.model.time.generator;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
 import org.junit.Before;
 import org.junit.Test;
 
@@ -19,6 +14,12 @@ import com.cronutils.model.field.expression.On;
 import com.cronutils.model.field.value.IntegerFieldValue;
 import com.cronutils.model.field.value.SpecialChar;
 import com.cronutils.model.field.value.SpecialCharFieldValue;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 /*
  * Copyright 2015 jmrozanec
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -33,6 +34,7 @@ import com.cronutils.model.field.value.SpecialCharFieldValue;
  */
 public class FieldValueGeneratorFactoryTest {
     private CronField mockCronField;
+
     @Before
     public void setUp() throws Exception {
         mockCronField = mock(CronField.class);
@@ -67,14 +69,14 @@ public class FieldValueGeneratorFactoryTest {
     @Test
     public void testForCronFieldOnSpecialCharNotNone() throws Exception {
         On mockOn = mock(On.class);
-        for(SpecialChar s : SpecialChar.values()){
-            if(!s.equals(SpecialChar.NONE)){
+        for (SpecialChar s : SpecialChar.values()) {
+            if (!s.equals(SpecialChar.NONE)) {
                 boolean gotException = false;
                 when(mockOn.getSpecialChar()).thenReturn(new SpecialCharFieldValue(s));
                 when(mockCronField.getExpression()).thenReturn(mockOn);
-                try{
+                try {
                     FieldValueGeneratorFactory.forCronField(mockCronField);
-                }catch (RuntimeException e){
+                } catch (RuntimeException e) {
                     gotException = true;
                 }
                 assertTrue("Should get exception when asking for OnValueGenerator with special char", gotException);
@@ -128,7 +130,7 @@ public class FieldValueGeneratorFactoryTest {
         );
     }
 
-    private FieldValueGenerator createDayOfMonthValueGeneratorInstance(SpecialChar specialChar){
+    private FieldValueGenerator createDayOfMonthValueGeneratorInstance(SpecialChar specialChar) {
         when(mockCronField.getField()).thenReturn(CronFieldName.DAY_OF_MONTH);
         On mockOn = mock(On.class);
         when(mockOn.getSpecialChar()).thenReturn(new SpecialCharFieldValue(specialChar));

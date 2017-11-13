@@ -1,9 +1,10 @@
 package com.cronutils.model.time;
 
-import static org.junit.Assert.assertEquals;
-
 import org.junit.Before;
 import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
+
 /*
  * Copyright 2015 jmrozanec
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,7 +24,7 @@ public class NearestValueTest {
     private NearestValue nearestValue;
 
     @Before
-    public void setUp(){
+    public void setUp() {
         value = 1;
         shifts = 1;
         nearestValue = new NearestValue(value, shifts);
