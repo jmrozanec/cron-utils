@@ -2,7 +2,8 @@ target/
 .settings/
 .classpath
 .project
-*.idea
+.idea/
+!.idea/codeStyleSettings.xml
 *.iml
 nbbuild
 nb-build.xml
