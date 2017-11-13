@@ -17,7 +17,7 @@ import com.cronutils.utils.Preconditions;
 public class SpecialCharFieldValue extends FieldValue<SpecialChar> {
     private SpecialChar specialChar = SpecialChar.NONE;
 
-    public SpecialCharFieldValue(SpecialChar specialChar){
+    public SpecialCharFieldValue(SpecialChar specialChar) {
         Preconditions.checkNotNull(specialChar, "special char must not be null");
         this.specialChar = specialChar;
     }

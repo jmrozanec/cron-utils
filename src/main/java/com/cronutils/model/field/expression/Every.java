@@ -20,36 +20,36 @@ import com.cronutils.utils.Preconditions;
  * Represents every x time on a cron field.
  */
 public class Every extends FieldExpression {
-	private FieldExpression expression;
-	private IntegerFieldValue period;
+    private FieldExpression expression;
+    private IntegerFieldValue period;
 
-	private Every(Every every){
-		this(every.getExpression(), every.getPeriod());
-	}
+    private Every(Every every) {
+        this(every.getExpression(), every.getPeriod());
+    }
 
-	public Every(IntegerFieldValue time) {
-		this(new Always(), time);
-	}
+    public Every(IntegerFieldValue time) {
+        this(new Always(), time);
+    }
 
-	public Every(FieldExpression expression, IntegerFieldValue period) {
-		this.expression = Preconditions.checkNotNull(expression, "Expression must not be null");
-		this.period = period == null ? new IntegerFieldValue(1) : period;
-	}
+    public Every(FieldExpression expression, IntegerFieldValue period) {
+        this.expression = Preconditions.checkNotNull(expression, "Expression must not be null");
+        this.period = period == null ? new IntegerFieldValue(1) : period;
+    }
 
-	public IntegerFieldValue getPeriod() {
-		return period;
-	}
+    public IntegerFieldValue getPeriod() {
+        return period;
+    }
 
-	public FieldExpression getExpression() {
-		return expression;
-	}
+    public FieldExpression getExpression() {
+        return expression;
+    }
 
-	@Override
-	public String asString() {
-	    String expressionAsString = expression.asString();
-		if ("*".equals(expressionAsString) && period.getValue() == 1) {
-			return expressionAsString;
-		}
-		return String.format("%s/%s", expressionAsString, period);
-	}
+    @Override
+    public String asString() {
+        String expressionAsString = expression.asString();
+        if ("*".equals(expressionAsString) && period.getValue() == 1) {
+            return expressionAsString;
+        }
+        return String.format("%s/%s", expressionAsString, period);
+    }
 }

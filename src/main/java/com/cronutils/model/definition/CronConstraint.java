@@ -10,6 +10,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.cronutils.model.definition;
 
 import java.io.Serializable;
@@ -19,7 +20,7 @@ import com.cronutils.model.Cron;
 public abstract class CronConstraint implements Serializable {
     private String description;
 
-    public CronConstraint(String description){
+    public CronConstraint(String description) {
         this.description = description;
     }
 

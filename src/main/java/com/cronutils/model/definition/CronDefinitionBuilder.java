@@ -10,9 +10,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.cronutils.model.definition;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import com.cronutils.model.CronType;
 import com.cronutils.model.field.CronFieldName;
@@ -23,7 +29,7 @@ import com.cronutils.model.field.definition.FieldQuestionMarkDefinitionBuilder;
 import com.cronutils.model.field.definition.FieldSpecialCharsDefinitionBuilder;
 
 /**
- * Builder that allows to define and create CronDefinition instances
+ * Builder that allows to define and create CronDefinition instances.
  */
 public class CronDefinitionBuilder {
     private final Map<CronFieldName, FieldDefinition> fields = new HashMap<>();
@@ -37,7 +43,8 @@ public class CronDefinitionBuilder {
     private CronDefinitionBuilder() {/*NOP*/}
 
     /**
-     * Creates a builder instance
+     * Creates a builder instance.
+     *
      * @return new CronDefinitionBuilder instance
      */
     public static CronDefinitionBuilder defineCron() {
@@ -45,7 +52,8 @@ public class CronDefinitionBuilder {
     }
 
     /**
-     * Adds definition for seconds field
+     * Adds definition for seconds field.
+     *
      * @return new FieldDefinitionBuilder instance
      */
     public FieldDefinitionBuilder withSeconds() {
@@ -53,7 +61,8 @@ public class CronDefinitionBuilder {
     }
 
     /**
-     * Adds definition for minutes field
+     * Adds definition for minutes field.
+     *
      * @return new FieldDefinitionBuilder instance
      */
     public FieldDefinitionBuilder withMinutes() {
@@ -61,7 +70,8 @@ public class CronDefinitionBuilder {
     }
 
     /**
-     * Adds definition for hours field
+     * Adds definition for hours field.
+     *
      * @return new FieldDefinitionBuilder instance
      */
     public FieldDefinitionBuilder withHours() {
@@ -69,7 +79,8 @@ public class CronDefinitionBuilder {
     }
 
     /**
-     * Adds definition for day of month field
+     * Adds definition for day of month field.
+     *
      * @return new FieldSpecialCharsDefinitionBuilder instance
      */
     public FieldSpecialCharsDefinitionBuilder withDayOfMonth() {
@@ -77,7 +88,8 @@ public class CronDefinitionBuilder {
     }
 
     /**
-     * Adds definition for month field
+     * Adds definition for month field.
+     *
      * @return new FieldDefinitionBuilder instance
      */
     public FieldDefinitionBuilder withMonth() {
@@ -85,7 +97,8 @@ public class CronDefinitionBuilder {
     }
 
     /**
-     * Adds definition for day of week field
+     * Adds definition for day of week field.
+     *
      * @return new FieldSpecialCharsDefinitionBuilder instance
      */
     public FieldDayOfWeekDefinitionBuilder withDayOfWeek() {
@@ -93,15 +106,17 @@ public class CronDefinitionBuilder {
     }
 
     /**
-     * Adds definition for year field
+     * Adds definition for year field.
+     *
      * @return new FieldDefinitionBuilder instance
      */
     public FieldDefinitionBuilder withYear() {
         return new FieldDefinitionBuilder(this, CronFieldName.YEAR);
     }
-    
+
     /**
-     * Adds definition for day of year field
+     * Adds definition for day of year field.
+     *
      * @return new FieldDefinitionBuilder instance
      */
     public FieldQuestionMarkDefinitionBuilder withDayOfYear() {
@@ -109,7 +124,8 @@ public class CronDefinitionBuilder {
     }
 
     /**
-     * Sets enforceStrictRanges value to true
+     * Sets enforceStrictRanges value to true.
+     *
      * @return this CronDefinitionBuilder instance
      */
     public CronDefinitionBuilder enforceStrictRanges() {
@@ -118,16 +134,18 @@ public class CronDefinitionBuilder {
     }
 
     /**
-     * Sets matchDayOfWeekAndDayOfMonth value to true
+     * Sets matchDayOfWeekAndDayOfMonth value to true.
+     *
      * @return this CronDefinitionBuilder instance
      */
-    public CronDefinitionBuilder matchDayOfWeekAndDayOfMonth(){
+    public CronDefinitionBuilder matchDayOfWeekAndDayOfMonth() {
         matchDayOfWeekAndDayOfMonth = true;
         return this;
     }
 
     /**
-     * Adds a cron validation
+     * Adds a cron validation.
+     *
      * @return this CronDefinitionBuilder instance
      */
     public CronDefinitionBuilder withCronValidation(CronConstraint validation) {
@@ -136,14 +154,15 @@ public class CronDefinitionBuilder {
     }
 
     /**
-     * Registers a certain FieldDefinition
+     * Registers a certain FieldDefinition.
+     *
      * @param definition - FieldDefinition  instance, never null
      */
     public void register(FieldDefinition definition) {
         //ensure that we can't register a mandatory definition if there are already optional ones
         boolean hasOptionalField = false;
-        for(FieldDefinition fieldDefinition: fields.values()){
-            if (fieldDefinition.isOptional()){
+        for (FieldDefinition fieldDefinition : fields.values()) {
+            if (fieldDefinition.isOptional()) {
                 hasOptionalField = true;
                 break;
             }
@@ -155,7 +174,8 @@ public class CronDefinitionBuilder {
     }
 
     /**
-     * Creates a new CronDefinition instance with provided field definitions
+     * Creates a new CronDefinition instance with provided field definitions.
+     *
      * @return returns CronDefinition instance, never null
      */
     public CronDefinition instance() {
@@ -167,7 +187,8 @@ public class CronDefinitionBuilder {
     }
 
     /**
-     * Creates CronDefinition instance matching cron4j specification;
+     * Creates CronDefinition instance matching cron4j specification.
+     *
      * @return CronDefinition instance, never null;
      */
     private static CronDefinition cron4j() {
@@ -176,21 +197,20 @@ public class CronDefinitionBuilder {
                 .withHours().and()
                 .withDayOfMonth().supportsL().and()
                 .withMonth().and()
-                .withDayOfWeek().withValidRange(0,6).withMondayDoWValue(1).and()
+                .withDayOfWeek().withValidRange(0, 6).withMondayDoWValue(1).and()
                 .enforceStrictRanges()
                 .matchDayOfWeekAndDayOfMonth()
                 .instance();
     }
 
-
     /**
-     * Creates CronDefinition instance matching Quartz specification
-     * <p>
-     * The cron expression is expected to be a string comprised of 6 or 7
+     * Creates CronDefinition instance matching Quartz specification.
+     *
+     * <p>The cron expression is expected to be a string comprised of 6 or 7
      * fields separated by white space. Fields can contain any of the allowed
      * values, along with various combinations of the allowed special characters
      * for that field. The fields are as follows:
-     * <p>
+     *
      * <table style="width:100%">
      * <tr>
      * <th>Field Name</th>
@@ -241,10 +261,10 @@ public class CronDefinitionBuilder {
      * <td>* , - /</td>
      * </tr>
      * </table>
-     * <P>
-     * Thus in general Quartz cron expressions are as follows:
-     * <p>
-     * S M H DoM M DoW [Y]
+     *
+     * <p>Thus in general Quartz cron expressions are as follows:
+     *
+     * <p>S M H DoM M DoW [Y]
      *
      * @return {@link CronDefinition} instance, never {@code null}
      */
@@ -262,7 +282,8 @@ public class CronDefinitionBuilder {
     }
 
     /**
-     * Creates CronDefinition instance matching unix crontab specification;
+     * Creates CronDefinition instance matching unix crontab specification.
+     *
      * @return CronDefinition instance, never null;
      */
     private static CronDefinition unixCrontab() {
@@ -271,18 +292,19 @@ public class CronDefinitionBuilder {
                 .withHours().and()
                 .withDayOfMonth().and()
                 .withMonth().and()
-                .withDayOfWeek().withValidRange(0,7).withMondayDoWValue(1).withIntMapping(7,0).and()
+                .withDayOfWeek().withValidRange(0, 7).withMondayDoWValue(1).withIntMapping(7, 0).and()
                 .enforceStrictRanges()
                 .instance();
     }
 
     /**
-     * Creates CronDefinition instance matching cronType specification;
+     * Creates CronDefinition instance matching cronType specification.
+     *
      * @param cronType - some cron type. If null, a RuntimeException will be raised.
      * @return CronDefinition instance if definition is found; a RuntimeException otherwise.
      */
-    public static CronDefinition instanceDefinitionFor(CronType cronType){
-        switch (cronType){
+    public static CronDefinition instanceDefinitionFor(CronType cronType) {
+        switch (cronType) {
             case CRON4J:
                 return cron4j();
             case QUARTZ:

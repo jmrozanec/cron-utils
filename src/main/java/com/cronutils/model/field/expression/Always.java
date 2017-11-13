@@ -4,7 +4,7 @@ import com.google.common.base.MoreObjects;
 
 /*
  * Copyright 2014 jmrozanec
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -17,26 +17,27 @@ import com.google.common.base.MoreObjects;
  */
 
 /**
- * Represents a star (*) value on cron expression field
+ * Represents a star (*) value on cron expression field.
  */
 public class Always extends FieldExpression {
 
     static final Always INSTANCE = new Always();
 
     /**
-     * Should be package private and not be instantiated elsewhere. Class should become package private too.
+     * Should be package private and not be instantiated elsewhere.
+     * Class should become package private too.
+     *
      * @deprecated rather use {@link FieldExpression#always()}
      */
     @Deprecated
-	public Always(){}
-    
+    public Always() {
+    }
 
-	@Override
-	public String asString() {
-		return "*";
-	}
-	
-	 
+    @Override
+    public String asString() {
+        return "*";
+    }
+
     @Override
     public String toString() {
         return MoreObjects.toStringHelper(this).toString();

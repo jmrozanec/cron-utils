@@ -18,7 +18,7 @@ import com.cronutils.model.field.CronField;
  * limitations under the License.
  */
 abstract class OnDayOfCalendarValueGenerator extends FieldValueGenerator {
-    protected  int year;
+    protected int year;
     protected int month;
 
     OnDayOfCalendarValueGenerator(CronField cronField, int year, int month) {
@@ -26,7 +26,7 @@ abstract class OnDayOfCalendarValueGenerator extends FieldValueGenerator {
         this.year = year;
         this.month = month;
     }
-    
+
     @Override
     protected List<Integer> generateCandidatesNotIncludingIntervalExtremes(int start, int end) {
         List<Integer> values = new ArrayList<>();

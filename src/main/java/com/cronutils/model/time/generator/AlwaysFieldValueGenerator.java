@@ -7,6 +7,7 @@ import com.cronutils.model.field.CronField;
 import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.field.expression.Always;
 import com.cronutils.model.field.expression.FieldExpression;
+
 /*
  * Copyright 2015 jmrozanec
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -25,21 +26,21 @@ class AlwaysFieldValueGenerator extends FieldValueGenerator {
     }
 
     @Override
-    public int generateNextValue(int reference) throws NoSuchValueException{
-        int newvalue = reference+1;
-        if(newvalue<=cronField.getConstraints().getEndRange()){
+    public int generateNextValue(int reference) throws NoSuchValueException {
+        int newvalue = reference + 1;
+        if (newvalue <= cronField.getConstraints().getEndRange()) {
             return newvalue;
-        }else {
+        } else {
             throw new NoSuchValueException();
         }
     }
 
     @Override
     public int generatePreviousValue(int reference) throws NoSuchValueException {
-        int newvalue = reference-1;
-        if(newvalue>=cronField.getConstraints().getStartRange()){
+        int newvalue = reference - 1;
+        if (newvalue >= cronField.getConstraints().getStartRange()) {
             return newvalue;
-        }else {
+        } else {
             throw new NoSuchValueException();
         }
     }
@@ -47,7 +48,7 @@ class AlwaysFieldValueGenerator extends FieldValueGenerator {
     @Override
     protected List<Integer> generateCandidatesNotIncludingIntervalExtremes(int start, int end) {
         List<Integer> values = new ArrayList<>();
-        for(int j = start+1; j<end; j++){
+        for (int j = start + 1; j < end; j++) {
             values.add(j);
         }
         return values;

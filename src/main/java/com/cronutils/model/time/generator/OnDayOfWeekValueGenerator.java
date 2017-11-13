@@ -1,4 +1,5 @@
 package com.cronutils.model.time.generator;
+
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 
@@ -10,6 +11,7 @@ import com.cronutils.model.field.expression.FieldExpression;
 import com.cronutils.model.field.expression.On;
 import com.cronutils.model.field.value.IntegerFieldValue;
 import com.cronutils.utils.Preconditions;
+
 /*
  * Copyright 2015 jmrozanec
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -26,7 +28,7 @@ class OnDayOfWeekValueGenerator extends OnDayOfCalendarValueGenerator {
 
     private static final On ON_SATURDAY = new On(new IntegerFieldValue(7));
     private WeekDay mondayDoWValue;
-    
+
     public OnDayOfWeekValueGenerator(CronField cronField, int year, int month, WeekDay mondayDoWValue) {
         super(cronField, year, month);
         Preconditions.checkArgument(CronFieldName.DAY_OF_WEEK.equals(cronField.getField()), "CronField does not belong to day of week");
@@ -34,10 +36,10 @@ class OnDayOfWeekValueGenerator extends OnDayOfCalendarValueGenerator {
     }
 
     @Override
-    public int generateNextValue(int reference) throws NoSuchValueException{
-        On on = ((On)cronField.getExpression());
+    public int generateNextValue(int reference) throws NoSuchValueException {
+        On on = ((On) cronField.getExpression());
         int value = generateValue(on, year, month, reference);
-        if(value<=reference){
+        if (value <= reference) {
             throw new NoSuchValueException();
         }
         return value;
@@ -45,9 +47,9 @@ class OnDayOfWeekValueGenerator extends OnDayOfCalendarValueGenerator {
 
     @Override
     public int generatePreviousValue(int reference) throws NoSuchValueException {
-        On on = ((On)cronField.getExpression());
+        On on = ((On) cronField.getExpression());
         int value = generateValue(on, year, month, reference);
-        if(value>=reference){
+        if (value >= reference) {
             throw new NoSuchValueException();
         }
         return value;
@@ -55,7 +57,7 @@ class OnDayOfWeekValueGenerator extends OnDayOfCalendarValueGenerator {
 
     @Override
     public boolean isMatch(int value) {
-        On on = ((On)cronField.getExpression());
+        On on = ((On) cronField.getExpression());
         try {
             return value == generateValue(on, year, month, value - 1);
         } catch (NoSuchValueException ignored) {
@@ -70,11 +72,13 @@ class OnDayOfWeekValueGenerator extends OnDayOfCalendarValueGenerator {
     }
 
     private int generateValue(On on, int year, int month, int reference) throws NoSuchValueException {
-        switch (on.getSpecialChar().getValue()){
+        switch (on.getSpecialChar().getValue()) {
             case HASH:
                 return generateHashValues(on, year, month);
             case L:
-                return on.getTime().getValue() == -1 ? /* L by itself simply means “7” or “SAT” */ generateNoneValues(ON_SATURDAY, year, month, reference) : generateLValues(on, year, month);
+                return on.getTime().getValue() == -1 ? /* L by itself simply means “7” or “SAT” */
+                        generateNoneValues(ON_SATURDAY, year, month, reference) :
+                        generateLValues(on, year, month);
             case NONE:
                 return generateNoneValues(on, year, month, reference);
             default:
@@ -82,19 +86,19 @@ class OnDayOfWeekValueGenerator extends OnDayOfCalendarValueGenerator {
         }
     }
 
-    private int generateHashValues(On on, int year, int month){
+    private int generateHashValues(On on, int year, int month) {
         DayOfWeek dowForFirstDoM = LocalDate.of(year, month, 1).getDayOfWeek();//1-7
         int requiredDoW = ConstantsMapper.weekDayMapping(mondayDoWValue, ConstantsMapper.JAVA8, on.getTime().getValue());//to normalize to jdk8-time value
         int requiredNth = on.getNth().getValue();
         int baseDay = 1;//day 1 from given month
         int diff = dowForFirstDoM.getValue() - requiredDoW;
-        if(diff < 0){
-            baseDay = baseDay+Math.abs(diff);
+        if (diff < 0) {
+            baseDay = baseDay + Math.abs(diff);
         }
-        if(diff>0){
-            baseDay = baseDay+7-diff;
+        if (diff > 0) {
+            baseDay = baseDay + 7 - diff;
         }
-        return (requiredNth-1) * 7 + baseDay;
+        return (requiredNth - 1) * 7 + baseDay;
     }
 
     private int generateLValues(On on, int year, int month) throws NoSuchValueException {
@@ -104,46 +108,47 @@ class OnDayOfWeekValueGenerator extends OnDayOfCalendarValueGenerator {
         int requiredDoW = ConstantsMapper.weekDayMapping(mondayDoWValue, ConstantsMapper.JAVA8, on.getTime().getValue());//to normalize to jdk8-time value
         int dowDiff = dowForLastDoM - requiredDoW;
 
-        if(dowDiff==0){
+        if (dowDiff == 0) {
             return lastDoMDateTime.getDayOfMonth();
         }
-        if(dowDiff<0){
-            return lastDoMDateTime.minusDays(dowForLastDoM+(7-requiredDoW)).getDayOfMonth();
+        if (dowDiff < 0) {
+            return lastDoMDateTime.minusDays(dowForLastDoM + (7 - requiredDoW)).getDayOfMonth();
         }
-        if(dowDiff>0){
+        if (dowDiff > 0) {
             return lastDoMDateTime.minusDays(dowDiff).getDayOfMonth();
         }
         throw new NoSuchValueException();
     }
 
     /**
-     * Generate valid days of the month for the days of week expression. This method requires that you 
+     * Generate valid days of the month for the days of week expression. This method requires that you
      * pass it a -1 for the reference value when starting to generate a sequence of day values. That allows
      * it to handle the special case of which day of the month is the initial matching value.
-     * 
-     * @param on The expression object giving us the particular day of week we need.
-     * @param year The year for the calculation.
-     * @param month The month for the calculation.
-     * @param reference This value must either be -1 indicating you are starting the sequence generation or an actual day of month that meets the day of week criteria. So a value previously returned by this method.
+     *
+     * @param on        The expression object giving us the particular day of week we need.
+     * @param year      The year for the calculation.
+     * @param month     The month for the calculation.
+     * @param reference This value must either be -1 indicating you are starting the sequence generation or an actual
+     *                  day of month that meets the day of week criteria. So a value previously returned by this method.
      * @return
      */
-	private int generateNoneValues(On on, int year, int month, int reference) {
-		// the day of week the first of the month is on
-		int dowForFirstDoM = LocalDate.of(year, month, 1).getDayOfWeek().getValue();// 1-7
-		// the day of week we need, normalize to jdk8time
-		int requiredDoW = ConstantsMapper.weekDayMapping(mondayDoWValue, ConstantsMapper.JAVA8, on.getTime().getValue());
-		// the first day of the month
-		int baseDay = 1;// day 1 from given month
-		// the difference between the days of week
-		int diff = dowForFirstDoM - requiredDoW;
-		// //base day remains the same if diff is zero
-		if (diff < 0) {
-			baseDay = baseDay + Math.abs(diff);
-		}
-		if (diff > 0) {
-			baseDay = baseDay + 7 - diff;
-		}
-		// if baseDay is greater than the reference, we are returning the initial matching day value
+    private int generateNoneValues(On on, int year, int month, int reference) {
+        // the day of week the first of the month is on
+        int dowForFirstDoM = LocalDate.of(year, month, 1).getDayOfWeek().getValue();// 1-7
+        // the day of week we need, normalize to jdk8time
+        int requiredDoW = ConstantsMapper.weekDayMapping(mondayDoWValue, ConstantsMapper.JAVA8, on.getTime().getValue());
+        // the first day of the month
+        int baseDay = 1;// day 1 from given month
+        // the difference between the days of week
+        int diff = dowForFirstDoM - requiredDoW;
+        // //base day remains the same if diff is zero
+        if (diff < 0) {
+            baseDay = baseDay + Math.abs(diff);
+        }
+        if (diff > 0) {
+            baseDay = baseDay + 7 - diff;
+        }
+        // if baseDay is greater than the reference, we are returning the initial matching day value
         //Fix issue #92
         if (reference < 1) {
             return baseDay;
@@ -152,5 +157,5 @@ class OnDayOfWeekValueGenerator extends OnDayOfCalendarValueGenerator {
             baseDay += 7;
         }
         return baseDay;
-	}
+    }
 }

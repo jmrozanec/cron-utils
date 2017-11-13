@@ -20,14 +20,13 @@ public class DayOfWeekFieldDefinition extends FieldDefinition {
     private WeekDay mondayDoWValue;
 
     /**
-     * Constructor
+     * Constructor.
      *
-     * @param fieldName   - CronFieldName; name of the field
-     *                    if null, a NullPointerException will be raised.
-     * @param optional    - optional tag                   
-     * @param constraints - FieldConstraints, constraints;
+     * @param fieldName      - CronFieldName; name of the field
+     *                       if null, a NullPointerException will be raised.
+     * @param optional       - optional tag
+     * @param constraints    - FieldConstraints, constraints;
      * @param mondayDoWValue - day of week convention for field
-     *
      */
     public DayOfWeekFieldDefinition(CronFieldName fieldName, FieldConstraints constraints, boolean optional, WeekDay mondayDoWValue) {
         super(fieldName, constraints, optional);

@@ -21,34 +21,33 @@ import com.cronutils.utils.Preconditions;
 public abstract class FieldExpression implements Serializable {
 
     public And and(FieldExpression exp) {
-		return new And().and(this).and(exp);
-	}
+        return new And().and(this).and(exp);
+    }
 
-	/**
-	 * Represents FieldExpression as string
-	 * 
-	 * @return String representation, never null.
-	 */
-	public abstract String asString();
+    /**
+     * Represents FieldExpression as string.
+     *
+     * @return String representation, never null.
+     */
+    public abstract String asString();
 
-	/**
-	 * Accept a visitor to perform some action on the instance. Current instance is cloned, so that we ensure immutability. Clone of this
-	 * instance is returned after visitor.visit(clone) was invoked.
-	 * 
-	 * @param visitor
-	 *            - FieldExpressionVisitor instance, never null
-	 * @return FieldExpression copied instance with visitor action performed.
-	 */
-	public final FieldExpression accept(FieldExpressionVisitor visitor) {
-		Preconditions.checkNotNull(visitor, "FieldExpressionVisitor must not be null");
-		return visitor.visit(this);
-	}
-	
-	public static FieldExpression always() {
+    /**
+     * Accept a visitor to perform some action on the instance. Current instance is cloned, so that we ensure immutability. Clone of this
+     * instance is returned after visitor.visit(clone) was invoked.
+     *
+     * @param visitor - FieldExpressionVisitor instance, never null
+     * @return FieldExpression copied instance with visitor action performed.
+     */
+    public final FieldExpression accept(FieldExpressionVisitor visitor) {
+        Preconditions.checkNotNull(visitor, "FieldExpressionVisitor must not be null");
+        return visitor.visit(this);
+    }
+
+    public static FieldExpression always() {
         return Always.INSTANCE;
     }
-	
-	public static FieldExpression questionMark() {
-	    return QuestionMark.INSTANCE;
-	}
+
+    public static FieldExpression questionMark() {
+        return QuestionMark.INSTANCE;
+    }
 }

@@ -23,8 +23,8 @@ public class WeekDay implements Serializable {
     private int mondayDoWValue;
     private boolean firstDayZero;
 
-    public WeekDay(int mondayDoWValue, boolean firstDayZero){
-        Preconditions.checkArgument(mondayDoWValue>=0, "Monday Day of Week value must be greater or equal to zero");
+    public WeekDay(int mondayDoWValue, boolean firstDayZero) {
+        Preconditions.checkArgument(mondayDoWValue >= 0, "Monday Day of Week value must be greater or equal to zero");
         this.mondayDoWValue = mondayDoWValue;
         this.firstDayZero = firstDayZero;
     }
@@ -33,35 +33,36 @@ public class WeekDay implements Serializable {
         return mondayDoWValue;
     }
 
-    public boolean isFirstDayZero(){
+    public boolean isFirstDayZero() {
         return firstDayZero;
     }
 
     /**
      * Maps given WeekDay to representation hold by this instance.
+     *
      * @param targetWeekDayDefinition - referred weekDay
-     * @param dayOfWeek - day of week to be mapped.
-     *                  Value corresponds to this instance mapping.
+     * @param dayOfWeek               - day of week to be mapped.
+     *                                Value corresponds to this instance mapping.
      * @return - int result
      */
-    public int mapTo(int dayOfWeek, WeekDay targetWeekDayDefinition){
-        if(firstDayZero && targetWeekDayDefinition.isFirstDayZero()){
+    public int mapTo(int dayOfWeek, WeekDay targetWeekDayDefinition) {
+        if (firstDayZero && targetWeekDayDefinition.isFirstDayZero()) {
             return bothSameStartOfRange(0, 6, this, targetWeekDayDefinition).apply(dayOfWeek);
         }
-        if(!firstDayZero && !targetWeekDayDefinition.isFirstDayZero()){
+        if (!firstDayZero && !targetWeekDayDefinition.isFirstDayZero()) {
             return bothSameStartOfRange(1, 7, this, targetWeekDayDefinition).apply(dayOfWeek);
         }
         //start range is different for each case. We need to normalize ranges
-        if(targetWeekDayDefinition.isFirstDayZero()){
+        if (targetWeekDayDefinition.isFirstDayZero()) {
             //my range is 1-7. I normalize ranges, get the "zero" mapping and turn result into original scale
-            return mapTo(dayOfWeek, new WeekDay(targetWeekDayDefinition.getMondayDoWValue()+1, false)) - 1;
-        }else{
+            return mapTo(dayOfWeek, new WeekDay(targetWeekDayDefinition.getMondayDoWValue() + 1, false)) - 1;
+        } else {
             //my range is 0-6. I normalize ranges, get the "one" mapping and turn result into original scale
-            return mapTo(dayOfWeek, new WeekDay(targetWeekDayDefinition.getMondayDoWValue()-1, true)) + 1;
+            return mapTo(dayOfWeek, new WeekDay(targetWeekDayDefinition.getMondayDoWValue() - 1, true)) + 1;
         }
     }
 
-    private Function<Integer, Integer> bothSameStartOfRange(final int startRange, final int endRange, final WeekDay source, final WeekDay target){
+    private Function<Integer, Integer> bothSameStartOfRange(final int startRange, final int endRange, final WeekDay source, final WeekDay target) {
         return integer -> {
             int diff = target.getMondayDoWValue() - source.getMondayDoWValue();
             int result = integer;
