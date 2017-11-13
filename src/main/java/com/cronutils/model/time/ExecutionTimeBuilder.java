@@ -132,12 +132,12 @@ class ExecutionTimeBuilder {
         if (yearsValueGenerator == null) {
             yearsValueGenerator =
                     FieldValueGeneratorFactory.forCronField(
-                            new CronField(CronFieldName.YEAR,always(), getConstraint(CronFieldName.YEAR))
+                            new CronField(CronFieldName.YEAR, always(), getConstraint(CronFieldName.YEAR))
                     );
         }
-        if(daysOfYearCronField == null){
-           FieldConstraints constraints = getConstraint(CronFieldName.DAY_OF_YEAR);
-           daysOfYearCronField=new CronField(CronFieldName.DAY_OF_YEAR, lowestAssigned ? FieldExpression.questionMark() :always(), constraints);
+        if (daysOfYearCronField == null) {
+            FieldConstraints constraints = getConstraint(CronFieldName.DAY_OF_YEAR);
+            daysOfYearCronField = new CronField(CronFieldName.DAY_OF_YEAR, lowestAssigned ? FieldExpression.questionMark() : always(), constraints);
         }
 
         return new ExecutionTime(cronDefinition,
@@ -157,7 +157,7 @@ class ExecutionTimeBuilder {
     private TimeNode timeNodeAlways(CronFieldName name, int lower, int higher) {
         return new TimeNode(
                 FieldValueGeneratorFactory.forCronField(
-                        new CronField(name,always(), getConstraint(name))
+                        new CronField(name, always(), getConstraint(name))
                 ).generateCandidates(lower, higher));
     }
 
