@@ -24,7 +24,7 @@ import com.cronutils.utils.Preconditions;
  */
 
 /**
- * Provides human readable description for a given cron
+ * Provides human readable description for a given cron.
  */
 public class CronDescriptor {
 
@@ -33,7 +33,8 @@ public class CronDescriptor {
     private ResourceBundle bundle;
 
     /**
-     * Constructor creating a descriptor for given Locale
+     * Constructor creating a descriptor for given Locale.
+     *
      * @param locale - Locale in which descriptions are given
      */
     private CronDescriptor(Locale locale) {
@@ -48,7 +49,8 @@ public class CronDescriptor {
     }
 
     /**
-     * Provide a description of given CronFieldParseResult list
+     * Provide a description of given CronFieldParseResult list.
+     *
      * @param cron - Cron instance, never null
      *             if null, will throw NullPointerException
      * @return description - String
@@ -57,7 +59,7 @@ public class CronDescriptor {
         Preconditions.checkNotNull(cron, "Cron must not be null");
         Map<CronFieldName, CronField> expressions = cron.retrieveFieldsAsMap();
         Map<CronFieldName, FieldDefinition> fieldDefinitions = cron.getCronDefinition().retrieveFieldDefinitionsAsMap();
-        
+
         return
                 new StringBuilder()
                         .append(describeHHmmss(expressions)).append(" ")
@@ -69,7 +71,8 @@ public class CronDescriptor {
     }
 
     /**
-     * Provide description for hours, minutes and seconds
+     * Provide description for hours, minutes and seconds.
+     *
      * @param fields - fields to describe;
      * @return description - String
      */
@@ -83,7 +86,8 @@ public class CronDescriptor {
     }
 
     /**
-     * Provide description for day of month
+     * Provide description for day of month.
+     *
      * @param fields - fields to describe;
      * @return description - String
      */
@@ -96,7 +100,8 @@ public class CronDescriptor {
     }
 
     /**
-     * Provide description for month
+     * Provide description for month.
+     *
      * @param fields - fields to describe;
      * @return description - String
      */
@@ -109,35 +114,37 @@ public class CronDescriptor {
         return addTimeExpressions(description, bundle.getString("month"), bundle.getString("months"));
     }
 
-    private String addTimeExpressions(String description, String singular, String plural){
+    private String addTimeExpressions(String description, String singular, String plural) {
         return description
                 .replaceAll("%s", singular)
                 .replaceAll("%p", plural);
     }
 
     /**
-     * Provide description for day of week
+     * Provide description for day of week.
+     *
      * @param fields - fields to describe;
      * @return description - String
      */
     private String describeDayOfWeek(Map<CronFieldName, CronField> fields, Map<CronFieldName, FieldDefinition> definitions) {
-    	
+
         String description = DescriptionStrategyFactory.daysOfWeekInstance(
-		        bundle,
-		        fields.containsKey(CronFieldName.DAY_OF_WEEK) ? fields.get(CronFieldName.DAY_OF_WEEK).getExpression() : null,
-		        definitions.containsKey(CronFieldName.DAY_OF_WEEK) ? definitions.get(CronFieldName.DAY_OF_WEEK) : null
-		).describe();
-		return this.addExpressions(description, bundle.getString("day"), bundle.getString("days"));
+                bundle,
+                fields.containsKey(CronFieldName.DAY_OF_WEEK) ? fields.get(CronFieldName.DAY_OF_WEEK).getExpression() : null,
+                definitions.containsKey(CronFieldName.DAY_OF_WEEK) ? definitions.get(CronFieldName.DAY_OF_WEEK) : null
+        ).describe();
+        return this.addExpressions(description, bundle.getString("day"), bundle.getString("days"));
     }
 
-    private String addExpressions(String description, String singular, String plural){
+    private String addExpressions(String description, String singular, String plural) {
         return description
                 .replaceAll("%s", singular)
                 .replaceAll("%p", plural);
     }
-    
+
     /**
-     * Provide description for a year
+     * Provide description for a year.
+     *
      * @param fields - fields to describe;
      * @return description - String
      */
@@ -151,7 +158,8 @@ public class CronDescriptor {
     }
 
     /**
-     * Creates an instance with UK locale
+     * Creates an instance with UK locale.
+     *
      * @return CronDescriptor - never null.
      */
     public static CronDescriptor instance() {
@@ -159,7 +167,8 @@ public class CronDescriptor {
     }
 
     /**
-     * Creates and instance with given locale
+     * Creates and instance with given locale.
+     *
      * @param locale - Locale in which descriptions will be given
      * @return CronDescriptor - never null.
      */

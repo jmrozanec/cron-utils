@@ -10,6 +10,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.cronutils.model.field.expression.visitor;
 
 import com.cronutils.Function;
@@ -33,7 +34,7 @@ import static com.cronutils.model.field.expression.FieldExpression.questionMark;
 public class ValueMappingFieldExpressionVisitor implements FieldExpressionVisitor {
     private Function<FieldValue, FieldValue> transform;
 
-    public ValueMappingFieldExpressionVisitor(Function<FieldValue, FieldValue> transform){
+    public ValueMappingFieldExpressionVisitor(Function<FieldValue, FieldValue> transform) {
         this.transform = transform;
     }
 
@@ -45,7 +46,7 @@ public class ValueMappingFieldExpressionVisitor implements FieldExpressionVisito
     @Override
     public FieldExpression visit(And and) {
         And clone = new And();
-        for(FieldExpression expression : and.getExpressions()){
+        for (FieldExpression expression : and.getExpressions()) {
             clone.and(visit(expression));
         }
         return clone;
@@ -60,12 +61,12 @@ public class ValueMappingFieldExpressionVisitor implements FieldExpressionVisito
 
     @Override
     public FieldExpression visit(Every every) {
-        return new Every((IntegerFieldValue)transform.apply(every.getPeriod()));
+        return new Every((IntegerFieldValue) transform.apply(every.getPeriod()));
     }
 
     @Override
     public FieldExpression visit(On on) {
-        return new On((IntegerFieldValue)transform.apply(on.getTime()), on.getSpecialChar(), on.getNth());
+        return new On((IntegerFieldValue) transform.apply(on.getTime()), on.getSpecialChar(), on.getNth());
     }
 
     @Override
@@ -75,23 +76,23 @@ public class ValueMappingFieldExpressionVisitor implements FieldExpressionVisito
 
     @Override
     public FieldExpression visit(FieldExpression expression) {
-        if(expression instanceof Always){
-            return visit((Always)expression);
+        if (expression instanceof Always) {
+            return visit((Always) expression);
         }
-        if(expression instanceof And){
-            return visit((And)expression);
+        if (expression instanceof And) {
+            return visit((And) expression);
         }
-        if(expression instanceof Between){
-            return visit((Between)expression);
+        if (expression instanceof Between) {
+            return visit((Between) expression);
         }
-        if(expression instanceof Every){
-            return visit((Every)expression);
+        if (expression instanceof Every) {
+            return visit((Every) expression);
         }
-        if(expression instanceof On){
-            return visit((On)expression);
+        if (expression instanceof On) {
+            return visit((On) expression);
         }
-        if(expression instanceof QuestionMark){
-            return visit((QuestionMark)expression);
+        if (expression instanceof QuestionMark) {
+            return visit((QuestionMark) expression);
         }
         return expression;
     }

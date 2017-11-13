@@ -31,12 +31,13 @@ class NominalDescriptionStrategy extends DescriptionStrategy {
     private Set<Function<FieldExpression, String>> descriptions;
 
     /**
-     * Constructor
-     * @param bundle - locale in which description should be given
+     * Constructor.
+     *
+     * @param bundle               - locale in which description should be given
      * @param nominalValueFunction - function that maps Integer to String.
      *                             The function should return "" if does not match criteria,
      *                             or the description otherwise.
-     * @param expression - CronFieldExpression instance, the expression to be described.
+     * @param expression           - CronFieldExpression instance, the expression to be described.
      */
     public NominalDescriptionStrategy(ResourceBundle bundle, Function<Integer, String> nominalValueFunction, FieldExpression expression) {
         super(bundle);
@@ -62,7 +63,7 @@ class NominalDescriptionStrategy extends DescriptionStrategy {
     }
 
     /**
-     * Allows to provide a specific description to handle a CronFieldExpression instance
+     * Allows to provide a specific description to handle a CronFieldExpression instance.
      *
      * @param desc - function that maps CronFieldExpression to String.
      *             The function should return "" if does not match criteria,

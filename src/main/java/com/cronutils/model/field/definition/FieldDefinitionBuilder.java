@@ -17,8 +17,9 @@ import com.cronutils.utils.Preconditions;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 /**
- * Provides means to define cron field definitions
+ * Provides means to define cron field definitions.
  */
 public class FieldDefinitionBuilder {
     protected CronDefinitionBuilder cronDefinitionBuilder;
@@ -27,13 +28,14 @@ public class FieldDefinitionBuilder {
     protected boolean optional;
 
     /**
-     * Constructor
+     * Constructor.
+     *
      * @param cronDefinitionBuilder - ParserDefinitionBuilder instance -
-     *                      if null, a NullPointerException will be raised
-     * @param fieldName - CronFieldName instance -
-     *                  if null, a NullPointerException will be raised
+     *                              if null, a NullPointerException will be raised
+     * @param fieldName             - CronFieldName instance -
+     *                              if null, a NullPointerException will be raised
      */
-    public FieldDefinitionBuilder(CronDefinitionBuilder cronDefinitionBuilder, CronFieldName fieldName){
+    public FieldDefinitionBuilder(CronDefinitionBuilder cronDefinitionBuilder, CronFieldName fieldName) {
         this.cronDefinitionBuilder = Preconditions.checkNotNull(cronDefinitionBuilder, "ParserBuilder must not be null");
         this.fieldName = Preconditions.checkNotNull(fieldName, "CronFieldName must not be null");
         this.constraints = FieldConstraintsBuilder.instance().forField(fieldName);
@@ -42,40 +44,44 @@ public class FieldDefinitionBuilder {
     /**
      * Provides means to define int values mappings between equivalent values.
      * As a convention, higher values are mapped into lower ones
+     *
      * @param source - higher value
-     * @param dest - lower value with equivalent meaning to source
+     * @param dest   - lower value with equivalent meaning to source
      * @return this instance
      */
-    public FieldDefinitionBuilder withIntMapping(int source, int dest){
+    public FieldDefinitionBuilder withIntMapping(int source, int dest) {
         constraints.withIntValueMapping(source, dest);
         return this;
     }
 
     /**
      * Allows to set a range of valid values for field.
+     *
      * @param startRange - start range value
-     * @param endRange - end range value
+     * @param endRange   - end range value
      * @return same FieldDefinitionBuilder instance
      */
-    public FieldDefinitionBuilder withValidRange(int startRange, int endRange){
+    public FieldDefinitionBuilder withValidRange(int startRange, int endRange) {
         constraints.withValidRange(startRange, endRange);
         return this;
     }
-    
+
     /**
      * Allows to tag a field as optional.
+     *
      * @return this instance
      */
-    public FieldDefinitionBuilder optional(){
+    public FieldDefinitionBuilder optional() {
         optional = true;
         return this;
     }
 
     /**
-     * Registers CronField in ParserDefinitionBuilder and returns its instance
+     * Registers CronField in ParserDefinitionBuilder and returns its instance.
+     *
      * @return ParserDefinitionBuilder instance obtained from constructor
      */
-    public CronDefinitionBuilder and(){
+    public CronDefinitionBuilder and() {
         cronDefinitionBuilder.register(new FieldDefinition(fieldName, constraints.createConstraintsInstance(), optional));
         return cronDefinitionBuilder;
     }

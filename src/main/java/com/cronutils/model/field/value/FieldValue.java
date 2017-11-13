@@ -16,23 +16,26 @@ import java.io.Serializable;
  */
 
 /**
- * Encapsulates a field value, allowing us to
+ * Encapsulates a field value, allowing us to.
  * manipulate different types of values in a homogeneous way
+ *
  * @param <T>
  */
-public abstract class FieldValue<T extends Serializable>  implements Serializable {
-    
+public abstract class FieldValue<T extends Serializable> implements Serializable {
+
     /**
-     * Allows to obtain the value
+     * Allows to obtain the value.
+     *
      * @return some value, never null
      */
     public abstract T getValue();
 
     /**
      * String representation of encapsulated value.
+     *
      * @return String, never null
      */
-    public final String toString(){
+    public final String toString() {
         return String.format("%s", getValue());
     }
 }
