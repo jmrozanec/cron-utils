@@ -21,6 +21,7 @@ import com.google.common.base.MoreObjects;
  */
 public class Always extends FieldExpression {
 
+    @SuppressWarnings("deprecation")
     static final Always INSTANCE = new Always();
 
     /**

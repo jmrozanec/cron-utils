@@ -13,6 +13,8 @@ import com.cronutils.model.field.expression.On;
 import com.cronutils.model.field.value.IntegerFieldValue;
 import com.cronutils.utils.Preconditions;
 
+import static com.cronutils.model.field.expression.FieldExpression.always;
+
 /*
  * Copyright 2014 jmrozanec
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -48,8 +50,8 @@ class TimeDescriptionStrategy extends DescriptionStrategy {
     TimeDescriptionStrategy(ResourceBundle bundle, FieldExpression hours,
             FieldExpression minutes, FieldExpression seconds) {
         super(bundle);
-        this.hours = ensureInstance(hours, new Always());
-        this.minutes = ensureInstance(minutes, new Always());
+        this.hours = ensureInstance(hours, always());
+        this.minutes = ensureInstance(minutes, always());
         this.seconds = ensureInstance(seconds, new On(new IntegerFieldValue(defaultSeconds)));
         descriptions = new HashSet<>();
         registerFunctions();

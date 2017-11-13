@@ -28,7 +28,7 @@ public class Every extends FieldExpression {
     }
 
     public Every(IntegerFieldValue time) {
-        this(new Always(), time);
+        this(always(), time);
     }
 
     public Every(FieldExpression expression, IntegerFieldValue period) {

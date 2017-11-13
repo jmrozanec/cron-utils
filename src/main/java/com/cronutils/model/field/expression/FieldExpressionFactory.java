@@ -24,7 +24,7 @@ public class FieldExpressionFactory {
     }
 
     public static Always always() {
-        return new Always();
+        return Always.INSTANCE;
     }
 
     public static Between between(int from, int to) {
@@ -60,7 +60,7 @@ public class FieldExpressionFactory {
     }
 
     public static QuestionMark questionMark() {
-        return new QuestionMark();
+        return QuestionMark.INSTANCE;
     }
 
     public static And and(List<FieldExpression> expressions) {

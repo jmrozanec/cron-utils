@@ -24,6 +24,8 @@ import com.cronutils.model.field.expression.QuestionMark;
 import com.cronutils.model.field.value.FieldValue;
 import com.cronutils.model.field.value.IntegerFieldValue;
 
+import static com.cronutils.model.field.expression.FieldExpression.questionMark;
+
 /**
  * Performs a transformation on FieldExpression values.
  * Returns a new FieldExpression instance considering a possible change
@@ -69,7 +71,7 @@ public class ValueMappingFieldExpressionVisitor implements FieldExpressionVisito
 
     @Override
     public FieldExpression visit(QuestionMark questionMark) {
-        return new QuestionMark();
+        return questionMark();
     }
 
     @Override
