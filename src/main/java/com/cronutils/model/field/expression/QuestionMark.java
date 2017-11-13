@@ -7,6 +7,7 @@ import com.google.common.base.MoreObjects;
  */
 public final class QuestionMark extends FieldExpression {
     
+    @SuppressWarnings("deprecation")
     static final QuestionMark INSTANCE = new QuestionMark();
 
     /**

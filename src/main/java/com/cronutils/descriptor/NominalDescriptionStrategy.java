@@ -5,8 +5,9 @@ import java.util.ResourceBundle;
 import java.util.Set;
 
 import com.cronutils.Function;
-import com.cronutils.model.field.expression.Always;
 import com.cronutils.model.field.expression.FieldExpression;
+
+import static com.cronutils.model.field.expression.FieldExpression.always;
 
 /*
  * Copyright 2014 jmrozanec
@@ -46,7 +47,7 @@ class NominalDescriptionStrategy extends DescriptionStrategy {
         if (expression != null) {
             this.expression = expression;
         } else {
-            this.expression = new Always();
+            this.expression = always();
         }
     }
 

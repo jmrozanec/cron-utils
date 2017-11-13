@@ -5,13 +5,14 @@ import com.cronutils.model.field.CronField;
 import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.field.constraint.FieldConstraints;
 import com.cronutils.model.field.constraint.FieldConstraintsBuilder;
-import com.cronutils.model.field.expression.Always;
 import com.cronutils.model.field.expression.FieldExpression;
 import com.cronutils.model.field.expression.On;
 import com.cronutils.model.field.value.IntegerFieldValue;
 import com.cronutils.model.time.generator.FieldValueGenerator;
 import com.cronutils.model.time.generator.FieldValueGeneratorFactory;
 import com.cronutils.utils.Preconditions;
+
+import static com.cronutils.model.field.expression.FieldExpression.always;
 /*
  * Copyright 2015 jmrozanec
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -111,7 +112,7 @@ class ExecutionTimeBuilder {
         if(daysOfMonthCronField==null){
             FieldConstraints constraints = getConstraint(CronFieldName.DAY_OF_MONTH);
             daysOfMonthCronField=lowestAssigned?
-                    new CronField(CronFieldName.DAY_OF_MONTH, new Always(), constraints):
+                    new CronField(CronFieldName.DAY_OF_MONTH, always(), constraints):
                     new CronField(CronFieldName.DAY_OF_MONTH, new On(new IntegerFieldValue(1)), constraints);
         }else{
             lowestAssigned=true;
@@ -119,7 +120,7 @@ class ExecutionTimeBuilder {
         if(daysOfWeekCronField==null){
             FieldConstraints constraints = getConstraint(CronFieldName.DAY_OF_WEEK);
             daysOfWeekCronField=lowestAssigned?
-                    new CronField(CronFieldName.DAY_OF_WEEK, new Always(), constraints):
+                    new CronField(CronFieldName.DAY_OF_WEEK, always(), constraints):
                     new CronField(CronFieldName.DAY_OF_WEEK, new On(new IntegerFieldValue(1)), constraints);
         }else{
             lowestAssigned=true;
@@ -130,12 +131,12 @@ class ExecutionTimeBuilder {
         if(yearsValueGenerator==null){
             yearsValueGenerator =
                     FieldValueGeneratorFactory.forCronField(
-                            new CronField(CronFieldName.YEAR,new Always(), getConstraint(CronFieldName.YEAR))
+                            new CronField(CronFieldName.YEAR,always(), getConstraint(CronFieldName.YEAR))
                     );
         }
         if(daysOfYearCronField == null){
            FieldConstraints constraints = getConstraint(CronFieldName.DAY_OF_YEAR);
-           daysOfYearCronField=new CronField(CronFieldName.DAY_OF_YEAR, lowestAssigned ? FieldExpression.questionMark() :FieldExpression.always(), constraints);
+           daysOfYearCronField=new CronField(CronFieldName.DAY_OF_YEAR, lowestAssigned ? FieldExpression.questionMark() : always(), constraints);
         }
 
         return new ExecutionTime(cronDefinition,
@@ -155,7 +156,7 @@ class ExecutionTimeBuilder {
     private TimeNode timeNodeAlways(CronFieldName name, int lower, int higher){
         return new TimeNode(
                 FieldValueGeneratorFactory.forCronField(
-                        new CronField(name,new Always(), getConstraint(name))
+                        new CronField(name,always(), getConstraint(name))
                 ).generateCandidates(lower, higher));
     }
 

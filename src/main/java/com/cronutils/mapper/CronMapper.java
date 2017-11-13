@@ -26,6 +26,9 @@ import com.cronutils.model.field.value.SpecialChar;
 import com.cronutils.utils.Preconditions;
 import com.cronutils.utils.VisibleForTesting;
 
+import static com.cronutils.model.field.expression.FieldExpression.always;
+import static com.cronutils.model.field.expression.FieldExpression.questionMark;
+
 /*
  * Copyright 2014 jmrozanec
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -131,10 +134,10 @@ public class CronMapper {
                     Map<CronFieldName, CronField> fields = new HashMap<>();
                     fields.putAll(cron.retrieveFieldsAsMap());
                     if (dow.getExpression() instanceof Always) {
-                        fields.put(CronFieldName.DAY_OF_WEEK, new CronField(CronFieldName.DAY_OF_WEEK, new QuestionMark(), fields.get(CronFieldName.DAY_OF_WEEK).getConstraints()));
+                        fields.put(CronFieldName.DAY_OF_WEEK, new CronField(CronFieldName.DAY_OF_WEEK, questionMark(), fields.get(CronFieldName.DAY_OF_WEEK).getConstraints()));
                     } else {
                         if (dom.getExpression() instanceof Always) {
-                            fields.put(CronFieldName.DAY_OF_MONTH, new CronField(CronFieldName.DAY_OF_MONTH, new QuestionMark(), fields.get(CronFieldName.DAY_OF_MONTH).getConstraints()));
+                            fields.put(CronFieldName.DAY_OF_MONTH, new CronField(CronFieldName.DAY_OF_MONTH, questionMark(), fields.get(CronFieldName.DAY_OF_MONTH).getConstraints()));
                         } else {
                             cron.validate();
                         }
@@ -232,7 +235,7 @@ public class CronMapper {
      */
     @VisibleForTesting
     static Function<CronField, CronField> returnAlwaysExpression(final CronFieldName name){
-        return field -> new CronField(name, new Always(), FieldConstraintsBuilder.instance().forField(name).createConstraintsInstance());
+        return field -> new CronField(name, always(), FieldConstraintsBuilder.instance().forField(name).createConstraintsInstance());
     }
 
 
@@ -259,7 +262,7 @@ public class CronMapper {
             );
             if (expression instanceof QuestionMark) {
                 if (!targetDef.getConstraints().getSpecialChars().contains(SpecialChar.QUESTION_MARK)) {
-                    dest = new Always();
+                    dest = always();
                 }
             }
             return new CronField(CronFieldName.DAY_OF_WEEK, dest, targetDef.getConstraints());
@@ -273,7 +276,7 @@ public class CronMapper {
             FieldExpression dest = expression;
             if (expression instanceof QuestionMark) {
                 if (!targetDef.getConstraints().getSpecialChars().contains(SpecialChar.QUESTION_MARK)) {
-                    dest = new Always();
+                    dest = always();
                 }
             }
             return new CronField(CronFieldName.DAY_OF_MONTH, dest, targetDef.getConstraints());
