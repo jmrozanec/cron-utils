@@ -1,10 +1,9 @@
 package com.cronutils.descriptor;
 
-import java.util.ResourceBundle;
-
 import java.time.DayOfWeek;
 import java.time.Month;
 import java.time.format.TextStyle;
+import java.util.ResourceBundle;
 
 import com.cronutils.Function;
 import com.cronutils.model.field.definition.DayOfWeekFieldDefinition;
@@ -26,21 +25,25 @@ import com.cronutils.model.field.expression.On;
 */
 class DescriptionStrategyFactory {
 
-    private DescriptionStrategyFactory() {}
+    private DescriptionStrategyFactory() {
+    }
 
     /**
-     * Creates description strategy for days of week
-     * @param bundle - locale
+     * Creates description strategy for days of week.
+     *
+     * @param bundle     - locale
      * @param expression - CronFieldExpression
      * @return - DescriptionStrategy instance, never null
      */
     public static DescriptionStrategy daysOfWeekInstance(final ResourceBundle bundle, final FieldExpression expression, final FieldDefinition definition) {
-        
-    	final Function<Integer, String> nominal = integer -> {
-            int diff = definition instanceof DayOfWeekFieldDefinition ? DayOfWeek.MONDAY.getValue() - ((DayOfWeekFieldDefinition) definition).getMondayDoWValue().getMondayDoWValue() : 0;
+
+        final Function<Integer, String> nominal = integer -> {
+            int diff = definition instanceof DayOfWeekFieldDefinition
+                    ? DayOfWeek.MONDAY.getValue() - ((DayOfWeekFieldDefinition) definition).getMondayDoWValue().getMondayDoWValue()
+                    : 0;
             return DayOfWeek.of(integer + diff < 1 ? 7 : integer + diff).getDisplayName(TextStyle.FULL, bundle.getLocale());
         };
-        
+
         NominalDescriptionStrategy dow = new NominalDescriptionStrategy(bundle, nominal, expression);
 
         dow.addDescription(fieldExpression -> {
@@ -61,8 +64,9 @@ class DescriptionStrategyFactory {
     }
 
     /**
-     * Creates description strategy for days of month
-     * @param bundle - locale
+     * Creates description strategy for days of month.
+     *
+     * @param bundle     - locale
      * @param expression - CronFieldExpression
      * @return - DescriptionStrategy instance, never null
      */
@@ -74,7 +78,8 @@ class DescriptionStrategyFactory {
                 On on = (On) fieldExpression;
                 switch (on.getSpecialChar().getValue()) {
                     case W:
-                        return String.format("%s %s %s ", bundle.getString("the_nearest_weekday_to_the"), on.getTime().getValue(), bundle.getString("of_the_month"));
+                        return String
+                                .format("%s %s %s ", bundle.getString("the_nearest_weekday_to_the"), on.getTime().getValue(), bundle.getString("of_the_month"));
                     case L:
                         return bundle.getString("last_day_of_month");
                     case LW:
@@ -89,22 +94,20 @@ class DescriptionStrategyFactory {
     }
 
     /**
-     * Creates description strategy for months
-     * @param bundle - locale
+     * Creates description strategy for months.
+     *
+     * @param bundle     - locale
      * @param expression - CronFieldExpression
      * @return - DescriptionStrategy instance, never null
      */
     public static DescriptionStrategy monthsInstance(final ResourceBundle bundle, final FieldExpression expression) {
-        return new NominalDescriptionStrategy(
-                bundle,
-                integer -> Month.of(integer).getDisplayName(TextStyle.FULL, bundle.getLocale()),
-                expression
-        );
+        return new NominalDescriptionStrategy(bundle, integer -> Month.of(integer).getDisplayName(TextStyle.FULL, bundle.getLocale()), expression);
     }
 
     /**
-     * Creates nominal description strategy
-     * @param bundle - locale
+     * Creates nominal description strategy.
+     *
+     * @param bundle     - locale
      * @param expression - CronFieldExpression
      * @return - DescriptionStrategy instance, never null
      */
@@ -113,12 +116,13 @@ class DescriptionStrategyFactory {
     }
 
     /**
-     * Creates description strategy for hh:mm:ss
+     * Creates description strategy for hh:mm:ss.
+     *
      * @param bundle - locale
      * @return - DescriptionStrategy instance, never null
      */
     public static DescriptionStrategy hhMMssInstance(ResourceBundle bundle, final FieldExpression hours,
-                                                     final FieldExpression minutes, final FieldExpression seconds) {
+            final FieldExpression minutes, final FieldExpression seconds) {
         return new TimeDescriptionStrategy(bundle, hours, minutes, seconds);
     }
 }

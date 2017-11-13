@@ -26,51 +26,51 @@ import com.cronutils.parser.CronParser;
  * limitations under the License.
  */
 public class CronUtilsCLI {
-	private static final String HELP = "help";
+    private static final String HELP = "help";
 
-	private CronUtilsCLI() {
-		super();
-	}
+    private CronUtilsCLI() {
+        super();
+    }
 
-	public static void main(String[] args) throws Exception {
-		cronValidation(args);
-	}
+    public static void main(String[] args) throws Exception {
+        cronValidation(args);
+    }
 
-	private static void cronValidation(String[] args) throws ParseException {
-		Options options = new Options();
-		options.addOption("v", "validate", false, "Action of validation (default)");
-		options.addOption("f", "format", true,
-				"Cron expression format to validate. Possible values are: CRON4J, QUARTZ, UNIX");
-		options.addOption("e", "expression", true, "Cron expression to validate. Example: '* 1 * * *'");
-		options.addOption("h", HELP, false, "Help");
+    private static void cronValidation(String[] args) throws ParseException {
+        Options options = new Options();
+        options.addOption("v", "validate", false, "Action of validation (default)");
+        options.addOption("f", "format", true,
+                "Cron expression format to validate. Possible values are: CRON4J, QUARTZ, UNIX");
+        options.addOption("e", "expression", true, "Cron expression to validate. Example: '* 1 * * *'");
+        options.addOption("h", HELP, false, "Help");
 
-		String header = "Cron expressions validation by cron-utils\n\n";
-		String footer = "\nPlease report issues at https://github.com/jmrozanec/cron-utils/issues";
+        String header = "Cron expressions validation by cron-utils\n\n";
+        String footer = "\nPlease report issues at https://github.com/jmrozanec/cron-utils/issues";
 
-		CommandLineParser parser = new DefaultParser();
-		CommandLine cmd = parser.parse(options, args);
-		if (cmd.hasOption(HELP) || cmd.getOptions().length == 0) {
-			showHelp(options, header, footer);
-			return;
-		}
-		if (!cmd.hasOption("validate")) {
-			showHelp(options, header, footer);
-			return;
-		}
-		if (cmd.hasOption('v')) {
-			String format = cmd.getOptionValue("f");
-			String expression = cmd.getOptionValue("e");
+        CommandLineParser parser = new DefaultParser();
+        CommandLine cmd = parser.parse(options, args);
+        if (cmd.hasOption(HELP) || cmd.getOptions().length == 0) {
+            showHelp(options, header, footer);
+            return;
+        }
+        if (!cmd.hasOption("validate")) {
+            showHelp(options, header, footer);
+            return;
+        }
+        if (cmd.hasOption('v')) {
+            String format = cmd.getOptionValue("f");
+            String expression = cmd.getOptionValue("e");
 
-			CronType cronType = CronType.valueOf(format);
-			CronDefinition cronDefinition = CronDefinitionBuilder.instanceDefinitionFor(cronType);
-			CronParser cronParser = new CronParser(cronDefinition);
-			Cron quartzCron = cronParser.parse(expression);
-			quartzCron.validate();
-		}
-	}
+            CronType cronType = CronType.valueOf(format);
+            CronDefinition cronDefinition = CronDefinitionBuilder.instanceDefinitionFor(cronType);
+            CronParser cronParser = new CronParser(cronDefinition);
+            Cron quartzCron = cronParser.parse(expression);
+            quartzCron.validate();
+        }
+    }
 
-	private static void showHelp(Options options, String header, String footer) {
-		HelpFormatter formatter = new HelpFormatter();
-		formatter.printHelp("cron-validator", header, options, footer, true);
-	}
+    private static void showHelp(Options options, String header, String footer) {
+        HelpFormatter formatter = new HelpFormatter();
+        formatter.printHelp("cron-validator", header, options, footer, true);
+    }
 }

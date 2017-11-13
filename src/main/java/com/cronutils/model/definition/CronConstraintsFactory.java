@@ -10,6 +10,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.cronutils.model.definition;
 
 import com.cronutils.model.Cron;
@@ -18,11 +19,12 @@ import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.field.expression.QuestionMark;
 
 public class CronConstraintsFactory {
-    
+
     private CronConstraintsFactory() {/*HIDE*/}
 
     /**
      * Creates CronConstraint to ensure that either day-of-year or month is assigned a specific value.
+     *
      * @return newly created CronConstraint instance, never {@code null};
      */
     public static CronConstraint ensureEitherDayOfYearOrMonth() {
@@ -34,14 +36,14 @@ public class CronConstraintsFactory {
                 CronField dayOfYearField = cron.retrieve(CronFieldName.DAY_OF_YEAR);
                 if (dayOfYearField != null && !(dayOfYearField.getExpression() instanceof QuestionMark)) {
                     return cron.retrieve(CronFieldName.DAY_OF_WEEK).getExpression() instanceof QuestionMark
-                        && cron.retrieve(CronFieldName.DAY_OF_MONTH).getExpression() instanceof QuestionMark;
+                            && cron.retrieve(CronFieldName.DAY_OF_MONTH).getExpression() instanceof QuestionMark;
                 }
-                
+
                 return true;
             }
-         };
+        };
     }
-      
+
     public static CronConstraint ensureEitherDayOfWeekOrDayOfMonth() {
         //Solves issue #63: https://github.com/jmrozanec/cron-utils/issues/63
         //both a day-of-week AND a day-of-month parameter should fail for QUARTZ
@@ -52,13 +54,13 @@ public class CronConstraintsFactory {
             public boolean validate(Cron cron) {
                 CronField dayOfYearField = cron.retrieve(CronFieldName.DAY_OF_YEAR);
                 if (dayOfYearField == null || dayOfYearField.getExpression() instanceof QuestionMark) {
-                    if(!(cron.retrieve(CronFieldName.DAY_OF_MONTH).getExpression() instanceof QuestionMark)){
+                    if (!(cron.retrieve(CronFieldName.DAY_OF_MONTH).getExpression() instanceof QuestionMark)) {
                         return cron.retrieve(CronFieldName.DAY_OF_WEEK).getExpression() instanceof QuestionMark;
                     } else {
                         return !(cron.retrieve(CronFieldName.DAY_OF_WEEK).getExpression() instanceof QuestionMark);
                     }
                 }
-                
+
                 return true;
             }
         };

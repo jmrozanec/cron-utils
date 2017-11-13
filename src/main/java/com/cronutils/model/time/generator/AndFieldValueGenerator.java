@@ -30,23 +30,24 @@ import com.cronutils.model.field.expression.On;
  */
 class AndFieldValueGenerator extends FieldValueGenerator {
     private static final Logger log = LoggerFactory.getLogger(AndFieldValueGenerator.class);
+
     public AndFieldValueGenerator(CronField cronField) {
         super(cronField);
     }
 
     @Override
     public int generateNextValue(final int reference) throws NoSuchValueException {
-        List<Integer> candidates =
-                computeCandidates(
-                        fieldValueGenerator -> {
-                            try {
-                                return fieldValueGenerator.generateNextValue(reference);
-                            } catch (NoSuchValueException e) {
-                                return NO_VALUE;
-                            }
-                        }
-                );
-        if(candidates.isEmpty()){
+        List<Integer> candidates = computeCandidates(
+            fieldValueGenerator -> {
+                try {
+                    return fieldValueGenerator.generateNextValue(reference);
+                } catch (NoSuchValueException e) {
+                    return NO_VALUE;
+                }
+            }
+
+        );
+        if (candidates.isEmpty()) {
             throw new NoSuchValueException();
         } else {
             return candidates.get(0);
@@ -55,17 +56,17 @@ class AndFieldValueGenerator extends FieldValueGenerator {
 
     @Override
     public int generatePreviousValue(final int reference) throws NoSuchValueException {
-        List<Integer> candidates =
-                computeCandidates(
-                        candidateGenerator -> {
-                            try {
-                                return candidateGenerator.generatePreviousValue(reference);
-                            } catch (NoSuchValueException e) {
-                                return NO_VALUE;
-                            }
-                        }
-                );
-        if(candidates.isEmpty()){
+        List<Integer> candidates = computeCandidates(
+            candidateGenerator -> {
+                try {
+                    return candidateGenerator.generatePreviousValue(reference);
+                } catch (NoSuchValueException e) {
+                    return NO_VALUE;
+                }
+            }
+
+        );
+        if (candidates.isEmpty()) {
             throw new NoSuchValueException();
         } else {
             return candidates.get(candidates.size() - 1);
@@ -77,7 +78,7 @@ class AndFieldValueGenerator extends FieldValueGenerator {
         List<Integer> values = new ArrayList<>();
         try {
             int reference = generateNextValue(start);
-            while(reference<end){
+            while (reference < end) {
                 values.add(reference);
                 reference = generateNextValue(reference);
             }
@@ -102,7 +103,7 @@ class AndFieldValueGenerator extends FieldValueGenerator {
         return fieldExpression instanceof And;
     }
 
-    private List<Integer> computeCandidates(Function<FieldValueGenerator, Integer> function){
+    private List<Integer> computeCandidates(Function<FieldValueGenerator, Integer> function) {
         And and = (And) cronField.getExpression();
         List<Integer> candidates = new ArrayList<>();
         for (FieldExpression expression : and.getExpressions()) {
@@ -110,24 +111,26 @@ class AndFieldValueGenerator extends FieldValueGenerator {
         }
         List<Integer> filteredCandidates = new ArrayList<>();
         for (Integer candidate : candidates) {
-            if(candidate >= 0)  filteredCandidates.add(candidate);
+            if (candidate >= 0) {
+                filteredCandidates.add(candidate);
+            }
         }
         Collections.sort(filteredCandidates);
         return filteredCandidates;
     }
 
-    private FieldValueGenerator createCandidateGeneratorInstance(CronField cronField){
+    private FieldValueGenerator createCandidateGeneratorInstance(CronField cronField) {
         FieldExpression expression = cronField.getExpression();
-        if(expression instanceof Always){
+        if (expression instanceof Always) {
             return new AlwaysFieldValueGenerator(cronField);
         }
-        if(expression instanceof Between){
+        if (expression instanceof Between) {
             return new BetweenFieldValueGenerator(cronField);
         }
-        if(expression instanceof Every){
+        if (expression instanceof Every) {
             return new EveryFieldValueGenerator(cronField);
         }
-        if(expression instanceof On){
+        if (expression instanceof On) {
             return new OnFieldValueGenerator(cronField);
         }
         throw new IllegalArgumentException(String.format("FieldExpression %s not supported!", expression.getClass()));

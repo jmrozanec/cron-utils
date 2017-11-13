@@ -6,6 +6,7 @@ import java.util.List;
 import com.cronutils.model.field.CronField;
 import com.cronutils.model.field.expression.FieldExpression;
 import com.cronutils.model.field.expression.On;
+
 /*
  * Copyright 2015 jmrozanec
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -26,7 +27,7 @@ class OnFieldValueGenerator extends FieldValueGenerator {
     @Override
     public int generateNextValue(int reference) throws NoSuchValueException {
         int time = ((On) cronField.getExpression()).getTime().getValue();
-        if(time<=reference){
+        if (time <= reference) {
             throw new NoSuchValueException();
         }
         return time;
@@ -35,7 +36,7 @@ class OnFieldValueGenerator extends FieldValueGenerator {
     @Override
     public int generatePreviousValue(int reference) throws NoSuchValueException {
         int time = ((On) cronField.getExpression()).getTime().getValue();
-        if(time>=reference){
+        if (time >= reference) {
             throw new NoSuchValueException();
         }
         return time;
@@ -45,7 +46,7 @@ class OnFieldValueGenerator extends FieldValueGenerator {
     protected List<Integer> generateCandidatesNotIncludingIntervalExtremes(int start, int end) {
         List<Integer> values = new ArrayList<>();
         int time = ((On) cronField.getExpression()).getTime().getValue();
-        if(time>start && time<end){
+        if (time > start && time < end) {
             values.add(time);
         }
         return values;
@@ -53,7 +54,7 @@ class OnFieldValueGenerator extends FieldValueGenerator {
 
     @Override
     public boolean isMatch(int value) {
-        return ((On) cronField.getExpression()).getTime().getValue()==value;
+        return ((On) cronField.getExpression()).getTime().getValue() == value;
     }
 
     @Override

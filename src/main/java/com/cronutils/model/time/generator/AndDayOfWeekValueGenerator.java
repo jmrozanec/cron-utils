@@ -27,9 +27,11 @@ class AndDayOfWeekValueGenerator extends FieldValueGenerator {
         List<Integer> values = new ArrayList<>();
         And and = (And) cronField.getExpression();
 
-        for(FieldExpression expression : and.getExpressions()) {
+        for (FieldExpression expression : and.getExpressions()) {
             CronField cronField = new CronField(CronFieldName.DAY_OF_WEEK, expression, this.cronField.getConstraints());
-            List<Integer> candidatesList = FieldValueGeneratorFactory.createDayOfWeekValueGeneratorInstance(cronField, year, month, mondayDoWValue).generateCandidates(start, end);
+            List<Integer> candidatesList = FieldValueGeneratorFactory.createDayOfWeekValueGeneratorInstance(
+                    cronField, year, month, mondayDoWValue
+            ).generateCandidates(start, end);
 
             // add them to the master list
             if (candidatesList != null) {
