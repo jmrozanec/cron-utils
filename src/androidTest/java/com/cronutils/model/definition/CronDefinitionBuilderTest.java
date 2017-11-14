@@ -1,6 +1,12 @@
 package com.cronutils.model.definition;
 
+import java.util.Set;
+
 import android.support.test.runner.AndroidJUnit4;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
 import com.cronutils.model.Cron;
 import com.cronutils.model.CronType;
 import com.cronutils.model.field.CronFieldName;
@@ -10,13 +16,10 @@ import com.cronutils.model.field.value.SpecialChar;
 import com.cronutils.parser.CronParser;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
 
-import java.util.Set;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
-import static org.junit.Assert.*;
 /*
  * Copyright 2015 jmrozanec
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -111,12 +114,12 @@ public class CronDefinitionBuilderTest {
     public void testRegister() throws Exception {
         FieldDefinition testFieldDefinition =
                 new FieldDefinition(
-                    CronFieldName.SECOND,
-                    new FieldConstraints(
-                            Maps.<String, Integer>newHashMap(),
-                            Maps.<Integer, Integer>newHashMap(),
-                            Sets.<SpecialChar>newHashSet(),0, 1)
-        );
+                        CronFieldName.SECOND,
+                        new FieldConstraints(
+                                Maps.<String, Integer>newHashMap(),
+                                Maps.<Integer, Integer>newHashMap(),
+                                Sets.<SpecialChar>newHashSet(), 0, 1)
+                );
         builder.register(testFieldDefinition);
         Set<FieldDefinition> definitions = builder.instance().getFieldDefinitions();
         assertNotNull(definitions);

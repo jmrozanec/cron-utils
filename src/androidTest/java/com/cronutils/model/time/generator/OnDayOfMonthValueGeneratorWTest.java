@@ -1,6 +1,12 @@
 package com.cronutils.model.time.generator;
 
+import java.util.List;
+
 import android.support.test.runner.AndroidJUnit4;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
 import com.cronutils.model.field.CronField;
 import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.field.constraint.FieldConstraints;
@@ -9,13 +15,11 @@ import com.cronutils.model.field.expression.On;
 import com.cronutils.model.field.value.IntegerFieldValue;
 import com.cronutils.model.field.value.SpecialChar;
 import com.cronutils.model.field.value.SpecialCharFieldValue;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
 
-import java.util.List;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
-import static org.junit.Assert.*;
 /*
  * Copyright 2015 jmrozanec
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -44,7 +48,6 @@ public class OnDayOfMonthValueGeneratorWTest {
     private int firstDaySaturdayValueMonth = 8;
     private int firstDaySaturdayValueDay = 1;
     private int firstDaySaturdayValueWeekday = 3;
-
 
     private int outOfScopeValue = 18;
 
@@ -147,6 +150,6 @@ public class OnDayOfMonthValueGeneratorWTest {
                                 new SpecialCharFieldValue(SpecialChar.W), new IntegerFieldValue(-1)
                         ),
                         constraints
-                ),YEAR, month);
+                ), YEAR, month);
     }
 }

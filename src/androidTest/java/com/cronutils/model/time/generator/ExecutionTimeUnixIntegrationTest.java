@@ -1,6 +1,15 @@
 package com.cronutils.model.time.generator;
 
+import java.time.Duration;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+
 import android.support.test.runner.AndroidJUnit4;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
 import com.cronutils.BaseAndroidTest;
 import com.cronutils.model.Cron;
 import com.cronutils.model.CronType;
@@ -8,19 +17,12 @@ import com.cronutils.model.definition.CronDefinition;
 import com.cronutils.model.definition.CronDefinitionBuilder;
 import com.cronutils.model.time.ExecutionTime;
 import com.cronutils.parser.CronParser;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import java.time.Duration;
-import java.time.Instant;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 @RunWith(AndroidJUnit4.class)
-public class ExecutionTimeUnixIntegrationTest extends BaseAndroidTest{
+public class ExecutionTimeUnixIntegrationTest extends BaseAndroidTest {
 
     @Before
     public void setUp() throws Exception {
@@ -28,7 +30,7 @@ public class ExecutionTimeUnixIntegrationTest extends BaseAndroidTest{
     }
 
     @Test
-    public void testIsMatchForUnix01(){
+    public void testIsMatchForUnix01() {
         CronParser parser = new CronParser(CronDefinitionBuilder.instanceDefinitionFor(CronType.UNIX));
         String crontab = "* * * * *";//m,h,dom,M,dow
         Cron cron = parser.parse(crontab);
@@ -38,7 +40,7 @@ public class ExecutionTimeUnixIntegrationTest extends BaseAndroidTest{
     }
 
     @Test
-    public void testIsMatchForUnix02(){
+    public void testIsMatchForUnix02() {
         CronParser parser = new CronParser(CronDefinitionBuilder.instanceDefinitionFor(CronType.UNIX));
         String crontab = "0 * * * 1-5";//m,h,dom,M,dow
         Cron cron = parser.parse(crontab);
@@ -51,7 +53,7 @@ public class ExecutionTimeUnixIntegrationTest extends BaseAndroidTest{
      * Issue #37: for pattern "every 10 minutes", nextExecution returns a date from past.
      */
     @Test
-    public void testEveryTenMinutesNextExecution(){
+    public void testEveryTenMinutesNextExecution() {
         CronParser parser = new CronParser(CronDefinitionBuilder.instanceDefinitionFor(CronType.UNIX));
         ExecutionTime executionTime = ExecutionTime.forCron(parser.parse("*/10 * * * *"));
         ZonedDateTime time = ZonedDateTime.parse("2015-09-05T13:43:00.000-07:00");
@@ -62,7 +64,7 @@ public class ExecutionTimeUnixIntegrationTest extends BaseAndroidTest{
      * Issue #38: every 2 min schedule doesn't roll over to next hour
      */
     @Test
-    public void testEveryTwoMinRollsOverHour(){
+    public void testEveryTwoMinRollsOverHour() {
         CronDefinition cronDefinition = CronDefinitionBuilder.instanceDefinitionFor(CronType.UNIX);
         Cron cron = new CronParser(cronDefinition).parse("*/2 * * * *");
         ExecutionTime executionTime = ExecutionTime.forCron(cron);
@@ -76,7 +78,7 @@ public class ExecutionTimeUnixIntegrationTest extends BaseAndroidTest{
      * Issue #41: for everything other than a dayOfWeek value == 1, nextExecution and lastExecution do not return correct results
      */
     @Test
-    public void testEveryTuesdayAtThirdHourOfDayNextExecution(){
+    public void testEveryTuesdayAtThirdHourOfDayNextExecution() {
         CronDefinition cronDefinition = CronDefinitionBuilder.instanceDefinitionFor(CronType.UNIX);
         CronParser parser = new CronParser(cronDefinition);
         Cron myCron = parser.parse("0 3 * * 3");
@@ -88,7 +90,7 @@ public class ExecutionTimeUnixIntegrationTest extends BaseAndroidTest{
      * Issue #41: for everything other than a dayOfWeek value == 1, nextExecution and lastExecution do not return correct results
      */
     @Test
-    public void testEveryTuesdayAtThirdHourOfDayLastExecution(){
+    public void testEveryTuesdayAtThirdHourOfDayLastExecution() {
         CronDefinition cronDefinition = CronDefinitionBuilder.instanceDefinitionFor(CronType.UNIX);
         CronParser parser = new CronParser(cronDefinition);
         Cron myCron = parser.parse("0 3 * * 3");
@@ -100,7 +102,7 @@ public class ExecutionTimeUnixIntegrationTest extends BaseAndroidTest{
      * Issue #45: last execution does not match expected date. Result is not in same timezone as reference date.
      */
     @Test
-    public void testMondayWeekdayLastExecution(){
+    public void testMondayWeekdayLastExecution() {
         String crontab = "* * * * 1";
         CronDefinition cronDefinition = CronDefinitionBuilder.instanceDefinitionFor(CronType.UNIX);
         CronParser parser = new CronParser(cronDefinition);
@@ -114,7 +116,7 @@ public class ExecutionTimeUnixIntegrationTest extends BaseAndroidTest{
      * Issue #45: next execution does not match expected date. Result is not in same timezone as reference date.
      */
     @Test
-    public void testMondayWeekdayNextExecution(){
+    public void testMondayWeekdayNextExecution() {
         String crontab = "* * * * 1";
         CronDefinition cronDefinition = CronDefinitionBuilder.instanceDefinitionFor(CronType.UNIX);
         CronParser parser = new CronParser(cronDefinition);
@@ -128,7 +130,7 @@ public class ExecutionTimeUnixIntegrationTest extends BaseAndroidTest{
      * Issue #50: last execution does not match expected date when cron specifies day of week and last execution is in previous month.
      */
     @Test
-    public void testLastExecutionDaysOfWeekOverMonthBoundary(){
+    public void testLastExecutionDaysOfWeekOverMonthBoundary() {
         String crontab = "0 11 * * 1";
         CronDefinition cronDefinition = CronDefinitionBuilder.instanceDefinitionFor(CronType.UNIX);
         CronParser parser = new CronParser(cronDefinition);
@@ -139,9 +141,9 @@ public class ExecutionTimeUnixIntegrationTest extends BaseAndroidTest{
     }
 
     /**
-      * Issue #52: "And" doesn't work for day of the week
-      * 1,2 should be Monday and Tuesday, but instead it is treated as 1st/2nd of month.
-      */
+     * Issue #52: "And" doesn't work for day of the week
+     * 1,2 should be Monday and Tuesday, but instead it is treated as 1st/2nd of month.
+     */
     @Test
     public void testWeekdayAndLastExecution() {
         String crontab = "* * * * 1,2";
@@ -173,7 +175,7 @@ public class ExecutionTimeUnixIntegrationTest extends BaseAndroidTest{
      * Considers Month in range 0-11 instead of 1-12
      */
     @Test
-    public void testCorrectMonthScaleForNextExecution1(){
+    public void testCorrectMonthScaleForNextExecution1() {
         CronDefinition cronDefinition = CronDefinitionBuilder.instanceDefinitionFor(CronType.UNIX);
         CronParser parser = new CronParser(cronDefinition);
         String crontab = "* * */3 */4 */5";//m,h,dom,M,dow
@@ -192,7 +194,7 @@ public class ExecutionTimeUnixIntegrationTest extends BaseAndroidTest{
      * dom "* / 4" should mean 1, 5, 9, 13, 17th... of month instead of 4, 8, 12, 16th...
      */
     @Test
-    public void testCorrectMonthScaleForNextExecution2(){
+    public void testCorrectMonthScaleForNextExecution2() {
         CronDefinition cronDefinition = CronDefinitionBuilder.instanceDefinitionFor(CronType.UNIX);
         CronParser parser = new CronParser(cronDefinition);
         String crontab = "* * */4 * *";//m,h,dom,M,dow
@@ -208,7 +210,7 @@ public class ExecutionTimeUnixIntegrationTest extends BaseAndroidTest{
      * Considers bad DoW
      */
     @Test
-    public void testCorrectNextExecutionDoW(){
+    public void testCorrectNextExecutionDoW() {
         CronDefinition cronDefinition = CronDefinitionBuilder.instanceDefinitionFor(CronType.UNIX);
         CronParser parser = new CronParser(cronDefinition);
         String crontab = "* * * * */4";//m,h,dom,M,dow
@@ -224,7 +226,7 @@ public class ExecutionTimeUnixIntegrationTest extends BaseAndroidTest{
      * Issue #69: Getting next execution fails on leap-year when using day-of-week
      */
     @Test
-    public void testCorrectNextExecutionDoWForLeapYear(){
+    public void testCorrectNextExecutionDoWForLeapYear() {
         CronParser parser = new CronParser(CronDefinitionBuilder.instanceDefinitionFor(CronType.UNIX));
         String crontab = "0 * * * 1-5";//m,h,dom,M,dow
         //DoW: 0-6 -> 1, 2, 3, 4, 5 -> in this year:
@@ -253,7 +255,7 @@ public class ExecutionTimeUnixIntegrationTest extends BaseAndroidTest{
      * Issue #61: lastExecution over daylight savings is wrong
      */
     @Test
-    public void testLastExecutionDaylightSaving(){
+    public void testLastExecutionDaylightSaving() {
         CronParser parser = new CronParser(CronDefinitionBuilder.instanceDefinitionFor(CronType.UNIX));
         ExecutionTime executionTime = ExecutionTime.forCron(parser.parse("0 17 * * *"));// daily at 17:00
         // Daylight savings for New York 2016 is Mar 13 at 2am
@@ -293,7 +295,7 @@ public class ExecutionTimeUnixIntegrationTest extends BaseAndroidTest{
      * Issue #112: Calling nextExecution exactly on the first instant of the fallback hour (after the DST ends) makes it go back to DST.
      * https://github.com/jmrozanec/cron-utils/issues/112
      */
-//    @Test TODO
+    //    @Test TODO
     public void testWrongNextExecutionOnDSTEnd() throws Exception {
         ZoneId zone = ZoneId.of("America/Sao_Paulo");
 

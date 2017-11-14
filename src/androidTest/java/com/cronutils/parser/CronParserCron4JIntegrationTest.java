@@ -1,12 +1,13 @@
 package com.cronutils.parser;
 
 import android.support.test.runner.AndroidJUnit4;
-import com.cronutils.model.CronType;
-import com.cronutils.model.definition.CronDefinition;
-import com.cronutils.model.definition.CronDefinitionBuilder;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import com.cronutils.model.CronType;
+import com.cronutils.model.definition.CronDefinition;
+import com.cronutils.model.definition.CronDefinitionBuilder;
 
 @RunWith(AndroidJUnit4.class)
 public class CronParserCron4JIntegrationTest {
@@ -14,7 +15,7 @@ public class CronParserCron4JIntegrationTest {
 
     @Before
     public void setUp() throws Exception {
-        CronDefinition cronDefinition =  CronDefinitionBuilder.instanceDefinitionFor(CronType.CRON4J);
+        CronDefinition cronDefinition = CronDefinitionBuilder.instanceDefinitionFor(CronType.CRON4J);
         cron4jParser = new CronParser(cronDefinition);
     }
 
