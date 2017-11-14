@@ -137,7 +137,8 @@ class ExecutionTimeBuilder {
         }
         if (daysOfYearCronField == null) {
             FieldConstraints constraints = getConstraint(CronFieldName.DAY_OF_YEAR);
-            daysOfYearCronField = new CronField(CronFieldName.DAY_OF_YEAR, lowestAssigned ? FieldExpression.questionMark() : always(), constraints);
+            daysOfYearCronField = new CronField(CronFieldName.DAY_OF_YEAR, lowestAssigned ? FieldExpression.questionMark() : always(),
+                    constraints);
         }
 
         return new ExecutionTime(cronDefinition,
