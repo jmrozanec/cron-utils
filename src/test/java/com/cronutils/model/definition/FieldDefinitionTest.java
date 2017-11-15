@@ -1,11 +1,5 @@
 package com.cronutils.model.definition;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -14,6 +8,13 @@ import org.mockito.MockitoAnnotations;
 import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.field.constraint.FieldConstraints;
 import com.cronutils.model.field.definition.FieldDefinition;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+
 /*
  * Copyright 2015 jmrozanec
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -42,12 +43,12 @@ public class FieldDefinitionTest {
     }
 
     @Test(expected = NullPointerException.class)
-    public void testConstructorNullFieldName(){
+    public void testConstructorNullFieldName() {
         new FieldDefinition(null, mockConstraints);
     }
 
     @Test(expected = NullPointerException.class)
-    public void testConstructorNullConstraints(){
+    public void testConstructorNullConstraints() {
         new FieldDefinition(testFieldName, null);
     }
 

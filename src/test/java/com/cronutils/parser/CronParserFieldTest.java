@@ -18,6 +18,7 @@ import com.cronutils.model.field.CronField;
 import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.field.constraint.FieldConstraints;
 import com.cronutils.model.field.expression.FieldExpression;
+
 /*
  * Copyright 2015 jmrozanec
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -31,7 +32,7 @@ import com.cronutils.model.field.expression.FieldExpression;
  * limitations under the License.
  */
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({CronParserField.class, CronParser.class})
+@PrepareForTest({ CronParserField.class, CronParser.class })
 public class CronParserFieldTest {
 
     private CronFieldName testFieldName;

@@ -1,13 +1,14 @@
 package com.cronutils.model.definition;
 
 import android.support.test.runner.AndroidJUnit4;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
 import com.cronutils.model.Cron;
 import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.time.ExecutionTime;
 import com.cronutils.parser.CronParser;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
 
 import static org.junit.Assert.assertEquals;
 
@@ -29,7 +30,7 @@ public class CronDefinitionIssue25IntegrationTest {
     final String CRON_EXPRESSION = "0 18 1";
 
     @Before
-    public void setUp(){
+    public void setUp() {
         cronDefinition =
                 CronDefinitionBuilder.defineCron()
                         .withMinutes().and()
@@ -39,7 +40,7 @@ public class CronDefinitionIssue25IntegrationTest {
     }
 
     @Test
-    public void testParser(){
+    public void testParser() {
         CronParser parser = new CronParser(cronDefinition);
         Cron cron = parser.parse(CRON_EXPRESSION);
         assertEquals("0", cron.retrieve(CronFieldName.MINUTE).getExpression().asString());
@@ -51,7 +52,7 @@ public class CronDefinitionIssue25IntegrationTest {
      * Issue #25: next execution time produces NullPointerException for custom cron definitions.
      */
     @Test
-    public void testExecutionTime(){
+    public void testExecutionTime() {
         CronParser parser = new CronParser(cronDefinition);
         Cron cron = parser.parse(CRON_EXPRESSION);
         ExecutionTime.forCron(cron);

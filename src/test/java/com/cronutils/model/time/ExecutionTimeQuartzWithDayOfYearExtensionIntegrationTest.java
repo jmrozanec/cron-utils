@@ -1,19 +1,19 @@
 package com.cronutils.model.time;
 
-import static org.junit.Assert.assertEquals;
-import static java.time.ZoneOffset.UTC;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
+
+import org.junit.Before;
+import org.junit.Test;
 
 import com.cronutils.model.CronType;
 import com.cronutils.model.definition.CronDefinitionBuilder;
 import com.cronutils.model.definition.TestCronDefinitionsFactory;
 import com.cronutils.parser.CronParser;
 
-import org.junit.Before;
-import org.junit.Test;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.time.temporal.ChronoUnit;
-
+import static java.time.ZoneOffset.UTC;
+import static org.junit.Assert.assertEquals;
 
 /*
  * Copyright 2015 jmrozanec Licensed under the Apache License, Version 2.0 (the
@@ -26,21 +26,19 @@ import java.time.temporal.ChronoUnit;
  * governing permissions and limitations under the License.
  */
 public class ExecutionTimeQuartzWithDayOfYearExtensionIntegrationTest {
-    private static final String BI_WEEKLY_STARTING_WITH_FIRST_DAY_OF_YEAR              = "0 0 0 ? * ? * 1/14";
+    private static final String BI_WEEKLY_STARTING_WITH_FIRST_DAY_OF_YEAR = "0 0 0 ? * ? * 1/14";
     private static final String FIRST_QUATER_BI_WEEKLY_STARTING_WITH_FIRST_DAY_OF_YEAR = "0 0 0 ? 1-3 ? * 1/14";
-    private static final String WITHOUT_DAY_OF_YEAR                                    = "0 0 0 1 * ? *";       // i.e. DoY field omitted
-    private static final String WITHOUT_SPECIFIC_DAY_OF_YEAR                           = "0 0 0 1 * ? * ?";     // i.e. DoY field set to question mark
+    private static final String WITHOUT_DAY_OF_YEAR = "0 0 0 1 * ? *";       // i.e. DoY field omitted
+    private static final String WITHOUT_SPECIFIC_DAY_OF_YEAR = "0 0 0 1 * ? * ?";     // i.e. DoY field set to question mark
 
     private CronParser parser;
     private CronParser quartzParser;
-
 
     @Before
     public void setUp() throws Exception {
         parser = new CronParser(TestCronDefinitionsFactory.withDayOfYearDefinitionWhereYearAndDoYOptionals());
         quartzParser = new CronParser(CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ));
     }
-
 
     @Test
     public void testForCron() {
@@ -49,7 +47,6 @@ public class ExecutionTimeQuartzWithDayOfYearExtensionIntegrationTest {
         assertEquals(ExecutionTime.class, ExecutionTime.forCron(parser.parse(WITHOUT_DAY_OF_YEAR)).getClass());
         assertEquals(ExecutionTime.class, ExecutionTime.forCron(parser.parse(WITHOUT_SPECIFIC_DAY_OF_YEAR)).getClass());
     }
-
 
     @Test
     public void testNextExecutionEveryTwoWeeksStartingWithFirstDayOfYear() {
@@ -66,7 +63,7 @@ public class ExecutionTimeQuartzWithDayOfYearExtensionIntegrationTest {
         ZonedDateTime now = truncateToDays(ZonedDateTime.now());
         int dayOfYear = now.getDayOfYear();
         int dayOfMostRecentPeriod = dayOfYear % 14;
-        ZonedDateTime expected = now.plusDays(15-dayOfMostRecentPeriod);
+        ZonedDateTime expected = now.plusDays(15 - dayOfMostRecentPeriod);
         ExecutionTime executionTime = ExecutionTime.forCron(parser.parse(BI_WEEKLY_STARTING_WITH_FIRST_DAY_OF_YEAR));
         assertEquals(expected, executionTime.nextExecution(now).get());
     }
@@ -90,7 +87,7 @@ public class ExecutionTimeQuartzWithDayOfYearExtensionIntegrationTest {
         ExecutionTime executionTime = ExecutionTime.forCron(parser.parse(BI_WEEKLY_STARTING_WITH_FIRST_DAY_OF_YEAR));
         assertEquals(expected, executionTime.lastExecution(now).get());
     }
-    
+
     @Test
     public void testExecutionTimesEveryTwoWeeksStartingWithFirstDayOfYear() {
         final ZonedDateTime[] expectedExecutionTimes = new ZonedDateTime[] {
@@ -110,16 +107,18 @@ public class ExecutionTimeQuartzWithDayOfYearExtensionIntegrationTest {
 
         final ExecutionTime executionTime = ExecutionTime.forCron(parser.parse(BI_WEEKLY_STARTING_WITH_FIRST_DAY_OF_YEAR));
 
-        for (final ZonedDateTime expectedExecutionTime: expectedExecutionTimes)
+        for (final ZonedDateTime expectedExecutionTime : expectedExecutionTimes) {
             assertEquals(expectedExecutionTime, executionTime.nextExecution(expectedExecutionTime.minusDays(1)).get());
+        }
 
-        for (int i = 1; i < expectedExecutionTimes.length; i++)
+        for (int i = 1; i < expectedExecutionTimes.length; i++) {
             assertEquals(expectedExecutionTimes[i], executionTime.nextExecution(expectedExecutionTimes[i - 1]).get());
+        }
 
-        for (int i = 1; i < expectedExecutionTimes.length; i++)
+        for (int i = 1; i < expectedExecutionTimes.length; i++) {
             assertEquals(expectedExecutionTimes[i - 1], executionTime.lastExecution(expectedExecutionTimes[i]).get());
+        }
     }
-
 
     @Test //issue #188
     public void testQuartzCompatibilityIfDoYisOmitted() {
@@ -134,7 +133,6 @@ public class ExecutionTimeQuartzWithDayOfYearExtensionIntegrationTest {
         }
     }
 
-
     @Test //issue #188
     public void testQuartzCompatibilityIfDoYisQuestionMark() {
         final ExecutionTime executionTime = ExecutionTime.forCron(parser.parse(WITHOUT_SPECIFIC_DAY_OF_YEAR));
@@ -147,7 +145,6 @@ public class ExecutionTimeQuartzWithDayOfYearExtensionIntegrationTest {
             start = expectedDateTime.plusSeconds(1);
         }
     }
-
 
     @Test //issue #190
     public void testExecutionTimesWithIncrementsGreaterThanDaysOfMonth() {
@@ -163,7 +160,6 @@ public class ExecutionTimeQuartzWithDayOfYearExtensionIntegrationTest {
         }
     }
 
-
     @Test
     public void testCustomQuarterlySchedule() {
         final ZonedDateTime firstDayOf2016 = ZonedDateTime.of(2016, 1, 1, 0, 0, 0, 0, UTC);
@@ -172,17 +168,16 @@ public class ExecutionTimeQuartzWithDayOfYearExtensionIntegrationTest {
         final ExecutionTime executionTime = ExecutionTime.forCron(parser.parse(customQuaterlyStartingWithDay47OfYear));
         //final ZonedDateTime[] expectedExecutionTimes = IntStream.range(0, 4).mapToObj(i -> firstDayOf2016.withDayOfYear(47 + i * 91)).toArray(ZonedDateTime[]::new);
         ZonedDateTime[] expectedExecutionTimes = new ZonedDateTime[4];
-        for(int j=0; j<4; j++){
+        for (int j = 0; j < 4; j++) {
             expectedExecutionTimes[j] = firstDayOf2016.withDayOfYear(47 + j * 91);
         }
         ZonedDateTime start = startWithLastDayOf2015;
-        for (final ZonedDateTime expectedExecutionTime: expectedExecutionTimes) {
+        for (final ZonedDateTime expectedExecutionTime : expectedExecutionTimes) {
             final ZonedDateTime actual = executionTime.nextExecution(start).get();
             assertEquals(expectedExecutionTime, actual);
             start = expectedExecutionTime.plusSeconds(1);
         }
     }
-
 
     private static ZonedDateTime truncateToDays(final ZonedDateTime dateTime) {
         return dateTime.truncatedTo(ChronoUnit.DAYS);

@@ -1,8 +1,5 @@
 package com.cronutils.model.field;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 import org.junit.Before;
 import org.junit.Test;
 
@@ -16,6 +13,8 @@ import com.cronutils.model.field.value.IntegerFieldValue;
 import com.cronutils.model.field.value.SpecialChar;
 import com.cronutils.parser.FieldParser;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /*
  * Copyright 2015 jmrozanec Licensed under the Apache License, Version 2.0 (the
@@ -30,18 +29,15 @@ import com.cronutils.parser.FieldParser;
 public class FieldParserTest {
     private FieldParser parser;
 
-
     @Before
     public void setUp() {
         parser = new FieldParser(FieldConstraintsBuilder.instance().addHashSupport().createConstraintsInstance());
     }
 
-
     @Test
     public void testParseAlways() throws Exception {
         assertTrue(parser.parse("*") instanceof Always);
     }
-
 
     @Test
     public void testParseAlwaysEveryX() throws Exception {
@@ -51,13 +47,11 @@ public class FieldParserTest {
         assertTrue(expression.getExpression() instanceof Always);
     }
 
-
     @Test
     public void testParseOn() throws Exception {
         int on = 5;
         assertEquals(on, (int) ((On) parser.parse("" + on)).getTime().getValue());
     }
-
 
     @Test //#194
     public void testParseOnWithHash01() {
@@ -69,12 +63,10 @@ public class FieldParserTest {
         assertEquals(SpecialChar.HASH, onExpression.getSpecialChar().getValue());
     }
 
-
     @Test(expected = IllegalArgumentException.class)
     public void testRejectHashIfFieldDoesNotClaimToSupportIt() {
         new FieldParser(FieldConstraintsBuilder.instance().createConstraintsInstance()).parse("5#3");
     }
-
 
     @Test
     public void testParseAnd() throws Exception {
@@ -86,7 +78,6 @@ public class FieldParserTest {
         assertEquals(on2, (int) ((On) and.getExpressions().get(1)).getTime().getValue());
     }
 
-
     @Test
     public void testParseBetween() throws Exception {
         int from = 3;
@@ -95,7 +86,6 @@ public class FieldParserTest {
         assertEquals(from, (int) ((IntegerFieldValue) between.getFrom()).getValue());
         assertEquals(to, (int) ((IntegerFieldValue) between.getTo()).getValue());
     }
-
 
     @Test
     public void testParseBetweenEveryX() throws Exception {
@@ -108,7 +98,6 @@ public class FieldParserTest {
         assertEquals(to, (int) ((IntegerFieldValue) between.getTo()).getValue());
         assertEquals(every, (int) (expression.getPeriod()).getValue());
     }
-
 
     @Test(expected = NullPointerException.class)
     public void testCostructorNullConstraints() throws Exception {

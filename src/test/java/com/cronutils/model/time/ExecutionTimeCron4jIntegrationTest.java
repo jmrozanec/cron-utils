@@ -1,24 +1,24 @@
 package com.cronutils.model.time;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertTrue;
-
-import java.util.Optional;
-import org.junit.Before;
-import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import java.time.DayOfWeek;
 import java.time.Month;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.Optional;
+import java.util.Random;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.cronutils.model.CronType;
 import com.cronutils.model.definition.CronDefinitionBuilder;
 import com.cronutils.parser.CronParser;
 
-import java.util.Random;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertTrue;
 
 /*
  * Copyright 2015 jmrozanec
@@ -38,7 +38,7 @@ public class ExecutionTimeCron4jIntegrationTest {
     private static final String EVERY_15_MINUTES = "0/15 * * * *";
     private static final String EVERY_2_HOURS = "0 0/2 * * *";
     private static final String EVERY_WEEKDAY_AT_6 = "0 6 * * MON-FRI";
-	private static final Logger log = LoggerFactory.getLogger(ExecutionTimeCron4jIntegrationTest.class);
+    private static final Logger log = LoggerFactory.getLogger(ExecutionTimeCron4jIntegrationTest.class);
 
     @Before
     public void setUp() throws Exception {
@@ -57,20 +57,20 @@ public class ExecutionTimeCron4jIntegrationTest {
     public void testEveryWeekdayAt6() throws Exception {
         ZonedDateTime lastRun = ZonedDateTime.now();
         ExecutionTime executionTime = ExecutionTime.forCron(cron4jCronParser.parse(EVERY_WEEKDAY_AT_6));
-        
+
         // iterate through the next 8 days so we roll over for a week
         // and make sure the next run time is always in the future from the prior run time
-		for (int i = 0; i < 8; i++) {
+        for (int i = 0; i < 8; i++) {
 
             ZonedDateTime nextRun = executionTime.nextExecution(lastRun).get();
-			log.info("LastRun = [{}]", lastRun);
-			log.info("NextRun = [{}]", nextRun);
+            log.info("LastRun = [{}]", lastRun);
+            log.info("NextRun = [{}]", nextRun);
 
-			assertNotEquals(6, nextRun.getDayOfWeek());
-			assertNotEquals(7, nextRun.getDayOfWeek());
-			assertTrue(lastRun.isBefore(nextRun));
+            assertNotEquals(6, nextRun.getDayOfWeek());
+            assertNotEquals(7, nextRun.getDayOfWeek());
+            assertTrue(lastRun.isBefore(nextRun));
             lastRun = lastRun.plusDays(1);
-		}
+        }
     }
 
     /**
@@ -80,19 +80,19 @@ public class ExecutionTimeCron4jIntegrationTest {
     public void testEvery2Hours() throws Exception {
         ZonedDateTime lastRun = ZonedDateTime.now();
         ExecutionTime executionTime = ExecutionTime.forCron(cron4jCronParser.parse(EVERY_2_HOURS));
-        
+
         // iterate through the next 36 hours so we roll over the to the next day
         // and make sure the next run time is always in the future from the prior run time
-		for (int i = 0; i < 36; i++) {
+        for (int i = 0; i < 36; i++) {
 
             ZonedDateTime nextRun = executionTime.nextExecution(lastRun).get();
-			log.info("LastRun = [{}]", lastRun);
-			log.info("NextRun = [{}]", nextRun);
+            log.info("LastRun = [{}]", lastRun);
+            log.info("NextRun = [{}]", nextRun);
 
-			assertTrue(String.format("Hour is %s", nextRun.getHour()), nextRun.getHour() % 2 == 0);
-			assertTrue(String.format("Last run is before next one: %s", lastRun.isBefore(nextRun)), lastRun.isBefore(nextRun));
+            assertTrue(String.format("Hour is %s", nextRun.getHour()), nextRun.getHour() % 2 == 0);
+            assertTrue(String.format("Last run is before next one: %s", lastRun.isBefore(nextRun)), lastRun.isBefore(nextRun));
             lastRun = lastRun.plusHours(1);
-		}
+        }
     }
 
     @Test
@@ -114,8 +114,6 @@ public class ExecutionTimeCron4jIntegrationTest {
         }
     }
 
-
-
     /**
      * Issue #37:  nextExecution not calculating correct time
      */
@@ -123,21 +121,21 @@ public class ExecutionTimeCron4jIntegrationTest {
     public void testEvery15Minutes() throws Exception {
         ZonedDateTime lastRun = ZonedDateTime.now();
         ExecutionTime executionTime = ExecutionTime.forCron(cron4jCronParser.parse(EVERY_15_MINUTES));
-        
+
         // iterate through the next 75 minutes so we roll over the top of the hour
         // and make sure the next run time is always in the future from the prior run time
-		for (int i = 0; i < 75; i++) {
+        for (int i = 0; i < 75; i++) {
 
             ZonedDateTime nextRun = executionTime.nextExecution(lastRun).get();
-			log.debug("LastRun = [{}]", lastRun);
-			log.debug("NextRun = [{}]", nextRun);
+            log.debug("LastRun = [{}]", lastRun);
+            log.debug("NextRun = [{}]", nextRun);
 
-			assertTrue(nextRun.getMinute() % 15 == 0);
-			assertTrue(lastRun.isBefore(nextRun));
+            assertTrue(nextRun.getMinute() % 15 == 0);
+            assertTrue(lastRun.isBefore(nextRun));
             lastRun = lastRun.plusMinutes(1);
-		}
+        }
     }
-    
+
     /**
      * Issue #26: bug 1: if day of week specified, always from day of month is not considered.
      */
@@ -184,7 +182,7 @@ public class ExecutionTimeCron4jIntegrationTest {
         // Run only on January 1st if it is a Tuesday, at 9:00AM
         ExecutionTime executionTime = ExecutionTime.forCron(cron4jCronParser.parse("0 9 1 1 tue"));
         // The next four Tuesday January 1 after January 1, 2017 are in 2019, 2030, 2036, and 2041
-        int[] expectedYears = {2019, 2030, 2036, 2041};
+        int[] expectedYears = { 2019, 2030, 2036, 2041 };
         ZonedDateTime next = ZonedDateTime.of(2017, 1, 1, 0, 0, 0, 0, ZoneId.systemDefault());
         for (int expectedYear : expectedYears) {
             assert (executionTime.nextExecution(next).isPresent());
@@ -210,7 +208,7 @@ public class ExecutionTimeCron4jIntegrationTest {
         Random random = new Random();
         DayOfWeek dayOfWeek = DayOfWeek.of(random.nextInt(7) + 1);
         int dayOfWeekValue = dayOfWeek.getValue();
-        if (dayOfWeekValue == 7){
+        if (dayOfWeekValue == 7) {
             dayOfWeekValue = 0;
         }
         int month = random.nextInt(12) + 1;
@@ -221,9 +219,9 @@ public class ExecutionTimeCron4jIntegrationTest {
         log.debug("cron4j expression: {}", expression);
         ZonedDateTime next = ZonedDateTime.now();
         log.debug("Start date: {}", next);
-        for(int i = 1; i <= 20; i++) {
+        for (int i = 1; i <= 20; i++) {
             Optional<ZonedDateTime> nextExecution = executionTime.nextExecution(next);
-            assert(nextExecution.isPresent());
+            assert (nextExecution.isPresent());
             next = nextExecution.get();
             log.debug("Execution #{} date: {}", i, next);
             assertEquals("Incorrect day of the week", dayOfWeek, next.getDayOfWeek());

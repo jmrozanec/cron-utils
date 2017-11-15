@@ -1,16 +1,17 @@
 package com.cronutils.model.time.generator;
 
+import java.util.List;
+
 import android.support.test.runner.AndroidJUnit4;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
 import com.cronutils.mapper.WeekDay;
 import com.cronutils.model.field.CronField;
 import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.field.constraint.FieldConstraintsBuilder;
 import com.cronutils.model.field.expression.Between;
 import com.cronutils.model.field.value.IntegerFieldValue;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
-import java.util.List;
 
 import static org.junit.Assert.assertTrue;
 
@@ -31,8 +32,8 @@ public class BetweenDayOfWeekValueGeneratorTest {
         assertTrue(values.contains(29));
     }
 
-    private void validateInterval(int start, int end, List<Integer> values){
-        for(int j=start; j<end+1; j++){
+    private void validateInterval(int start, int end, List<Integer> values) {
+        for (int j = start; j < end + 1; j++) {
             assertTrue(String.format("%s not contained in values", j), values.contains(j));
         }
     }

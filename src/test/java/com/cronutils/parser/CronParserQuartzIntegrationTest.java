@@ -1,15 +1,12 @@
 package com.cronutils.parser;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
+import java.time.ZonedDateTime;
 import java.util.Locale;
 
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-import java.time.ZonedDateTime;
 
 import com.cronutils.builder.CronBuilder;
 import com.cronutils.descriptor.CronDescriptor;
@@ -19,6 +16,9 @@ import com.cronutils.model.definition.CronDefinition;
 import com.cronutils.model.definition.CronDefinitionBuilder;
 import com.cronutils.model.field.expression.FieldExpressionFactory;
 import com.cronutils.model.time.ExecutionTime;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 /*
  * Copyright 2015 jmrozanec
@@ -241,7 +241,9 @@ public class CronParserQuartzIntegrationTest {
     public void testMissingExpressionAndInvalidCharsInErrorMessage() {
         thrown.expect(IllegalArgumentException.class);
         String cronexpression = "* * -1 * * ?";
-        thrown.expectMessage(String.format("Failed to parse '%s'. Invalid expression! Expression: -1 does not describe a range. Negative numbers are not allowed.", cronexpression));
+        thrown.expectMessage(
+                String.format("Failed to parse '%s'. Invalid expression! Expression: -1 does not describe a range. Negative numbers are not allowed.",
+                        cronexpression));
         assertNotNull(ExecutionTime.forCron(parser.parse(cronexpression)));
     }
 
@@ -249,7 +251,7 @@ public class CronParserQuartzIntegrationTest {
      * Issue #148: Cron Builder/Parser fails on Every X years
      */
     @Test
-    public void testEveryXYears(){
+    public void testEveryXYears() {
         CronBuilder.cron(CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ)).withDoM(FieldExpressionFactory.on(1))
                 .withDoW(FieldExpressionFactory.questionMark())
                 .withYear(FieldExpressionFactory.every(FieldExpressionFactory.between(1970, 2099), 4))
@@ -258,9 +260,9 @@ public class CronParserQuartzIntegrationTest {
                 .withMinute(FieldExpressionFactory.on(0))
                 .withSecond(FieldExpressionFactory.on(0));
     }
-    
+
     @Test
-    public void testRejectIllegalMonthArgument(){
+    public void testRejectIllegalMonthArgument() {
         thrown.expect(IllegalArgumentException.class);
         CronBuilder.cron(CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ)).withMonth(FieldExpressionFactory.on(0));
     }
@@ -292,7 +294,7 @@ public class CronParserQuartzIntegrationTest {
         };
 
         final CronParser quartzCronParser = new CronParser(CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ));
-        for (final String cronExpression: sampleCronExpressions) {
+        for (final String cronExpression : sampleCronExpressions) {
             final Cron quartzCron = quartzCronParser.parse(cronExpression);
             quartzCron.validate();
         }

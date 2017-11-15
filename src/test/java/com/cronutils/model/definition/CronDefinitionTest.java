@@ -1,11 +1,9 @@
 package com.cronutils.model.definition;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.when;
-
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -14,6 +12,11 @@ import org.mockito.MockitoAnnotations;
 
 import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.field.definition.FieldDefinition;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.when;
 
 /*
  * Copyright 2015 jmrozanec
@@ -41,7 +44,7 @@ public class CronDefinitionTest {
     private FieldDefinition mockFieldDefinition3optional;
 
     @Before
-    public void setUp(){
+    public void setUp() {
         testFieldName1 = CronFieldName.SECOND;
         testFieldName2 = CronFieldName.MINUTE;
         testFieldName3 = CronFieldName.HOUR;
@@ -54,7 +57,6 @@ public class CronDefinitionTest {
         enforceStrictRange = false;
         matchDayOfWeekAndDayOfMonth = false;
     }
-
 
     @Test(expected = NullPointerException.class)
     public void testConstructorNullFieldsParameter() throws Exception {
@@ -78,10 +80,10 @@ public class CronDefinitionTest {
         fields.add(mockFieldDefinition2);
         fields.add(mockFieldDefinition3optional);
         Set<FieldDefinition> fieldDefinitions = new CronDefinition(fields, new HashSet<>(), enforceStrictRange, matchDayOfWeekAndDayOfMonth)
-            .getFieldDefinitions();
+                .getFieldDefinitions();
         List<FieldDefinition> sortedFieldDefinitions = new ArrayList<>(fieldDefinitions);
         sortedFieldDefinitions.sort(FieldDefinition.createFieldDefinitionComparator());
-        assertTrue(sortedFieldDefinitions.get(fields.size()-1).isOptional());
+        assertTrue(sortedFieldDefinitions.get(fields.size() - 1).isOptional());
     }
 
     @Test(expected = IllegalArgumentException.class)

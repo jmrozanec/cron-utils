@@ -1,9 +1,9 @@
 package com.cronutils.parser;
 
-import com.cronutils.model.Cron;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.cronutils.model.Cron;
 import com.cronutils.model.CronType;
 import com.cronutils.model.definition.CronDefinition;
 import com.cronutils.model.definition.CronDefinitionBuilder;
@@ -11,13 +11,12 @@ import com.cronutils.model.definition.CronDefinitionBuilder;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 
-
 public class CronParserCron4JIntegrationTest {
     private CronParser cron4jParser;
 
     @Before
     public void setUp() throws Exception {
-        CronDefinition cronDefinition =  CronDefinitionBuilder.instanceDefinitionFor(CronType.CRON4J);
+        CronDefinition cronDefinition = CronDefinitionBuilder.instanceDefinitionFor(CronType.CRON4J);
         cron4jParser = new CronParser(cronDefinition);
     }
 

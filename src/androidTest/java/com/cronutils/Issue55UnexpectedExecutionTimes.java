@@ -1,6 +1,16 @@
 package com.cronutils;
 
+import java.time.Instant;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
 import android.support.test.runner.AndroidJUnit4;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
 import com.cronutils.model.Cron;
 import com.cronutils.model.definition.CronConstraint;
 import com.cronutils.model.definition.CronDefinition;
@@ -9,15 +19,6 @@ import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.field.expression.QuestionMark;
 import com.cronutils.model.time.ExecutionTime;
 import com.cronutils.parser.CronParser;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import java.time.Instant;
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
@@ -25,7 +26,9 @@ import static org.junit.Assert.assertEquals;
 public class Issue55UnexpectedExecutionTimes extends BaseAndroidTest {
     private CronDefinition cronDefinition;
 
-    /** Setup. */
+    /**
+     * Setup.
+     */
     @Before
     public void setUp() throws Exception {
         super.setUp();
@@ -44,7 +47,7 @@ public class Issue55UnexpectedExecutionTimes extends BaseAndroidTest {
                         new CronConstraint("Both, a day-of-week AND a day-of-month parameter, are not supported.") {
                             @Override
                             public boolean validate(Cron cron) {
-                                if(!(cron.retrieve(CronFieldName.DAY_OF_MONTH).getExpression() instanceof QuestionMark)){
+                                if (!(cron.retrieve(CronFieldName.DAY_OF_MONTH).getExpression() instanceof QuestionMark)) {
                                     return cron.retrieve(CronFieldName.DAY_OF_WEEK).getExpression() instanceof QuestionMark;
                                 } else {
                                     return !(cron.retrieve(CronFieldName.DAY_OF_WEEK).getExpression() instanceof QuestionMark);
@@ -54,9 +57,11 @@ public class Issue55UnexpectedExecutionTimes extends BaseAndroidTest {
                 .instance();
     }
 
-    /** Test. */
+    /**
+     * Test.
+     */
     @Test
-    public void testOnceEveryThreeDaysNoInstantsWithinTwoDays(){
+    public void testOnceEveryThreeDaysNoInstantsWithinTwoDays() {
         System.out.println();
         System.out.println("TEST1 - expecting 0 instants");
         ZonedDateTime startTime = ZonedDateTime.of(0, 1, 1, 0, 0, 0, 0, ZoneOffset.UTC);
@@ -70,9 +75,11 @@ public class Issue55UnexpectedExecutionTimes extends BaseAndroidTest {
         assertEquals(0, instants.size());
     }
 
-    /** Test. */
+    /**
+     * Test.
+     */
     @Test
-    public void testOnceAMonthTwelveInstantsInYear(){
+    public void testOnceAMonthTwelveInstantsInYear() {
         System.out.println();
         System.out.println("TEST2 - expecting 12 instants");
         ZonedDateTime startTime = ZonedDateTime.of(0, 1, 1, 0, 0, 0, 0, ZoneOffset.UTC);
@@ -86,10 +93,10 @@ public class Issue55UnexpectedExecutionTimes extends BaseAndroidTest {
         assertEquals(12, instants.size());
     }
 
-    private List<Instant> getInstants(ExecutionTime executionTime, ZonedDateTime startTime, ZonedDateTime endTime){
+    private List<Instant> getInstants(ExecutionTime executionTime, ZonedDateTime startTime, ZonedDateTime endTime) {
         List<Instant> instantList = new ArrayList<>();
         ZonedDateTime next = executionTime.nextExecution(startTime).get();
-        while(next.isBefore(endTime)){
+        while (next.isBefore(endTime)) {
             instantList.add(next.toInstant());
             next = executionTime.nextExecution(next).get();
         }

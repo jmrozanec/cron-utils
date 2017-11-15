@@ -1,10 +1,10 @@
 package com.cronutils;
 
-
 import android.app.Application;
 import android.support.test.InstrumentationRegistry;
-import com.jakewharton.threetenabp.AndroidThreeTen;
 import org.junit.Before;
+
+import com.jakewharton.threetenabp.AndroidThreeTen;
 
 public class BaseAndroidTest {
     protected final Application application =

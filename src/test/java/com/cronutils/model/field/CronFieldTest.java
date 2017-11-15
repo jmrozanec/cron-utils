@@ -1,11 +1,5 @@
 package com.cronutils.model.field;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
 import java.util.Comparator;
 
 import org.junit.Before;
@@ -15,6 +9,13 @@ import org.mockito.MockitoAnnotations;
 
 import com.cronutils.model.field.constraint.FieldConstraintsBuilder;
 import com.cronutils.model.field.expression.FieldExpression;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 /*
  * Copyright 2015 jmrozanec
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -35,7 +36,7 @@ public class CronFieldTest {
     private FieldExpression mockFieldExpression;
 
     @Before
-    public void setUp(){
+    public void setUp() {
         MockitoAnnotations.initMocks(this);
         cronFieldName = CronFieldName.SECOND;
         result = new CronField(cronFieldName, mockFieldExpression, FieldConstraintsBuilder.instance().createConstraintsInstance());

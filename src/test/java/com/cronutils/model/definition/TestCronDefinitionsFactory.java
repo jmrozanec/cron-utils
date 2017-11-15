@@ -1,4 +1,5 @@
 package com.cronutils.model.definition;
+
 /*
  * Copyright 2017 jmrozanec
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -85,7 +86,7 @@ public class TestCronDefinitionsFactory {
      *
      * @return the newly created <code>CronDefinition</code>.
      */
-    public static CronDefinition withDayOfYearDefinitionWhereYearAndDoYOptionals(){
+    public static CronDefinition withDayOfYearDefinitionWhereYearAndDoYOptionals() {
         return CronDefinitionBuilder.defineCron()
                 .withSeconds().and()
                 .withMinutes().and()

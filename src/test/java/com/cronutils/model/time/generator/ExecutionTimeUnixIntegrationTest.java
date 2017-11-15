@@ -1,7 +1,20 @@
 package com.cronutils.model.time.generator;
 
+import java.time.Duration;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.Month;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+
 import org.junit.Test;
-import java.time.*;
 
 import com.cronutils.model.Cron;
 import com.cronutils.model.CronType;
@@ -10,14 +23,13 @@ import com.cronutils.model.definition.CronDefinitionBuilder;
 import com.cronutils.model.time.ExecutionTime;
 import com.cronutils.parser.CronParser;
 
-import java.util.*;
-
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class ExecutionTimeUnixIntegrationTest {
 
     @Test
-    public void testIsMatchForUnix01(){
+    public void testIsMatchForUnix01() {
         CronParser parser = new CronParser(CronDefinitionBuilder.instanceDefinitionFor(CronType.UNIX));
         String crontab = "* * * * *";//m,h,dom,M,dow
         Cron cron = parser.parse(crontab);
@@ -27,7 +39,7 @@ public class ExecutionTimeUnixIntegrationTest {
     }
 
     @Test
-    public void testIsMatchForUnix02(){
+    public void testIsMatchForUnix02() {
         CronParser parser = new CronParser(CronDefinitionBuilder.instanceDefinitionFor(CronType.UNIX));
         String crontab = "0 * * * 1-5";//m,h,dom,M,dow
         Cron cron = parser.parse(crontab);
@@ -40,7 +52,7 @@ public class ExecutionTimeUnixIntegrationTest {
      * Issue #37: for pattern "every 10 minutes", nextExecution returns a date from past.
      */
     @Test
-    public void testEveryTenMinutesNextExecution(){
+    public void testEveryTenMinutesNextExecution() {
         CronParser parser = new CronParser(CronDefinitionBuilder.instanceDefinitionFor(CronType.UNIX));
         ExecutionTime executionTime = ExecutionTime.forCron(parser.parse("*/10 * * * *"));
         ZonedDateTime time = ZonedDateTime.parse("2015-09-05T13:43:00.000-07:00");
@@ -51,7 +63,7 @@ public class ExecutionTimeUnixIntegrationTest {
      * Issue #38: every 2 min schedule doesn't roll over to next hour
      */
     @Test
-    public void testEveryTwoMinRollsOverHour(){
+    public void testEveryTwoMinRollsOverHour() {
         CronDefinition cronDefinition = CronDefinitionBuilder.instanceDefinitionFor(CronType.UNIX);
         Cron cron = new CronParser(cronDefinition).parse("*/2 * * * *");
         ExecutionTime executionTime = ExecutionTime.forCron(cron);
@@ -65,7 +77,7 @@ public class ExecutionTimeUnixIntegrationTest {
      * Issue #41: for everything other than a dayOfWeek value == 1, nextExecution and lastExecution do not return correct results
      */
     @Test
-    public void testEveryTuesdayAtThirdHourOfDayNextExecution(){
+    public void testEveryTuesdayAtThirdHourOfDayNextExecution() {
         CronDefinition cronDefinition = CronDefinitionBuilder.instanceDefinitionFor(CronType.UNIX);
         CronParser parser = new CronParser(cronDefinition);
         Cron myCron = parser.parse("0 3 * * 3");
@@ -77,7 +89,7 @@ public class ExecutionTimeUnixIntegrationTest {
      * Issue #41: for everything other than a dayOfWeek value == 1, nextExecution and lastExecution do not return correct results
      */
     @Test
-    public void testEveryTuesdayAtThirdHourOfDayLastExecution(){
+    public void testEveryTuesdayAtThirdHourOfDayLastExecution() {
         CronDefinition cronDefinition = CronDefinitionBuilder.instanceDefinitionFor(CronType.UNIX);
         CronParser parser = new CronParser(cronDefinition);
         Cron myCron = parser.parse("0 3 * * 3");
@@ -89,7 +101,7 @@ public class ExecutionTimeUnixIntegrationTest {
      * Issue #45: last execution does not match expected date. Result is not in same timezone as reference date.
      */
     @Test
-    public void testMondayWeekdayLastExecution(){
+    public void testMondayWeekdayLastExecution() {
         String crontab = "* * * * 1";
         CronDefinition cronDefinition = CronDefinitionBuilder.instanceDefinitionFor(CronType.UNIX);
         CronParser parser = new CronParser(cronDefinition);
@@ -103,7 +115,7 @@ public class ExecutionTimeUnixIntegrationTest {
      * Issue #45: next execution does not match expected date. Result is not in same timezone as reference date.
      */
     @Test
-    public void testMondayWeekdayNextExecution(){
+    public void testMondayWeekdayNextExecution() {
         String crontab = "* * * * 1";
         CronDefinition cronDefinition = CronDefinitionBuilder.instanceDefinitionFor(CronType.UNIX);
         CronParser parser = new CronParser(cronDefinition);
@@ -117,7 +129,7 @@ public class ExecutionTimeUnixIntegrationTest {
      * Issue #50: last execution does not match expected date when cron specifies day of week and last execution is in previous month.
      */
     @Test
-    public void testLastExecutionDaysOfWeekOverMonthBoundary(){
+    public void testLastExecutionDaysOfWeekOverMonthBoundary() {
         String crontab = "0 11 * * 1";
         CronDefinition cronDefinition = CronDefinitionBuilder.instanceDefinitionFor(CronType.UNIX);
         CronParser parser = new CronParser(cronDefinition);
@@ -128,9 +140,9 @@ public class ExecutionTimeUnixIntegrationTest {
     }
 
     /**
-      * Issue #52: "And" doesn't work for day of the week
-      * 1,2 should be Monday and Tuesday, but instead it is treated as 1st/2nd of month.
-      */
+     * Issue #52: "And" doesn't work for day of the week
+     * 1,2 should be Monday and Tuesday, but instead it is treated as 1st/2nd of month.
+     */
     @Test
     public void testWeekdayAndLastExecution() {
         String crontab = "* * * * 1,2";
@@ -162,7 +174,7 @@ public class ExecutionTimeUnixIntegrationTest {
      * Considers Month in range 0-11 instead of 1-12
      */
     @Test
-    public void testCorrectMonthScaleForNextExecution1(){
+    public void testCorrectMonthScaleForNextExecution1() {
         CronDefinition cronDefinition = CronDefinitionBuilder.instanceDefinitionFor(CronType.UNIX);
         CronParser parser = new CronParser(cronDefinition);
         String crontab = "* * */3 */4 */5";//m,h,dom,M,dow
@@ -181,7 +193,7 @@ public class ExecutionTimeUnixIntegrationTest {
      * dom "* / 4" should mean 1, 5, 9, 13, 17th... of month instead of 4, 8, 12, 16th...
      */
     @Test
-    public void testCorrectMonthScaleForNextExecution2(){
+    public void testCorrectMonthScaleForNextExecution2() {
         CronDefinition cronDefinition = CronDefinitionBuilder.instanceDefinitionFor(CronType.UNIX);
         CronParser parser = new CronParser(cronDefinition);
         String crontab = "* * */4 * *";//m,h,dom,M,dow
@@ -197,7 +209,7 @@ public class ExecutionTimeUnixIntegrationTest {
      * Considers bad DoW
      */
     @Test
-    public void testCorrectNextExecutionDoW(){
+    public void testCorrectNextExecutionDoW() {
         CronDefinition cronDefinition = CronDefinitionBuilder.instanceDefinitionFor(CronType.UNIX);
         CronParser parser = new CronParser(cronDefinition);
         String crontab = "* * * * */4";//m,h,dom,M,dow
@@ -213,7 +225,7 @@ public class ExecutionTimeUnixIntegrationTest {
      * Issue #69: Getting next execution fails on leap-year when using day-of-week
      */
     @Test
-    public void testCorrectNextExecutionDoWForLeapYear(){
+    public void testCorrectNextExecutionDoWForLeapYear() {
         CronParser parser = new CronParser(CronDefinitionBuilder.instanceDefinitionFor(CronType.UNIX));
         String crontab = "0 * * * 1-5";//m,h,dom,M,dow
         //DoW: 0-6 -> 1, 2, 3, 4, 5 -> in this year:
@@ -242,7 +254,7 @@ public class ExecutionTimeUnixIntegrationTest {
      * Issue #61: lastExecution over daylight savings is wrong
      */
     @Test
-    public void testLastExecutionDaylightSaving(){
+    public void testLastExecutionDaylightSaving() {
         CronParser parser = new CronParser(CronDefinitionBuilder.instanceDefinitionFor(CronType.UNIX));
         ExecutionTime executionTime = ExecutionTime.forCron(parser.parse("0 17 * * *"));// daily at 17:00
         // Daylight savings for New York 2016 is Mar 13 at 2am
@@ -326,31 +338,28 @@ public class ExecutionTimeUnixIntegrationTest {
         // Scheduling pattern for 1:30 AM for the first 7 days of every November
         ExecutionTime executionTime = ExecutionTime.forCron(parser.parse("30 1 1-7 11 *"));
 
-
         final ZoneOffset EDT = ZoneOffset.ofHours(-4);
         final ZoneOffset EST = ZoneOffset.ofHours(-5);
 
-        for(int year = 2015; year <= 2026; year++){
+        for (int year = 2015; year <= 2026; year++) {
             boolean pastDSTEnd = false;
             int dayOfMonth = 1;
-            while(dayOfMonth < 8){
+            while (dayOfMonth < 8) {
                 LocalDateTime expectedLocalDateTime = LocalDateTime.of(year, Month.NOVEMBER, dayOfMonth, 1, 30);
                 Optional<ZonedDateTime> nextExecution = executionTime.nextExecution(date);
-                assert(nextExecution.isPresent());
+                assert (nextExecution.isPresent());
                 date = nextExecution.get();
 
                 ZoneOffset expectedOffset = pastDSTEnd ? EST : EDT;
 
-                if (dstDates.contains(LocalDate.of(year, Month.NOVEMBER, dayOfMonth))){
-                    if (!pastDSTEnd){
+                if (dstDates.contains(LocalDate.of(year, Month.NOVEMBER, dayOfMonth))) {
+                    if (!pastDSTEnd) {
                         // next iteration should be past the DST transition
                         pastDSTEnd = true;
-                    }
-                    else {
+                    } else {
                         dayOfMonth++;
                     }
-                }
-                else {
+                } else {
                     dayOfMonth++;
                 }
                 assertEquals(ZonedDateTime.ofInstant(expectedLocalDateTime, expectedOffset, zoneId), date);
@@ -364,7 +373,7 @@ public class ExecutionTimeUnixIntegrationTest {
      * time zone on the DST start days.
      */
     @Test
-    public void testDSTGap() throws Exception{
+    public void testDSTGap() throws Exception {
         ZoneId zoneId = ZoneId.of("America/New_York");
         CronParser parser = new CronParser(CronDefinitionBuilder.instanceDefinitionFor(CronType.UNIX));
         // Run at 2:15 AM each day for March 7 to 14
@@ -389,17 +398,16 @@ public class ExecutionTimeUnixIntegrationTest {
         dstDates.put(2025, LocalDate.of(2025, Month.MARCH, 9));
         dstDates.put(2026, LocalDate.of(2026, Month.MARCH, 8));
 
-
         final ZoneOffset EDT = ZoneOffset.ofHours(-4);
         final ZoneOffset EST = ZoneOffset.ofHours(-5);
-        for(int year = 2015; year <= 2026; year++){
+        for (int year = 2015; year <= 2026; year++) {
             LocalDate dstDateForYear = dstDates.get(year);
             boolean isPastDSTStart = false;
             int dayOfMonth = 7;
-            while(dayOfMonth < 15) {
+            while (dayOfMonth < 15) {
                 LocalDateTime localDateTime = LocalDateTime.of(year, Month.MARCH, dayOfMonth, 2, 15);
                 // skip the DST start days... 2:15 AM does not exist in the local time
-                if (localDateTime.toLocalDate().isEqual(dstDateForYear)){
+                if (localDateTime.toLocalDate().isEqual(dstDateForYear)) {
                     dayOfMonth++;
                     isPastDSTStart = true;
                     continue;

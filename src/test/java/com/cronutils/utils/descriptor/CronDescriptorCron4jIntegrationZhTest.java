@@ -1,13 +1,14 @@
 package com.cronutils.utils.descriptor;
 
+import java.util.Locale;
+
+import org.junit.Before;
+import org.junit.Test;
+
 import com.cronutils.descriptor.CronDescriptor;
 import com.cronutils.model.CronType;
 import com.cronutils.model.definition.CronDefinitionBuilder;
 import com.cronutils.parser.CronParser;
-import org.junit.Before;
-import org.junit.Test;
-
-import java.util.Locale;
 
 import static org.junit.Assert.assertEquals;
 
@@ -25,7 +26,6 @@ public class CronDescriptorCron4jIntegrationZhTest {
         descriptor = CronDescriptor.instance(Locale.CHINESE);
         parser = new CronParser(CronDefinitionBuilder.instanceDefinitionFor(CronType.CRON4J));
     }
-
 
     @Test
     public void testEveryMinuteBetween1100And1110() {

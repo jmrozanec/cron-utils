@@ -6,6 +6,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import static org.junit.Assert.assertEquals;
+
 /*
  * Copyright 2015 jmrozanec
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -25,7 +26,7 @@ public class WeekDayTest {
     private boolean firstDayIsZero = false;
 
     @Before
-    public void setUp(){
+    public void setUp() {
         this.source = new WeekDay(mondayDoWValue, firstDayIsZero);
     }
 

@@ -1,12 +1,14 @@
 package com.cronutils;
 
+import java.time.ZonedDateTime;
+
+import org.junit.Test;
+
 import com.cronutils.model.Cron;
 import com.cronutils.model.definition.CronDefinition;
 import com.cronutils.model.definition.CronDefinitionBuilder;
 import com.cronutils.model.time.ExecutionTime;
 import com.cronutils.parser.CronParser;
-import org.junit.Test;
-import java.time.ZonedDateTime;
 
 import static org.junit.Assert.assertEquals;
 
@@ -15,14 +17,14 @@ public class Issue228Test {
      * This is the UNIX cron definition with a single modification to match both Day Of Week and Day Of Month
      */
     private CronDefinition cronDefinition = CronDefinitionBuilder.defineCron()
-        .withMinutes().and()
-        .withHours().and()
-        .withDayOfMonth().and()
-        .withMonth().and()
-        .withDayOfWeek().withValidRange(0, 7).withMondayDoWValue(1).withIntMapping(7, 0).and()
-        .enforceStrictRanges()
-        .matchDayOfWeekAndDayOfMonth() // the regular UNIX cron definition permits matching either DoW or DoM
-        .instance();
+            .withMinutes().and()
+            .withHours().and()
+            .withDayOfMonth().and()
+            .withMonth().and()
+            .withDayOfWeek().withValidRange(0, 7).withMondayDoWValue(1).withIntMapping(7, 0).and()
+            .enforceStrictRanges()
+            .matchDayOfWeekAndDayOfMonth() // the regular UNIX cron definition permits matching either DoW or DoM
+            .instance();
 
     @Test
     public void testFirstMondayOfTheMonthNextExecution() {

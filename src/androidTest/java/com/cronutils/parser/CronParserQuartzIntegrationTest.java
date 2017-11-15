@@ -1,6 +1,15 @@
 package com.cronutils.parser;
 
+import java.time.ZonedDateTime;
+import java.util.Locale;
+
 import android.support.test.runner.AndroidJUnit4;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.ExpectedException;
+import org.junit.runner.RunWith;
+
 import com.cronutils.BaseAndroidTest;
 import com.cronutils.builder.CronBuilder;
 import com.cronutils.descriptor.CronDescriptor;
@@ -10,14 +19,6 @@ import com.cronutils.model.definition.CronDefinition;
 import com.cronutils.model.definition.CronDefinitionBuilder;
 import com.cronutils.model.field.expression.FieldExpressionFactory;
 import com.cronutils.model.time.ExecutionTime;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
-import org.junit.runner.RunWith;
-import java.time.ZonedDateTime;
-
-import java.util.Locale;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -253,7 +254,7 @@ public class CronParserQuartzIntegrationTest extends BaseAndroidTest {
      * Issue #148: Cron Builder/Parser fails on Every X years
      */
     @Test
-    public void testEveryXYears(){
+    public void testEveryXYears() {
         CronBuilder.cron(CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ)).withDoM(FieldExpressionFactory.on(1))
                 .withDoW(FieldExpressionFactory.questionMark())
                 .withYear(FieldExpressionFactory.every(FieldExpressionFactory.between(1970, 2099), 4))
@@ -290,7 +291,7 @@ public class CronParserQuartzIntegrationTest extends BaseAndroidTest {
         };
 
         final CronParser quartzCronParser = new CronParser(CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ));
-        for (final String cronExpression: sampleCronExpressions) {
+        for (final String cronExpression : sampleCronExpressions) {
             final Cron quartzCron = quartzCronParser.parse(cronExpression);
             quartzCron.validate();
         }

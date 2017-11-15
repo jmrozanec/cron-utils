@@ -1,16 +1,17 @@
 package com.cronutils.validator;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Locale;
+
 import android.support.test.runner.AndroidJUnit4;
-import com.cronutils.model.CronType;
-import com.cronutils.model.definition.CronDefinitionBuilder;
-import com.cronutils.parser.CronParser;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 
-import java.util.Locale;
+import com.cronutils.model.CronType;
+import com.cronutils.model.definition.CronDefinitionBuilder;
+import com.cronutils.parser.CronParser;
 
 import static org.junit.Assert.assertNotNull;
 
@@ -29,6 +30,7 @@ import static org.junit.Assert.assertNotNull;
 @RunWith(AndroidJUnit4.class)
 public class CronValidatorQuartzIntegrationTest {
     private CronParser parser;
+
     @Before
     public void setUp() throws Exception {
         parser = new CronParser(CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ));
@@ -38,7 +40,7 @@ public class CronValidatorQuartzIntegrationTest {
      * Issue #27: month range string mapping is valid
      */
     @Test
-    public void testMonthRangeMappingIsValid(){
+    public void testMonthRangeMappingIsValid() {
         parser.parse("0 0 0 * JUL-AUG ? *").validate();
     }
 
@@ -46,9 +48,9 @@ public class CronValidatorQuartzIntegrationTest {
      * Issue #27: single month string mapping is valid
      */
     @Test
-    public void testSingleMonthMappingIsValid(){
+    public void testSingleMonthMappingIsValid() {
         LocalDate date = LocalDate.of(2015, 1, 1);
-        for(int j=0;j<12;j++){
+        for (int j = 0; j < 12; j++) {
             String expression = String.format("0 0 0 * %s ? *", date.plusMonths(j).format(DateTimeFormatter.ofPattern("MMM", Locale.US)).toUpperCase());
             parser.parse(expression);
         }
@@ -58,7 +60,7 @@ public class CronValidatorQuartzIntegrationTest {
      * Issue #27: day of week range string mapping is valid
      */
     @Test
-    public void testDayOfWeekRangeMappingIsValid(){
+    public void testDayOfWeekRangeMappingIsValid() {
         assertNotNull(parser.parse("0 0 0 ? * MON-FRI *"));
     }
 
@@ -66,8 +68,8 @@ public class CronValidatorQuartzIntegrationTest {
      * Issue #27: single day of week string mapping is valid
      */
     @Test
-    public void testDayOfWeekMappingIsValid(){
-        for(String dow : new String[]{"MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"}){
+    public void testDayOfWeekMappingIsValid() {
+        for (String dow : new String[] { "MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN" }) {
             parser.parse(String.format("0 0 0 ? * %s *", dow));
         }
 
@@ -80,7 +82,7 @@ public class CronValidatorQuartzIntegrationTest {
      * Fixed by adding support for question mark character.
      */
     @Test
-    public void testQuestionMarkSupport(){
+    public void testQuestionMarkSupport() {
         parser.parse("0 10,44 14 ? 3 WED");
         parser.parse("0 0 12 ? * FRI-SAT");
         parser.parse("0 0 12 ? * SAT-SUN");

@@ -21,7 +21,6 @@ import com.cronutils.model.field.expression.FieldExpression;
 import com.cronutils.model.field.expression.On;
 import com.cronutils.model.field.expression.QuestionMark;
 import com.cronutils.model.field.expression.visitor.ValueMappingFieldExpressionVisitor;
-import com.cronutils.model.field.value.FieldValue;
 import com.cronutils.model.field.value.IntegerFieldValue;
 import com.cronutils.model.field.value.SpecialChar;
 import com.cronutils.utils.Preconditions;
@@ -245,20 +244,20 @@ public class CronMapper {
             FieldExpression expression = field.getExpression();
             FieldExpression dest = null;
             dest = expression.accept(
-                new ValueMappingFieldExpressionVisitor(
-                    fieldValue -> {
-                        if (fieldValue instanceof IntegerFieldValue) {
-                            return new IntegerFieldValue(
-                                    ConstantsMapper.weekDayMapping(
-                                            sourceDef.getMondayDoWValue(),
-                                            targetDef.getMondayDoWValue(),
-                                            ((IntegerFieldValue) fieldValue).getValue()
-                                    )
-                            );
-                        }
-                        return fieldValue;
-                    }
-                )
+                    new ValueMappingFieldExpressionVisitor(
+                            fieldValue -> {
+                                if (fieldValue instanceof IntegerFieldValue) {
+                                    return new IntegerFieldValue(
+                                            ConstantsMapper.weekDayMapping(
+                                                    sourceDef.getMondayDoWValue(),
+                                                    targetDef.getMondayDoWValue(),
+                                                    ((IntegerFieldValue) fieldValue).getValue()
+                                            )
+                                    );
+                                }
+                                return fieldValue;
+                            }
+                    )
             );
 
             if (expression instanceof QuestionMark) {

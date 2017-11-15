@@ -1,11 +1,5 @@
 package com.cronutils.model.field;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,6 +15,13 @@ import com.cronutils.model.field.constraint.FieldConstraints;
 import com.cronutils.model.field.constraint.FieldConstraintsBuilder;
 import com.cronutils.model.field.definition.FieldDefinition;
 import com.cronutils.model.field.definition.FieldDefinitionBuilder;
+
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 /*
  * Copyright 2015 jmrozanec
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -34,7 +35,7 @@ import com.cronutils.model.field.definition.FieldDefinitionBuilder;
  * limitations under the License.
  */
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({FieldConstraintsBuilder.class, FieldDefinitionBuilder.class})
+@PrepareForTest({ FieldConstraintsBuilder.class, FieldDefinitionBuilder.class })
 public class FieldDefinitionBuilderTest {
     private CronFieldName testFieldName;
     @Mock

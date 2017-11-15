@@ -1,13 +1,5 @@
 package com.cronutils.model.field.expression.visitor;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 import java.util.Map;
 import java.util.Set;
 
@@ -32,6 +24,14 @@ import com.cronutils.model.field.value.SpecialCharFieldValue;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 public class ValidationFieldExpressionVisitorTest {
 
     private Map<String, Integer> stringMapping;
@@ -50,17 +50,15 @@ public class ValidationFieldExpressionVisitorTest {
     private int high = 50;
 
     private FieldConstraints fieldConstraints;
-    
+
     @Mock
     private StringValidations stringValidations;
-    
+
     @Mock
     private StringValidations invalidStringValidations;
-    
-    
+
     private ValidationFieldExpressionVisitor strictVisitor;
     private ValidationFieldExpressionVisitor visitor;
-    
 
     @Before
     public void setUp() throws Exception {
@@ -71,105 +69,104 @@ public class ValidationFieldExpressionVisitorTest {
         startRange = 0;
         endRange = 59;
         fieldConstraints = new FieldConstraints(stringMapping, intMapping, specialCharSet, startRange, endRange);
-        
+
         when(stringValidations.removeValidChars(any(String.class))).thenReturn("");
         when(invalidStringValidations.removeValidChars(any(String.class))).thenReturn("$$$");
-        
+
         strictVisitor = new ValidationFieldExpressionVisitor(fieldConstraints, stringValidations, true);
         visitor = new ValidationFieldExpressionVisitor(fieldConstraints, stringValidations, false);
     }
 
-    @Test(expected=IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void testVisitWithInvalidChars() {
         ValidationFieldExpressionVisitor visitor = new ValidationFieldExpressionVisitor(fieldConstraints, invalidStringValidations, true);
         FieldExpression exp = new Always();
         visitor.visit(exp);
     }
-    
-    
+
     @Test
     public void testVisit() {
         ValidationFieldExpressionVisitor spy = Mockito.spy(visitor);
         ValidationFieldExpressionVisitor strictSpy = Mockito.spy(strictVisitor);
-        
+
         FieldExpression exp = new Always();
-        Always always = (Always)exp;
+        Always always = (Always) exp;
         spy.visit(exp);
         strictSpy.visit(exp);
-        
+
         verify(spy, times(1)).visit(always);
         verify(strictSpy, times(1)).visit(always);
-        
+
         spy = Mockito.spy(visitor);
         strictSpy = Mockito.spy(strictVisitor);
-        
+
         exp = new Between(new IntegerFieldValue(low), new IntegerFieldValue(middle));
-        Between between = (Between)exp;
+        Between between = (Between) exp;
         spy.visit(exp);
         strictSpy.visit(exp);
-        
+
         verify(spy, times(1)).visit(between);
         verify(strictSpy, times(1)).visit(between);
-        
+
         spy = Mockito.spy(visitor);
         strictSpy = Mockito.spy(strictVisitor);
-        
+
         exp = new Every(new IntegerFieldValue(low));
-        Every every = (Every)exp;
+        Every every = (Every) exp;
         spy.visit(exp);
         strictSpy.visit(exp);
-        
+
         verify(spy, times(1)).visit(every);
         verify(strictSpy, times(1)).visit(every);
 
         spy = Mockito.spy(visitor);
         strictSpy = Mockito.spy(strictVisitor);
-        
+
         exp = new And().and(between);
-        And and = (And)exp;
+        And and = (And) exp;
         spy.visit(exp);
         strictSpy.visit(exp);
-        
+
         verify(spy, times(1)).visit(and);
         verify(strictSpy, times(1)).visit(and);
         verify(spy, times(1)).visit(between);
         verify(strictSpy, times(1)).visit(between);
-   
+
         spy = Mockito.spy(visitor);
         strictSpy = Mockito.spy(strictVisitor);
-        
+
         exp = new On(new IntegerFieldValue(middle));
-        On on = (On)exp;
+        On on = (On) exp;
         spy.visit(exp);
         strictSpy.visit(exp);
-        
+
         verify(spy, times(1)).visit(on);
         verify(strictSpy, times(1)).visit(on);
-       
+
         spy = Mockito.spy(visitor);
         strictSpy = Mockito.spy(strictVisitor);
-        
+
         exp = new QuestionMark();
-        QuestionMark qm = (QuestionMark)exp;
+        QuestionMark qm = (QuestionMark) exp;
         spy.visit(exp);
         strictSpy.visit(exp);
-        
+
         verify(spy, times(1)).visit(qm);
-        verify(strictSpy, times(1)).visit(qm);   
+        verify(strictSpy, times(1)).visit(qm);
     }
-    
-    @Test(expected=IllegalArgumentException.class)
+
+    @Test(expected = IllegalArgumentException.class)
     public void testStrictVisitBadExp() {
         FieldExpression exp = new Between(new IntegerFieldValue(high), new IntegerFieldValue(low));
         strictVisitor.visit(exp);
     }
-    
-    @Test(expected=IllegalArgumentException.class)
+
+    @Test(expected = IllegalArgumentException.class)
     public void testVisitBadExp() {
         FieldExpression exp = new Between(new IntegerFieldValue(lowOOR), new IntegerFieldValue(high));
         visitor.visit(exp);
     }
-    
+
     @Test
     public void testVisitAlwaysField() {
         Always always = new Always();
