@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<fileset-config file-format-version="1.2.0" simple-config="false" sync-formatter="false">
+  <local-check-config name="cron-utils-configuration" location="src/main/resources/checkstyle.xml" type="project" description="">
+    <additional-data name="protect-config-file" value="false"/>
+  </local-check-config>
+  <fileset name="all" enabled="true" check-config-name="cron-utils-configuration" local="true">
+    <file-match-pattern match-pattern=".java$" include-pattern="true"/>
+  </fileset>
+  <filter name="WriteProtectedFiles" enabled="true"/>
+  <filter name="DerivedFiles" enabled="true"/>
+</fileset-config>
