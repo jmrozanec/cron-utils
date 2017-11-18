@@ -1,5 +1,7 @@
 package com.cronutils.parser;
 
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 
 import org.junit.Before;
@@ -17,7 +19,6 @@ import com.cronutils.model.definition.TestCronDefinitionsFactory;
 import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.field.constraint.FieldConstraintsBuilder;
 import com.cronutils.model.field.definition.FieldDefinition;
-import com.google.common.collect.Sets;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -51,8 +52,7 @@ public class CronParserTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void testParseEmptyExpression() throws Exception {
-        Set<FieldDefinition> set = Sets.newHashSet();
-        when(definition.getFieldDefinitions()).thenReturn(set);
+        when(definition.getFieldDefinitions()).thenReturn(Collections.emptySet());
         parser = new CronParser(definition);
 
         parser.parse("");
@@ -60,8 +60,8 @@ public class CronParserTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void testParseNoMatchingExpression() throws Exception {
-        Set<FieldDefinition> set = Sets.newHashSet();
-        set.add(new FieldDefinition(CronFieldName.SECOND, FieldConstraintsBuilder.instance().createConstraintsInstance()));
+        Set<FieldDefinition> set =
+                Collections.singleton(new FieldDefinition(CronFieldName.SECOND, FieldConstraintsBuilder.instance().createConstraintsInstance()));
         when(definition.getFieldDefinitions()).thenReturn(set);
         parser = new CronParser(definition);
 
@@ -70,8 +70,8 @@ public class CronParserTest {
 
     @Test
     public void testParseIncompleteEvery() throws Exception {
-        Set<FieldDefinition> set = Sets.newHashSet();
-        set.add(new FieldDefinition(CronFieldName.SECOND, FieldConstraintsBuilder.instance().createConstraintsInstance()));
+        Set<FieldDefinition> set =
+                Collections.singleton(new FieldDefinition(CronFieldName.SECOND, FieldConstraintsBuilder.instance().createConstraintsInstance()));
         when(definition.getFieldDefinitions()).thenReturn(set);
         parser = new CronParser(definition);
 
@@ -96,7 +96,7 @@ public class CronParserTest {
         FieldDefinition dom = new FieldDefinition(CronFieldName.DAY_OF_MONTH, FieldConstraintsBuilder.instance().createConstraintsInstance());
         FieldDefinition month = new FieldDefinition(CronFieldName.MONTH, FieldConstraintsBuilder.instance().createConstraintsInstance());
         FieldDefinition dow = new FieldDefinition(CronFieldName.DAY_OF_WEEK, FieldConstraintsBuilder.instance().createConstraintsInstance());
-        Set<FieldDefinition> set = Sets.newHashSet();
+        Set<FieldDefinition> set = new HashSet<>();
         set.add(minute);
         set.add(hour);
         set.add(dom);

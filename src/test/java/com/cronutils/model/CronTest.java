@@ -5,6 +5,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.Collections;
 import java.util.List;
 
 import org.junit.Before;
@@ -19,7 +20,6 @@ import com.cronutils.model.field.CronField;
 import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.field.expression.FieldExpression;
 import com.cronutils.parser.CronParser;
-import com.google.common.collect.Lists;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -53,8 +53,7 @@ public class CronTest {
         MockitoAnnotations.initMocks(this);
         testName = CronFieldName.SECOND;
         when(mockField.getField()).thenReturn(testName);
-        fields = Lists.newArrayList();
-        fields.add(mockField);
+        fields = Collections.singletonList(mockField);
         cron = new Cron(mock(CronDefinition.class), fields);
     }
 

@@ -50,7 +50,7 @@ public class ExecutionTimeQuartzWithDayOfYearExtensionIntegrationTest {
 
     @Test
     public void testNextExecutionEveryTwoWeeksStartingWithFirstDayOfYear() {
-        final ZonedDateTime now = truncateToDays(ZonedDateTime.now());
+        final ZonedDateTime now = truncateToDays(ZonedDateTime.now().minusDays(1));
         final int dayOfYear = now.getDayOfYear();
         final int dayOfMostRecentPeriod = dayOfYear % 14;
         final ZonedDateTime expected = now.plusDays(15 - dayOfMostRecentPeriod);
@@ -60,7 +60,7 @@ public class ExecutionTimeQuartzWithDayOfYearExtensionIntegrationTest {
 
     @Test
     public void testNextExecutionEveryTwoWeeksStartingWithFirstDayOfYearIssue249() {
-        ZonedDateTime now = truncateToDays(ZonedDateTime.now());
+        ZonedDateTime now = truncateToDays(ZonedDateTime.now().minusDays(1));
         int dayOfYear = now.getDayOfYear();
         int dayOfMostRecentPeriod = dayOfYear % 14;
         ZonedDateTime expected = now.plusDays(15 - dayOfMostRecentPeriod);
@@ -70,7 +70,7 @@ public class ExecutionTimeQuartzWithDayOfYearExtensionIntegrationTest {
 
     @Test
     public void testLastExecutionEveryTwoWeeksStartingWithFirstDayOfYear() {
-        final ZonedDateTime now = truncateToDays(ZonedDateTime.now());
+        final ZonedDateTime now = truncateToDays(ZonedDateTime.now().minusDays(1));
         final int dayOfYear = now.getDayOfYear();
         final int dayOfMostRecentPeriod = dayOfYear % 14;
         final ZonedDateTime expected = dayOfMostRecentPeriod == 1 ? now.minusDays(14) : now.minusDays(dayOfMostRecentPeriod - 1);

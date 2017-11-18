@@ -1,5 +1,6 @@
 package com.cronutils.model.field.expression.visitor;
 
+import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 
@@ -21,8 +22,6 @@ import com.cronutils.model.field.expression.QuestionMark;
 import com.cronutils.model.field.value.IntegerFieldValue;
 import com.cronutils.model.field.value.SpecialChar;
 import com.cronutils.model.field.value.SpecialCharFieldValue;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -63,9 +62,9 @@ public class ValidationFieldExpressionVisitorTest {
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        intMapping = Maps.newHashMap();
-        stringMapping = Maps.newHashMap();
-        specialCharSet = Sets.newHashSet();
+        intMapping = Collections.emptyMap();
+        stringMapping = Collections.emptyMap();
+        specialCharSet = Collections.emptySet();
         startRange = 0;
         endRange = 59;
         fieldConstraints = new FieldConstraints(stringMapping, intMapping, specialCharSet, startRange, endRange);

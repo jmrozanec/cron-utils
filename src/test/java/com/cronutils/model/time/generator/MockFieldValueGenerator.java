@@ -1,10 +1,11 @@
 package com.cronutils.model.time.generator;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import com.cronutils.model.field.CronField;
 import com.cronutils.model.field.expression.FieldExpression;
-import com.google.common.collect.Lists;
 
 /*
  * Copyright 2015 jmrozanec
@@ -36,7 +37,7 @@ public class MockFieldValueGenerator extends FieldValueGenerator {
 
     @Override
     protected List<Integer> generateCandidatesNotIncludingIntervalExtremes(int start, int end) {
-        return Lists.newArrayList();
+        return new ArrayList<>();
     }
 
     @Override

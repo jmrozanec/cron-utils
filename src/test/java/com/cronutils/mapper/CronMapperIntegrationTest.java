@@ -1,11 +1,13 @@
 package com.cronutils.mapper;
 
+import java.util.Arrays;
+import java.util.HashSet;
+
 import org.junit.Test;
 
 import com.cronutils.model.CronType;
 import com.cronutils.model.definition.CronDefinitionBuilder;
 import com.cronutils.parser.CronParser;
-import com.google.common.collect.Sets;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -79,7 +81,7 @@ public class CronMapperIntegrationTest {
         String mapping = CronMapper.fromUnixToQuartz().map(unixParser().parse(input)).asString();
         assertTrue(
                 String.format("Expected [%s] or [%s] but got [%s]", expected1, expected2, mapping),
-                Sets.newHashSet(expected1, expected2).contains(mapping)
+                Arrays.asList(expected1, expected2).contains(mapping)
         );
     }
 

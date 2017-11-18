@@ -19,7 +19,6 @@ import com.cronutils.model.field.CronField;
 import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.field.constraint.FieldConstraints;
 import com.cronutils.utils.Preconditions;
-import com.google.common.base.MoreObjects;
 
 /**
  * Represents a cron field.
@@ -94,6 +93,6 @@ public class CronParserField {
 
     @Override
     public String toString() {
-        return MoreObjects.toStringHelper(this).add("field", field).toString();
+        return "CronParserField{" + "field=" + field + '}';
     }
 }

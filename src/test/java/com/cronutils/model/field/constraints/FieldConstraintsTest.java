@@ -1,5 +1,6 @@
 package com.cronutils.model.field.constraints;
 
+import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 
@@ -8,8 +9,6 @@ import org.junit.Test;
 
 import com.cronutils.model.field.constraint.FieldConstraints;
 import com.cronutils.model.field.value.SpecialChar;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 
 /*
  * Copyright 2015 jmrozanec
@@ -33,9 +32,9 @@ public class FieldConstraintsTest {
 
     @Before
     public void setUp() throws Exception {
-        intMapping = Maps.newHashMap();
-        stringMapping = Maps.newHashMap();
-        specialCharSet = Sets.newHashSet();
+        intMapping = Collections.emptyMap();
+        stringMapping = Collections.emptyMap();
+        specialCharSet = Collections.emptySet();
         startRange = 0;
         endRange = 59;
     }

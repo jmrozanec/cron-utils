@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
+import java.util.stream.Collectors;
 
 import com.cronutils.model.Cron;
 import com.cronutils.model.definition.CronDefinition;
@@ -12,7 +12,6 @@ import com.cronutils.model.field.CronField;
 import com.cronutils.model.field.definition.FieldDefinition;
 import com.cronutils.utils.Preconditions;
 import com.cronutils.utils.StringUtils;
-import com.google.common.collect.ImmutableList;
 
 /*
  * Copyright 2014 jmrozanec
@@ -50,23 +49,23 @@ public class CronParser {
      * @param cronDefinition - cron definition instance
      */
     private void buildPossibleExpressions(CronDefinition cronDefinition) {
-        List<CronParserField> sortedExpression = new ArrayList<>();
-        Set<FieldDefinition> fieldDefinitions = cronDefinition.getFieldDefinitions();
-        for (FieldDefinition fieldDefinition : fieldDefinitions) {
-            sortedExpression.add(new CronParserField(fieldDefinition.getFieldName(), fieldDefinition.getConstraints(), fieldDefinition.isOptional()));
-        }
-        sortedExpression.sort(CronParserField.createFieldTypeComparator());
-        ImmutableList.Builder<CronParserField> expressionBuilder = ImmutableList.builder();
-        for (CronParserField field : sortedExpression) {
-            if (field.isOptional()) {
-                List<CronParserField> possibleExpression = expressionBuilder.build();
-                expressions.put(possibleExpression.size(), possibleExpression);
-            }
+        List<CronParserField> sortedExpression = cronDefinition.getFieldDefinitions().stream()
+                .map(this::toCronParserField)
+                .sorted(CronParserField.createFieldTypeComparator())
+                .collect(Collectors.toList());
 
-            expressionBuilder.add(field);
+        if (lastFieldIsOptional(sortedExpression)) {
+            expressions.put(sortedExpression.size() - 1, new ArrayList<>(sortedExpression.subList(0, sortedExpression.size() - 1)));
         }
-        List<CronParserField> longestPossibleExpression = expressionBuilder.build();
-        expressions.put(longestPossibleExpression.size(), longestPossibleExpression);
+        expressions.put(sortedExpression.size(), sortedExpression);
+    }
+
+    private CronParserField toCronParserField(FieldDefinition fieldDefinition) {
+        return new CronParserField(fieldDefinition.getFieldName(), fieldDefinition.getConstraints(), fieldDefinition.isOptional());
+    }
+
+    private boolean lastFieldIsOptional(List<CronParserField> fields) {
+        return !fields.isEmpty() && fields.get(fields.size() - 1).isOptional();
     }
 
     /**
