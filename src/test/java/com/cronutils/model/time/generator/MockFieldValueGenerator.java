@@ -1,7 +1,6 @@
 package com.cronutils.model.time.generator;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import com.cronutils.model.field.CronField;
