@@ -60,18 +60,6 @@ public class ExecutionTimeQuartzWithDayOfYearExtensionIntegrationTest {
     }
 
     @Test
-    public void testNextExecutionEveryTwoWeeksStartingWithFirstDayOfYearIssue249() {
-        final ExecutionTime executionTime = ExecutionTime.forCron(parser.parse(BI_WEEKLY_STARTING_WITH_FIRST_DAY_OF_YEAR));
-
-        for (int i = 1; i < 30; i++) {
-            final ZonedDateTime now = truncateToDays(ZonedDateTime.of(2017, 10, i, 0, 0, 0, 0, UTC));
-            final int dayOfMostRecentPeriod = (now.getDayOfYear() - 1) % 14;
-            final ZonedDateTime expected = now.plusDays(14 - dayOfMostRecentPeriod);
-            assertEquals("Wrong next time from " + now, expected, executionTime.nextExecution(now).get());
-        }
-    }
-
-    @Test
     public void testLastExecutionEveryTwoWeeksStartingWithFirstDayOfYear() {
         final ExecutionTime executionTime = ExecutionTime.forCron(parser.parse(BI_WEEKLY_STARTING_WITH_FIRST_DAY_OF_YEAR));
 
