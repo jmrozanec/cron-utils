@@ -6,7 +6,6 @@ import java.util.Comparator;
 import com.cronutils.model.field.constraint.FieldConstraints;
 import com.cronutils.model.field.expression.FieldExpression;
 import com.cronutils.utils.Preconditions;
-import com.google.common.base.MoreObjects;
 
 /*
  * Copyright 2014 jmrozanec
@@ -49,7 +48,7 @@ public class CronField implements Serializable {
 
     @Override
     public String toString() {
-        return MoreObjects.toStringHelper(this).add("field", field).toString();
+        return "CronField{" + "field=" + field + '}';
     }
 }
 

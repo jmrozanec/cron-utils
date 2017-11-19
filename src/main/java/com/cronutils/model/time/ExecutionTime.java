@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import com.cronutils.mapper.WeekDay;
 import com.cronutils.model.Cron;
@@ -27,9 +28,6 @@ import com.cronutils.model.time.generator.NoDaysForMonthException;
 import com.cronutils.model.time.generator.NoSuchValueException;
 import com.cronutils.utils.Preconditions;
 import com.cronutils.utils.VisibleForTesting;
-import com.google.common.base.MoreObjects;
-import com.google.common.collect.Range;
-import com.google.common.collect.Sets;
 
 import static com.cronutils.model.field.CronFieldName.DAY_OF_MONTH;
 import static com.cronutils.model.field.CronFieldName.DAY_OF_WEEK;
@@ -434,18 +432,14 @@ public class ExecutionTime {
 
         List<Integer> candidates = createDayOfYearValueGeneratorInstance(daysOfYearCronField, year).generateCandidates(1, lengthOfYear);
 
-        Range<Integer> rangeOfMonth = Range.closedOpen(LocalDate.of(year, month, 1).getDayOfYear(),
-                month == 12 ? LocalDate.of(year, 12, 31).getDayOfYear() + 1 : LocalDate.of(year, month + 1, 1).getDayOfYear());
-        Set<Integer> uniqueCanidatesFilteredByMonth = new HashSet<>();
-        for (Integer dayOfYear : candidates) {
-            if (rangeOfMonth.contains(dayOfYear)) {
-                uniqueCanidatesFilteredByMonth.add(dayOfYear);
-            }
-        }
-        List<Integer> collectedCandidates = new ArrayList<>(uniqueCanidatesFilteredByMonth.size());
-        for (Integer dayOfYear : uniqueCanidatesFilteredByMonth) {
-            collectedCandidates.add(LocalDate.ofYearDay(reference.getYear(), dayOfYear).getDayOfMonth());
-        }
+        int low = LocalDate.of(year, month, 1).getDayOfYear();
+        int high = month == 12
+                ? LocalDate.of(year, 12, 31).getDayOfYear() + 1
+                : LocalDate.of(year, month + 1, 1).getDayOfYear();
+
+        List<Integer> collectedCandidates = candidates.stream().filter(dayOfYear -> dayOfYear >= low && dayOfYear < high)
+                .map(dayOfYear -> LocalDate.ofYearDay(reference.getYear(), dayOfYear).getDayOfMonth())
+                .collect(Collectors.toList());
 
         if (collectedCandidates.isEmpty()) {
             //TODO try to avoid programming by exception, maybe we should better return Optional<TimeNode> and test on presence
@@ -607,9 +601,9 @@ public class ExecutionTime {
             List<Integer> dayOfMonthCandidates = createDayOfMonthValueGeneratorInstance(daysOfMonthCronField, year, month)
                     .generateCandidates(1, lengthOfMonth);
             if (cronDefinition.isMatchDayOfWeekAndDayOfMonth()) {
-                Set<Integer> dayOfWeekCandidatesSet = Sets.newHashSet(dayOfWeekCandidates);
-                Set<Integer> dayOfMonthCandidatesSet = Sets.newHashSet(dayOfMonthCandidates);
-                candidates.addAll(Sets.intersection(dayOfMonthCandidatesSet, dayOfWeekCandidatesSet));
+                Set<Integer> intersection = new HashSet<>(dayOfWeekCandidates);
+                intersection.retainAll(dayOfMonthCandidates);
+                candidates.addAll(intersection);
             } else {
                 candidates.addAll(dayOfWeekCandidates);
                 candidates.addAll(dayOfMonthCandidates);
@@ -733,7 +727,7 @@ public class ExecutionTime {
 
         @Override
         public String toString() {
-            return MoreObjects.toStringHelper(this).add("time", time).add("isMatch", isMatch).toString();
+            return "ExecutionTimeResult{" + "time=" + time + ", isMatch=" + isMatch + '}';
         }
     }
 }

@@ -1,5 +1,7 @@
 package com.cronutils.utils.descriptor;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
@@ -22,7 +24,6 @@ import com.cronutils.model.field.expression.On;
 import com.cronutils.model.field.value.IntegerFieldValue;
 import com.cronutils.model.field.value.SpecialChar;
 import com.cronutils.model.field.value.SpecialCharFieldValue;
-import com.google.common.collect.Lists;
 
 import static org.junit.Assert.assertEquals;
 
@@ -61,14 +62,14 @@ public class CronDescriptorTest {
         int time = 3;
         Every expression = new Every(new IntegerFieldValue(time));
         assertEquals(String.format("every %s seconds", time), descriptor.describe(
-                new Cron(mockDefinition, Lists.asList(new CronField(CronFieldName.SECOND, expression, nullFieldConstraints), new CronField[] {}))
+                new Cron(mockDefinition, Collections.singletonList(new CronField(CronFieldName.SECOND, expression, nullFieldConstraints)))
                 )
         );
         assertEquals(String.format("every %s minutes", time), descriptor.describe(
-                new Cron(mockDefinition, Lists.asList(new CronField(CronFieldName.MINUTE, expression, nullFieldConstraints), new CronField[] {}))
+                new Cron(mockDefinition, Collections.singletonList(new CronField(CronFieldName.MINUTE, expression, nullFieldConstraints)))
                 )
         );
-        List<CronField> params = Lists.newArrayList();
+        List<CronField> params = new ArrayList<>();
         params.add(new CronField(CronFieldName.HOUR, expression, nullFieldConstraints));
         params.add(new CronField(CronFieldName.MINUTE, new On(new IntegerFieldValue(time)), nullFieldConstraints));
         assertEquals(String.format("every %s hours at minute %s", time, time), descriptor.describe(new Cron(mockDefinition, params)));
@@ -80,7 +81,7 @@ public class CronDescriptorTest {
         int start = 0;
         int end = 10;
         Between expression = new Between(new IntegerFieldValue(start), new IntegerFieldValue(end));
-        List<CronField> results = Lists.newArrayList();
+        List<CronField> results = new ArrayList<>();
         results.add(new CronField(CronFieldName.MINUTE, expression, nullFieldConstraints));
         results.add(new CronField(CronFieldName.HOUR, new On(new IntegerFieldValue(hour)), nullFieldConstraints));
         assertEquals(String.format("every minute between %s:%02d and %s:%02d", hour, start, hour, end), descriptor.describe(new Cron(mockDefinition, results)));
@@ -93,7 +94,7 @@ public class CronDescriptorTest {
         int start = 2;
         int end = 6;
         Between expression = new Between(new IntegerFieldValue(start), new IntegerFieldValue(end));
-        List<CronField> results = Lists.newArrayList();
+        List<CronField> results = new ArrayList<>();
         results.add(new CronField(CronFieldName.HOUR, new On(new IntegerFieldValue(hour)), nullFieldConstraints));
         results.add(new CronField(CronFieldName.MINUTE, new On(new IntegerFieldValue(minute)), nullFieldConstraints));
         results.add(new CronField(CronFieldName.DAY_OF_WEEK, expression, nullFieldConstraints));
@@ -103,7 +104,7 @@ public class CronDescriptorTest {
     @Test
     public void testDescribeAtXHours() throws Exception {
         int hour = 11;
-        List<CronField> results = Lists.newArrayList();
+        List<CronField> results = new ArrayList<>();
         results.add(new CronField(CronFieldName.HOUR, new On(new IntegerFieldValue(hour)), nullFieldConstraints));
         results.add(new CronField(CronFieldName.MINUTE, new Always(), nullFieldConstraints));
         results.add(new CronField(CronFieldName.SECOND, new Always(), nullFieldConstraints));
@@ -113,7 +114,7 @@ public class CronDescriptorTest {
     @Test
     public void testEverySecondInMonth() throws Exception {
         int month = 2;
-        List<CronField> results = Lists.newArrayList();
+        List<CronField> results = new ArrayList<>();
         results.add(new CronField(CronFieldName.HOUR, new Always(), nullFieldConstraints));
         results.add(new CronField(CronFieldName.MINUTE, new Always(), nullFieldConstraints));
         results.add(new CronField(CronFieldName.SECOND, new Always(), nullFieldConstraints));
@@ -125,7 +126,7 @@ public class CronDescriptorTest {
     public void testEveryMinuteBetweenMonths() throws Exception {
         int monthStart = 2;
         int monthEnd = 3;
-        List<CronField> results = Lists.newArrayList();
+        List<CronField> results = new ArrayList<>();
         results.add(new CronField(CronFieldName.HOUR, new Always(), nullFieldConstraints));
         results.add(new CronField(CronFieldName.MINUTE, new Always(), nullFieldConstraints));
         results.add(new CronField(CronFieldName.MONTH, new Between(new IntegerFieldValue(monthStart), new IntegerFieldValue(monthEnd)), nullFieldConstraints));
@@ -137,7 +138,7 @@ public class CronDescriptorTest {
         int dayOfWeek = 2;
         int hour = 10;
         int minute = 15;
-        List<CronField> results = Lists.newArrayList();
+        List<CronField> results = new ArrayList<>();
         results.add(new CronField(CronFieldName.HOUR, new On(new IntegerFieldValue(hour)), nullFieldConstraints));
         results.add(new CronField(CronFieldName.MINUTE, new On(new IntegerFieldValue(minute)), nullFieldConstraints));
         results.add(new CronField(CronFieldName.DAY_OF_WEEK, new On(new IntegerFieldValue(dayOfWeek), new SpecialCharFieldValue(SpecialChar.L)),
@@ -150,7 +151,7 @@ public class CronDescriptorTest {
         int dayOfWeek = 2;
         int hour = 10;
         int minute = 15;
-        List<CronField> results = Lists.newArrayList();
+        List<CronField> results = new ArrayList<>();
         results.add(new CronField(CronFieldName.HOUR, new On(new IntegerFieldValue(hour)), nullFieldConstraints));
         results.add(new CronField(CronFieldName.MINUTE, new On(new IntegerFieldValue(minute)), nullFieldConstraints));
         results.add(new CronField(CronFieldName.DAY_OF_WEEK,
@@ -162,7 +163,7 @@ public class CronDescriptorTest {
     public void testLastDayOfMonth() throws Exception {
         int hour = 10;
         int minute = 15;
-        List<CronField> results = Lists.newArrayList();
+        List<CronField> results = new ArrayList<>();
         results.add(new CronField(CronFieldName.HOUR, new On(new IntegerFieldValue(hour)), nullFieldConstraints));
         results.add(new CronField(CronFieldName.MINUTE, new On(new IntegerFieldValue(minute)), nullFieldConstraints));
         results.add(new CronField(CronFieldName.DAY_OF_MONTH, new On(new SpecialCharFieldValue(SpecialChar.L)), nullFieldConstraints));
@@ -174,7 +175,7 @@ public class CronDescriptorTest {
         int dayOfMonth = 22;
         int hour = 10;
         int minute = 15;
-        List<CronField> results = Lists.newArrayList();
+        List<CronField> results = new ArrayList<>();
         results.add(new CronField(CronFieldName.HOUR, new On(new IntegerFieldValue(hour)), nullFieldConstraints));
         results.add(new CronField(CronFieldName.MINUTE, new On(new IntegerFieldValue(minute)), nullFieldConstraints));
         results.add(new CronField(CronFieldName.DAY_OF_MONTH, new On(new IntegerFieldValue(dayOfMonth), new SpecialCharFieldValue(SpecialChar.W)),

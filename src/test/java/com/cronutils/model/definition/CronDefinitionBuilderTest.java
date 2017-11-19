@@ -1,5 +1,6 @@
 package com.cronutils.model.definition;
 
+import java.util.Collections;
 import java.util.Set;
 
 import org.junit.Before;
@@ -11,8 +12,6 @@ import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.field.constraint.FieldConstraints;
 import com.cronutils.model.field.definition.FieldDefinition;
 import com.cronutils.parser.CronParser;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -112,9 +111,9 @@ public class CronDefinitionBuilderTest {
                 new FieldDefinition(
                         CronFieldName.SECOND,
                         new FieldConstraints(
-                                Maps.newHashMap(),
-                                Maps.newHashMap(),
-                                Sets.newHashSet(), 0, 1)
+                                Collections.emptyMap(),
+                                Collections.emptyMap(),
+                                Collections.emptySet(), 0, 1)
                 );
         builder.register(testFieldDefinition);
         Set<FieldDefinition> definitions = builder.instance().getFieldDefinitions();

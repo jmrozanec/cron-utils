@@ -1,7 +1,5 @@
 package com.cronutils.model.field.expression;
 
-import com.google.common.base.MoreObjects;
-
 /**
  * Represents a question mark (?) value on cron expression field.
  */
@@ -25,6 +23,6 @@ public final class QuestionMark extends FieldExpression {
 
     @Override
     public String toString() {
-        return MoreObjects.toStringHelper(this).toString();
+        return "QuestionMark{}";
     }
 }

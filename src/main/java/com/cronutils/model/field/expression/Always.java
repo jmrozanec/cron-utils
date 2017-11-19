@@ -1,7 +1,5 @@
 package com.cronutils.model.field.expression;
 
-import com.google.common.base.MoreObjects;
-
 /*
  * Copyright 2014 jmrozanec
  *
@@ -41,6 +39,6 @@ public class Always extends FieldExpression {
 
     @Override
     public String toString() {
-        return MoreObjects.toStringHelper(this).toString();
+        return "Always{}";
     }
 }

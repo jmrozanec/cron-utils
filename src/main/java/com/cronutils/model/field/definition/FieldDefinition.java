@@ -47,7 +47,7 @@ public class FieldDefinition implements Serializable {
      *                    if null, a NullPointerException will be raised.
      * @param constraints - FieldConstraints, constraints;
      *                    if null, a NullPointerException will be raised.
-     * @param optional    - if {@code false} the field is mandatory, optional otheriwse.
+     * @param optional    - if {@code false} the field is mandatory, optional otherwise.
      */
     public FieldDefinition(CronFieldName fieldName, FieldConstraints constraints, boolean optional) {
         this.fieldName = Preconditions.checkNotNull(fieldName, "CronFieldName must not be null");
