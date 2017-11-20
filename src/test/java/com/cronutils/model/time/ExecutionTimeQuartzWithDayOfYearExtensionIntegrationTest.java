@@ -2,7 +2,6 @@ package com.cronutils.model.time;
 
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.time.temporal.ChronoUnit;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -27,7 +26,7 @@ import static org.junit.Assert.assertEquals;
  */
 public class ExecutionTimeQuartzWithDayOfYearExtensionIntegrationTest {
     private static final String BI_WEEKLY_STARTING_WITH_FIRST_DAY_OF_YEAR = "0 0 0 ? * ? * 1/14";
-    private static final String FIRST_QUATER_BI_WEEKLY_STARTING_WITH_FIRST_DAY_OF_YEAR = "0 0 0 ? 1-3 ? * 1/14";
+    private static final String FIRST_QUARTER_BI_WEEKLY_STARTING_WITH_FIRST_DAY_OF_YEAR = "0 0 0 ? 1-3 ? * 1/14";
     private static final String WITHOUT_DAY_OF_YEAR = "0 0 0 1 * ? *";       // i.e. DoY field omitted
     private static final String WITHOUT_SPECIFIC_DAY_OF_YEAR = "0 0 0 1 * ? * ?";     // i.e. DoY field set to question mark
 
@@ -43,47 +42,49 @@ public class ExecutionTimeQuartzWithDayOfYearExtensionIntegrationTest {
     @Test
     public void testForCron() {
         assertEquals(ExecutionTime.class, ExecutionTime.forCron(parser.parse(BI_WEEKLY_STARTING_WITH_FIRST_DAY_OF_YEAR)).getClass());
-        assertEquals(ExecutionTime.class, ExecutionTime.forCron(parser.parse(FIRST_QUATER_BI_WEEKLY_STARTING_WITH_FIRST_DAY_OF_YEAR)).getClass());
+        assertEquals(ExecutionTime.class, ExecutionTime.forCron(parser.parse(FIRST_QUARTER_BI_WEEKLY_STARTING_WITH_FIRST_DAY_OF_YEAR)).getClass());
         assertEquals(ExecutionTime.class, ExecutionTime.forCron(parser.parse(WITHOUT_DAY_OF_YEAR)).getClass());
         assertEquals(ExecutionTime.class, ExecutionTime.forCron(parser.parse(WITHOUT_SPECIFIC_DAY_OF_YEAR)).getClass());
     }
 
-    @Test
+    @Test //issue #249
     public void testNextExecutionEveryTwoWeeksStartingWithFirstDayOfYear() {
-        final ZonedDateTime now = truncateToDays(ZonedDateTime.now().minusDays(1));
-        final int dayOfYear = now.getDayOfYear();
-        final int dayOfMostRecentPeriod = dayOfYear % 14;
-        final ZonedDateTime expected = now.plusDays(15 - dayOfMostRecentPeriod);
         final ExecutionTime executionTime = ExecutionTime.forCron(parser.parse(BI_WEEKLY_STARTING_WITH_FIRST_DAY_OF_YEAR));
-        assertEquals(expected, executionTime.nextExecution(now).get());
-    }
 
-    @Test
-    public void testNextExecutionEveryTwoWeeksStartingWithFirstDayOfYearIssue249() {
-        ZonedDateTime now = truncateToDays(ZonedDateTime.now().minusDays(1));
-        int dayOfYear = now.getDayOfYear();
-        int dayOfMostRecentPeriod = dayOfYear % 14;
-        ZonedDateTime expected = now.plusDays(15 - dayOfMostRecentPeriod);
-        ExecutionTime executionTime = ExecutionTime.forCron(parser.parse(BI_WEEKLY_STARTING_WITH_FIRST_DAY_OF_YEAR));
-        assertEquals(expected, executionTime.nextExecution(now).get());
+        for (int i = 1; i < 30; i++) {
+            final ZonedDateTime now = ZonedDateTime.of(2017, 10, i, 0, 0, 0, 0, UTC);
+            final int dayOfMostRecentPeriod = (now.getDayOfYear() - 1) % 14;
+            final ZonedDateTime expected = now.plusDays(14 - dayOfMostRecentPeriod);
+            assertEquals("Wrong next time from " + now, expected, executionTime.nextExecution(now).get());
+        }
     }
 
     @Test
     public void testLastExecutionEveryTwoWeeksStartingWithFirstDayOfYear() {
-        final ZonedDateTime now = truncateToDays(ZonedDateTime.now().minusDays(1));
-        final int dayOfYear = now.getDayOfYear();
-        final int dayOfMostRecentPeriod = dayOfYear % 14;
-        final ZonedDateTime expected = dayOfMostRecentPeriod == 1 ? now.minusDays(14) : now.minusDays(dayOfMostRecentPeriod - 1);
         final ExecutionTime executionTime = ExecutionTime.forCron(parser.parse(BI_WEEKLY_STARTING_WITH_FIRST_DAY_OF_YEAR));
+
+        for (int i = 1; i < 30; i++) {
+            final ZonedDateTime now = ZonedDateTime.of(2017, 10, i, 0, 0, 0, 0, UTC);
+            final int dayOfMostRecentPeriod = (now.getDayOfYear() - 1) % 14;
+            final ZonedDateTime expected = now.minusDays(dayOfMostRecentPeriod == 0 ? 14 : dayOfMostRecentPeriod);
+            assertEquals("Wrong next time from " + now, expected, executionTime.lastExecution(now).get());
+        }
+    }
+
+    @Test
+    public void testLastExecutionEveryTwoWeeksStartingWithFirstDayOfYearIssue249TzUTC() {
+        //s m H DoM M DoW Y DoY
+        ZonedDateTime now = ZonedDateTime.of(2017, 10, 7, 0, 0, 0, 0, UTC);
+        ZonedDateTime expected = ZonedDateTime.of(2017, 9, 24, 0, 0, 0, 0, UTC);
+        ExecutionTime executionTime = ExecutionTime.forCron(parser.parse(BI_WEEKLY_STARTING_WITH_FIRST_DAY_OF_YEAR));
         assertEquals(expected, executionTime.lastExecution(now).get());
     }
 
     @Test
-    public void testLastExecutionEveryTwoWeeksStartingWithFirstDayOfYearIssue249() {
+    public void testLastExecutionEveryTwoWeeksStartingWithFirstDayOfYearIssue249TzBuenosAires() {
         //s m H DoM M DoW Y DoY
-        ZonedDateTime now = truncateToDays(ZonedDateTime.of(2017, 10, 7, 0, 0, 0, 0, ZoneId.of("America/Argentina/Buenos_Aires")));
-        int dayOfYear = now.getDayOfYear();
-        ZonedDateTime expected = truncateToDays(ZonedDateTime.of(2017, 9, 24, 0, 0, 0, 0, ZoneId.of("America/Argentina/Buenos_Aires")));
+        ZonedDateTime now = ZonedDateTime.of(2017, 10, 7, 0, 0, 0, 0, ZoneId.of("America/Argentina/Buenos_Aires"));
+        ZonedDateTime expected = ZonedDateTime.of(2017, 9, 24, 0, 0, 0, 0, ZoneId.of("America/Argentina/Buenos_Aires"));
         ExecutionTime executionTime = ExecutionTime.forCron(parser.parse(BI_WEEKLY_STARTING_WITH_FIRST_DAY_OF_YEAR));
         assertEquals(expected, executionTime.lastExecution(now).get());
     }
@@ -164,8 +165,8 @@ public class ExecutionTimeQuartzWithDayOfYearExtensionIntegrationTest {
     public void testCustomQuarterlySchedule() {
         final ZonedDateTime firstDayOf2016 = ZonedDateTime.of(2016, 1, 1, 0, 0, 0, 0, UTC);
         final ZonedDateTime startWithLastDayOf2015 = ZonedDateTime.of(2015, 12, 31, 0, 0, 0, 0, UTC);
-        final String customQuaterlyStartingWithDay47OfYear = "0 0 0 ? * ? * 47/91";
-        final ExecutionTime executionTime = ExecutionTime.forCron(parser.parse(customQuaterlyStartingWithDay47OfYear));
+        final String customQuarterlyStartingWithDay47OfYear = "0 0 0 ? * ? * 47/91";
+        final ExecutionTime executionTime = ExecutionTime.forCron(parser.parse(customQuarterlyStartingWithDay47OfYear));
         //final ZonedDateTime[] expectedExecutionTimes = IntStream.range(0, 4).mapToObj(i -> firstDayOf2016.withDayOfYear(47 + i * 91)).toArray(ZonedDateTime[]::new);
         ZonedDateTime[] expectedExecutionTimes = new ZonedDateTime[4];
         for (int j = 0; j < 4; j++) {
@@ -179,7 +180,4 @@ public class ExecutionTimeQuartzWithDayOfYearExtensionIntegrationTest {
         }
     }
 
-    private static ZonedDateTime truncateToDays(final ZonedDateTime dateTime) {
-        return dateTime.truncatedTo(ChronoUnit.DAYS);
-    }
 }
