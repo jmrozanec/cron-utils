@@ -1,5 +1,6 @@
 package com.cronutils.model.time;
 
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
 import org.junit.Before;
@@ -71,10 +72,19 @@ public class ExecutionTimeQuartzWithDayOfYearExtensionIntegrationTest {
     }
 
     @Test
-    public void testLastExecutionEveryTwoWeeksStartingWithFirstDayOfYearIssue249() {
+    public void testLastExecutionEveryTwoWeeksStartingWithFirstDayOfYearIssue249TzUTC() {
         //s m H DoM M DoW Y DoY
         ZonedDateTime now = ZonedDateTime.of(2017, 10, 7, 0, 0, 0, 0, UTC);
         ZonedDateTime expected = ZonedDateTime.of(2017, 9, 24, 0, 0, 0, 0, UTC);
+        ExecutionTime executionTime = ExecutionTime.forCron(parser.parse(BI_WEEKLY_STARTING_WITH_FIRST_DAY_OF_YEAR));
+        assertEquals(expected, executionTime.lastExecution(now).get());
+    }
+
+    @Test
+    public void testLastExecutionEveryTwoWeeksStartingWithFirstDayOfYearIssue249TzBuenosAires() {
+        //s m H DoM M DoW Y DoY
+        ZonedDateTime now = ZonedDateTime.of(2017, 10, 7, 0, 0, 0, 0, ZoneId.of("America/Argentina/Buenos_Aires"));
+        ZonedDateTime expected = ZonedDateTime.of(2017, 9, 24, 0, 0, 0, 0, ZoneId.of("America/Argentina/Buenos_Aires"));
         ExecutionTime executionTime = ExecutionTime.forCron(parser.parse(BI_WEEKLY_STARTING_WITH_FIRST_DAY_OF_YEAR));
         assertEquals(expected, executionTime.lastExecution(now).get());
     }
