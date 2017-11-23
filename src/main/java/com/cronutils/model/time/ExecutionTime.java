@@ -3,17 +3,16 @@ package com.cronutils.model.time;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
+import java.time.LocalTime;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import com.cronutils.mapper.WeekDay;
 import com.cronutils.model.Cron;
@@ -24,7 +23,6 @@ import com.cronutils.model.field.definition.DayOfWeekFieldDefinition;
 import com.cronutils.model.field.expression.Always;
 import com.cronutils.model.field.expression.QuestionMark;
 import com.cronutils.model.time.generator.FieldValueGenerator;
-import com.cronutils.model.time.generator.NoDaysForMonthException;
 import com.cronutils.model.time.generator.NoSuchValueException;
 import com.cronutils.utils.Preconditions;
 import com.cronutils.utils.VisibleForTesting;
@@ -41,6 +39,11 @@ import static com.cronutils.model.field.value.SpecialChar.QUESTION_MARK;
 import static com.cronutils.model.time.generator.FieldValueGeneratorFactory.createDayOfMonthValueGeneratorInstance;
 import static com.cronutils.model.time.generator.FieldValueGeneratorFactory.createDayOfWeekValueGeneratorInstance;
 import static com.cronutils.model.time.generator.FieldValueGeneratorFactory.createDayOfYearValueGeneratorInstance;
+import static com.cronutils.utils.Predicates.not;
+import static java.time.temporal.ChronoUnit.DAYS;
+import static java.time.temporal.ChronoUnit.HOURS;
+import static java.time.temporal.ChronoUnit.MINUTES;
+import static java.time.temporal.ChronoUnit.SECONDS;
 import static java.time.temporal.TemporalAdjusters.lastDayOfMonth;
 
 /*
@@ -60,6 +63,9 @@ import static java.time.temporal.TemporalAdjusters.lastDayOfMonth;
  * Calculates execution time given a cron pattern.
  */
 public class ExecutionTime {
+
+    private static final LocalTime MAX_SECONDS = LocalTime.MAX.truncatedTo(SECONDS);
+
     private CronDefinition cronDefinition;
     private FieldValueGenerator yearsValueGenerator;
     private CronField daysOfWeekCronField;
@@ -158,129 +164,139 @@ public class ExecutionTime {
      * @throws NoSuchValueException
      */
     private ZonedDateTime nextClosestMatch(ZonedDateTime date) throws NoSuchValueException {
-        ExecutionTimeResult newdate = new ExecutionTimeResult(date, false);
+        ExecutionTimeResult result = new ExecutionTimeResult(date, false);
         do {
-            newdate = potentialNextClosestMatch(newdate.getTime());
-        } while (!newdate.isMatch());
-        return newdate.getTime();
+            result = potentialNextClosestMatch(result.getTime());
+        } while (!result.isMatch());
+        return result.getTime();
     }
 
     private ExecutionTimeResult potentialNextClosestMatch(ZonedDateTime date) throws NoSuchValueException {
         List<Integer> year = yearsValueGenerator.generateCandidates(date.getYear(), date.getYear());
-        TimeNode days = null;
         int lowestMonth = months.getValues().get(0);
         int lowestHour = hours.getValues().get(0);
         int lowestMinute = minutes.getValues().get(0);
         int lowestSecond = seconds.getValues().get(0);
 
-        NearestValue nearestValue;
-        ZonedDateTime newDate;
         if (year.isEmpty()) {
-            int newYear = yearsValueGenerator.generateNextValue(date.getYear());
-            try {
-                days = generateDays(cronDefinition, ZonedDateTime.of(LocalDateTime.of(newYear, lowestMonth, 1, 0, 0), date.getZone()));
-            } catch (NoDaysForMonthException e) {
-                return new ExecutionTimeResult(toBeginOfNextMonth(date), false);
-            }
-            return initDateTime(yearsValueGenerator.generateNextValue(date.getYear()), lowestMonth, days.getValues().get(0), lowestHour, lowestMinute,
-                    lowestSecond, date.getZone());
+            return getNextPotentialYear(date, lowestMonth, lowestHour, lowestMinute, lowestSecond);
         }
         if (!months.getValues().contains(date.getMonthValue())) {
-            nearestValue = months.getNextValue(date.getMonthValue(), 0);
-            int nextMonths = nearestValue.getValue();
-            if (nearestValue.getShifts() > 0) {
-                newDate =
-                        ZonedDateTime.of(LocalDateTime.of(date.getYear(), 1, 1, 0, 0, 0), date.getZone()).plusYears(nearestValue.getShifts());
-                return new ExecutionTimeResult(newDate, false);
-            }
-            if (nearestValue.getValue() < date.getMonthValue()) {
-                date = date.plusYears(1);
-                return initDateTime(date.getYear(), nextMonths, days.getValues().get(0), lowestHour, lowestMinute, lowestSecond, date.getZone());
-            }
-            try {
-                days = generateDays(cronDefinition, ZonedDateTime.of(LocalDateTime.of(date.getYear(), nextMonths, 1, 0, 0), date.getZone()));
-            } catch (NoDaysForMonthException e) {
-                return new ExecutionTimeResult(toBeginOfNextMonth(date), false);
-            }
-            return initDateTime(date.getYear(), nextMonths, days.getValues().get(0), lowestHour, lowestMinute, lowestSecond, date.getZone());
+            return getNextPotentialMonth(date, lowestHour, lowestMinute, lowestSecond);
         }
-        try {
-            days = generateDays(cronDefinition, date);
-        } catch (NoDaysForMonthException e) {
+
+        Optional<TimeNode> optionalDays = generateDays(cronDefinition, date);
+        if (!optionalDays.isPresent()) {
             return new ExecutionTimeResult(toBeginOfNextMonth(date), false);
         }
-        if (!days.getValues().contains(date.getDayOfMonth())) {
-            nearestValue = days.getNextValue(date.getDayOfMonth(), 0);
-            if (nearestValue.getShifts() > 0) {
-                newDate = ZonedDateTime.of(LocalDateTime.of(date.getYear(), date.getMonthValue(), 1, 0, 0, 0), date.getZone())
-                        .plusMonths(nearestValue.getShifts());
-                return new ExecutionTimeResult(newDate, false);
-            }
-            if (nearestValue.getValue() < date.getDayOfMonth()) {
-                date = date.plusMonths(1);
-                return initDateTime(date.getYear(), date.getMonthValue(), nearestValue.getValue(), lowestHour, lowestMinute, lowestSecond, date.getZone());
-            }
-            return initDateTime(date.getYear(), date.getMonthValue(), nearestValue.getValue(), lowestHour, lowestMinute, lowestSecond, date.getZone());
+        TimeNode node = optionalDays.get();
+
+        if (!node.getValues().contains(date.getDayOfMonth())) {
+            return getNextPotentialDayOfMonth(date, lowestHour, lowestMinute, lowestSecond, node);
         }
         if (!hours.getValues().contains(date.getHour())) {
-            nearestValue = hours.getNextValue(date.getHour(), 0);
-            int nextHours = nearestValue.getValue();
-            if (nearestValue.getShifts() > 0) {
-                newDate =
-                        ZonedDateTime.of(LocalDateTime.of(date.getYear(), date.getMonthValue(),
-                                date.getDayOfMonth(), 0, 0, 0), date.getZone()).plusDays(nearestValue.getShifts());
-                return new ExecutionTimeResult(newDate, false);
-            }
-            if (nearestValue.getValue() < date.getHour()) {
-                date = date.plusDays(1);
-                return initDateTime(date.getYear(), date.getMonthValue(), date.getDayOfMonth(), nextHours, lowestMinute, lowestSecond, date.getZone());
-            }
-            return initDateTime(date.getYear(), date.getMonthValue(), date.getDayOfMonth(), nextHours, lowestMinute, lowestSecond, date.getZone());
+            return getNextPotentialHour(date, lowestMinute, lowestSecond);
         }
         if (!minutes.getValues().contains(date.getMinute())) {
-            nearestValue = minutes.getNextValue(date.getMinute(), 0);
-            int nextMinutes = nearestValue.getValue();
-            if (nearestValue.getShifts() > 0) {
-                newDate =
-                        ZonedDateTime.ofLocal(LocalDateTime.of(date.getYear(), date.getMonthValue(), date.getDayOfMonth(), date.getHour(),
-                                0, 0), date.getZone(), date.getOffset()).plusHours(nearestValue.getShifts());
-                return new ExecutionTimeResult(newDate, false);
-            }
-            if (nearestValue.getValue() < date.getMinute()) {
-                date = date.plusHours(1);
-            }
-            newDate = ZonedDateTime.ofLocal(
-                    LocalDateTime.of(date.getYear(), date.getMonthValue(), date.getDayOfMonth(), date.getHour(), nextMinutes, lowestSecond),
-                    date.getZone(), date.getOffset());
-            return new ExecutionTimeResult(newDate, true);
+            return getNextPotentialMinute(date, lowestSecond);
         }
         if (!seconds.getValues().contains(date.getSecond())) {
-            nearestValue = seconds.getNextValue(date.getSecond(), 0);
-            int nextSeconds = nearestValue.getValue();
-            if (nearestValue.getShifts() > 0) {
-                newDate =
-                        ZonedDateTime.ofLocal(LocalDateTime.of(date.getYear(), date.getMonthValue(),
-                                date.getDayOfMonth(), date.getHour(),
-                                date.getMinute(), 0), date.getZone(), date.getOffset()).plusMinutes(nearestValue.getShifts());
-                return new ExecutionTimeResult(newDate, false);
-            }
-            if (nearestValue.getValue() < date.getSecond()) {
-                date = date.plusMinutes(1);
-            }
-            newDate = ZonedDateTime.ofLocal(
-                    LocalDateTime.of(date.getYear(), date.getMonthValue(), date.getDayOfMonth(), date.getHour(), date.getMinute(), nextSeconds),
-                    date.getZone(), date.getOffset());
-            return new ExecutionTimeResult(newDate, true);
+            return getNextPotentialSecond(date);
         }
         return new ExecutionTimeResult(date, true);
     }
 
+    private ExecutionTimeResult getNextPotentialYear(ZonedDateTime date, int lowestMonth, int lowestHour, int lowestMinute, int lowestSecond)
+            throws NoSuchValueException {
+        int newYear = yearsValueGenerator.generateNextValue(date.getYear());
+        Optional<TimeNode> optionalDays = generateDays(cronDefinition, ZonedDateTime.of(
+                LocalDate.of(newYear, lowestMonth, 1),
+                LocalTime.MIN,
+                date.getZone())
+        );
+        if (optionalDays.isPresent()) {
+            List<Integer> days = optionalDays.get().getValues();
+            return new ExecutionTimeResult(ZonedDateTime.of(
+                    LocalDate.of(newYear, lowestMonth, days.get(0)),
+                    LocalTime.of(lowestHour, lowestMinute, lowestSecond), date.getZone()), false);
+        } else {
+            return new ExecutionTimeResult(toBeginOfNextMonth(date), false);
+        }
+    }
+
+    private ExecutionTimeResult getNextPotentialMonth(ZonedDateTime date, int lowestHour, int lowestMinute, int lowestSecond)
+            throws NoSuchValueException {
+        NearestValue nearestValue;
+        nearestValue = months.getNextValue(date.getMonthValue(), 0);
+        int nextMonths = nearestValue.getValue();
+        if (nearestValue.getShifts() > 0) {
+            return new ExecutionTimeResult(date.truncatedTo(DAYS).withMonth(1).withDayOfMonth(1).plusYears(nearestValue.getShifts()), false);
+        }
+        Optional<TimeNode> optionalDays = generateDays(cronDefinition,
+                ZonedDateTime.of(LocalDateTime.of(date.getYear(), nextMonths, 1, 0, 0), date.getZone()));
+        if (optionalDays.isPresent()) {
+            List<Integer> days = optionalDays.get().getValues();
+            return new ExecutionTimeResult(
+                    date.truncatedTo(SECONDS).withMonth(nextMonths).withDayOfMonth(days.get(0))
+                            .with(LocalTime.of(lowestHour, lowestMinute, lowestSecond)), false);
+        } else {
+            return new ExecutionTimeResult(toBeginOfNextMonth(date), false);
+        }
+    }
+
+    private ExecutionTimeResult getNextPotentialDayOfMonth(ZonedDateTime date, int lowestHour, int lowestMinute, int lowestSecond, TimeNode node)
+            throws NoSuchValueException {
+        NearestValue nearestValue = node.getNextValue(date.getDayOfMonth(), 0);
+        if (nearestValue.getShifts() > 0) {
+            return new ExecutionTimeResult(date.truncatedTo(DAYS).withDayOfMonth(1).plusMonths(nearestValue.getShifts()), false);
+        }
+        if (nearestValue.getValue() < date.getDayOfMonth()) {
+            return new ExecutionTimeResult(date.truncatedTo(SECONDS).plusMonths(1).withDayOfMonth(nearestValue.getValue())
+                    .with(LocalTime.of(lowestHour, lowestMinute, lowestSecond)), false);
+        }
+        return new ExecutionTimeResult(date.truncatedTo(SECONDS).withDayOfMonth(nearestValue.getValue())
+                .with(LocalTime.of(lowestHour, lowestMinute, lowestSecond)), false);
+    }
+
+    private ExecutionTimeResult getNextPotentialHour(ZonedDateTime date, int lowestMinute, int lowestSecond) throws NoSuchValueException {
+        NearestValue nearestValue = hours.getNextValue(date.getHour(), 0);
+        int nextHours = nearestValue.getValue();
+        if (nearestValue.getShifts() > 0) {
+            return new ExecutionTimeResult(date.truncatedTo(DAYS).plusDays(nearestValue.getShifts()), false);
+        }
+        if (nearestValue.getValue() < date.getHour()) {
+            return new ExecutionTimeResult(date.truncatedTo(SECONDS).plusDays(1).with(LocalTime.of(nextHours, lowestMinute, lowestSecond)), false);
+        }
+        return new ExecutionTimeResult(date.truncatedTo(SECONDS).with(LocalTime.of(nextHours, lowestMinute, lowestSecond)), false);
+    }
+
+    private ExecutionTimeResult getNextPotentialMinute(final ZonedDateTime date, int lowestSecond) {
+        NearestValue nearestValue = minutes.getNextValue(date.getMinute(), 0);
+        int nextMinutes = nearestValue.getValue();
+        if (nearestValue.getShifts() > 0) {
+            return new ExecutionTimeResult(date.truncatedTo(HOURS).plusHours(nearestValue.getShifts()), false);
+        }
+        if (nearestValue.getValue() < date.getMinute()) {
+            return new ExecutionTimeResult(date.truncatedTo(SECONDS).plusHours(1).withMinute(nextMinutes).withSecond(lowestSecond), false);
+        }
+        return new ExecutionTimeResult(date.truncatedTo(SECONDS).withMinute(nextMinutes).withSecond(lowestSecond), false);
+    }
+
+    private ExecutionTimeResult getNextPotentialSecond(ZonedDateTime date) {
+        NearestValue nearestValue;
+        nearestValue = seconds.getNextValue(date.getSecond(), 0);
+        int nextSeconds = nearestValue.getValue();
+        if (nearestValue.getShifts() > 0) {
+            return new ExecutionTimeResult(date.truncatedTo(MINUTES).plusMinutes(nearestValue.getShifts()), false);
+        }
+        if (nearestValue.getValue() < date.getSecond()) {
+            return new ExecutionTimeResult(date.truncatedTo(SECONDS).withMinute(1).withSecond(nextSeconds), false);
+        }
+        return new ExecutionTimeResult(date.truncatedTo(SECONDS).withSecond(nextSeconds), false);
+    }
+
     private ZonedDateTime toBeginOfNextMonth(final ZonedDateTime datetime) {
-        final ZonedDateTime nextMonth = datetime.plusMonths(1);
-        final int lowestHour = hours.getValues().get(0);
-        final int lowestMinute = minutes.getValues().get(0);
-        final int lowestSecond = seconds.getValues().get(0);
-        return ZonedDateTime.of(nextMonth.getYear(), nextMonth.getMonth().getValue(), 1, lowestHour, lowestMinute, lowestSecond, 0, nextMonth.getZone());
+        return datetime.truncatedTo(DAYS).plusMonths(1).withDayOfMonth(1);
     }
 
     /**
@@ -292,19 +308,20 @@ public class ExecutionTime {
      * @throws NoSuchValueException
      */
     private ZonedDateTime previousClosestMatch(ZonedDateTime date) throws NoSuchValueException {
-        ExecutionTimeResult newdate = new ExecutionTimeResult(date, false);
+        ExecutionTimeResult result = new ExecutionTimeResult(date, false);
         do {
-            newdate = potentialPreviousClosestMatch(newdate.getTime());
-        } while (!newdate.isMatch());
-        return newdate.getTime();
+            result = potentialPreviousClosestMatch(result.getTime());
+        } while (!result.isMatch());
+        return result.getTime();
     }
 
     private ExecutionTimeResult potentialPreviousClosestMatch(ZonedDateTime date) throws NoSuchValueException {
         List<Integer> year = yearsValueGenerator.generateCandidates(date.getYear(), date.getYear());
-        TimeNode days = null;
-        try {
-            days = generateDays(cronDefinition, date);
-        } catch (NoDaysForMonthException e) {
+        Optional<TimeNode> optionalDays = generateDays(cronDefinition, date);
+        TimeNode days;
+        if (optionalDays.isPresent()) {
+            days = optionalDays.get();
+        } else {
             return new ExecutionTimeResult(toEndOfPreviousMonth(date), false);
         }
         int highestMonth = months.getValues().get(months.getValues().size() - 1);
@@ -313,79 +330,122 @@ public class ExecutionTime {
         int highestMinute = minutes.getValues().get(minutes.getValues().size() - 1);
         int highestSecond = seconds.getValues().get(seconds.getValues().size() - 1);
 
-        NearestValue nearestValue;
-        ZonedDateTime newDate;
         if (year.isEmpty()) {
-            int previousYear = yearsValueGenerator.generatePreviousValue(date.getYear());
-            if (highestDay > 28) {
-                int highestDayOfMonth = LocalDate.of(previousYear, highestMonth, 1).lengthOfMonth();
-                if (highestDay > highestDayOfMonth) {
-                    nearestValue = days.getPreviousValue(highestDay, 1);
-                    if (nearestValue.getShifts() > 0) {
-                        newDate = ZonedDateTime.of(LocalDateTime.of(previousYear, highestMonth, 1, 23, 59, 59), ZoneId.systemDefault())
-                                .minusMonths(nearestValue.getShifts()).with(lastDayOfMonth());
-                        return new ExecutionTimeResult(newDate, false);
-                    } else {
-                        highestDay = nearestValue.getValue();
-                    }
-                }
-            }
-            return initDateTime(previousYear, highestMonth, highestDay, highestHour, highestMinute, highestSecond, date.getZone());
+            return getPreviousPotentialYear(date, days, highestMonth, highestDay, highestHour, highestMinute, highestSecond);
         }
         if (!months.getValues().contains(date.getMonthValue())) {
-            nearestValue = months.getPreviousValue(date.getMonthValue(), 0);
-            int previousMonths = nearestValue.getValue();
-            if (nearestValue.getShifts() > 0) {
-                newDate =
-                        ZonedDateTime.of(LocalDateTime.of(date.getYear(), 12, 31, 23, 59, 59), date.getZone()).minusYears(nearestValue.getShifts());
-                return new ExecutionTimeResult(newDate, false);
-            }
-            return initDateTime(date.getYear(), previousMonths, highestDay, highestHour, highestMinute, highestSecond, date.getZone());
+            return getPreviousPotentialMonth(date, highestDay, highestHour, highestMinute, highestSecond);
         }
         if (!days.getValues().contains(date.getDayOfMonth())) {
-            nearestValue = days.getPreviousValue(date.getDayOfMonth(), 0);
-            if (nearestValue.getShifts() > 0) {
-                newDate = ZonedDateTime.of(LocalDateTime.of(date.getYear(), date.getMonthValue(), 1, 23, 59, 59), date.getZone())
-                        .minusMonths(nearestValue.getShifts()).with(lastDayOfMonth());
-                return new ExecutionTimeResult(newDate, false);
-            }
-            return initDateTime(date.getYear(), date.getMonthValue(), nearestValue.getValue(), highestHour, highestMinute, highestSecond, date.getZone());
+            return getPreviousPotentialDayOfMonth(date, days, highestHour, highestMinute, highestSecond);
         }
         if (!hours.getValues().contains(date.getHour())) {
-            nearestValue = hours.getPreviousValue(date.getHour(), 0);
-            if (nearestValue.getShifts() > 0) {
-                newDate =
-                        ZonedDateTime.of(LocalDateTime.of(date.getYear(), date.getMonthValue(),
-                                date.getDayOfMonth(), 23, 59, 59), date.getZone()).minusDays(nearestValue.getShifts());
-                return new ExecutionTimeResult(newDate, false);
-            }
-            return initDateTime(date.getYear(), date.getMonthValue(), date.getDayOfMonth(), nearestValue.getValue(), highestMinute, highestSecond,
-                    date.getZone());
+            return getPreviousPotentialHour(date, highestMinute, highestSecond);
         }
         if (!minutes.getValues().contains(date.getMinute())) {
-            nearestValue = minutes.getPreviousValue(date.getMinute(), 0);
-            if (nearestValue.getShifts() > 0) {
-                newDate =
-                        ZonedDateTime.of(LocalDateTime.of(date.getYear(), date.getMonthValue(),
-                                date.getDayOfMonth(), date.getHour(), 59, 59), date.getZone()).minusHours(nearestValue.getShifts());
-                return new ExecutionTimeResult(newDate, false);
-            }
-            return initDateTime(date.getYear(), date.getMonthValue(), date.getDayOfMonth(), date.getHour(), nearestValue.getValue(), highestSecond,
-                    date.getZone());
+            return getPreviousPotentialMinute(date, highestSecond);
         }
         if (!seconds.getValues().contains(date.getSecond())) {
-            nearestValue = seconds.getPreviousValue(date.getSecond(), 0);
-            int previousSeconds = nearestValue.getValue();
-            if (nearestValue.getShifts() > 0) {
-                newDate =
-                        ZonedDateTime.of(LocalDateTime.of(date.getYear(), date.getMonthValue(),
-                                date.getDayOfMonth(), date.getHour(),
-                                date.getMinute(), 59), date.getZone()).minusMinutes(nearestValue.getShifts());
-                return new ExecutionTimeResult(newDate, false);
-            }
-            return initDateTime(date.getYear(), date.getMonthValue(), date.getDayOfMonth(), date.getHour(), date.getMinute(), previousSeconds, date.getZone());
+            return getPreviousPotentialSecond(date);
         }
         return new ExecutionTimeResult(date, true);
+    }
+
+    private ExecutionTimeResult getPreviousPotentialYear(ZonedDateTime date, TimeNode days, int highestMonth, int highestDay,
+            int highestHour, int highestMinute, int highestSecond) throws NoSuchValueException {
+        NearestValue nearestValue;
+        ZonedDateTime newDate;
+        int previousYear = yearsValueGenerator.generatePreviousValue(date.getYear());
+        if (highestDay > 28) {
+            int highestDayOfMonth = LocalDate.of(previousYear, highestMonth, 1).lengthOfMonth();
+            if (highestDay > highestDayOfMonth) {
+                nearestValue = days.getPreviousValue(highestDay, 1);
+                if (nearestValue.getShifts() > 0) {
+                    newDate = ZonedDateTime.of(
+                            LocalDate.of(previousYear, highestMonth, 1),
+                            MAX_SECONDS,
+                            date.getZone()
+                    ).minusMonths(nearestValue.getShifts()).with(lastDayOfMonth());
+                    return new ExecutionTimeResult(newDate, false);
+                } else {
+                    highestDay = nearestValue.getValue();
+                }
+            }
+        }
+        return new ExecutionTimeResult(ZonedDateTime.of(
+                LocalDate.of(previousYear, highestMonth, highestDay),
+                LocalTime.of(highestHour, highestMinute, highestSecond),
+                date.getZone()),
+                false);
+    }
+
+    private ExecutionTimeResult getPreviousPotentialMonth(ZonedDateTime date, int highestDay, int highestHour,
+            int highestMinute, int highestSecond) throws NoSuchValueException {
+        NearestValue nearestValue;
+        ZonedDateTime newDate;
+        nearestValue = months.getPreviousValue(date.getMonthValue(), 0);
+        int previousMonths = nearestValue.getValue();
+        if (nearestValue.getShifts() > 0) {
+            newDate = ZonedDateTime.of(
+                    LocalDate.of(date.getYear(), 12, 31),
+                    MAX_SECONDS,
+                    date.getZone()
+            ).minusYears(nearestValue.getShifts());
+            return new ExecutionTimeResult(newDate, false);
+        }
+        return new ExecutionTimeResult(date.withMonth(previousMonths).withDayOfMonth(highestDay)
+                .with(LocalTime.of(highestHour, highestMinute, highestSecond)), false);
+    }
+
+    private ExecutionTimeResult getPreviousPotentialDayOfMonth(ZonedDateTime date, TimeNode days, int highestHour, int highestMinute,
+            int highestSecond) throws NoSuchValueException {
+        NearestValue nearestValue;
+        ZonedDateTime newDate;
+        nearestValue = days.getPreviousValue(date.getDayOfMonth(), 0);
+        if (nearestValue.getShifts() > 0) {
+            newDate = ZonedDateTime.of(
+                    LocalDate.of(date.getYear(), date.getMonthValue(), 1),
+                    MAX_SECONDS,
+                    date.getZone()
+            ).minusMonths(nearestValue.getShifts()).with(lastDayOfMonth());
+            return new ExecutionTimeResult(newDate, false);
+        }
+        return new ExecutionTimeResult(date.withDayOfMonth(nearestValue.getValue())
+                .with(LocalTime.of(highestHour, highestMinute, highestSecond)), false);
+    }
+
+    private ExecutionTimeResult getPreviousPotentialHour(ZonedDateTime date, int highestMinute, int highestSecond) throws NoSuchValueException {
+        NearestValue nearestValue;
+        ZonedDateTime newDate;
+        nearestValue = hours.getPreviousValue(date.getHour(), 0);
+        if (nearestValue.getShifts() > 0) {
+            newDate = date.truncatedTo(DAYS).plusDays(1).minusSeconds(1).minusDays(nearestValue.getShifts());
+            return new ExecutionTimeResult(newDate, false);
+        }
+        return new ExecutionTimeResult(date.with(LocalTime.of(nearestValue.getValue(), highestMinute, highestSecond)), false);
+    }
+
+    private ExecutionTimeResult getPreviousPotentialMinute(ZonedDateTime date, int highestSecond) throws NoSuchValueException {
+        NearestValue nearestValue;
+        ZonedDateTime newDate;
+        nearestValue = minutes.getPreviousValue(date.getMinute(), 0);
+        if (nearestValue.getShifts() > 0) {
+            newDate = date.truncatedTo(HOURS).plusHours(1).minusSeconds(1).minusHours(nearestValue.getShifts());
+            return new ExecutionTimeResult(newDate, false);
+        }
+        return new ExecutionTimeResult(date.withMinute(nearestValue.getValue()).withSecond(highestSecond), false);
+    }
+
+    private ExecutionTimeResult getPreviousPotentialSecond(ZonedDateTime date) throws NoSuchValueException {
+        NearestValue nearestValue;
+        ZonedDateTime newDate;
+        nearestValue = seconds.getPreviousValue(date.getSecond(), 0);
+        int previousSeconds = nearestValue.getValue();
+        if (nearestValue.getShifts() > 0) {
+            newDate = date.truncatedTo(MINUTES).plusMinutes(1).minusSeconds(1).minusMinutes(nearestValue.getShifts());
+            return new ExecutionTimeResult(newDate, false);
+        }
+        return new ExecutionTimeResult(date.withSecond(previousSeconds), false);
     }
 
     private ZonedDateTime toEndOfPreviousMonth(final ZonedDateTime datetime) {
@@ -398,7 +458,7 @@ public class ExecutionTime {
                         previousMonth.getZone());
     }
 
-    private TimeNode generateDays(CronDefinition cronDefinition, ZonedDateTime date) throws NoDaysForMonthException {
+    private Optional<TimeNode> generateDays(CronDefinition cronDefinition, ZonedDateTime date) {
         if (isGenerateDaysAsDoY(cronDefinition)) {
             return generateDayCandidatesUsingDoY(date);
         }
@@ -407,9 +467,10 @@ public class ExecutionTime {
             return generateDaysDoWAndDoMSupported(cronDefinition, date);
         }
         if (cronDefinition.getFieldDefinition(DAY_OF_WEEK) == null) {
-            return generateDayCandidatesUsingDoM(date);
+            return Optional.of(generateDayCandidatesUsingDoM(date));
         }
-        return generateDayCandidatesUsingDoW(date, ((DayOfWeekFieldDefinition) cronDefinition.getFieldDefinition(DAY_OF_WEEK)).getMondayDoWValue());
+        return Optional
+                .of(generateDayCandidatesUsingDoW(date, ((DayOfWeekFieldDefinition) cronDefinition.getFieldDefinition(DAY_OF_WEEK)).getMondayDoWValue()));
     }
 
     private boolean isGenerateDaysAsDoY(CronDefinition cronDefinition) {
@@ -424,7 +485,7 @@ public class ExecutionTime {
         return !(daysOfYearCronField.getExpression() instanceof QuestionMark);
     }
 
-    private TimeNode generateDayCandidatesUsingDoY(ZonedDateTime reference) throws NoDaysForMonthException {
+    private Optional<TimeNode> generateDayCandidatesUsingDoY(ZonedDateTime reference) {
         final int year = reference.getYear();
         final int month = reference.getMonthValue();
         LocalDate date = LocalDate.of(year, 1, 1);
@@ -441,36 +502,27 @@ public class ExecutionTime {
                 .map(dayOfYear -> LocalDate.ofYearDay(reference.getYear(), dayOfYear).getDayOfMonth())
                 .collect(Collectors.toList());
 
-        if (collectedCandidates.isEmpty()) {
-            //TODO try to avoid programming by exception, maybe we should better return Optional<TimeNode> and test on presence
-            throw new NoDaysForMonthException();
-        }
-
-        return new TimeNode(collectedCandidates);
+        return Optional.of(collectedCandidates).filter(not(List::isEmpty)).map(TimeNode::new);
     }
 
-    private TimeNode generateDaysDoWAndDoMSupported(CronDefinition cronDefinition, ZonedDateTime date) throws NoDaysForMonthException {
-        boolean questionMarkSupported =
-                cronDefinition.getFieldDefinition(DAY_OF_WEEK).getConstraints().getSpecialChars().contains(QUESTION_MARK);
-        List<Integer> candidates = new ArrayList<>();
+    private Optional<TimeNode> generateDaysDoWAndDoMSupported(CronDefinition cronDefinition, ZonedDateTime date) {
+        boolean questionMarkSupported = cronDefinition.getFieldDefinition(DAY_OF_WEEK).getConstraints().getSpecialChars().contains(QUESTION_MARK);
         if (questionMarkSupported) {
-            candidates = generateDayCandidatesQuestionMarkSupportedUsingDoWAndDoM(
+            List<Integer> candidates = generateDayCandidatesQuestionMarkSupportedUsingDoWAndDoM(
                     date.getYear(),
                     date.getMonthValue(),
                     ((DayOfWeekFieldDefinition) cronDefinition.getFieldDefinition(DAY_OF_WEEK)).getMondayDoWValue()
             );
+            return Optional.of(candidates).filter(not(List::isEmpty)).map(TimeNode::new);
         } else {
-            candidates = generateDayCandidatesQuestionMarkNotSupportedUsingDoWAndDoM(
+            List<Integer> candidates = generateDayCandidatesQuestionMarkNotSupportedUsingDoWAndDoM(
                     date.getYear(), date.getMonthValue(),
                     ((DayOfWeekFieldDefinition)
                             cronDefinition.getFieldDefinition(DAY_OF_WEEK)
                     ).getMondayDoWValue()
             );
+            return Optional.of(candidates).filter(not(List::isEmpty)).map(TimeNode::new);
         }
-        if (candidates.isEmpty()) {
-            throw new NoDaysForMonthException();
-        }
-        return new TimeNode(candidates);
     }
 
     /**
@@ -511,10 +563,7 @@ public class ExecutionTime {
      * @return Duration instance, never null. Time from last execution.
      */
     public Optional<Duration> timeFromLastExecution(ZonedDateTime date) {
-        Optional<ZonedDateTime> last = lastExecution(date);
-
-        return last.map(zonedDateTime -> Duration.between(zonedDateTime, date));
-
+        return lastExecution(date).map(zonedDateTime -> Duration.between(zonedDateTime, date));
     }
 
     /**
@@ -528,7 +577,7 @@ public class ExecutionTime {
         // For Quartz, it's seconds while for Unix & Cron4J it's minutes.
         boolean isSecondGranularity = cronDefinition.containsFieldDefinition(SECOND);
         if (isSecondGranularity) {
-            date = date.truncatedTo(ChronoUnit.SECONDS);
+            date = date.truncatedTo(SECONDS);
         } else {
             date = date.truncatedTo(ChronoUnit.MINUTES);
         }
@@ -585,16 +634,21 @@ public class ExecutionTime {
     private List<Integer> generateDayCandidatesQuestionMarkNotSupportedUsingDoWAndDoM(int year, int month, WeekDay mondayDoWValue) {
         LocalDate date = LocalDate.of(year, month, 1);
         int lengthOfMonth = date.lengthOfMonth();
-        Set<Integer> candidates = new HashSet<>();
         if (daysOfMonthCronField.getExpression() instanceof Always && daysOfWeekCronField.getExpression() instanceof Always) {
-            candidates.addAll(createDayOfMonthValueGeneratorInstance(daysOfMonthCronField,
-                    year, month).generateCandidates(1, lengthOfMonth));
+            return createDayOfMonthValueGeneratorInstance(daysOfMonthCronField, year, month)
+                    .generateCandidates(1, lengthOfMonth)
+                    .stream().distinct().sorted()
+                    .collect(Collectors.toList());
         } else if (daysOfMonthCronField.getExpression() instanceof Always) {
-            candidates.addAll(createDayOfWeekValueGeneratorInstance(daysOfWeekCronField,
-                    year, month, mondayDoWValue).generateCandidates(1, lengthOfMonth));
+            return createDayOfWeekValueGeneratorInstance(daysOfWeekCronField, year, month, mondayDoWValue)
+                    .generateCandidates(1, lengthOfMonth)
+                    .stream().distinct().sorted()
+                    .collect(Collectors.toList());
         } else if (daysOfWeekCronField.getExpression() instanceof Always) {
-            candidates.addAll(createDayOfMonthValueGeneratorInstance(daysOfMonthCronField,
-                    year, month).generateCandidates(1, lengthOfMonth));
+            return createDayOfMonthValueGeneratorInstance(daysOfMonthCronField, year, month)
+                    .generateCandidates(1, lengthOfMonth)
+                    .stream().distinct().sorted()
+                    .collect(Collectors.toList());
         } else {
             List<Integer> dayOfWeekCandidates = createDayOfWeekValueGeneratorInstance(daysOfWeekCronField,
                     year, month, mondayDoWValue).generateCandidates(1, lengthOfMonth);
@@ -602,110 +656,62 @@ public class ExecutionTime {
                     .generateCandidates(1, lengthOfMonth);
             if (cronDefinition.isMatchDayOfWeekAndDayOfMonth()) {
                 Set<Integer> intersection = new HashSet<>(dayOfWeekCandidates);
-                intersection.retainAll(dayOfMonthCandidates);
-                candidates.addAll(intersection);
+                return dayOfMonthCandidates
+                        .stream().filter(intersection::contains)
+                        .distinct().sorted()
+                        .collect(Collectors.toList());
             } else {
-                candidates.addAll(dayOfWeekCandidates);
-                candidates.addAll(dayOfMonthCandidates);
+                return Stream.concat(dayOfWeekCandidates.stream(), dayOfMonthCandidates.stream())
+                        .distinct().sorted()
+                        .collect(Collectors.toList());
             }
         }
-        List<Integer> candidatesList = new ArrayList<>(candidates);
-        Collections.sort(candidatesList);
-        return candidatesList;
     }
 
     private List<Integer> generateDayCandidatesQuestionMarkSupportedUsingDoWAndDoM(int year, int month, WeekDay mondayDoWValue) {
         LocalDate date = LocalDate.of(year, month, 1);
         int lengthOfMonth = date.lengthOfMonth();
-        Set<Integer> candidates = new HashSet<>();
         if (daysOfMonthCronField.getExpression() instanceof Always && daysOfWeekCronField.getExpression() instanceof Always) {
-            candidates.addAll(createDayOfMonthValueGeneratorInstance(daysOfMonthCronField, year, month)
-                    .generateCandidates(1, lengthOfMonth));
+            return createDayOfMonthValueGeneratorInstance(daysOfMonthCronField, year, month)
+                    .generateCandidates(1, lengthOfMonth)
+                    .stream().distinct().sorted()
+                    .collect(Collectors.toList());
         } else if (daysOfMonthCronField.getExpression() instanceof QuestionMark) {
-            candidates.addAll(createDayOfWeekValueGeneratorInstance(daysOfWeekCronField, year, month, mondayDoWValue).generateCandidates(1, lengthOfMonth));
+            return createDayOfWeekValueGeneratorInstance(daysOfWeekCronField, year, month, mondayDoWValue)
+                    .generateCandidates(1, lengthOfMonth)
+                    .stream().distinct().sorted()
+                    .collect(Collectors.toList());
         } else if (daysOfWeekCronField.getExpression() instanceof QuestionMark) {
-            candidates.addAll(createDayOfMonthValueGeneratorInstance(daysOfMonthCronField, year, month)
-                    .generateCandidates(1, lengthOfMonth));
+            return createDayOfMonthValueGeneratorInstance(daysOfMonthCronField, year, month)
+                    .generateCandidates(1, lengthOfMonth)
+                    .stream().distinct().sorted()
+                    .collect(Collectors.toList());
         } else {
-            candidates.addAll(createDayOfWeekValueGeneratorInstance(daysOfWeekCronField, year, month, mondayDoWValue)
-                    .generateCandidates(1, lengthOfMonth));
-            candidates.addAll(createDayOfMonthValueGeneratorInstance(daysOfMonthCronField, year, month)
-                    .generateCandidates(1, lengthOfMonth));
+            return Stream.concat(
+                    createDayOfWeekValueGeneratorInstance(daysOfWeekCronField, year, month, mondayDoWValue).generateCandidates(1, lengthOfMonth).stream(),
+                    createDayOfMonthValueGeneratorInstance(daysOfMonthCronField, year, month).generateCandidates(1, lengthOfMonth).stream()
+            ).distinct().sorted().collect(Collectors.toList());
         }
-        List<Integer> candidatesList = new ArrayList<>(candidates);
-        Collections.sort(candidatesList);
-        return candidatesList;
     }
 
     private TimeNode generateDayCandidatesUsingDoM(ZonedDateTime reference) {
         LocalDate date = LocalDate.of(reference.getYear(), reference.getMonthValue(), 1);
         int lengthOfMonth = date.lengthOfMonth();
-        Set<Integer> candidates = new HashSet<>(createDayOfMonthValueGeneratorInstance(daysOfMonthCronField, reference.getYear(), reference.getMonthValue())
-                .generateCandidates(1, lengthOfMonth));
-        List<Integer> candidatesList = new ArrayList<>(candidates);
-        Collections.sort(candidatesList);
-        return new TimeNode(candidatesList);
+        List<Integer> candidates = createDayOfMonthValueGeneratorInstance(daysOfMonthCronField, reference.getYear(), reference.getMonthValue())
+                .generateCandidates(1, lengthOfMonth)
+                .stream().distinct().sorted()
+                .collect(Collectors.toList());
+        return new TimeNode(candidates);
     }
 
     private TimeNode generateDayCandidatesUsingDoW(ZonedDateTime reference, WeekDay mondayDoWValue) {
         LocalDate date = LocalDate.of(reference.getYear(), reference.getMonthValue(), 1);
         int lengthOfMonth = date.lengthOfMonth();
-        Set<Integer> candidates = new HashSet<>(createDayOfWeekValueGeneratorInstance(daysOfWeekCronField, reference
-                .getYear(), reference.getMonthValue(), mondayDoWValue).generateCandidates(1, lengthOfMonth));
-        List<Integer> candidatesList = new ArrayList<>(candidates);
-        Collections.sort(candidatesList);
-        return new TimeNode(candidatesList);
-    }
-
-    private ExecutionTimeResult initDateTime(int years, int monthsOfYear, int dayOfMonth,
-            int hoursOfDay, int minutesOfHour, int secondsOfMinute, ZoneId timeZone) throws NoSuchValueException {
-        ZonedDateTime date =
-                ZonedDateTime.of(LocalDateTime.of(0, 1, 1, 0, 0, 0), timeZone)
-                        .plusYears(years)
-                        .plusMonths(monthsOfYear - 1)
-                        .plusDays(dayOfMonth - 1)
-                        .plusHours(hoursOfDay)
-                        .plusMinutes(minutesOfHour)
-                        .plusSeconds(secondsOfMinute);
-        ZonedDateTime result = ensureSameDate(date, years, monthsOfYear, dayOfMonth, hoursOfDay, minutesOfHour, secondsOfMinute);
-        if (isSameDate(result, years, monthsOfYear, dayOfMonth, hoursOfDay, minutesOfHour, secondsOfMinute)) {
-            return new ExecutionTimeResult(result, true);
-        }
-        return new ExecutionTimeResult(result, false);
-    }
-
-    private ZonedDateTime ensureSameDate(ZonedDateTime date, int years, int monthsOfYear, int dayOfMonth,
-            int hoursOfDay, int minutesOfHour, int secondsOfMinute) {
-        if (date.getSecond() != secondsOfMinute) {
-            date = date.plusSeconds(secondsOfMinute - date.getSecond());
-        }
-        if (date.getMinute() != minutesOfHour) {
-            date = date.plusMinutes(minutesOfHour - date.getMinute());
-        }
-        if (date.getHour() != hoursOfDay) {
-            date = date.plusHours(hoursOfDay - date.getHour());
-            if (date.getHour() < hoursOfDay) {
-                //we just switched more hours than required due to daylight savings - we need to move past this change seeking next match
-                date = date.plusHours(hoursOfDay - date.getHour());
-            }
-        }
-        if (date.getDayOfMonth() != dayOfMonth) {
-            date = date.plusDays(dayOfMonth - date.getDayOfMonth());
-        }
-        if (date.getMonthValue() != monthsOfYear) {
-            date = date.plusMonths(monthsOfYear - date.getMonthValue());
-        }
-        if (date.getYear() != years) {
-            date = date.plusYears(years - date.getYear());
-        }
-        return date;
-    }
-
-    private boolean isSameDate(ZonedDateTime date, int years, int monthsOfYear, int dayOfMonth,
-            int hoursOfDay, int minutesOfHour, int secondsOfMinute) {
-        return date.getSecond() == secondsOfMinute && date.getMinute() == minutesOfHour
-                && date.getHour() == hoursOfDay && date.getDayOfMonth() == dayOfMonth
-                && date.getMonthValue() == monthsOfYear && date.getYear() == years;
+        List<Integer> candidates = createDayOfWeekValueGeneratorInstance(daysOfWeekCronField, reference.getYear(), reference.getMonthValue(), mondayDoWValue)
+                .generateCandidates(1, lengthOfMonth)
+                .stream().distinct().sorted()
+                .collect(Collectors.toList());
+        return new TimeNode(candidates);
     }
 
     private static final class ExecutionTimeResult {

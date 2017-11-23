@@ -9,7 +9,15 @@ jdk:
 
 before_install: "git clone -b travis `git config --get remote.origin.url` target/travis"
 
-script: "mvn deploy --settings target/travis/settings.xml -Dsettings.security=target/travis/settings-security.xml -Dmaven.javadoc.skip=true"
+script:
+   - > 
+     if [ "$TRAVIS_PULL_REQUEST" != "false" ];
+     then mvn verify --settings target/travis/settings.xml -Dsettings.security=target/travis/settings-security.xml -Dmaven.javadoc.skip=true;
+     fi
+   - > 
+     if [ "$TRAVIS_PULL_REQUEST" = "false" ];
+     then mvn deploy --settings target/travis/settings.xml -Dsettings.security=target/travis/settings-security.xml -Dmaven.javadoc.skip=true;
+     fi
 
 after_success:
   - mvn cobertura:cobertura coveralls:cobertura
