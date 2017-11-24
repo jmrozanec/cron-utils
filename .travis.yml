@@ -25,6 +25,11 @@ script:
      fi
    - sonar-scanner
 
+cache:
+  directories:
+    - '$HOME/.m2/repository'
+    - '$HOME/.sonar/cache'
+
 after_success:
   - mvn cobertura:cobertura coveralls:cobertura
   - bash <(curl -s https://codecov.io/bash)
