@@ -20,6 +20,6 @@ public class AlwaysTest {
 
     @Test
     public void testAsString() {
-        assertEquals("*", new Always().asString());
+        assertEquals("*", FieldExpression.always().asString());
     }
 }

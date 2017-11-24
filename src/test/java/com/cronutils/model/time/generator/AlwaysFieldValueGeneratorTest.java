@@ -34,7 +34,7 @@ public class AlwaysFieldValueGeneratorTest {
     @Before
     public void setUp() {
         fieldValueGenerator = new AlwaysFieldValueGenerator(
-                new CronField(CronFieldName.HOUR, new Always(), FieldConstraintsBuilder.instance().createConstraintsInstance()));
+                new CronField(CronFieldName.HOUR, FieldExpression.always(), FieldConstraintsBuilder.instance().createConstraintsInstance()));
     }
 
     @Test
@@ -53,7 +53,7 @@ public class AlwaysFieldValueGeneratorTest {
 
     @Test
     public void testGenerateCandidatesNotIncludingIntervalExtremes() throws Exception {
-        List<Integer> values = fieldValueGenerator.generateCandidatesNotIncludingIntervalExtremes(0, 10);
+        final List<Integer> values = fieldValueGenerator.generateCandidatesNotIncludingIntervalExtremes(0, 10);
         for (int j = 1; j < 10; j++) {
             assertTrue(values.contains(j));
         }

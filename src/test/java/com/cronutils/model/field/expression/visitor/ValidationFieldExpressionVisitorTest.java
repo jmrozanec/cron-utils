@@ -39,14 +39,14 @@ public class ValidationFieldExpressionVisitorTest {
     private int startRange;
     private int endRange;
 
-    private int defaultInt = -1;
+    private final int defaultInt = -1;
 
-    private int lowOOR = -21;
-    private int highOOR = 999;
+    private final int lowOOR = -21;
+    private final int highOOR = 999;
 
-    private int low = 1;
-    private int middle = 25;
-    private int high = 50;
+    private final int low = 1;
+    private final int middle = 25;
+    private final int high = 50;
 
     private FieldConstraints fieldConstraints;
 
@@ -78,8 +78,8 @@ public class ValidationFieldExpressionVisitorTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void testVisitWithInvalidChars() {
-        ValidationFieldExpressionVisitor visitor = new ValidationFieldExpressionVisitor(fieldConstraints, invalidStringValidations, true);
-        FieldExpression exp = new Always();
+        final ValidationFieldExpressionVisitor visitor = new ValidationFieldExpressionVisitor(fieldConstraints, invalidStringValidations, true);
+        final FieldExpression exp = FieldExpression.always();
         visitor.visit(exp);
     }
 
@@ -88,8 +88,8 @@ public class ValidationFieldExpressionVisitorTest {
         ValidationFieldExpressionVisitor spy = Mockito.spy(visitor);
         ValidationFieldExpressionVisitor strictSpy = Mockito.spy(strictVisitor);
 
-        FieldExpression exp = new Always();
-        Always always = (Always) exp;
+        FieldExpression exp = FieldExpression.always();
+        final Always always = (Always) exp;
         spy.visit(exp);
         strictSpy.visit(exp);
 
@@ -100,7 +100,7 @@ public class ValidationFieldExpressionVisitorTest {
         strictSpy = Mockito.spy(strictVisitor);
 
         exp = new Between(new IntegerFieldValue(low), new IntegerFieldValue(middle));
-        Between between = (Between) exp;
+        final Between between = (Between) exp;
         spy.visit(exp);
         strictSpy.visit(exp);
 
@@ -111,7 +111,7 @@ public class ValidationFieldExpressionVisitorTest {
         strictSpy = Mockito.spy(strictVisitor);
 
         exp = new Every(new IntegerFieldValue(low));
-        Every every = (Every) exp;
+        final Every every = (Every) exp;
         spy.visit(exp);
         strictSpy.visit(exp);
 
@@ -122,7 +122,7 @@ public class ValidationFieldExpressionVisitorTest {
         strictSpy = Mockito.spy(strictVisitor);
 
         exp = new And().and(between);
-        And and = (And) exp;
+        final And and = (And) exp;
         spy.visit(exp);
         strictSpy.visit(exp);
 
@@ -135,7 +135,7 @@ public class ValidationFieldExpressionVisitorTest {
         strictSpy = Mockito.spy(strictVisitor);
 
         exp = new On(new IntegerFieldValue(middle));
-        On on = (On) exp;
+        final On on = (On) exp;
         spy.visit(exp);
         strictSpy.visit(exp);
 
@@ -145,8 +145,8 @@ public class ValidationFieldExpressionVisitorTest {
         spy = Mockito.spy(visitor);
         strictSpy = Mockito.spy(strictVisitor);
 
-        exp = new QuestionMark();
-        QuestionMark qm = (QuestionMark) exp;
+        exp = FieldExpression.questionMark();
+        final QuestionMark qm = (QuestionMark) exp;
         spy.visit(exp);
         strictSpy.visit(exp);
 
@@ -156,26 +156,26 @@ public class ValidationFieldExpressionVisitorTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void testStrictVisitBadExp() {
-        FieldExpression exp = new Between(new IntegerFieldValue(high), new IntegerFieldValue(low));
+        final FieldExpression exp = new Between(new IntegerFieldValue(high), new IntegerFieldValue(low));
         strictVisitor.visit(exp);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testVisitBadExp() {
-        FieldExpression exp = new Between(new IntegerFieldValue(lowOOR), new IntegerFieldValue(high));
+        final FieldExpression exp = new Between(new IntegerFieldValue(lowOOR), new IntegerFieldValue(high));
         visitor.visit(exp);
     }
 
     @Test
     public void testVisitAlwaysField() {
-        Always always = new Always();
+        final FieldExpression always = FieldExpression.always();
         assertEquals(always, strictVisitor.visit(always));
         assertEquals(always, visitor.visit(always));
     }
 
     @Test
     public void testVisitQuestionMarkField() {
-        QuestionMark qm = new QuestionMark();
+        final FieldExpression qm = FieldExpression.questionMark();
         assertEquals(qm, strictVisitor.visit(qm));
         assertEquals(qm, visitor.visit(qm));
     }
@@ -244,20 +244,20 @@ public class ValidationFieldExpressionVisitorTest {
 
     @Test
     public void testVisitBetweenOOOrder() {
-        Between between = new Between(new IntegerFieldValue(high), new IntegerFieldValue(low));
+        final Between between = new Between(new IntegerFieldValue(high), new IntegerFieldValue(low));
         assertEquals(between, visitor.visit(between));
     }
 
     @Test
     public void testVisitEvery() {
         Every every = new Every(new IntegerFieldValue(middle));
-        ValidationFieldExpressionVisitor spy = Mockito.spy(visitor);
-        ValidationFieldExpressionVisitor strictSpy = Mockito.spy(strictVisitor);
+        final ValidationFieldExpressionVisitor spy = Mockito.spy(visitor);
+        final ValidationFieldExpressionVisitor strictSpy = Mockito.spy(strictVisitor);
 
         assertEquals(every, spy.visit(every));
         assertEquals(every, strictSpy.visit(every));
 
-        Between between = new Between(new IntegerFieldValue(low), new IntegerFieldValue(middle));
+        final Between between = new Between(new IntegerFieldValue(low), new IntegerFieldValue(middle));
         every = new Every(between, new IntegerFieldValue(high));
         assertEquals(every, spy.visit(every));
         assertEquals(every, strictSpy.visit(every));
@@ -265,7 +265,7 @@ public class ValidationFieldExpressionVisitorTest {
         verify(spy, times(1)).visit(between);
         verify(strictSpy, times(1)).visit(between);
 
-        On on = new On(new IntegerFieldValue(low));
+        final On on = new On(new IntegerFieldValue(low));
 
         every = new Every(on, new IntegerFieldValue(high));
         assertEquals(every, spy.visit(every));
@@ -377,12 +377,12 @@ public class ValidationFieldExpressionVisitorTest {
 
     @Test
     public void testVisitAnd() {
-        ValidationFieldExpressionVisitor spy = Mockito.spy(visitor);
-        ValidationFieldExpressionVisitor strictSpy = Mockito.spy(strictVisitor);
+        final ValidationFieldExpressionVisitor spy = Mockito.spy(visitor);
+        final ValidationFieldExpressionVisitor strictSpy = Mockito.spy(strictVisitor);
         And and = new And();
-        Between b1 = new Between(new IntegerFieldValue(low), new IntegerFieldValue(middle));
-        Between b2 = new Between(new IntegerFieldValue(middle), new IntegerFieldValue(high));
-        On on = new On(new IntegerFieldValue(low));
+        final Between b1 = new Between(new IntegerFieldValue(low), new IntegerFieldValue(middle));
+        final Between b2 = new Between(new IntegerFieldValue(middle), new IntegerFieldValue(high));
+        final On on = new On(new IntegerFieldValue(low));
         and.and(b1).and(b2).and(b2).and(on);
         assertEquals(and, spy.visit(and));
         assertEquals(and, strictSpy.visit(and));
@@ -401,27 +401,27 @@ public class ValidationFieldExpressionVisitorTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void testStrictVisitAndBadExpression() {
-        And and = new And();
-        Between b1 = new Between(new IntegerFieldValue(low), new IntegerFieldValue(middle));
-        Between b2 = new Between(new IntegerFieldValue(middle), new IntegerFieldValue(highOOR));
-        On on = new On(new IntegerFieldValue(low));
+        final And and = new And();
+        final Between b1 = new Between(new IntegerFieldValue(low), new IntegerFieldValue(middle));
+        final Between b2 = new Between(new IntegerFieldValue(middle), new IntegerFieldValue(highOOR));
+        final On on = new On(new IntegerFieldValue(low));
         and.and(b1).and(b2).and(b2).and(on);
         strictVisitor.visit(and);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testVisitAndBadExpression() {
-        And and = new And();
-        Between b1 = new Between(new IntegerFieldValue(low), new IntegerFieldValue(middle));
-        Between b2 = new Between(new IntegerFieldValue(middle), new IntegerFieldValue(highOOR));
-        On on = new On(new IntegerFieldValue(low));
+        final And and = new And();
+        final Between b1 = new Between(new IntegerFieldValue(low), new IntegerFieldValue(middle));
+        final Between b2 = new Between(new IntegerFieldValue(middle), new IntegerFieldValue(highOOR));
+        final On on = new On(new IntegerFieldValue(low));
         and.and(b1).and(b2).and(b2).and(on);
         visitor.visit(and);
     }
 
     @Test
     public void testIsDefault() {
-        SpecialCharFieldValue nonIntegerFieldValue = new SpecialCharFieldValue(SpecialChar.LW);
+        final SpecialCharFieldValue nonIntegerFieldValue = new SpecialCharFieldValue(SpecialChar.LW);
         assertFalse(strictVisitor.isDefault(nonIntegerFieldValue));
         assertFalse(visitor.isDefault(nonIntegerFieldValue));
 
@@ -443,7 +443,7 @@ public class ValidationFieldExpressionVisitorTest {
     public void testIsSpecialCharNotL() {
         SpecialCharFieldValue specialCharFieldValue;
 
-        for (SpecialChar sp : SpecialChar.values()) {
+        for (final SpecialChar sp : SpecialChar.values()) {
             specialCharFieldValue = new SpecialCharFieldValue(sp);
             if (sp == SpecialChar.L) {
                 assertFalse(strictVisitor.isSpecialCharNotL(specialCharFieldValue));
@@ -457,31 +457,31 @@ public class ValidationFieldExpressionVisitorTest {
 
     @Test
     public void testIsSpecialCharNotLWithIntegerFieldValue() {
-        IntegerFieldValue integerValue = new IntegerFieldValue(81);
+        final IntegerFieldValue integerValue = new IntegerFieldValue(81);
         assertFalse(strictVisitor.isSpecialCharNotL(integerValue));
         assertFalse(visitor.isSpecialCharNotL(integerValue));
     }
 
     @Test
     public void testIsInRange() {
-        SpecialCharFieldValue nonIntegerFieldValue = new SpecialCharFieldValue(SpecialChar.LW);
+        final SpecialCharFieldValue nonIntegerFieldValue = new SpecialCharFieldValue(SpecialChar.LW);
         strictVisitor.isInRange(nonIntegerFieldValue);
         visitor.isInRange(nonIntegerFieldValue);
 
-        IntegerFieldValue integerValue = new IntegerFieldValue(5);
+        final IntegerFieldValue integerValue = new IntegerFieldValue(5);
         strictVisitor.isInRange(integerValue);
         visitor.isInRange(integerValue);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testIsInRangeOORangeStrict() {
-        IntegerFieldValue integerValue = new IntegerFieldValue(highOOR);
+        final IntegerFieldValue integerValue = new IntegerFieldValue(highOOR);
         strictVisitor.isInRange(integerValue);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testIsInRangeOORange() {
-        IntegerFieldValue integerValue = new IntegerFieldValue(highOOR);
+        final IntegerFieldValue integerValue = new IntegerFieldValue(highOOR);
         strictVisitor.isInRange(integerValue);
     }
 

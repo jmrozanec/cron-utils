@@ -19,17 +19,13 @@ package com.cronutils.model.field.expression;
  */
 public class Always extends FieldExpression {
 
-    @SuppressWarnings("deprecation")
     static final Always INSTANCE = new Always();
 
     /**
      * Should be package private and not be instantiated elsewhere.
      * Class should become package private too.
-     *
-     * @deprecated rather use {@link FieldExpression#always()}
      */
-    @Deprecated
-    public Always() {
+    private Always() {
     }
 
     @Override
