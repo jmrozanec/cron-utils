@@ -15,8 +15,15 @@ addons:
     token:
       secure: "cbMGySWmB0LzXqbZp3LXETcpFD3QhpIEibiiHX5zOI0u5nsG762phgF0lpdfoLJ1WN6j1L+ctkZ0ZAd2lPckFp0g+HBYnvaxkV87JUJcgeDPUr2CNgyc3dXHp2AsULblnzGWnEOATVlyWqXNDm/eF8NIiiyxgRGjifcvKf+++N0="
 script:
-  - "mvn deploy --settings target/travis/settings.xml -Dsettings.security=target/travis/settings-security.xml -Dmaven.javadoc.skip=true"
-  - sonar-scanner
+   - > 
+     if [ "$TRAVIS_PULL_REQUEST" != "false" ];
+     then mvn verify --settings target/travis/settings.xml -Dsettings.security=target/travis/settings-security.xml -Dmaven.javadoc.skip=true;
+     fi
+   - > 
+     if [ "$TRAVIS_PULL_REQUEST" = "false" ];
+     then mvn deploy --settings target/travis/settings.xml -Dsettings.security=target/travis/settings-security.xml -Dmaven.javadoc.skip=true;
+     fi
+   - sonar-scanner
 
 after_success:
   - mvn cobertura:cobertura coveralls:cobertura

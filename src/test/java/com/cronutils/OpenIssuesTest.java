@@ -3,6 +3,7 @@ package com.cronutils;
 import java.text.ParseException;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 
 import org.junit.Test;
 
@@ -13,8 +14,8 @@ import com.cronutils.model.time.ExecutionTime;
 import com.cronutils.parser.CronParser;
 
 public class OpenIssuesTest {
-    private DateTimeFormatter dfSimple = DateTimeFormatter.ofPattern("hh:mm:ss MM/dd/yyyy a X");
-    private DateTimeFormatter df = DateTimeFormatter.ofPattern("hh:mm:ss EEE, MMM dd yyyy a X");
+    private DateTimeFormatter dfSimple = DateTimeFormatter.ofPattern("hh:mm:ss MM/dd/yyyy a X", Locale.US);
+    private DateTimeFormatter df = DateTimeFormatter.ofPattern("hh:mm:ss EEE, MMM dd yyyy a X", Locale.US);
 
     @Test
     public void testBasicCron() throws ParseException {
