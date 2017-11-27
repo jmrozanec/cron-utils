@@ -19,6 +19,8 @@ cron-utils is available on [Maven central](http://search.maven.org/#search%7Cga%
         <version>7.0.0</version>
     </dependency>
 
+For Android developers, cron-utils 7.0.0 assumes Android 26+. For prior Android versions consider using cron-utils v6.x.y.
+
 
 **Features**
 
