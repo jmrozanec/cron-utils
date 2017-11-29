@@ -1,3 +1,16 @@
+/*
+ * Copyright 2014 jmrozanec
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.cronutils.descriptor;
 
 import java.text.MessageFormat;
@@ -15,19 +28,7 @@ import com.cronutils.model.field.expression.On;
 import com.cronutils.model.field.value.FieldValue;
 import com.cronutils.model.field.value.IntegerFieldValue;
 import com.cronutils.utils.Preconditions;
-
-/*
- * Copyright 2014 jmrozanec
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * http://www.apache.org/licenses/LICENSE-2.0
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+import com.cronutils.utils.StringUtils;
 
 /**
  * Description strategy to handle cases on how to present cron information in a human readable format.
@@ -38,9 +39,9 @@ abstract class DescriptionStrategy {
     protected Function<Integer, String> nominalValueFunction;
     protected ResourceBundle bundle;
 
-    public DescriptionStrategy(ResourceBundle bundle) {
+    public DescriptionStrategy(final ResourceBundle bundle) {
         this.bundle = bundle;
-        this.nominalValueFunction = integer -> WHITE_SPACE + integer;
+        nominalValueFunction = integer -> WHITE_SPACE + integer;
     }
 
     /**
@@ -57,7 +58,7 @@ abstract class DescriptionStrategy {
      * @param fieldExpression - CronFieldExpression instance - not null
      * @return human readable description - String
      */
-    protected String describe(FieldExpression fieldExpression) {
+    protected String describe(final FieldExpression fieldExpression) {
         return describe(fieldExpression, false);
     }
 
@@ -69,7 +70,7 @@ abstract class DescriptionStrategy {
      * @param and             - boolean expression that indicates if description should fit an "and" context
      * @return human readable description - String
      */
-    protected String describe(FieldExpression fieldExpression, boolean and) {
+    protected String describe(final FieldExpression fieldExpression, final boolean and) {
         Preconditions.checkNotNull(fieldExpression, "CronFieldExpression should not be null!");
         if (fieldExpression instanceof Always) {
             return describe((Always) fieldExpression, and);
@@ -86,7 +87,7 @@ abstract class DescriptionStrategy {
         if (fieldExpression instanceof On) {
             return describe((On) fieldExpression, and);
         }
-        return "";
+        return StringUtils.EMPTY;
     }
 
     /**
@@ -95,8 +96,8 @@ abstract class DescriptionStrategy {
      * @param always - Always
      * @return human readable description - String
      */
-    protected String describe(Always always, boolean and) {
-        return "";
+    protected String describe(final Always always, final boolean and) {
+        return StringUtils.EMPTY;
     }
 
     /**
@@ -105,20 +106,20 @@ abstract class DescriptionStrategy {
      * @param and - And
      * @return human readable description - String
      */
-    protected String describe(And and) {
-        List<FieldExpression> expressions = new ArrayList<>();
-        List<FieldExpression> onExpressions = new ArrayList<>();
-        for (FieldExpression fieldExpression : and.getExpressions()) {
+    protected String describe(final And and) {
+        final List<FieldExpression> expressions = new ArrayList<>();
+        final List<FieldExpression> onExpressions = new ArrayList<>();
+        for (final FieldExpression fieldExpression : and.getExpressions()) {
             if (fieldExpression instanceof On) {
                 onExpressions.add(fieldExpression);
             } else {
                 expressions.add(fieldExpression);
             }
         }
-        StringBuilder builder = new StringBuilder();
+        final StringBuilder builder = new StringBuilder();
         if (!onExpressions.isEmpty()) {
             builder.append(bundle.getString("at"));
-            createAndDescription(builder, onExpressions).append(" %p");// TODO this causes bug #39
+            createAndDescription(builder, onExpressions).append(" %p");
         }
         if (!expressions.isEmpty()) {
             createAndDescription(builder, expressions);
@@ -133,7 +134,7 @@ abstract class DescriptionStrategy {
      * @param between - Between
      * @return human readable description - String
      */
-    protected String describe(Between between, boolean and) {
+    protected String describe(final Between between, final boolean and) {
         return bundle.getString(EVERY) + " %s "
                 + MessageFormat.format(bundle.getString("between_x_and_y"), nominalValue(between.getFrom()), nominalValue(between.getTo())) + WHITE_SPACE;
     }
@@ -144,7 +145,7 @@ abstract class DescriptionStrategy {
      * @param every - Every
      * @return human readable description - String
      */
-    protected String describe(Every every, boolean and) {
+    protected String describe(final Every every, final boolean and) {
         String description;
         if (every.getPeriod().getValue() > 1) {
             description = String.format("%s %s ", bundle.getString(EVERY), nominalValue(every.getPeriod())) + " %p ";
@@ -152,7 +153,7 @@ abstract class DescriptionStrategy {
             description = bundle.getString(EVERY) + " %s ";
         }
         if (every.getExpression() instanceof Between) {
-            Between between = (Between) every.getExpression();
+            final Between between = (Between) every.getExpression();
             description +=
                     MessageFormat.format(
                             bundle.getString("between_x_and_y"), nominalValue(between.getFrom()), nominalValue(between.getTo())
@@ -167,7 +168,7 @@ abstract class DescriptionStrategy {
      * @param on - On
      * @return human readable description - String
      */
-    protected String describe(On on, boolean and) {
+    protected String describe(final On on, final boolean and) {
         if (and) {
             return nominalValue(on.getTime());
         }
@@ -181,7 +182,7 @@ abstract class DescriptionStrategy {
      * @param fieldValue - some FieldValue
      * @return String
      */
-    protected String nominalValue(FieldValue fieldValue) {
+    protected String nominalValue(final FieldValue<?> fieldValue) {
         Preconditions.checkNotNull(fieldValue, "FieldValue must not be null");
         if (fieldValue instanceof IntegerFieldValue) {
             return nominalValueFunction.apply(((IntegerFieldValue) fieldValue).getValue());
@@ -196,7 +197,7 @@ abstract class DescriptionStrategy {
      * @param expressions - field expressions
      * @return same StringBuilder instance as parameter
      */
-    private StringBuilder createAndDescription(StringBuilder builder, List<FieldExpression> expressions) {
+    private StringBuilder createAndDescription(final StringBuilder builder, final List<FieldExpression> expressions) {
         if ((expressions.size() - 2) >= 0) {
             for (int j = 0; j < expressions.size() - 2; j++) {
                 builder.append(String.format(" %s, ", describe(expressions.get(j), true)));

@@ -18,9 +18,11 @@ import java.io.Serializable;
 import com.cronutils.model.Cron;
 
 public abstract class CronConstraint implements Serializable {
-    private String description;
 
-    public CronConstraint(String description) {
+    private static final long serialVersionUID = 6866660085991775528L;
+    private final String description;
+
+    public CronConstraint(final String description) {
         this.description = description;
     }
 

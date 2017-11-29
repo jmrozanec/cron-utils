@@ -1,14 +1,3 @@
-package com.cronutils.model.field.constraint;
-
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-
-import com.cronutils.model.field.CronFieldName;
-import com.cronutils.model.field.value.SpecialChar;
-
 /*
  * Copyright 2014 jmrozanec
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,15 +11,26 @@ import com.cronutils.model.field.value.SpecialChar;
  * limitations under the License.
  */
 
+package com.cronutils.model.field.constraint;
+
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+
+import com.cronutils.model.field.CronFieldName;
+import com.cronutils.model.field.value.SpecialChar;
+
 /**
  * FieldConstraints builder.
  */
 public class FieldConstraintsBuilder {
     private Map<String, Integer> stringMapping;
-    private Map<Integer, Integer> intMapping;
+    private final Map<Integer, Integer> intMapping;
     private int startRange;
     private int endRange;
-    private Set<SpecialChar> specialChars;
+    private final Set<SpecialChar> specialChars;
 
     /**
      * Constructor.
@@ -50,7 +50,7 @@ public class FieldConstraintsBuilder {
      * @param field - CronFieldName
      * @return FieldConstraintsBuilder instance
      */
-    public FieldConstraintsBuilder forField(CronFieldName field) {
+    public FieldConstraintsBuilder forField(final CronFieldName field) {
         switch (field) {
             case SECOND:
             case MINUTE:
@@ -138,7 +138,7 @@ public class FieldConstraintsBuilder {
      * @param dest   - some int
      * @return same FieldConstraintsBuilder instance
      */
-    public FieldConstraintsBuilder withIntValueMapping(int source, int dest) {
+    public FieldConstraintsBuilder withIntValueMapping(final int source, final int dest) {
         intMapping.put(source, dest);
         return this;
     }
@@ -150,7 +150,7 @@ public class FieldConstraintsBuilder {
      * @param endRange   - end range value
      * @return same FieldConstraintsBuilder instance
      */
-    public FieldConstraintsBuilder withValidRange(int startRange, int endRange) {
+    public FieldConstraintsBuilder withValidRange(final int startRange, final int endRange) {
         this.startRange = startRange;
         this.endRange = endRange;
         return this;
@@ -162,9 +162,9 @@ public class FieldConstraintsBuilder {
      * @param shiftSize - size of the shift
      * @return same FieldConstraintsBuilder instance
      */
-    public FieldConstraintsBuilder withShiftedStringMapping(int shiftSize) {
+    public FieldConstraintsBuilder withShiftedStringMapping(final int shiftSize) {
         if (shiftSize > 0 || endRange < stringMapping.size()) {
-            for (Entry<String, Integer> entry : stringMapping.entrySet()) {
+            for (final Entry<String, Integer> entry : stringMapping.entrySet()) {
                 int value = entry.getValue();
                 value += shiftSize;
                 if (value > endRange) {
@@ -193,7 +193,7 @@ public class FieldConstraintsBuilder {
      * @return Map where strings are weekday names in EEE format and integers correspond to their 1-7 mappings
      */
     private static Map<String, Integer> daysOfWeekMapping() {
-        Map<String, Integer> stringMapping = new HashMap<>();
+        final Map<String, Integer> stringMapping = new HashMap<>();
         stringMapping.put("MON", 1);
         stringMapping.put("TUE", 2);
         stringMapping.put("WED", 3);
@@ -210,7 +210,7 @@ public class FieldConstraintsBuilder {
      * @return Map where strings month names in EEE format, and integers correspond to their 1-12 mappings
      */
     private static Map<String, Integer> monthsMapping() {
-        Map<String, Integer> stringMapping = new HashMap<>();
+        final Map<String, Integer> stringMapping = new HashMap<>();
         stringMapping.put("JAN", 1);
         stringMapping.put("FEB", 2);
         stringMapping.put("MAR", 3);

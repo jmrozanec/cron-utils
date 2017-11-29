@@ -1,5 +1,3 @@
-package com.cronutils.model.field;
-
 /*
 * Copyright 2014 jmrozanec
 * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,6 +10,8 @@ package com.cronutils.model.field;
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
+
+package com.cronutils.model.field;
 
 /**
  * Enumerates cron field names.
@@ -31,7 +31,7 @@ public enum CronFieldName {
      * @param order - specified order between cron fields.
      *              Used to be able to compare fields and sort them
      */
-    CronFieldName(int order) {
+    CronFieldName(final int order) {
         this.order = order;
     }
 

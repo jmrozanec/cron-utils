@@ -1,3 +1,16 @@
+/*
+* Copyright 2014 jmrozanec
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+* http://www.apache.org/licenses/LICENSE-2.0
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*/
+
 package com.cronutils.descriptor;
 
 import java.time.DayOfWeek;
@@ -11,18 +24,6 @@ import com.cronutils.model.field.definition.FieldDefinition;
 import com.cronutils.model.field.expression.FieldExpression;
 import com.cronutils.model.field.expression.On;
 
-/*
-* Copyright 2014 jmrozanec
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-* http://www.apache.org/licenses/LICENSE-2.0
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-*/
 class DescriptionStrategyFactory {
 
     private DescriptionStrategyFactory() {
@@ -38,17 +39,17 @@ class DescriptionStrategyFactory {
     public static DescriptionStrategy daysOfWeekInstance(final ResourceBundle bundle, final FieldExpression expression, final FieldDefinition definition) {
 
         final Function<Integer, String> nominal = integer -> {
-            int diff = definition instanceof DayOfWeekFieldDefinition
+            final int diff = definition instanceof DayOfWeekFieldDefinition
                     ? DayOfWeek.MONDAY.getValue() - ((DayOfWeekFieldDefinition) definition).getMondayDoWValue().getMondayDoWValue()
                     : 0;
             return DayOfWeek.of(integer + diff < 1 ? 7 : integer + diff).getDisplayName(TextStyle.FULL, bundle.getLocale());
         };
 
-        NominalDescriptionStrategy dow = new NominalDescriptionStrategy(bundle, nominal, expression);
+        final NominalDescriptionStrategy dow = new NominalDescriptionStrategy(bundle, nominal, expression);
 
         dow.addDescription(fieldExpression -> {
             if (fieldExpression instanceof On) {
-                On on = (On) fieldExpression;
+                final On on = (On) fieldExpression;
                 switch (on.getSpecialChar().getValue()) {
                     case HASH:
                         return String.format("%s %s %s ", nominal.apply(on.getTime().getValue()), on.getNth(), bundle.getString("of_every_month"));
@@ -71,11 +72,11 @@ class DescriptionStrategyFactory {
      * @return - DescriptionStrategy instance, never null
      */
     public static DescriptionStrategy daysOfMonthInstance(final ResourceBundle bundle, final FieldExpression expression) {
-        NominalDescriptionStrategy dom = new NominalDescriptionStrategy(bundle, null, expression);
+        final NominalDescriptionStrategy dom = new NominalDescriptionStrategy(bundle, null, expression);
 
         dom.addDescription(fieldExpression -> {
             if (fieldExpression instanceof On) {
-                On on = (On) fieldExpression;
+                final On on = (On) fieldExpression;
                 switch (on.getSpecialChar().getValue()) {
                     case W:
                         return String
@@ -111,7 +112,7 @@ class DescriptionStrategyFactory {
      * @param expression - CronFieldExpression
      * @return - DescriptionStrategy instance, never null
      */
-    public static DescriptionStrategy plainInstance(ResourceBundle bundle, final FieldExpression expression) {
+    public static DescriptionStrategy plainInstance(final ResourceBundle bundle, final FieldExpression expression) {
         return new NominalDescriptionStrategy(bundle, null, expression);
     }
 
@@ -121,7 +122,7 @@ class DescriptionStrategyFactory {
      * @param bundle - locale
      * @return - DescriptionStrategy instance, never null
      */
-    public static DescriptionStrategy hhMMssInstance(ResourceBundle bundle, final FieldExpression hours,
+    public static DescriptionStrategy hhMMssInstance(final ResourceBundle bundle, final FieldExpression hours,
             final FieldExpression minutes, final FieldExpression seconds) {
         return new TimeDescriptionStrategy(bundle, hours, minutes, seconds);
     }

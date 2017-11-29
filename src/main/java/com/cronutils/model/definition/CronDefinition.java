@@ -1,17 +1,3 @@
-package com.cronutils.model.definition;
-
-import java.io.Serializable;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import com.cronutils.model.field.CronFieldName;
-import com.cronutils.model.field.definition.FieldDefinition;
-import com.cronutils.utils.Preconditions;
-
 /*
  * Copyright 2014 jmrozanec
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -25,14 +11,30 @@ import com.cronutils.utils.Preconditions;
  * limitations under the License.
  */
 
+package com.cronutils.model.definition;
+
+import java.io.Serializable;
+import java.util.Collections;
+import java.util.EnumMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import com.cronutils.model.field.CronFieldName;
+import com.cronutils.model.field.definition.FieldDefinition;
+import com.cronutils.utils.Preconditions;
+
 /**
  * Defines fields and conditions over each field for a cron.
  */
 public class CronDefinition implements Serializable {
-    private Map<CronFieldName, FieldDefinition> fieldDefinitions;
-    private Set<CronConstraint> cronConstraints;
-    private boolean strictRanges;
-    private boolean matchDayOfWeekAndDayOfMonth;
+
+    private static final long serialVersionUID = 7067112327461432170L;
+    private final Map<CronFieldName, FieldDefinition> fieldDefinitions;
+    private final Set<CronConstraint> cronConstraints;
+    private final boolean strictRanges;
+    private final boolean matchDayOfWeekAndDayOfMonth;
 
     /**
      * Constructor.
@@ -41,14 +43,14 @@ public class CronDefinition implements Serializable {
      *                         Throws a NullPointerException if a null values is received
      *                         Throws an IllegalArgumentException if an empty list is received
      */
-    public CronDefinition(List<FieldDefinition> fieldDefinitions, Set<CronConstraint> cronConstraints,
-            boolean strictRanges, boolean matchDayOfWeekAndDayOfMonth) {
+    public CronDefinition(final List<FieldDefinition> fieldDefinitions, final Set<CronConstraint> cronConstraints,
+            final boolean strictRanges, final boolean matchDayOfWeekAndDayOfMonth) {
         Preconditions.checkNotNull(fieldDefinitions, "Field definitions must not be null");
         Preconditions.checkNotNull(cronConstraints, "Cron validations must not be null");
         Preconditions.checkNotNullNorEmpty(fieldDefinitions, "Field definitions must not be empty");
         Preconditions.checkArgument(!fieldDefinitions.get(0).isOptional(), "The first field must not be optional");
-        this.fieldDefinitions = new HashMap<>();
-        for (FieldDefinition field : fieldDefinitions) {
+        this.fieldDefinitions = new EnumMap<>(CronFieldName.class);
+        for (final FieldDefinition field : fieldDefinitions) {
             this.fieldDefinitions.put(field.getFieldName(), field);
         }
         this.cronConstraints = Collections.unmodifiableSet(cronConstraints);
@@ -89,7 +91,7 @@ public class CronDefinition implements Serializable {
      * @return unmodifiable Map with key CronFieldName and values FieldDefinition, never null
      */
     public Map<CronFieldName, FieldDefinition> retrieveFieldDefinitionsAsMap() {
-        return Collections.unmodifiableMap(this.fieldDefinitions);
+        return Collections.unmodifiableMap(fieldDefinitions);
     }
 
     /**
@@ -98,7 +100,7 @@ public class CronDefinition implements Serializable {
      * @param cronFieldName cron field name
      * @return FieldDefinition instance
      */
-    public FieldDefinition getFieldDefinition(CronFieldName cronFieldName) {
+    public FieldDefinition getFieldDefinition(final CronFieldName cronFieldName) {
         return fieldDefinitions.get(cronFieldName);
     }
 
@@ -108,7 +110,7 @@ public class CronDefinition implements Serializable {
      * @param cronFieldName cron field name
      * @return {@code true} if this cron contains a field definition for field name
      */
-    public boolean containsFieldDefinition(CronFieldName cronFieldName) {
+    public boolean containsFieldDefinition(final CronFieldName cronFieldName) {
         return fieldDefinitions.containsKey(cronFieldName);
     }
 

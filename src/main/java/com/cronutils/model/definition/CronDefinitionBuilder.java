@@ -14,7 +14,7 @@
 package com.cronutils.model.definition;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -32,7 +32,7 @@ import com.cronutils.model.field.definition.FieldSpecialCharsDefinitionBuilder;
  * Builder that allows to define and create CronDefinition instances.
  */
 public class CronDefinitionBuilder {
-    private final Map<CronFieldName, FieldDefinition> fields = new HashMap<>();
+    private final Map<CronFieldName, FieldDefinition> fields = new EnumMap<>(CronFieldName.class);
     private final Set<CronConstraint> cronConstraints = new HashSet<>();
     private boolean enforceStrictRanges;
     private boolean matchDayOfWeekAndDayOfMonth;
@@ -148,8 +148,8 @@ public class CronDefinitionBuilder {
      *
      * @return this CronDefinitionBuilder instance
      */
-    public CronDefinitionBuilder withCronValidation(CronConstraint validation) {
-        this.cronConstraints.add(validation);
+    public CronDefinitionBuilder withCronValidation(final CronConstraint validation) {
+        cronConstraints.add(validation);
         return this;
     }
 
@@ -158,10 +158,10 @@ public class CronDefinitionBuilder {
      *
      * @param definition - FieldDefinition  instance, never null
      */
-    public void register(FieldDefinition definition) {
+    public void register(final FieldDefinition definition) {
         //ensure that we can't register a mandatory definition if there are already optional ones
         boolean hasOptionalField = false;
-        for (FieldDefinition fieldDefinition : fields.values()) {
+        for (final FieldDefinition fieldDefinition : fields.values()) {
             if (fieldDefinition.isOptional()) {
                 hasOptionalField = true;
                 break;
@@ -179,9 +179,9 @@ public class CronDefinitionBuilder {
      * @return returns CronDefinition instance, never null
      */
     public CronDefinition instance() {
-        Set<CronConstraint> validations = new HashSet<>();
+        final Set<CronConstraint> validations = new HashSet<>();
         validations.addAll(cronConstraints);
-        List<FieldDefinition> values = new ArrayList<>(fields.values());
+        final List<FieldDefinition> values = new ArrayList<>(fields.values());
         values.sort(FieldDefinition.createFieldDefinitionComparator());
         return new CronDefinition(values, validations, enforceStrictRanges, matchDayOfWeekAndDayOfMonth);
     }
@@ -303,7 +303,7 @@ public class CronDefinitionBuilder {
      * @param cronType - some cron type. If null, a RuntimeException will be raised.
      * @return CronDefinition instance if definition is found; a RuntimeException otherwise.
      */
-    public static CronDefinition instanceDefinitionFor(CronType cronType) {
+    public static CronDefinition instanceDefinitionFor(final CronType cronType) {
         switch (cronType) {
             case CRON4J:
                 return cron4j();
@@ -312,7 +312,7 @@ public class CronDefinitionBuilder {
             case UNIX:
                 return unixCrontab();
             default:
-                throw new RuntimeException(String.format("No cron definition found for %s", cronType));
+                throw new IllegalArgumentException(String.format("No cron definition found for %s", cronType));
         }
     }
 }

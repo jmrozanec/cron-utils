@@ -1,11 +1,3 @@
-package com.cronutils.mapper;
-
-import java.io.Serializable;
-
-import com.cronutils.Function;
-import com.cronutils.utils.Preconditions;
-import com.cronutils.utils.VisibleForTesting;
-
 /*
  * Copyright 2015 jmrozanec
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,12 +10,23 @@ import com.cronutils.utils.VisibleForTesting;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+package com.cronutils.mapper;
+
+import java.io.Serializable;
+
+import com.cronutils.Function;
+import com.cronutils.utils.Preconditions;
+import com.cronutils.utils.VisibleForTesting;
+
 @VisibleForTesting
 public class WeekDay implements Serializable {
-    private int mondayDoWValue;
-    private boolean firstDayZero;
 
-    public WeekDay(int mondayDoWValue, boolean firstDayZero) {
+    private static final long serialVersionUID = -1542525283511798919L;
+    private final int mondayDoWValue;
+    private final boolean firstDayZero;
+
+    public WeekDay(final int mondayDoWValue, final boolean firstDayZero) {
         Preconditions.checkArgument(mondayDoWValue >= 0, "Monday Day of Week value must be greater or equal to zero");
         this.mondayDoWValue = mondayDoWValue;
         this.firstDayZero = firstDayZero;
@@ -45,7 +48,7 @@ public class WeekDay implements Serializable {
      *                                Value corresponds to this instance mapping.
      * @return - int result
      */
-    public int mapTo(int dayOfWeek, WeekDay targetWeekDayDefinition) {
+    public int mapTo(final int dayOfWeek, final WeekDay targetWeekDayDefinition) {
         if (firstDayZero && targetWeekDayDefinition.isFirstDayZero()) {
             return bothSameStartOfRange(0, 6, this, targetWeekDayDefinition).apply(dayOfWeek);
         }
@@ -64,14 +67,14 @@ public class WeekDay implements Serializable {
 
     private Function<Integer, Integer> bothSameStartOfRange(final int startRange, final int endRange, final WeekDay source, final WeekDay target) {
         return integer -> {
-            int diff = target.getMondayDoWValue() - source.getMondayDoWValue();
+            final int diff = target.getMondayDoWValue() - source.getMondayDoWValue();
             int result = integer;
             if (diff == 0) {
                 return integer;
             }
             if (diff < 0) {
                 result = integer + diff;
-                int distanceToStartRange = startRange - result;
+                final int distanceToStartRange = startRange - result;
                 if (result < startRange) {
                     result = endRange + 1 - distanceToStartRange;
                 }

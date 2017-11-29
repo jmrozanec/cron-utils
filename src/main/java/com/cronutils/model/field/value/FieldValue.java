@@ -1,7 +1,3 @@
-package com.cronutils.model.field.value;
-
-import java.io.Serializable;
-
 /*
  * Copyright 2015 jmrozanec
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,6 +11,10 @@ import java.io.Serializable;
  * limitations under the License.
  */
 
+package com.cronutils.model.field.value;
+
+import java.io.Serializable;
+
 /**
  * Encapsulates a field value, allowing us to.
  * manipulate different types of values in a homogeneous way
@@ -22,6 +22,8 @@ import java.io.Serializable;
  * @param <T>
  */
 public abstract class FieldValue<T extends Serializable> implements Serializable {
+
+    private static final long serialVersionUID = 2392311922703946889L;
 
     /**
      * Allows to obtain the value.
@@ -35,6 +37,7 @@ public abstract class FieldValue<T extends Serializable> implements Serializable
      *
      * @return String, never null
      */
+    @Override
     public final String toString() {
         return String.format("%s", getValue());
     }

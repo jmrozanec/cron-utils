@@ -1,5 +1,3 @@
-package com.cronutils.model.field.definition;
-
 /*
  * Copyright 2014 jmrozanec
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,6 +10,8 @@ package com.cronutils.model.field.definition;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+package com.cronutils.model.field.definition;
 
 import com.cronutils.model.definition.CronDefinitionBuilder;
 import com.cronutils.model.field.CronFieldName;
@@ -27,7 +27,7 @@ public class FieldSpecialCharsDefinitionBuilder extends FieldQuestionMarkDefinit
      * @param parserBuilder - ParserDefinitionBuilder
      * @param fieldName     - CronFieldName
      */
-    public FieldSpecialCharsDefinitionBuilder(CronDefinitionBuilder parserBuilder, CronFieldName fieldName) {
+    public FieldSpecialCharsDefinitionBuilder(final CronDefinitionBuilder parserBuilder, final CronFieldName fieldName) {
         super(parserBuilder, fieldName);
     }
 
@@ -78,7 +78,8 @@ public class FieldSpecialCharsDefinitionBuilder extends FieldQuestionMarkDefinit
      * @param dest   - lower value with equivalent meaning to source
      * @return this FieldSpecialCharsDefinitionBuilder instance
      */
-    public FieldSpecialCharsDefinitionBuilder withIntMapping(int source, int dest) {
+    @Override
+    public FieldSpecialCharsDefinitionBuilder withIntMapping(final int source, final int dest) {
         super.withIntMapping(source, dest);
         return this;
     }
@@ -90,7 +91,8 @@ public class FieldSpecialCharsDefinitionBuilder extends FieldQuestionMarkDefinit
      * @param endRange   - end range value
      * @return same FieldSpecialCharsDefinitionBuilder instance
      */
-    public FieldSpecialCharsDefinitionBuilder withValidRange(int startRange, int endRange) {
+    @Override
+    public FieldSpecialCharsDefinitionBuilder withValidRange(final int startRange, final int endRange) {
         super.withValidRange(startRange, endRange);
         return this;
     }

@@ -1,3 +1,16 @@
+/*
+ * Copyright 2014 jmrozanec
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.cronutils.descriptor;
 
 import java.util.HashSet;
@@ -15,19 +28,6 @@ import com.cronutils.utils.Preconditions;
 
 import static com.cronutils.model.field.expression.FieldExpression.always;
 
-/*
- * Copyright 2014 jmrozanec
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * http://www.apache.org/licenses/LICENSE-2.0
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 /**
  * Strategy to provide a human readable description to hh:mm:ss variations.
  */
@@ -37,7 +37,7 @@ class TimeDescriptionStrategy extends DescriptionStrategy {
     private final FieldExpression minutes;
     private final FieldExpression seconds;
     private final Set<Function<TimeFields, String>> descriptions;
-    private final int defaultSeconds = 0;
+    private static final int DEFAULTSECONDS = 0;
 
     /**
      * Constructor.
@@ -52,7 +52,7 @@ class TimeDescriptionStrategy extends DescriptionStrategy {
         super(bundle);
         this.hours = ensureInstance(hours, always());
         this.minutes = ensureInstance(minutes, always());
-        this.seconds = ensureInstance(seconds, new On(new IntegerFieldValue(defaultSeconds)));
+        this.seconds = ensureInstance(seconds, new On(new IntegerFieldValue(DEFAULTSECONDS)));
         descriptions = new HashSet<>();
         registerFunctions();
     }
@@ -62,7 +62,7 @@ class TimeDescriptionStrategy extends DescriptionStrategy {
      *
      * @param expression        - CronFieldExpression instance; may be null
      * @param defaultExpression - CronFieldExpression, never null;
-     * @return
+     * @return the given expression or the given defaultExpression in case the given expression is {@code null}
      */
     private FieldExpression ensureInstance(final FieldExpression expression, final FieldExpression defaultExpression) {
         Preconditions.checkNotNull(defaultExpression, "Default expression must not be null");
@@ -300,6 +300,6 @@ class TimeDescriptionStrategy extends DescriptionStrategy {
      * @return boolean - true if time value matches a default; false otherwise.
      */
     private boolean isDefault(final On on) {
-        return on.getTime().getValue() == defaultSeconds;
+        return on.getTime().getValue() == DEFAULTSECONDS;
     }
 }

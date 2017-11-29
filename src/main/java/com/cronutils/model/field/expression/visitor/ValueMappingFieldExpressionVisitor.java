@@ -32,50 +32,50 @@ import static com.cronutils.model.field.expression.FieldExpression.questionMark;
  * in new FieldExpression instance constraints.
  */
 public class ValueMappingFieldExpressionVisitor implements FieldExpressionVisitor {
-    private Function<FieldValue, FieldValue> transform;
+    private final Function<FieldValue<?>, FieldValue<?>> transform;
 
-    public ValueMappingFieldExpressionVisitor(Function<FieldValue, FieldValue> transform) {
+    public ValueMappingFieldExpressionVisitor(final Function<FieldValue<?>, FieldValue<?>> transform) {
         this.transform = transform;
     }
 
     @Override
-    public FieldExpression visit(Always always) {
+    public FieldExpression visit(final Always always) {
         return always;
     }
 
     @Override
-    public FieldExpression visit(And and) {
-        And clone = new And();
-        for (FieldExpression expression : and.getExpressions()) {
+    public FieldExpression visit(final And and) {
+        final And clone = new And();
+        for (final FieldExpression expression : and.getExpressions()) {
             clone.and(visit(expression));
         }
         return clone;
     }
 
     @Override
-    public FieldExpression visit(Between between) {
-        FieldValue from = transform.apply(between.getFrom());
-        FieldValue to = transform.apply(between.getTo());
+    public FieldExpression visit(final Between between) {
+        final FieldValue<?> from = transform.apply(between.getFrom());
+        final FieldValue<?> to = transform.apply(between.getTo());
         return new Between(from, to);
     }
 
     @Override
-    public FieldExpression visit(Every every) {
+    public FieldExpression visit(final Every every) {
         return new Every((IntegerFieldValue) transform.apply(every.getPeriod()));
     }
 
     @Override
-    public FieldExpression visit(On on) {
+    public FieldExpression visit(final On on) {
         return new On((IntegerFieldValue) transform.apply(on.getTime()), on.getSpecialChar(), on.getNth());
     }
 
     @Override
-    public FieldExpression visit(QuestionMark questionMark) {
+    public FieldExpression visit(final QuestionMark questionMark) {
         return questionMark();
     }
 
     @Override
-    public FieldExpression visit(FieldExpression expression) {
+    public FieldExpression visit(final FieldExpression expression) {
         if (expression instanceof Always) {
             return visit((Always) expression);
         }

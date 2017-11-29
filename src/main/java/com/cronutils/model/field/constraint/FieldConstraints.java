@@ -1,13 +1,3 @@
-package com.cronutils.model.field.constraint;
-
-import java.io.Serializable;
-import java.util.Collections;
-import java.util.Map;
-import java.util.Set;
-
-import com.cronutils.model.field.value.SpecialChar;
-import com.cronutils.utils.Preconditions;
-
 /*
  * Copyright 2014 jmrozanec
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,6 +11,16 @@ import com.cronutils.utils.Preconditions;
  * limitations under the License.
  */
 
+package com.cronutils.model.field.constraint;
+
+import java.io.Serializable;
+import java.util.Collections;
+import java.util.Map;
+import java.util.Set;
+
+import com.cronutils.model.field.value.SpecialChar;
+import com.cronutils.utils.Preconditions;
+
 /**
  * Holds information on valid values for a field and allows to perform mappings and validations. Example of information for valid field
  * values: int range, valid special characters, valid nominal values. Example for mappings: conversions from nominal values to integers and
@@ -28,6 +28,7 @@ import com.cronutils.utils.Preconditions;
  */
 public class FieldConstraints implements Serializable {
 
+    private static final long serialVersionUID = -9112124669329704710L;
     private final Map<String, Integer> stringMapping;
     private final Map<Integer, Integer> intMapping;
     private final Set<SpecialChar> specialChars;
@@ -41,8 +42,8 @@ public class FieldConstraints implements Serializable {
      * @param startRange   - lowest possible value
      * @param endRange     - highest possible value
      */
-    public FieldConstraints(Map<String, Integer> stringMapping, Map<Integer, Integer> intMapping, Set<SpecialChar> specialChars, int startRange,
-            int endRange) {
+    public FieldConstraints(final Map<String, Integer> stringMapping, final Map<Integer, Integer> intMapping, final Set<SpecialChar> specialChars, final int startRange,
+            final int endRange) {
         this.stringMapping = Collections.unmodifiableMap(Preconditions.checkNotNull(stringMapping, "String mapping must not be null"));
         this.intMapping = Collections.unmodifiableMap(Preconditions.checkNotNull(intMapping, "Integer mapping must not be null"));
         this.specialChars = Collections.unmodifiableSet(Preconditions.checkNotNull(specialChars, "Special (non-standard) chars set must not be null"));
@@ -67,7 +68,7 @@ public class FieldConstraints implements Serializable {
      *
      * @param value - to be checked
      */
-    public boolean isInRange(int value) {
+    public boolean isInRange(final int value) {
         return value >= getStartRange() && value <= getEndRange();
     }
 
@@ -77,7 +78,7 @@ public class FieldConstraints implements Serializable {
      * @param period - to be checked
      * @return {@code true} if period is compatible, {@code false} otherwise.
      */
-    public boolean isPeriodInRange(int period) {
+    public boolean isPeriodInRange(final int period) {
         return period > 0 && period <= getEndRange() - getStartRange();
     }
 
@@ -85,11 +86,11 @@ public class FieldConstraints implements Serializable {
         return stringMapping.keySet();
     }
 
-    public Integer getStringMappingValue(String exp) {
+    public Integer getStringMappingValue(final String exp) {
         return stringMapping.get(exp);
     }
 
-    public Integer getIntMappingValue(Integer exp) {
+    public Integer getIntMappingValue(final Integer exp) {
         return intMapping.get(exp);
     }
 

@@ -103,7 +103,7 @@ public class Preconditions {
      *                     string using {@link String#valueOf(Object)}
      * @throws IllegalArgumentException if {@code expression} is false
      */
-    public static void checkArgument(boolean expression, Object errorMessage) {
+    public static void checkArgument(final boolean expression, final Object errorMessage) {
         if (!expression) {
             throw new IllegalArgumentException(String.valueOf(errorMessage));
         }
@@ -124,9 +124,9 @@ public class Preconditions {
      * @throws NullPointerException     if the check fails and either {@code errorMessageTemplate} or
      *                                  {@code errorMessageArgs} is null (don't let this happen)
      */
-    public static void checkArgument(boolean expression,
-            String errorMessageTemplate,
-            Object... errorMessageArgs) {
+    public static void checkArgument(final boolean expression,
+            final String errorMessageTemplate,
+            final Object... errorMessageArgs) {
         if (!expression) {
             throw new IllegalArgumentException(format(errorMessageTemplate, errorMessageArgs));
         }
@@ -148,9 +148,9 @@ public class Preconditions {
      * @throws NullPointerException  if the check fails and either {@code errorMessageTemplate} or
      *                               {@code errorMessageArgs} is null (don't let this happen)
      */
-    public static void checkState(boolean expression,
-            String errorMessageTemplate,
-            Object... errorMessageArgs) {
+    public static void checkState(final boolean expression,
+            final String errorMessageTemplate,
+            final Object... errorMessageArgs) {
         if (!expression) {
             throw new IllegalStateException(format(errorMessageTemplate, errorMessageArgs));
         }
@@ -163,7 +163,7 @@ public class Preconditions {
      * @return T - the non-null reference that was validated
      * @throws NullPointerException if {@code reference} is null
      */
-    public static <T> T checkNotNull(T reference) {
+    public static <T> T checkNotNull(final T reference) {
         if (reference == null) {
             throw new NullPointerException();
         }
@@ -179,7 +179,7 @@ public class Preconditions {
      * @return the non-null reference that was validated
      * @throws NullPointerException if {@code reference} is null
      */
-    public static <T> T checkNotNull(T reference, Object errorMessage) {
+    public static <T> T checkNotNull(final T reference, final Object errorMessage) {
         if (reference == null) {
             throw new NullPointerException(String.valueOf(errorMessage));
         }
@@ -197,7 +197,7 @@ public class Preconditions {
      * @throws NullPointerException     if {@code reference} is null
      * @throws IllegalArgumentException if {@code reference} is empty
      */
-    public static String checkNotNullNorEmpty(String reference, Object errorMessage) {
+    public static String checkNotNullNorEmpty(final String reference, final Object errorMessage) {
         if (reference == null) {
             throw new NullPointerException(String.valueOf(errorMessage));
         }
@@ -218,7 +218,7 @@ public class Preconditions {
      * @throws NullPointerException     if {@code reference} is null
      * @throws IllegalArgumentException if {@code reference} is empty
      */
-    public static <T extends Collection<?>> T checkNotNullNorEmpty(T reference, Object errorMessage) {
+    public static <T extends Collection<?>> T checkNotNullNorEmpty(final T reference, final Object errorMessage) {
         if (reference == null) {
             throw new NullPointerException(String.valueOf(errorMessage));
         }
@@ -239,15 +239,15 @@ public class Preconditions {
      *                         to strings using {@link String#valueOf(Object)}. Arguments can be null.
      */
     // Note that this is somewhat-improperly used from Verify.java as well.
-    private static String format(String nullableTemplate, Object... args) {
-        String template = String.valueOf(nullableTemplate); // null -> "null"
+    private static String format(final String nullableTemplate, final Object... args) {
+        final String template = String.valueOf(nullableTemplate); // null -> "null"
 
         // start substituting the arguments into the '%s' placeholders
-        StringBuilder builder = new StringBuilder(template.length() + 16 * args.length);
+        final StringBuilder builder = new StringBuilder(template.length() + 16 * args.length);
         int templateStart = 0;
         int i = 0;
         while (i < args.length) {
-            int placeholderStart = template.indexOf("%s", templateStart);
+            final int placeholderStart = template.indexOf("%s", templateStart);
             if (placeholderStart == -1) {
                 break;
             }

@@ -1,15 +1,3 @@
-package com.cronutils.model.time.generator;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import com.cronutils.model.field.CronField;
-import com.cronutils.model.field.expression.Between;
-import com.cronutils.model.field.expression.Every;
-import com.cronutils.model.field.expression.FieldExpression;
-import com.cronutils.model.field.expression.On;
-import com.cronutils.utils.VisibleForTesting;
-
 /*
  * Copyright 2015 jmrozanec
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,18 +10,31 @@ import com.cronutils.utils.VisibleForTesting;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+package com.cronutils.model.time.generator;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import com.cronutils.model.field.CronField;
+import com.cronutils.model.field.expression.Between;
+import com.cronutils.model.field.expression.Every;
+import com.cronutils.model.field.expression.FieldExpression;
+import com.cronutils.model.field.expression.On;
+import com.cronutils.utils.VisibleForTesting;
+
 class EveryFieldValueGenerator extends FieldValueGenerator {
 
     private final int from;
     private final int to;
 
-    public EveryFieldValueGenerator(CronField cronField) {
+    public EveryFieldValueGenerator(final CronField cronField) {
         super(cronField);
 
-        Every every = (Every) cronField.getExpression();
-        FieldExpression everyExpression = every.getExpression();
+        final Every every = (Every) cronField.getExpression();
+        final FieldExpression everyExpression = every.getExpression();
         if (everyExpression instanceof Between) {
-            Between between = (Between) everyExpression;
+            final Between between = (Between) everyExpression;
 
             from = Math.max(cronField.getConstraints().getStartRange(), BetweenFieldValueGenerator.map(between.getFrom()));
             to = Math.min(cronField.getConstraints().getEndRange(), BetweenFieldValueGenerator.map(between.getTo()));
@@ -44,18 +45,18 @@ class EveryFieldValueGenerator extends FieldValueGenerator {
     }
 
     @Override
-    public int generateNextValue(int reference) throws NoSuchValueException {
+    public int generateNextValue(final int reference) throws NoSuchValueException {
         //intuition: for valid values, we have: offset+period*i
         if (reference >= to) {
             throw new NoSuchValueException();
         }
-        Every every = (Every) cronField.getExpression();
+        final Every every = (Every) cronField.getExpression();
 
-        int referenceWithoutOffset = reference - offset();
-        int period = every.getPeriod().getValue();
-        int remainder = referenceWithoutOffset % period;
+        final int referenceWithoutOffset = reference - offset();
+        final int period = every.getPeriod().getValue();
+        final int remainder = referenceWithoutOffset % period;
 
-        int next = reference + (period - remainder);
+        final int next = reference + (period - remainder);
         if (next < from) {
             return from;
         }
@@ -67,10 +68,10 @@ class EveryFieldValueGenerator extends FieldValueGenerator {
     }
 
     @Override
-    public int generatePreviousValue(int reference) throws NoSuchValueException {
-        Every every = (Every) cronField.getExpression();
-        int period = every.getPeriod().getValue();
-        int remainder = reference % period;
+    public int generatePreviousValue(final int reference) throws NoSuchValueException {
+        final Every every = (Every) cronField.getExpression();
+        final int period = every.getPeriod().getValue();
+        final int remainder = reference % period;
         if (remainder == 0) {
             return reference - period;
         } else {
@@ -79,10 +80,10 @@ class EveryFieldValueGenerator extends FieldValueGenerator {
     }
 
     @Override
-    protected List<Integer> generateCandidatesNotIncludingIntervalExtremes(int start, int end) {
-        List<Integer> values = new ArrayList<>();
+    protected List<Integer> generateCandidatesNotIncludingIntervalExtremes(final int start, final int end) {
+        final List<Integer> values = new ArrayList<>();
         try {
-            int offset = offset();
+            final int offset = offset();
             if (start != offset) {
                 values.add(offset);
             }
@@ -93,27 +94,27 @@ class EveryFieldValueGenerator extends FieldValueGenerator {
                 }
                 reference = generateNextValue(reference);
             }
-        } catch (NoSuchValueException ignored) {
+        } catch (final NoSuchValueException ignored) {
             // We just skip, since we generate values until we get the exception
         }
         return values;
     }
 
     @Override
-    public boolean isMatch(int value) {
-        Every every = (Every) cronField.getExpression();
-        int start = offset();
+    public boolean isMatch(final int value) {
+        final Every every = (Every) cronField.getExpression();
+        final int start = offset();
         return ((value - start) % every.getPeriod().getValue()) == 0 && value >= from && value <= to;
     }
 
     @Override
-    protected boolean matchesFieldExpressionClass(FieldExpression fieldExpression) {
+    protected boolean matchesFieldExpressionClass(final FieldExpression fieldExpression) {
         return fieldExpression instanceof Every;
     }
 
     @VisibleForTesting
     int offset() {
-        FieldExpression expression = ((Every) cronField.getExpression()).getExpression();
+        final FieldExpression expression = ((Every) cronField.getExpression()).getExpression();
         if (expression instanceof On) {
             return ((On) expression).getTime().getValue();
         }

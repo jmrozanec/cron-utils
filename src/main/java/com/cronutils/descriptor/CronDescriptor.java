@@ -1,15 +1,3 @@
-package com.cronutils.descriptor;
-
-import java.util.Locale;
-import java.util.Map;
-import java.util.ResourceBundle;
-
-import com.cronutils.model.Cron;
-import com.cronutils.model.field.CronField;
-import com.cronutils.model.field.CronFieldName;
-import com.cronutils.model.field.definition.FieldDefinition;
-import com.cronutils.utils.Preconditions;
-
 /*
  * Copyright 2014 jmrozanec
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,6 +11,18 @@ import com.cronutils.utils.Preconditions;
  * limitations under the License.
  */
 
+package com.cronutils.descriptor;
+
+import java.util.Locale;
+import java.util.Map;
+import java.util.ResourceBundle;
+
+import com.cronutils.model.Cron;
+import com.cronutils.model.field.CronField;
+import com.cronutils.model.field.CronFieldName;
+import com.cronutils.model.field.definition.FieldDefinition;
+import com.cronutils.utils.Preconditions;
+
 /**
  * Provides human readable description for a given cron.
  */
@@ -30,22 +30,22 @@ public class CronDescriptor {
 
     public static final Locale DEFAULT_LOCALE = Locale.UK;
     private static final String BUNDLE = "CronUtilsI18N";
-    private ResourceBundle bundle;
+    private final ResourceBundle resourceBundle;
 
     /**
      * Constructor creating a descriptor for given Locale.
      *
      * @param locale - Locale in which descriptions are given
      */
-    private CronDescriptor(Locale locale) {
-        bundle = ResourceBundle.getBundle(BUNDLE, locale);
+    private CronDescriptor(final Locale locale) {
+        resourceBundle = ResourceBundle.getBundle(BUNDLE, locale);
     }
 
     /**
      * Default constructor. Considers Locale.UK as default locale
      */
     private CronDescriptor() {
-        bundle = ResourceBundle.getBundle(BUNDLE, DEFAULT_LOCALE);
+        resourceBundle = ResourceBundle.getBundle(BUNDLE, DEFAULT_LOCALE);
     }
 
     /**
@@ -55,10 +55,10 @@ public class CronDescriptor {
      *             if null, will throw NullPointerException
      * @return description - String
      */
-    public String describe(Cron cron) {
+    public String describe(final Cron cron) {
         Preconditions.checkNotNull(cron, "Cron must not be null");
-        Map<CronFieldName, CronField> expressions = cron.retrieveFieldsAsMap();
-        Map<CronFieldName, FieldDefinition> fieldDefinitions = cron.getCronDefinition().retrieveFieldDefinitionsAsMap();
+        final Map<CronFieldName, CronField> expressions = cron.retrieveFieldsAsMap();
+        final Map<CronFieldName, FieldDefinition> fieldDefinitions = cron.getCronDefinition().retrieveFieldDefinitionsAsMap();
 
         return
                 new StringBuilder()
@@ -76,9 +76,9 @@ public class CronDescriptor {
      * @param fields - fields to describe;
      * @return description - String
      */
-    private String describeHHmmss(Map<CronFieldName, CronField> fields) {
+    private String describeHHmmss(final Map<CronFieldName, CronField> fields) {
         return DescriptionStrategyFactory.hhMMssInstance(
-                bundle,
+                resourceBundle,
                 fields.containsKey(CronFieldName.HOUR) ? fields.get(CronFieldName.HOUR).getExpression() : null,
                 fields.containsKey(CronFieldName.MINUTE) ? fields.get(CronFieldName.MINUTE).getExpression() : null,
                 fields.containsKey(CronFieldName.SECOND) ? fields.get(CronFieldName.SECOND).getExpression() : null
@@ -91,12 +91,12 @@ public class CronDescriptor {
      * @param fields - fields to describe;
      * @return description - String
      */
-    private String describeDayOfMonth(Map<CronFieldName, CronField> fields) {
-        String description = DescriptionStrategyFactory.daysOfMonthInstance(
-                bundle,
+    private String describeDayOfMonth(final Map<CronFieldName, CronField> fields) {
+        final String description = DescriptionStrategyFactory.daysOfMonthInstance(
+                resourceBundle,
                 fields.containsKey(CronFieldName.DAY_OF_MONTH) ? fields.get(CronFieldName.DAY_OF_MONTH).getExpression() : null
         ).describe();
-        return addTimeExpressions(description, bundle.getString("day"), bundle.getString("days"));
+        return addTimeExpressions(description, resourceBundle.getString("day"), resourceBundle.getString("days"));
     }
 
     /**
@@ -105,16 +105,16 @@ public class CronDescriptor {
      * @param fields - fields to describe;
      * @return description - String
      */
-    private String describeMonth(Map<CronFieldName, CronField> fields) {
-        String description = DescriptionStrategyFactory.monthsInstance(
-                bundle,
+    private String describeMonth(final Map<CronFieldName, CronField> fields) {
+        final String description = DescriptionStrategyFactory.monthsInstance(
+                resourceBundle,
                 fields.containsKey(CronFieldName.MONTH) ? fields.get(CronFieldName.MONTH).getExpression() : null
         ).describe();
 
-        return addTimeExpressions(description, bundle.getString("month"), bundle.getString("months"));
+        return addTimeExpressions(description, resourceBundle.getString("month"), resourceBundle.getString("months"));
     }
 
-    private String addTimeExpressions(String description, String singular, String plural) {
+    private String addTimeExpressions(final String description, final String singular, final String plural) {
         return description
                 .replaceAll("%s", singular)
                 .replaceAll("%p", plural);
@@ -126,17 +126,17 @@ public class CronDescriptor {
      * @param fields - fields to describe;
      * @return description - String
      */
-    private String describeDayOfWeek(Map<CronFieldName, CronField> fields, Map<CronFieldName, FieldDefinition> definitions) {
+    private String describeDayOfWeek(final Map<CronFieldName, CronField> fields, final Map<CronFieldName, FieldDefinition> definitions) {
 
-        String description = DescriptionStrategyFactory.daysOfWeekInstance(
-                bundle,
+        final String description = DescriptionStrategyFactory.daysOfWeekInstance(
+                resourceBundle,
                 fields.containsKey(CronFieldName.DAY_OF_WEEK) ? fields.get(CronFieldName.DAY_OF_WEEK).getExpression() : null,
                 definitions.containsKey(CronFieldName.DAY_OF_WEEK) ? definitions.get(CronFieldName.DAY_OF_WEEK) : null
         ).describe();
-        return this.addExpressions(description, bundle.getString("day"), bundle.getString("days"));
+        return addExpressions(description, resourceBundle.getString("day"), resourceBundle.getString("days"));
     }
 
-    private String addExpressions(String description, String singular, String plural) {
+    private String addExpressions(final String description, final String singular, final String plural) {
         return description
                 .replaceAll("%s", singular)
                 .replaceAll("%p", plural);
@@ -148,13 +148,13 @@ public class CronDescriptor {
      * @param fields - fields to describe;
      * @return description - String
      */
-    private String describeYear(Map<CronFieldName, CronField> fields) {
+    private String describeYear(final Map<CronFieldName, CronField> fields) {
         return String.format(
                 DescriptionStrategyFactory.plainInstance(
-                        bundle,
+                        resourceBundle,
                         fields.containsKey(CronFieldName.YEAR) ? fields.get(CronFieldName.YEAR).getExpression() : null
                 ).describe(),
-                bundle.getString("year"));
+                resourceBundle.getString("year"));
     }
 
     /**
@@ -172,7 +172,7 @@ public class CronDescriptor {
      * @param locale - Locale in which descriptions will be given
      * @return CronDescriptor - never null.
      */
-    public static CronDescriptor instance(Locale locale) {
+    public static CronDescriptor instance(final Locale locale) {
         return new CronDescriptor(locale);
     }
 }

@@ -1,10 +1,3 @@
-package com.cronutils.model.time.generator;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import com.cronutils.model.field.CronField;
-
 /*
  * Copyright 2015 jmrozanec
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,26 +10,34 @@ import com.cronutils.model.field.CronField;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+package com.cronutils.model.time.generator;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import com.cronutils.model.field.CronField;
+
 abstract class OnDayOfCalendarValueGenerator extends FieldValueGenerator {
     protected int year;
     protected int month;
 
-    OnDayOfCalendarValueGenerator(CronField cronField, int year, int month) {
+    OnDayOfCalendarValueGenerator(final CronField cronField, final int year, final int month) {
         super(cronField);
         this.year = year;
         this.month = month;
     }
 
     @Override
-    protected List<Integer> generateCandidatesNotIncludingIntervalExtremes(int start, int end) {
-        List<Integer> values = new ArrayList<>();
+    protected List<Integer> generateCandidatesNotIncludingIntervalExtremes(final int start, final int end) {
+        final List<Integer> values = new ArrayList<>();
         try {
             int reference = generateNextValue(start);
             while (reference < end) {
                 values.add(reference);
                 reference = generateNextValue(reference);
             }
-        } catch (NoSuchValueException ignored) { /*NOP*/ }
+        } catch (final NoSuchValueException ignored) { /*NOP*/ }
         return values;
     }
 }

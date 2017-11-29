@@ -1,7 +1,20 @@
+/*
+ * Copyright 2014 jmrozanec
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.cronutils.mapper;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 
@@ -29,22 +42,10 @@ import com.cronutils.utils.VisibleForTesting;
 import static com.cronutils.model.field.expression.FieldExpression.always;
 import static com.cronutils.model.field.expression.FieldExpression.questionMark;
 
-/*
- * Copyright 2014 jmrozanec
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * http://www.apache.org/licenses/LICENSE-2.0
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 public class CronMapper {
-    private Map<CronFieldName, Function<CronField, CronField>> mappings;
-    private Function<Cron, Cron> cronRules;
-    private CronDefinition to;
+    private final Map<CronFieldName, Function<CronField, CronField>> mappings;
+    private final Function<Cron, Cron> cronRules;
+    private final CronDefinition to;
 
     /**
      * Constructor.
@@ -55,11 +56,11 @@ public class CronMapper {
      *                  if null a NullPointerException will be raised
      * @param cronRules - cron rules
      */
-    public CronMapper(CronDefinition from, CronDefinition to, Function<Cron, Cron> cronRules) {
+    public CronMapper(final CronDefinition from, final CronDefinition to, final Function<Cron, Cron> cronRules) {
         Preconditions.checkNotNull(from, "Source CronDefinition must not be null");
         this.to = Preconditions.checkNotNull(to, "Destination CronDefinition must not be null");
         this.cronRules = Preconditions.checkNotNull(cronRules, "CronRules must not be null");
-        mappings = new HashMap<>();
+        mappings = new EnumMap<>(CronFieldName.class);
         buildMappings(from, to);
     }
 
@@ -70,10 +71,10 @@ public class CronMapper {
      *             if null a NullPointerException will be raised
      * @return new Cron instance, never null;
      */
-    public Cron map(Cron cron) {
+    public Cron map(final Cron cron) {
         Preconditions.checkNotNull(cron, "Cron must not be null");
-        List<CronField> fields = new ArrayList<>();
-        for (CronFieldName name : CronFieldName.values()) {
+        final List<CronField> fields = new ArrayList<>();
+        for (final CronFieldName name : CronFieldName.values()) {
             if (mappings.containsKey(name)) {
                 fields.add(mappings.get(name).apply(cron.retrieve(name)));
             }
@@ -113,7 +114,7 @@ public class CronMapper {
         );
     }
 
-    public static CronMapper sameCron(CronDefinition cronDefinition) {
+    public static CronMapper sameCron(final CronDefinition cronDefinition) {
         return new CronMapper(cronDefinition, cronDefinition, sameCron());
     }
 
@@ -123,13 +124,13 @@ public class CronMapper {
 
     private static Function<Cron, Cron> setQuestionMark() {
         return cron -> {
-            CronField dow = cron.retrieve(CronFieldName.DAY_OF_WEEK);
-            CronField dom = cron.retrieve(CronFieldName.DAY_OF_MONTH);
+            final CronField dow = cron.retrieve(CronFieldName.DAY_OF_WEEK);
+            final CronField dom = cron.retrieve(CronFieldName.DAY_OF_MONTH);
             if (dow != null && dom != null) {
                 if (dow.getExpression() instanceof QuestionMark || dom.getExpression() instanceof QuestionMark) {
                     return cron;
                 } else {
-                    Map<CronFieldName, CronField> fields = new HashMap<>();
+                    final Map<CronFieldName, CronField> fields = new EnumMap<>(CronFieldName.class);
                     fields.putAll(cron.retrieveFieldsAsMap());
                     if (dow.getExpression() instanceof Always) {
                         fields.put(CronFieldName.DAY_OF_WEEK,
@@ -155,18 +156,18 @@ public class CronMapper {
      * @param from - source CronDefinition
      * @param to   - target CronDefinition
      */
-    private void buildMappings(CronDefinition from, CronDefinition to) {
-        Map<CronFieldName, FieldDefinition> sourceFieldDefinitions = new HashMap<>();
-        Map<CronFieldName, FieldDefinition> destFieldDefinitions = new HashMap<>();
-        for (FieldDefinition fieldDefinition : from.getFieldDefinitions()) {
+    private void buildMappings(final CronDefinition from, final CronDefinition to) {
+        final Map<CronFieldName, FieldDefinition> sourceFieldDefinitions = new EnumMap<>(CronFieldName.class);
+        final Map<CronFieldName, FieldDefinition> destFieldDefinitions = new EnumMap<>(CronFieldName.class);
+        for (final FieldDefinition fieldDefinition : from.getFieldDefinitions()) {
             sourceFieldDefinitions.put(fieldDefinition.getFieldName(), fieldDefinition);
         }
-        for (FieldDefinition fieldDefinition : to.getFieldDefinitions()) {
+        for (final FieldDefinition fieldDefinition : to.getFieldDefinitions()) {
             destFieldDefinitions.put(fieldDefinition.getFieldName(), fieldDefinition);
         }
         boolean startedDestMapping = false;
         boolean startedSourceMapping = false;
-        for (CronFieldName name : CronFieldName.values()) {
+        for (final CronFieldName name : CronFieldName.values()) {
             if (destFieldDefinitions.get(name) != null) {
                 startedDestMapping = true;
             }
@@ -222,7 +223,7 @@ public class CronMapper {
     @VisibleForTesting
     static Function<CronField, CronField> returnOnZeroExpression(final CronFieldName name) {
         return field -> {
-            FieldConstraints constraints = FieldConstraintsBuilder.instance().forField(name).createConstraintsInstance();
+            final FieldConstraints constraints = FieldConstraintsBuilder.instance().forField(name).createConstraintsInstance();
             return new CronField(name, new On(new IntegerFieldValue(0)), constraints);
         };
     }
@@ -241,7 +242,7 @@ public class CronMapper {
     @VisibleForTesting
     static Function<CronField, CronField> dayOfWeekMapping(final DayOfWeekFieldDefinition sourceDef, final DayOfWeekFieldDefinition targetDef) {
         return field -> {
-            FieldExpression expression = field.getExpression();
+            final FieldExpression expression = field.getExpression();
             FieldExpression dest = null;
             dest = expression.accept(
                     new ValueMappingFieldExpressionVisitor(
@@ -260,10 +261,8 @@ public class CronMapper {
                     )
             );
 
-            if (expression instanceof QuestionMark) {
-                if (!targetDef.getConstraints().getSpecialChars().contains(SpecialChar.QUESTION_MARK)) {
-                    dest = always();
-                }
+            if (expression instanceof QuestionMark && !targetDef.getConstraints().getSpecialChars().contains(SpecialChar.QUESTION_MARK)) {
+                dest = always();
             }
             return new CronField(CronFieldName.DAY_OF_WEEK, dest, targetDef.getConstraints());
 
@@ -273,12 +272,10 @@ public class CronMapper {
     @VisibleForTesting
     static Function<CronField, CronField> dayOfMonthMapping(final FieldDefinition sourceDef, final FieldDefinition targetDef) {
         return field -> {
-            FieldExpression expression = field.getExpression();
+            final FieldExpression expression = field.getExpression();
             FieldExpression dest = expression;
-            if (expression instanceof QuestionMark) {
-                if (!targetDef.getConstraints().getSpecialChars().contains(SpecialChar.QUESTION_MARK)) {
-                    dest = always();
-                }
+            if (expression instanceof QuestionMark && !targetDef.getConstraints().getSpecialChars().contains(SpecialChar.QUESTION_MARK)) {
+                dest = always();
             }
             return new CronField(CronFieldName.DAY_OF_MONTH, dest, targetDef.getConstraints());
         };

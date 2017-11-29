@@ -14,7 +14,7 @@
 package com.cronutils.builder;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.Map;
 
 import com.cronutils.model.Cron;
@@ -38,46 +38,46 @@ import static com.cronutils.utils.Preconditions.checkState;
 
 public class CronBuilder {
 
-    private final Map<CronFieldName, CronField> fields = new HashMap<>();
-    private CronDefinition definition;
+    private final Map<CronFieldName, CronField> fields = new EnumMap<>(CronFieldName.class);
+    private final CronDefinition definition;
 
-    private CronBuilder(CronDefinition definition) {
+    private CronBuilder(final CronDefinition definition) {
         this.definition = definition;
     }
 
-    public static CronBuilder cron(CronDefinition definition) {
+    public static CronBuilder cron(final CronDefinition definition) {
         return new CronBuilder(definition);
     }
 
-    public CronBuilder withDoY(FieldExpression expression) {
+    public CronBuilder withDoY(final FieldExpression expression) {
         return addField(DAY_OF_YEAR, expression);
     }
 
-    public CronBuilder withYear(FieldExpression expression) {
+    public CronBuilder withYear(final FieldExpression expression) {
         return addField(YEAR, expression);
     }
 
-    public CronBuilder withDoM(FieldExpression expression) {
+    public CronBuilder withDoM(final FieldExpression expression) {
         return addField(DAY_OF_MONTH, expression);
     }
 
-    public CronBuilder withMonth(FieldExpression expression) {
+    public CronBuilder withMonth(final FieldExpression expression) {
         return addField(MONTH, expression);
     }
 
-    public CronBuilder withDoW(FieldExpression expression) {
+    public CronBuilder withDoW(final FieldExpression expression) {
         return addField(DAY_OF_WEEK, expression);
     }
 
-    public CronBuilder withHour(FieldExpression expression) {
+    public CronBuilder withHour(final FieldExpression expression) {
         return addField(HOUR, expression);
     }
 
-    public CronBuilder withMinute(FieldExpression expression) {
+    public CronBuilder withMinute(final FieldExpression expression) {
         return addField(MINUTE, expression);
     }
 
-    public CronBuilder withSecond(FieldExpression expression) {
+    public CronBuilder withSecond(final FieldExpression expression) {
         return addField(SECOND, expression);
     }
 
@@ -86,10 +86,10 @@ public class CronBuilder {
     }
 
     @VisibleForTesting
-    CronBuilder addField(CronFieldName name, FieldExpression expression) {
+    CronBuilder addField(final CronFieldName name, final FieldExpression expression) {
         checkState(definition != null, "CronBuilder not initialized.");
 
-        FieldConstraints constraints = definition.getFieldDefinition(name).getConstraints();
+        final FieldConstraints constraints = definition.getFieldDefinition(name).getConstraints();
         expression.accept(new ValidationFieldExpressionVisitor(constraints, definition.isStrictRanges()));
         fields.put(name, new CronField(name, expression, constraints));
 

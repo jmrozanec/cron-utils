@@ -1,13 +1,3 @@
-package com.cronutils.model.time.generator;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import com.cronutils.model.field.CronField;
-import com.cronutils.model.field.CronFieldName;
-import com.cronutils.model.field.expression.Always;
-import com.cronutils.model.field.expression.FieldExpression;
-
 /*
  * Copyright 2015 jmrozanec
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,14 +10,25 @@ import com.cronutils.model.field.expression.FieldExpression;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+package com.cronutils.model.time.generator;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import com.cronutils.model.field.CronField;
+import com.cronutils.model.field.CronFieldName;
+import com.cronutils.model.field.expression.Always;
+import com.cronutils.model.field.expression.FieldExpression;
+
 class AlwaysFieldValueGenerator extends FieldValueGenerator {
-    public AlwaysFieldValueGenerator(CronField cronField) {
+    public AlwaysFieldValueGenerator(final CronField cronField) {
         super(cronField);
     }
 
     @Override
-    public int generateNextValue(int reference) throws NoSuchValueException {
-        int newvalue = reference + 1;
+    public int generateNextValue(final int reference) throws NoSuchValueException {
+        final int newvalue = reference + 1;
         if (newvalue <= cronField.getConstraints().getEndRange()) {
             return newvalue;
         } else {
@@ -36,8 +37,8 @@ class AlwaysFieldValueGenerator extends FieldValueGenerator {
     }
 
     @Override
-    public int generatePreviousValue(int reference) throws NoSuchValueException {
-        int newvalue = reference - 1;
+    public int generatePreviousValue(final int reference) throws NoSuchValueException {
+        final int newvalue = reference - 1;
         if (newvalue >= cronField.getConstraints().getStartRange()) {
             return newvalue;
         } else {
@@ -46,8 +47,8 @@ class AlwaysFieldValueGenerator extends FieldValueGenerator {
     }
 
     @Override
-    protected List<Integer> generateCandidatesNotIncludingIntervalExtremes(int start, int end) {
-        List<Integer> values = new ArrayList<>();
+    protected List<Integer> generateCandidatesNotIncludingIntervalExtremes(final int start, final int end) {
+        final List<Integer> values = new ArrayList<>();
         for (int j = start + 1; j < end; j++) {
             values.add(j);
         }
@@ -55,14 +56,14 @@ class AlwaysFieldValueGenerator extends FieldValueGenerator {
     }
 
     @Override
-    public boolean isMatch(int value) {
+    public boolean isMatch(final int value) {
         return cronField.getField() == CronFieldName.DAY_OF_WEEK || cronField.getConstraints().isInRange(value);
         //TODO for DoW we do not have enough information to reject.
         //TODO We should think of a better strategy to propagate context information that would allow us perform validations.
     }
 
     @Override
-    protected boolean matchesFieldExpressionClass(FieldExpression fieldExpression) {
+    protected boolean matchesFieldExpressionClass(final FieldExpression fieldExpression) {
         return fieldExpression instanceof Always;
     }
 }
