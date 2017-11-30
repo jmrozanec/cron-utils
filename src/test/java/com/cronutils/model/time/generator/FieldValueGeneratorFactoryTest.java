@@ -124,7 +124,7 @@ public class FieldValueGeneratorFactoryTest {
     }
 
     @Test
-    public void testCreateDayOfMonthValueGeneratorInstanceForNONE() {
+    public void testCreateDayOfMonthValueGeneratorInstanceForNone() {
         assertEquals(
                 OnFieldValueGenerator.class,
                 createDayOfMonthValueGeneratorInstance(SpecialChar.NONE).getClass()

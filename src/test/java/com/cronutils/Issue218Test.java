@@ -24,9 +24,6 @@ import com.cronutils.parser.CronParser;
 
 import static com.cronutils.model.definition.CronDefinitionBuilder.defineCron;
 
-/**
- * @author minidmnv
- */
 public class Issue218Test {
 
     /**

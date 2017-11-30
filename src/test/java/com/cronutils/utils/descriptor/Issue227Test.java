@@ -26,9 +26,6 @@ import com.cronutils.parser.CronParser;
 
 import static org.junit.Assert.assertEquals;
 
-/**
- * @author minidmnv
- */
 public class Issue227Test {
 
     /**
