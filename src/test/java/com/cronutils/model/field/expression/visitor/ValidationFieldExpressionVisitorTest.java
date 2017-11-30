@@ -469,10 +469,4 @@ public class ValidationFieldExpressionVisitorTest {
         strictVisitor.isInRange(integerValue);
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void testIsInRangeOORange() {
-        final IntegerFieldValue integerValue = new IntegerFieldValue(HIGHOOR);
-        strictVisitor.isInRange(integerValue);
-    }
-
 }
