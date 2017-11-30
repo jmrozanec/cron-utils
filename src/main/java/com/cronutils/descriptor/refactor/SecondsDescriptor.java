@@ -16,12 +16,13 @@ import com.cronutils.model.field.expression.visitor.FieldExpressionVisitor;
 import com.cronutils.model.field.value.FieldValue;
 import com.cronutils.model.field.value.IntegerFieldValue;
 import com.cronutils.utils.Preconditions;
+import com.cronutils.utils.StringUtils;
 import com.cronutils.utils.VisibleForTesting;
 
 class SecondsDescriptor implements FieldExpressionVisitor {
     protected ResourceBundle bundle;
 
-    SecondsDescriptor(ResourceBundle bundle) {
+    SecondsDescriptor(final ResourceBundle bundle) {
         this.bundle = bundle;
     }
 
@@ -32,7 +33,7 @@ class SecondsDescriptor implements FieldExpressionVisitor {
      * @param fieldExpression - CronFieldExpression instance - not null
      * @return human readable description - String
      */
-    public String describe(FieldExpression fieldExpression) {
+    public String describe(final FieldExpression fieldExpression) {
         return describe(fieldExpression, false);
     }
 
@@ -44,16 +45,16 @@ class SecondsDescriptor implements FieldExpressionVisitor {
      * @param and             - boolean expression that indicates if description should fit an "and" context
      * @return human readable description - String
      */
-    protected String describe(FieldExpression fieldExpression, boolean and) {
+    protected String describe(final FieldExpression fieldExpression, final boolean and) {
         Preconditions.checkNotNull(fieldExpression, "CronFieldExpression should not be null!");
         if (fieldExpression instanceof Always) {
-            return describe((Always) fieldExpression, and);
+            return describe(fieldExpression, and);
         }
         if (fieldExpression instanceof And) {
             return describe((And) fieldExpression);
         }
         if (fieldExpression instanceof Between) {
-            return describe((Between) fieldExpression, and);
+            return describe(fieldExpression, and);
         }
         if (fieldExpression instanceof Every) {
             return describe((Every) fieldExpression, and);
@@ -61,7 +62,7 @@ class SecondsDescriptor implements FieldExpressionVisitor {
         if (fieldExpression instanceof On) {
             return describe((On) fieldExpression, and);
         }
-        return "";
+        return StringUtils.EMPTY;
     }
 
     /**
@@ -70,7 +71,7 @@ class SecondsDescriptor implements FieldExpressionVisitor {
      * @param always - Always
      * @return human readable description - String
      */
-    protected String describe(Always always, boolean and) {
+    protected String describe(final Always always, final boolean and) {
         return bundle.getString("every");
     }
 
@@ -80,17 +81,17 @@ class SecondsDescriptor implements FieldExpressionVisitor {
      * @param and - And
      * @return human readable description - String
      */
-    protected String describe(And and) {
-        List<FieldExpression> expressions = new ArrayList<>();
-        List<FieldExpression> onExpressions = new ArrayList<>();
-        for (FieldExpression fieldExpression : and.getExpressions()) {
+    protected String describe(final And and) {
+        final List<FieldExpression> expressions = new ArrayList<>();
+        final List<FieldExpression> onExpressions = new ArrayList<>();
+        for (final FieldExpression fieldExpression : and.getExpressions()) {
             if (fieldExpression instanceof On) {
                 onExpressions.add(fieldExpression);
             } else {
                 expressions.add(fieldExpression);
             }
         }
-        StringBuilder builder = new StringBuilder();
+        final StringBuilder builder = new StringBuilder();
         if (!onExpressions.isEmpty()) {
             builder.append(bundle.getString("at"));
             createAndDescription(builder, onExpressions);
@@ -108,7 +109,7 @@ class SecondsDescriptor implements FieldExpressionVisitor {
      * @param between - Between
      * @return human readable description - String
      */
-    protected String describe(Between between, boolean and) {
+    protected String describe(final Between between, final boolean and) {
         return new StringBuilder()
                 .append(
                         MessageFormat.format(
@@ -120,7 +121,7 @@ class SecondsDescriptor implements FieldExpressionVisitor {
                 .append(" ").toString();
     }
 
-    protected String describe(Every every, boolean and) {
+    protected String describe(final Every every, final boolean and) {
         return null;
     }
 
@@ -130,7 +131,7 @@ class SecondsDescriptor implements FieldExpressionVisitor {
      * @param on - On
      * @return human readable description - String
      */
-    protected String describe(On on, boolean and) {
+    protected String describe(final On on, final boolean and) {
         if (and) {
             return nominalValue(on.getTime());
         }
@@ -146,10 +147,10 @@ class SecondsDescriptor implements FieldExpressionVisitor {
      * @param fieldValue - some FieldValue
      * @return String
      */
-    protected String nominalValue(FieldValue fieldValue) {
+    protected String nominalValue(final FieldValue<?> fieldValue) {
         Preconditions.checkNotNull(fieldValue, "FieldValue must not be null");
         if (fieldValue instanceof IntegerFieldValue) {
-            return "" + ((IntegerFieldValue) fieldValue).getValue();
+            return StringUtils.EMPTY + ((IntegerFieldValue) fieldValue).getValue();
         }
         return fieldValue.toString();
     }
@@ -162,7 +163,7 @@ class SecondsDescriptor implements FieldExpressionVisitor {
      * @return same StringBuilder instance as parameter
      */
     @VisibleForTesting
-    StringBuilder createAndDescription(StringBuilder builder, List<FieldExpression> expressions) {
+    StringBuilder createAndDescription(final StringBuilder builder, final List<FieldExpression> expressions) {
         if ((expressions.size() - 2) >= 0) {
             for (int j = 0; j < expressions.size() - 2; j++) {
                 builder.append(String.format(" %s, ", describe(expressions.get(j), true)));
@@ -175,22 +176,22 @@ class SecondsDescriptor implements FieldExpressionVisitor {
     }
 
     @Override
-    public FieldExpression visit(FieldExpression expression) {
+    public FieldExpression visit(final FieldExpression expression) {
         return null;
     }
 
     @Override
-    public Always visit(Always always) {
+    public Always visit(final Always always) {
         return null;
     }
 
     @Override
-    public And visit(And and) {
+    public And visit(final And and) {
         return null;
     }
 
     @Override
-    public Between visit(Between between) {
+    public Between visit(final Between between) {
         return null;
     }
 
@@ -201,7 +202,7 @@ class SecondsDescriptor implements FieldExpressionVisitor {
      * @return human readable description - String
      */
     @Override
-    public Every visit(Every every) {
+    public Every visit(final Every every) {
         String description;
         if (every.getPeriod().getValue() > 1) {
             description = String.format("%s %s ", bundle.getString("every"), nominalValue(every.getPeriod())) + " %p ";
@@ -213,12 +214,12 @@ class SecondsDescriptor implements FieldExpressionVisitor {
     }
 
     @Override
-    public On visit(On on) {
+    public On visit(final On on) {
         return null;
     }
 
     @Override
-    public QuestionMark visit(QuestionMark questionMark) {
+    public QuestionMark visit(final QuestionMark questionMark) {
         return null;
     }
 }

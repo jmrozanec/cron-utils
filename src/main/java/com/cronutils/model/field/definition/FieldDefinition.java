@@ -1,5 +1,3 @@
-package com.cronutils.model.field.definition;
-
 /*
  * Copyright 2014 jmrozanec
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,6 +11,8 @@ package com.cronutils.model.field.definition;
  * limitations under the License.
  */
 
+package com.cronutils.model.field.definition;
+
 import java.io.Serializable;
 import java.util.Comparator;
 
@@ -24,8 +24,10 @@ import com.cronutils.utils.Preconditions;
  * Represents a definition of allowed values for a cron field.
  */
 public class FieldDefinition implements Serializable {
-    private CronFieldName fieldName;
-    private FieldConstraints constraints;
+
+    private static final long serialVersionUID = 7285200909397193383L;
+    private final CronFieldName fieldName;
+    private final FieldConstraints constraints;
     private final boolean optional;
 
     /**
@@ -36,7 +38,7 @@ public class FieldDefinition implements Serializable {
      * @param constraints - FieldConstraints, constraints;
      *                    if null, a NullPointerException will be raised.
      */
-    public FieldDefinition(CronFieldName fieldName, FieldConstraints constraints) {
+    public FieldDefinition(final CronFieldName fieldName, final FieldConstraints constraints) {
         this(fieldName, constraints, false);
     }
 
@@ -49,7 +51,7 @@ public class FieldDefinition implements Serializable {
      *                    if null, a NullPointerException will be raised.
      * @param optional    - if {@code false} the field is mandatory, optional otherwise.
      */
-    public FieldDefinition(CronFieldName fieldName, FieldConstraints constraints, boolean optional) {
+    public FieldDefinition(final CronFieldName fieldName, final FieldConstraints constraints, final boolean optional) {
         this.fieldName = Preconditions.checkNotNull(fieldName, "CronFieldName must not be null");
         this.constraints = Preconditions.checkNotNull(constraints, "FieldConstraints must not be null");
         this.optional = optional;

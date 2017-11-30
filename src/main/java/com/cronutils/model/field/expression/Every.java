@@ -1,8 +1,3 @@
-package com.cronutils.model.field.expression;
-
-import com.cronutils.model.field.value.IntegerFieldValue;
-import com.cronutils.utils.Preconditions;
-
 /*
  * Copyright 2014 jmrozanec
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,22 +11,25 @@ import com.cronutils.utils.Preconditions;
  * limitations under the License.
  */
 
+package com.cronutils.model.field.expression;
+
+import com.cronutils.model.field.value.IntegerFieldValue;
+import com.cronutils.utils.Preconditions;
+
 /**
  * Represents every x time on a cron field.
  */
 public class Every extends FieldExpression {
-    private FieldExpression expression;
-    private IntegerFieldValue period;
 
-    private Every(Every every) {
-        this(every.getExpression(), every.getPeriod());
-    }
+    private static final long serialVersionUID = -1103196842332906994L;
+    private final FieldExpression expression;
+    private final IntegerFieldValue period;
 
-    public Every(IntegerFieldValue time) {
+    public Every(final IntegerFieldValue time) {
         this(always(), time);
     }
 
-    public Every(FieldExpression expression, IntegerFieldValue period) {
+    public Every(final FieldExpression expression, final IntegerFieldValue period) {
         this.expression = Preconditions.checkNotNull(expression, "Expression must not be null");
         this.period = period == null ? new IntegerFieldValue(1) : period;
     }
@@ -46,7 +44,7 @@ public class Every extends FieldExpression {
 
     @Override
     public String asString() {
-        String expressionAsString = expression.asString();
+        final String expressionAsString = expression.asString();
         if ("*".equals(expressionAsString) && period.getValue() == 1) {
             return expressionAsString;
         }

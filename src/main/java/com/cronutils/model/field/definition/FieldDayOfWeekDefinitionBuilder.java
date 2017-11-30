@@ -1,10 +1,3 @@
-package com.cronutils.model.field.definition;
-
-import com.cronutils.mapper.WeekDay;
-import com.cronutils.model.definition.CronDefinitionBuilder;
-import com.cronutils.model.field.CronFieldName;
-import com.cronutils.utils.Preconditions;
-
 /*
  * Copyright 2015 jmrozanec
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,6 +10,14 @@ import com.cronutils.utils.Preconditions;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+package com.cronutils.model.field.definition;
+
+import com.cronutils.mapper.WeekDay;
+import com.cronutils.model.definition.CronDefinitionBuilder;
+import com.cronutils.model.field.CronFieldName;
+import com.cronutils.utils.Preconditions;
+
 public class FieldDayOfWeekDefinitionBuilder extends FieldSpecialCharsDefinitionBuilder {
     private int mondayDoWValue = 1;//default is cron-utils specification
 
@@ -27,7 +28,7 @@ public class FieldDayOfWeekDefinitionBuilder extends FieldSpecialCharsDefinition
      *                              if null, a NullPointerException will be raised
      * @param fieldName             - CronFieldName instance -
      */
-    public FieldDayOfWeekDefinitionBuilder(CronDefinitionBuilder cronDefinitionBuilder, CronFieldName fieldName) {
+    public FieldDayOfWeekDefinitionBuilder(final CronDefinitionBuilder cronDefinitionBuilder, final CronFieldName fieldName) {
         super(cronDefinitionBuilder, fieldName);
         Preconditions.checkArgument(CronFieldName.DAY_OF_WEEK.equals(fieldName), "CronFieldName must be DAY_OF_WEEK");
     }
@@ -37,9 +38,9 @@ public class FieldDayOfWeekDefinitionBuilder extends FieldSpecialCharsDefinition
      *
      * @return this FieldSpecialCharsDefinitionBuilder instance
      */
-    public FieldDayOfWeekDefinitionBuilder withMondayDoWValue(int mondayDoW) {
-        this.constraints.withShiftedStringMapping(mondayDoW - this.mondayDoWValue);
-        this.mondayDoWValue = mondayDoW;
+    public FieldDayOfWeekDefinitionBuilder withMondayDoWValue(final int mondayDoW) {
+        constraints.withShiftedStringMapping(mondayDoW - mondayDoWValue);
+        mondayDoWValue = mondayDoW;
         return this;
     }
 
@@ -48,8 +49,9 @@ public class FieldDayOfWeekDefinitionBuilder extends FieldSpecialCharsDefinition
      *
      * @return ParserDefinitionBuilder instance obtained from constructor
      */
+    @Override
     public CronDefinitionBuilder and() {
-        boolean zeroInRange = constraints.createConstraintsInstance().isInRange(0);
+        final boolean zeroInRange = constraints.createConstraintsInstance().isInRange(0);
         cronDefinitionBuilder
                 .register(new DayOfWeekFieldDefinition(fieldName, constraints.createConstraintsInstance(), optional, new WeekDay(mondayDoWValue, zeroInRange)));
         return cronDefinitionBuilder;
@@ -62,7 +64,8 @@ public class FieldDayOfWeekDefinitionBuilder extends FieldSpecialCharsDefinition
      * @param endRange   - end range value
      * @return same FieldDayOfWeekDefinitionBuilder instance
      */
-    public FieldDayOfWeekDefinitionBuilder withValidRange(int startRange, int endRange) {
+    @Override
+    public FieldDayOfWeekDefinitionBuilder withValidRange(final int startRange, final int endRange) {
         super.withValidRange(startRange, endRange);
         return this;
     }
@@ -74,7 +77,8 @@ public class FieldDayOfWeekDefinitionBuilder extends FieldSpecialCharsDefinition
      * @param dest   - lower value with equivalent meaning to source
      * @return this FieldDayOfWeekDefinitionBuilder instance
      */
-    public FieldDayOfWeekDefinitionBuilder withIntMapping(int source, int dest) {
+    @Override
+    public FieldDayOfWeekDefinitionBuilder withIntMapping(final int source, final int dest) {
         super.withIntMapping(source, dest);
         return this;
     }

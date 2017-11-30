@@ -1,10 +1,3 @@
-package com.cronutils.model.field.definition;
-
-import com.cronutils.model.definition.CronDefinitionBuilder;
-import com.cronutils.model.field.CronFieldName;
-import com.cronutils.model.field.constraint.FieldConstraintsBuilder;
-import com.cronutils.utils.Preconditions;
-
 /*
  * Copyright 2014 jmrozanec
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,6 +10,13 @@ import com.cronutils.utils.Preconditions;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+package com.cronutils.model.field.definition;
+
+import com.cronutils.model.definition.CronDefinitionBuilder;
+import com.cronutils.model.field.CronFieldName;
+import com.cronutils.model.field.constraint.FieldConstraintsBuilder;
+import com.cronutils.utils.Preconditions;
 
 /**
  * Provides means to define cron field definitions.
@@ -35,10 +35,10 @@ public class FieldDefinitionBuilder {
      * @param fieldName             - CronFieldName instance -
      *                              if null, a NullPointerException will be raised
      */
-    public FieldDefinitionBuilder(CronDefinitionBuilder cronDefinitionBuilder, CronFieldName fieldName) {
+    public FieldDefinitionBuilder(final CronDefinitionBuilder cronDefinitionBuilder, final CronFieldName fieldName) {
         this.cronDefinitionBuilder = Preconditions.checkNotNull(cronDefinitionBuilder, "ParserBuilder must not be null");
         this.fieldName = Preconditions.checkNotNull(fieldName, "CronFieldName must not be null");
-        this.constraints = FieldConstraintsBuilder.instance().forField(fieldName);
+        constraints = FieldConstraintsBuilder.instance().forField(fieldName);
     }
 
     /**
@@ -49,7 +49,7 @@ public class FieldDefinitionBuilder {
      * @param dest   - lower value with equivalent meaning to source
      * @return this instance
      */
-    public FieldDefinitionBuilder withIntMapping(int source, int dest) {
+    public FieldDefinitionBuilder withIntMapping(final int source, final int dest) {
         constraints.withIntValueMapping(source, dest);
         return this;
     }
@@ -61,7 +61,7 @@ public class FieldDefinitionBuilder {
      * @param endRange   - end range value
      * @return same FieldDefinitionBuilder instance
      */
-    public FieldDefinitionBuilder withValidRange(int startRange, int endRange) {
+    public FieldDefinitionBuilder withValidRange(final int startRange, final int endRange) {
         constraints.withValidRange(startRange, endRange);
         return this;
     }

@@ -1,12 +1,3 @@
-package com.cronutils.model.field;
-
-import java.io.Serializable;
-import java.util.Comparator;
-
-import com.cronutils.model.field.constraint.FieldConstraints;
-import com.cronutils.model.field.expression.FieldExpression;
-import com.cronutils.utils.Preconditions;
-
 /*
  * Copyright 2014 jmrozanec
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,12 +10,24 @@ import com.cronutils.utils.Preconditions;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-public class CronField implements Serializable {
-    private CronFieldName field;
-    private FieldExpression expression;
-    private FieldConstraints constraints;
 
-    public CronField(CronFieldName field, FieldExpression expression, FieldConstraints constraints) {
+package com.cronutils.model.field;
+
+import java.io.Serializable;
+import java.util.Comparator;
+
+import com.cronutils.model.field.constraint.FieldConstraints;
+import com.cronutils.model.field.expression.FieldExpression;
+import com.cronutils.utils.Preconditions;
+
+public class CronField implements Serializable {
+
+    private static final long serialVersionUID = -4042499846855256325L;
+    private final CronFieldName field;
+    private final FieldExpression expression;
+    private final FieldConstraints constraints;
+
+    public CronField(final CronFieldName field, final FieldExpression expression, final FieldConstraints constraints) {
         this.field = field;
         this.expression = Preconditions.checkNotNull(expression, "FieldExpression must not be null");
         this.constraints = Preconditions.checkNotNull(constraints, "FieldConstraints must not be null");

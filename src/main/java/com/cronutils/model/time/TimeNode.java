@@ -1,13 +1,3 @@
-package com.cronutils.model.time;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
-
-import com.cronutils.utils.Preconditions;
-import com.cronutils.utils.VisibleForTesting;
-
 /*
  * Copyright 2015 jmrozanec
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,15 +10,26 @@ import com.cronutils.utils.VisibleForTesting;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+package com.cronutils.model.time;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import com.cronutils.utils.Preconditions;
+import com.cronutils.utils.VisibleForTesting;
+
 class TimeNode {
     protected List<Integer> values;
 
-    public TimeNode(List<Integer> values) {
+    public TimeNode(final List<Integer> values) {
         this.values = Preconditions.checkNotNullNorEmpty(values, "Values must not be empty");
         Collections.sort(this.values);
     }
 
-    public NearestValue getNextValue(int reference, int shifts) {
+    public NearestValue getNextValue(final int reference, final int shifts) {
         return getNearestForwardValue(reference, shifts);
     }
 
@@ -36,7 +37,7 @@ class TimeNode {
         return Collections.unmodifiableList(values);
     }
 
-    public NearestValue getPreviousValue(int reference, int shifts) {
+    public NearestValue getPreviousValue(final int reference, final int shifts) {
         return getNearestBackwardValue(reference, shifts);
     }
 
@@ -50,15 +51,15 @@ class TimeNode {
      * @return NearestValue instance, never null. Holds information on nearest (forward) value and shifts performed.
      */
     @VisibleForTesting
-    NearestValue getNearestForwardValue(int reference, int shiftsToApply) {
-        List<Integer> values = new ArrayList<>(this.values);
+    NearestValue getNearestForwardValue(final int reference, int shiftsToApply) {
+        final List<Integer> temporaryValues = new ArrayList<>(this.values);
         int index = 0;
         boolean foundGreater = false;
-        AtomicInteger shift = new AtomicInteger(0);
-        if (!values.contains(reference)) {
-            for (Integer value : values) {
+        final AtomicInteger shift = new AtomicInteger(0);
+        if (!temporaryValues.contains(reference)) {
+            for (final Integer value : temporaryValues) {
                 if (value > reference) {
-                    index = values.indexOf(value);
+                    index = temporaryValues.indexOf(value);
                     shiftsToApply--;//we just moved a position!
                     foundGreater = true;
                     break;
@@ -68,12 +69,12 @@ class TimeNode {
                 shift.incrementAndGet();
             }
         } else {
-            index = values.indexOf(reference);
+            index = temporaryValues.indexOf(reference);
         }
-        int value = values.get(index);
+        int value = temporaryValues.get(index);
         for (int j = 0; j < shiftsToApply; j++) {
-            value = getValueFromList(values, index + 1, shift);
-            index = values.indexOf(value);
+            value = getValueFromList(temporaryValues, index + 1, shift);
+            index = temporaryValues.indexOf(value);
         }
         return new NearestValue(value, shift.get());
     }
@@ -88,16 +89,16 @@ class TimeNode {
      * @return NearestValue instance, never null. Holds information on nearest (backward) value and shifts performed.
      */
     @VisibleForTesting
-    NearestValue getNearestBackwardValue(int reference, int shiftsToApply) {
-        List<Integer> values = new ArrayList<>(this.values);
-        Collections.reverse(values);
+    NearestValue getNearestBackwardValue(final int reference, int shiftsToApply) {
+        final List<Integer> temporaryValues = new ArrayList<>(this.values);
+        Collections.reverse(temporaryValues);
         int index = 0;
         boolean foundSmaller = false;
-        AtomicInteger shift = new AtomicInteger(0);
-        if (!values.contains(reference)) {
-            for (Integer value : values) {
+        final AtomicInteger shift = new AtomicInteger(0);
+        if (!temporaryValues.contains(reference)) {
+            for (final Integer value : temporaryValues) {
                 if (value < reference) {
-                    index = values.indexOf(value);
+                    index = temporaryValues.indexOf(value);
                     shiftsToApply--;//we just moved a position!
                     foundSmaller = true;
                     break;
@@ -107,12 +108,12 @@ class TimeNode {
                 shift.incrementAndGet();
             }
         } else {
-            index = values.indexOf(reference);
+            index = temporaryValues.indexOf(reference);
         }
-        int value = values.get(index);
+        int value = temporaryValues.get(index);
         for (int j = 0; j < shiftsToApply; j++) {
-            value = getValueFromList(values, index + 1, shift);
-            index = values.indexOf(value);
+            value = getValueFromList(temporaryValues, index + 1, shift);
+            index = temporaryValues.indexOf(value);
         }
         return new NearestValue(value, shift.get());
     }
@@ -126,7 +127,7 @@ class TimeNode {
      * @return int - required value from values list
      */
     @VisibleForTesting
-    int getValueFromList(List<Integer> values, int index, AtomicInteger shift) {
+    int getValueFromList(final List<Integer> values, int index, final AtomicInteger shift) {
         Preconditions.checkNotNullNorEmpty(values, "List must not be empty");
         if (index < 0) {
             index = index + values.size();

@@ -17,9 +17,9 @@ import com.cronutils.model.field.CronField;
 import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.field.constraint.FieldConstraints;
 import com.cronutils.model.field.constraint.FieldConstraintsBuilder;
-import com.cronutils.model.field.expression.Always;
 import com.cronutils.model.field.expression.Between;
 import com.cronutils.model.field.expression.Every;
+import com.cronutils.model.field.expression.FieldExpression;
 import com.cronutils.model.field.expression.On;
 import com.cronutils.model.field.value.IntegerFieldValue;
 import com.cronutils.model.field.value.SpecialChar;
@@ -59,8 +59,8 @@ public class CronDescriptorTest {
 
     @Test
     public void testDescribeEveryXTimeUnits() throws Exception {
-        int time = 3;
-        Every expression = new Every(new IntegerFieldValue(time));
+        final int time = 3;
+        final Every expression = new Every(new IntegerFieldValue(time));
         assertEquals(String.format("every %s seconds", time), descriptor.describe(
                 new Cron(mockDefinition, Collections.singletonList(new CronField(CronFieldName.SECOND, expression, nullFieldConstraints)))
                 )
@@ -69,7 +69,7 @@ public class CronDescriptorTest {
                 new Cron(mockDefinition, Collections.singletonList(new CronField(CronFieldName.MINUTE, expression, nullFieldConstraints)))
                 )
         );
-        List<CronField> params = new ArrayList<>();
+        final List<CronField> params = new ArrayList<>();
         params.add(new CronField(CronFieldName.HOUR, expression, nullFieldConstraints));
         params.add(new CronField(CronFieldName.MINUTE, new On(new IntegerFieldValue(time)), nullFieldConstraints));
         assertEquals(String.format("every %s hours at minute %s", time, time), descriptor.describe(new Cron(mockDefinition, params)));
@@ -77,11 +77,11 @@ public class CronDescriptorTest {
 
     @Test
     public void testDescribeEveryXMinutesBetweenTime() throws Exception {
-        int hour = 11;
-        int start = 0;
-        int end = 10;
-        Between expression = new Between(new IntegerFieldValue(start), new IntegerFieldValue(end));
-        List<CronField> results = new ArrayList<>();
+        final int hour = 11;
+        final int start = 0;
+        final int end = 10;
+        final Between expression = new Between(new IntegerFieldValue(start), new IntegerFieldValue(end));
+        final List<CronField> results = new ArrayList<>();
         results.add(new CronField(CronFieldName.MINUTE, expression, nullFieldConstraints));
         results.add(new CronField(CronFieldName.HOUR, new On(new IntegerFieldValue(hour)), nullFieldConstraints));
         assertEquals(String.format("every minute between %s:%02d and %s:%02d", hour, start, hour, end), descriptor.describe(new Cron(mockDefinition, results)));
@@ -89,12 +89,12 @@ public class CronDescriptorTest {
 
     @Test
     public void testDescribeAtXTimeBetweenDaysOfWeek() throws Exception {
-        int hour = 11;
-        int minute = 30;
-        int start = 2;
-        int end = 6;
-        Between expression = new Between(new IntegerFieldValue(start), new IntegerFieldValue(end));
-        List<CronField> results = new ArrayList<>();
+        final int hour = 11;
+        final int minute = 30;
+        final int start = 2;
+        final int end = 6;
+        final Between expression = new Between(new IntegerFieldValue(start), new IntegerFieldValue(end));
+        final List<CronField> results = new ArrayList<>();
         results.add(new CronField(CronFieldName.HOUR, new On(new IntegerFieldValue(hour)), nullFieldConstraints));
         results.add(new CronField(CronFieldName.MINUTE, new On(new IntegerFieldValue(minute)), nullFieldConstraints));
         results.add(new CronField(CronFieldName.DAY_OF_WEEK, expression, nullFieldConstraints));
@@ -103,42 +103,42 @@ public class CronDescriptorTest {
 
     @Test
     public void testDescribeAtXHours() throws Exception {
-        int hour = 11;
-        List<CronField> results = new ArrayList<>();
+        final int hour = 11;
+        final List<CronField> results = new ArrayList<>();
         results.add(new CronField(CronFieldName.HOUR, new On(new IntegerFieldValue(hour)), nullFieldConstraints));
-        results.add(new CronField(CronFieldName.MINUTE, new Always(), nullFieldConstraints));
-        results.add(new CronField(CronFieldName.SECOND, new Always(), nullFieldConstraints));
+        results.add(new CronField(CronFieldName.MINUTE, FieldExpression.always(), nullFieldConstraints));
+        results.add(new CronField(CronFieldName.SECOND, FieldExpression.always(), nullFieldConstraints));
         assertEquals(String.format("at %s:00", hour), descriptor.describe(new Cron(mockDefinition, results)));
     }
 
     @Test
     public void testEverySecondInMonth() throws Exception {
-        int month = 2;
-        List<CronField> results = new ArrayList<>();
-        results.add(new CronField(CronFieldName.HOUR, new Always(), nullFieldConstraints));
-        results.add(new CronField(CronFieldName.MINUTE, new Always(), nullFieldConstraints));
-        results.add(new CronField(CronFieldName.SECOND, new Always(), nullFieldConstraints));
+        final int month = 2;
+        final List<CronField> results = new ArrayList<>();
+        results.add(new CronField(CronFieldName.HOUR, FieldExpression.always(), nullFieldConstraints));
+        results.add(new CronField(CronFieldName.MINUTE, FieldExpression.always(), nullFieldConstraints));
+        results.add(new CronField(CronFieldName.SECOND, FieldExpression.always(), nullFieldConstraints));
         results.add(new CronField(CronFieldName.MONTH, new On(new IntegerFieldValue(month)), nullFieldConstraints));
         assertEquals("every second at February month", descriptor.describe(new Cron(mockDefinition, results)));
     }
 
     @Test
     public void testEveryMinuteBetweenMonths() throws Exception {
-        int monthStart = 2;
-        int monthEnd = 3;
-        List<CronField> results = new ArrayList<>();
-        results.add(new CronField(CronFieldName.HOUR, new Always(), nullFieldConstraints));
-        results.add(new CronField(CronFieldName.MINUTE, new Always(), nullFieldConstraints));
+        final int monthStart = 2;
+        final int monthEnd = 3;
+        final List<CronField> results = new ArrayList<>();
+        results.add(new CronField(CronFieldName.HOUR, FieldExpression.always(), nullFieldConstraints));
+        results.add(new CronField(CronFieldName.MINUTE, FieldExpression.always(), nullFieldConstraints));
         results.add(new CronField(CronFieldName.MONTH, new Between(new IntegerFieldValue(monthStart), new IntegerFieldValue(monthEnd)), nullFieldConstraints));
         assertEquals("every minute every month between February and March", descriptor.describe(new Cron(mockDefinition, results)));
     }
 
     @Test
     public void testLastDayOfWeekInMonth() throws Exception {
-        int dayOfWeek = 2;
-        int hour = 10;
-        int minute = 15;
-        List<CronField> results = new ArrayList<>();
+        final int dayOfWeek = 2;
+        final int hour = 10;
+        final int minute = 15;
+        final List<CronField> results = new ArrayList<>();
         results.add(new CronField(CronFieldName.HOUR, new On(new IntegerFieldValue(hour)), nullFieldConstraints));
         results.add(new CronField(CronFieldName.MINUTE, new On(new IntegerFieldValue(minute)), nullFieldConstraints));
         results.add(new CronField(CronFieldName.DAY_OF_WEEK, new On(new IntegerFieldValue(dayOfWeek), new SpecialCharFieldValue(SpecialChar.L)),
@@ -148,10 +148,10 @@ public class CronDescriptorTest {
 
     @Test
     public void testNthDayOfWeekInMonth() throws Exception {
-        int dayOfWeek = 2;
-        int hour = 10;
-        int minute = 15;
-        List<CronField> results = new ArrayList<>();
+        final int dayOfWeek = 2;
+        final int hour = 10;
+        final int minute = 15;
+        final List<CronField> results = new ArrayList<>();
         results.add(new CronField(CronFieldName.HOUR, new On(new IntegerFieldValue(hour)), nullFieldConstraints));
         results.add(new CronField(CronFieldName.MINUTE, new On(new IntegerFieldValue(minute)), nullFieldConstraints));
         results.add(new CronField(CronFieldName.DAY_OF_WEEK,
@@ -161,9 +161,9 @@ public class CronDescriptorTest {
 
     @Test
     public void testLastDayOfMonth() throws Exception {
-        int hour = 10;
-        int minute = 15;
-        List<CronField> results = new ArrayList<>();
+        final int hour = 10;
+        final int minute = 15;
+        final List<CronField> results = new ArrayList<>();
         results.add(new CronField(CronFieldName.HOUR, new On(new IntegerFieldValue(hour)), nullFieldConstraints));
         results.add(new CronField(CronFieldName.MINUTE, new On(new IntegerFieldValue(minute)), nullFieldConstraints));
         results.add(new CronField(CronFieldName.DAY_OF_MONTH, new On(new SpecialCharFieldValue(SpecialChar.L)), nullFieldConstraints));
@@ -172,10 +172,10 @@ public class CronDescriptorTest {
 
     @Test
     public void testNearestWeekdayToNthOfMonth() throws Exception {
-        int dayOfMonth = 22;
-        int hour = 10;
-        int minute = 15;
-        List<CronField> results = new ArrayList<>();
+        final int dayOfMonth = 22;
+        final int hour = 10;
+        final int minute = 15;
+        final List<CronField> results = new ArrayList<>();
         results.add(new CronField(CronFieldName.HOUR, new On(new IntegerFieldValue(hour)), nullFieldConstraints));
         results.add(new CronField(CronFieldName.MINUTE, new On(new IntegerFieldValue(minute)), nullFieldConstraints));
         results.add(new CronField(CronFieldName.DAY_OF_MONTH, new On(new IntegerFieldValue(dayOfMonth), new SpecialCharFieldValue(SpecialChar.W)),

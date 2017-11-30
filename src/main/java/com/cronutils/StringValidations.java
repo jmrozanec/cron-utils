@@ -33,31 +33,31 @@ public class StringValidations {
     private static final SpecialChar[] SPECIAL_CHARS = new SpecialChar[] { L, LW, W };
     private static final Pattern NUMS_AND_CHARS_PATTERN = Pattern.compile("[#\\?/\\*0-9]");
 
-    private Pattern stringToIntKeysPattern;
-    private Pattern lwPattern;
+    private final Pattern stringToIntKeysPattern;
+    private final Pattern lwPattern;
 
-    public StringValidations(FieldConstraints constraints) {
-        this.lwPattern = buildLWPattern(constraints.getSpecialChars());
-        this.stringToIntKeysPattern = buildStringToIntPattern(constraints.getStringMappingKeySet());
+    public StringValidations(final FieldConstraints constraints) {
+        lwPattern = buildLWPattern(constraints.getSpecialChars());
+        stringToIntKeysPattern = buildStringToIntPattern(constraints.getStringMappingKeySet());
     }
 
     @VisibleForTesting
-    Pattern buildStringToIntPattern(Set<String> strings) {
+    Pattern buildStringToIntPattern(final Set<String> strings) {
         return buildWordsPattern(strings);
     }
 
     @VisibleForTesting
-    public String removeValidChars(String exp) {
-        Matcher numsAndCharsMatcher = NUMS_AND_CHARS_PATTERN.matcher(exp.toUpperCase());
-        Matcher stringToIntKeysMatcher = stringToIntKeysPattern.matcher(numsAndCharsMatcher.replaceAll(""));
-        Matcher specialWordsMatcher = lwPattern.matcher(stringToIntKeysMatcher.replaceAll(""));
+    public String removeValidChars(final String exp) {
+        final Matcher numsAndCharsMatcher = NUMS_AND_CHARS_PATTERN.matcher(exp.toUpperCase());
+        final Matcher stringToIntKeysMatcher = stringToIntKeysPattern.matcher(numsAndCharsMatcher.replaceAll(""));
+        final Matcher specialWordsMatcher = lwPattern.matcher(stringToIntKeysMatcher.replaceAll(""));
         return specialWordsMatcher.replaceAll("").replaceAll("\\s+", "").replaceAll(",", "").replaceAll("-", "");
     }
 
     @VisibleForTesting
-    Pattern buildLWPattern(Set<SpecialChar> specialChars) {
-        Set<String> scs = new HashSet<>();
-        for (SpecialChar sc : SPECIAL_CHARS) {
+    Pattern buildLWPattern(final Set<SpecialChar> specialChars) {
+        final Set<String> scs = new HashSet<>();
+        for (final SpecialChar sc : SPECIAL_CHARS) {
             if (specialChars.contains(sc)) {
                 scs.add(sc.name());
             }
@@ -66,15 +66,15 @@ public class StringValidations {
     }
 
     @VisibleForTesting
-    Pattern buildWordsPattern(Set<String> words) {
-        StringBuilder builder = new StringBuilder(ESCAPED_START);
-        Iterator<String> iterator = words.iterator();
+    Pattern buildWordsPattern(final Set<String> words) {
+        final StringBuilder builder = new StringBuilder(ESCAPED_START);
+        final Iterator<String> iterator = words.iterator();
 
         if (!iterator.hasNext()) {
             builder.append(ESCAPED_END);
             return Pattern.compile(builder.toString());
         }
-        String next = iterator.next();
+        final String next = iterator.next();
         builder.append(next);
         while (iterator.hasNext()) {
             builder.append("|");

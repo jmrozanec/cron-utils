@@ -16,7 +16,7 @@ package com.cronutils.model;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 
@@ -32,15 +32,22 @@ import com.cronutils.utils.Preconditions;
  * Represents a cron expression.
  */
 public class Cron implements Serializable {
-    private CronDefinition cronDefinition;
-    private Map<CronFieldName, CronField> fields;
+
+    private static final long serialVersionUID = 7487370826825439098L;
+    private final CronDefinition cronDefinition;
+    private final Map<CronFieldName, CronField> fields;
     private String asString;
 
-    public Cron(CronDefinition cronDefinition, List<CronField> fields) {
+    /**
+     * Creates a Cron with the iven cron definition and the given fields.
+     * @param cronDefinition the definition to use for this Cron
+     * @param fields the fields that should be used
+     */
+    public Cron(final CronDefinition cronDefinition, final List<CronField> fields) {
         this.cronDefinition = Preconditions.checkNotNull(cronDefinition, "CronDefinition must not be null");
         Preconditions.checkNotNull(fields, "CronFields cannot be null");
-        this.fields = new HashMap<>();
-        for (CronField field : fields) {
+        this.fields = new EnumMap<>(CronFieldName.class);
+        for (final CronField field : fields) {
             this.fields.put(field.getField(), field);
         }
     }
@@ -52,7 +59,7 @@ public class Cron implements Serializable {
      *             If null, a NullPointerException will be raised.
      * @return CronField that corresponds to given CronFieldName
      */
-    public CronField retrieve(CronFieldName name) {
+    public CronField retrieve(final CronFieldName name) {
         return fields.get(Preconditions.checkNotNull(name, "CronFieldName must not be null"));
     }
 
@@ -67,10 +74,10 @@ public class Cron implements Serializable {
 
     public String asString() {
         if (asString == null) {
-            ArrayList<CronField> fields = new ArrayList<>(this.fields.values());
-            fields.sort(CronField.createFieldComparator());
-            StringBuilder builder = new StringBuilder();
-            for (CronField field : fields) {
+            final ArrayList<CronField> temporaryFields = new ArrayList<>(fields.values());
+            temporaryFields.sort(CronField.createFieldComparator());
+            final StringBuilder builder = new StringBuilder();
+            for (final CronField field : temporaryFields) {
                 builder.append(String.format("%s ", field.getExpression().asString()));
             }
             asString = builder.toString().trim();
@@ -89,13 +96,13 @@ public class Cron implements Serializable {
      * @throws IllegalArgumentException if the cron expression is invalid
      */
     public Cron validate() {
-        for (Map.Entry<CronFieldName, CronField> field : retrieveFieldsAsMap().entrySet()) {
-            CronFieldName fieldName = field.getKey();
+        for (final Map.Entry<CronFieldName, CronField> field : retrieveFieldsAsMap().entrySet()) {
+            final CronFieldName fieldName = field.getKey();
             field.getValue().getExpression().accept(
                     new ValidationFieldExpressionVisitor(getCronDefinition().getFieldDefinition(fieldName).getConstraints(), cronDefinition.isStrictRanges())
             );
         }
-        for (CronConstraint constraint : getCronDefinition().getCronConstraints()) {
+        for (final CronConstraint constraint : getCronDefinition().getCronConstraints()) {
             if (!constraint.validate(this)) {
                 throw new IllegalArgumentException(String.format("Invalid cron expression: %s. %s", asString(), constraint.getDescription()));
             }
@@ -110,7 +117,7 @@ public class Cron implements Serializable {
      * @param cron       - any cron instance, never null
      * @return boolean - true if equivalent; false otherwise.
      */
-    public boolean equivalent(CronMapper cronMapper, Cron cron) {
+    public boolean equivalent(final CronMapper cronMapper, final Cron cron) {
         return asString().equals(cronMapper.map(cron).asString());
     }
 
@@ -121,7 +128,7 @@ public class Cron implements Serializable {
      * @param cron - any cron instance, never null
      * @return boolean - true if equivalent; false otherwise.
      */
-    public boolean equivalent(Cron cron) {
+    public boolean equivalent(final Cron cron) {
         return asString().equals(cron.asString());
     }
 }

@@ -1,13 +1,6 @@
-package com.cronutils.model.field.expression;
-
-import java.io.Serializable;
-
-import com.cronutils.model.field.expression.visitor.FieldExpressionVisitor;
-import com.cronutils.utils.Preconditions;
-
 /*
  * Copyright 2015 jmrozanec
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -18,9 +11,19 @@ import com.cronutils.utils.Preconditions;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+package com.cronutils.model.field.expression;
+
+import java.io.Serializable;
+
+import com.cronutils.model.field.expression.visitor.FieldExpressionVisitor;
+import com.cronutils.utils.Preconditions;
+
 public abstract class FieldExpression implements Serializable {
 
-    public And and(FieldExpression exp) {
+    private static final long serialVersionUID = 5138279438874391617L;
+
+    public And and(final FieldExpression exp) {
         return new And().and(this).and(exp);
     }
 
@@ -38,7 +41,7 @@ public abstract class FieldExpression implements Serializable {
      * @param visitor - FieldExpressionVisitor instance, never null
      * @return FieldExpression copied instance with visitor action performed.
      */
-    public final FieldExpression accept(FieldExpressionVisitor visitor) {
+    public final FieldExpression accept(final FieldExpressionVisitor visitor) {
         Preconditions.checkNotNull(visitor, "FieldExpressionVisitor must not be null");
         return visitor.visit(this);
     }

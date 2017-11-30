@@ -1,12 +1,3 @@
-package com.cronutils.model.time.generator;
-
-import java.util.Collections;
-import java.util.List;
-
-import com.cronutils.model.field.CronField;
-import com.cronutils.model.field.expression.FieldExpression;
-import com.cronutils.utils.Preconditions;
-
 /*
  * Copyright 2015 jmrozanec
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,6 +11,15 @@ import com.cronutils.utils.Preconditions;
  * limitations under the License.
  */
 
+package com.cronutils.model.time.generator;
+
+import java.util.Collections;
+import java.util.List;
+
+import com.cronutils.model.field.CronField;
+import com.cronutils.model.field.expression.FieldExpression;
+import com.cronutils.utils.Preconditions;
+
 /**
  * Provides a strategy to generate values. Strategy is valid for 0+ numbers
  */
@@ -28,7 +28,7 @@ public abstract class FieldValueGenerator {
     protected static final int NO_VALUE = Integer.MIN_VALUE;
     protected CronField cronField;
 
-    public FieldValueGenerator(CronField cronField) {
+    public FieldValueGenerator(final CronField cronField) {
         this.cronField = Preconditions.checkNotNull(cronField, "CronField must not be null");
         Preconditions.checkArgument(matchesFieldExpressionClass(cronField.getExpression()), "FieldExpression does not match required class");
     }
@@ -55,8 +55,8 @@ public abstract class FieldValueGenerator {
 
     public abstract boolean isMatch(int value);
 
-    public final List<Integer> generateCandidates(int start, int end) {
-        List<Integer> candidates = generateCandidatesNotIncludingIntervalExtremes(start, end);
+    public final List<Integer> generateCandidates(final int start, final int end) {
+        final List<Integer> candidates = generateCandidatesNotIncludingIntervalExtremes(start, end);
         if (isMatch(start)) {
             candidates.add(start);
         }

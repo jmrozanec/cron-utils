@@ -1,3 +1,16 @@
+/*
+ * Copyright 2015 jmrozanec
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.cronutils.model.time;
 
 import com.cronutils.model.definition.CronDefinition;
@@ -13,24 +26,12 @@ import com.cronutils.model.time.generator.FieldValueGeneratorFactory;
 import com.cronutils.utils.Preconditions;
 
 import static com.cronutils.model.field.expression.FieldExpression.always;
-/*
- * Copyright 2015 jmrozanec
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * http://www.apache.org/licenses/LICENSE-2.0
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 
 /**
  * Builds required components to get previous/next execution to certain reference date.
  */
 class ExecutionTimeBuilder {
-    private CronDefinition cronDefinition;
+    private final CronDefinition cronDefinition;
     private FieldValueGenerator yearsValueGenerator;
     private CronField daysOfWeekCronField;
     private CronField daysOfMonthCronField;
@@ -41,53 +42,53 @@ class ExecutionTimeBuilder {
     private TimeNode minutes;
     private TimeNode seconds;
 
-    protected ExecutionTimeBuilder(CronDefinition cronDefinition) {
+    protected ExecutionTimeBuilder(final CronDefinition cronDefinition) {
         this.cronDefinition = cronDefinition;
     }
 
-    protected ExecutionTimeBuilder forSecondsMatching(CronField cronField) {
+    protected ExecutionTimeBuilder forSecondsMatching(final CronField cronField) {
         validate(CronFieldName.SECOND, cronField);
         seconds = new TimeNode(FieldValueGeneratorFactory.forCronField(cronField).generateCandidates(0, 59));
         return this;
     }
 
-    protected ExecutionTimeBuilder forMinutesMatching(CronField cronField) {
+    protected ExecutionTimeBuilder forMinutesMatching(final CronField cronField) {
         validate(CronFieldName.MINUTE, cronField);
         minutes = new TimeNode(FieldValueGeneratorFactory.forCronField(cronField).generateCandidates(0, 59));
         return this;
     }
 
-    protected ExecutionTimeBuilder forHoursMatching(CronField cronField) {
+    protected ExecutionTimeBuilder forHoursMatching(final CronField cronField) {
         validate(CronFieldName.HOUR, cronField);
         hours = new TimeNode(FieldValueGeneratorFactory.forCronField(cronField).generateCandidates(0, 23));
         return this;
     }
 
-    protected ExecutionTimeBuilder forMonthsMatching(CronField cronField) {
+    protected ExecutionTimeBuilder forMonthsMatching(final CronField cronField) {
         validate(CronFieldName.MONTH, cronField);
         months = new TimeNode(FieldValueGeneratorFactory.forCronField(cronField).generateCandidates(1, 12));
         return this;
     }
 
-    protected ExecutionTimeBuilder forYearsMatching(CronField cronField) {
+    protected ExecutionTimeBuilder forYearsMatching(final CronField cronField) {
         validate(CronFieldName.YEAR, cronField);
         yearsValueGenerator = FieldValueGeneratorFactory.forCronField(cronField);
         return this;
     }
 
-    protected ExecutionTimeBuilder forDaysOfWeekMatching(CronField cronField) {
+    protected ExecutionTimeBuilder forDaysOfWeekMatching(final CronField cronField) {
         validate(CronFieldName.DAY_OF_WEEK, cronField);
         daysOfWeekCronField = cronField;
         return this;
     }
 
-    protected ExecutionTimeBuilder forDaysOfMonthMatching(CronField cronField) {
+    protected ExecutionTimeBuilder forDaysOfMonthMatching(final CronField cronField) {
         validate(CronFieldName.DAY_OF_MONTH, cronField);
         daysOfMonthCronField = cronField;
         return this;
     }
 
-    protected ExecutionTimeBuilder forDaysOfYearMatching(CronField cronField) {
+    protected ExecutionTimeBuilder forDaysOfYearMatching(final CronField cronField) {
         validate(CronFieldName.DAY_OF_YEAR, cronField);
         daysOfYearCronField = cronField;
         return this;
@@ -111,7 +112,7 @@ class ExecutionTimeBuilder {
             lowestAssigned = true;
         }
         if (daysOfMonthCronField == null) {
-            FieldConstraints constraints = getConstraint(CronFieldName.DAY_OF_MONTH);
+            final FieldConstraints constraints = getConstraint(CronFieldName.DAY_OF_MONTH);
             daysOfMonthCronField = lowestAssigned
                     ? new CronField(CronFieldName.DAY_OF_MONTH, always(), constraints)
                     : new CronField(CronFieldName.DAY_OF_MONTH, new On(new IntegerFieldValue(1)), constraints);
@@ -119,7 +120,7 @@ class ExecutionTimeBuilder {
             lowestAssigned = true;
         }
         if (daysOfWeekCronField == null) {
-            FieldConstraints constraints = getConstraint(CronFieldName.DAY_OF_WEEK);
+            final FieldConstraints constraints = getConstraint(CronFieldName.DAY_OF_WEEK);
             daysOfWeekCronField = lowestAssigned
                     ? new CronField(CronFieldName.DAY_OF_WEEK, always(), constraints)
                     : new CronField(CronFieldName.DAY_OF_WEEK, new On(new IntegerFieldValue(1)), constraints);
@@ -136,7 +137,7 @@ class ExecutionTimeBuilder {
                     );
         }
         if (daysOfYearCronField == null) {
-            FieldConstraints constraints = getConstraint(CronFieldName.DAY_OF_YEAR);
+            final FieldConstraints constraints = getConstraint(CronFieldName.DAY_OF_YEAR);
             daysOfYearCronField = new CronField(CronFieldName.DAY_OF_YEAR, lowestAssigned ? FieldExpression.questionMark() : always(),
                     constraints);
         }
@@ -147,22 +148,22 @@ class ExecutionTimeBuilder {
         );
     }
 
-    private TimeNode timeNodeLowest(CronFieldName name, int lower, int higher) {
-        FieldConstraints constraints = getConstraint(name);
+    private TimeNode timeNodeLowest(final CronFieldName name, final int lower, final int higher) {
+        final FieldConstraints constraints = getConstraint(name);
         return new TimeNode(
                 FieldValueGeneratorFactory.forCronField(
                         new CronField(name, new On(new IntegerFieldValue(lower)), constraints)
                 ).generateCandidates(lower, higher));
     }
 
-    private TimeNode timeNodeAlways(CronFieldName name, int lower, int higher) {
+    private TimeNode timeNodeAlways(final CronFieldName name, final int lower, final int higher) {
         return new TimeNode(
                 FieldValueGeneratorFactory.forCronField(
                         new CronField(name, always(), getConstraint(name))
                 ).generateCandidates(lower, higher));
     }
 
-    private void validate(CronFieldName name, CronField cronField) {
+    private void validate(final CronFieldName name, final CronField cronField) {
         Preconditions.checkNotNull(name, "Reference CronFieldName cannot be null");
         Preconditions.checkNotNull(cronField.getField(), "CronField's CronFieldName cannot be null");
         if (!name.equals(cronField.getField())) {
@@ -172,7 +173,7 @@ class ExecutionTimeBuilder {
         }
     }
 
-    private FieldConstraints getConstraint(CronFieldName name) {
+    private FieldConstraints getConstraint(final CronFieldName name) {
         return cronDefinition.getFieldDefinition(name) != null
                 ? cronDefinition.getFieldDefinition(name).getConstraints()
                 : FieldConstraintsBuilder.instance().forField(name).createConstraintsInstance();

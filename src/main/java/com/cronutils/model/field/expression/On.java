@@ -1,12 +1,3 @@
-package com.cronutils.model.field.expression;
-
-import com.cronutils.model.field.value.IntegerFieldValue;
-import com.cronutils.model.field.value.SpecialChar;
-import com.cronutils.model.field.value.SpecialCharFieldValue;
-import com.cronutils.utils.Preconditions;
-
-import static com.cronutils.utils.Preconditions.checkArgument;
-
 /*
  * Copyright 2014 jmrozanec
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,30 +10,39 @@ import static com.cronutils.utils.Preconditions.checkArgument;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+package com.cronutils.model.field.expression;
+
+import com.cronutils.model.field.value.IntegerFieldValue;
+import com.cronutils.model.field.value.SpecialChar;
+import com.cronutils.model.field.value.SpecialCharFieldValue;
+import com.cronutils.utils.Preconditions;
+import com.cronutils.utils.StringUtils;
+
+import static com.cronutils.utils.Preconditions.checkArgument;
+
 public class On extends FieldExpression {
+
+    private static final long serialVersionUID = 8746471281123327324L;
     private static final int DEFAULT_NTH_VALUE = -1;
-    private IntegerFieldValue time;
-    private IntegerFieldValue nth;
-    private SpecialCharFieldValue specialChar;
+    private final IntegerFieldValue time;
+    private final IntegerFieldValue nth;
+    private final SpecialCharFieldValue specialChar;
 
-    private On(On on) {
-        this(on.time, on.specialChar, on.nth);
-    }
-
-    public On(SpecialCharFieldValue specialChar) {
+    public On(final SpecialCharFieldValue specialChar) {
         this(new IntegerFieldValue(DEFAULT_NTH_VALUE), specialChar);
     }
 
-    public On(IntegerFieldValue time) {
+    public On(final IntegerFieldValue time) {
         this(time, new SpecialCharFieldValue(SpecialChar.NONE));
     }
 
-    public On(IntegerFieldValue time, SpecialCharFieldValue specialChar) {
+    public On(final IntegerFieldValue time, final SpecialCharFieldValue specialChar) {
         this(time, specialChar, new IntegerFieldValue(-1));
         checkArgument(!specialChar.getValue().equals(SpecialChar.HASH), "value missing for a#b cron expression");
     }
 
-    public On(IntegerFieldValue time, SpecialCharFieldValue specialChar, IntegerFieldValue nth) {
+    public On(final IntegerFieldValue time, final SpecialCharFieldValue specialChar, final IntegerFieldValue nth) {
         Preconditions.checkNotNull(time, "time must not be null");
         Preconditions.checkNotNull(specialChar, "special char must not null");
         Preconditions.checkNotNull(nth, "nth value must not be null");
@@ -74,13 +74,17 @@ public class On extends FieldExpression {
             case W:
                 return isDefault(getTime()) ? "W" : String.format("%sW", getTime());
             case L:
-                return isDefault(getTime()) ? "L" + (getNth().getValue() > 0 ? String.format("-%sL", getNth()) : "") : String.format("%sL", getTime());
+                return isDefault(getTime()) ? "L" + getNthStringRepresentation() : String.format("%sL", getTime());
             default:
                 return specialChar.toString();
         }
     }
 
-    private boolean isDefault(IntegerFieldValue fieldValue) {
+    private String getNthStringRepresentation() {
+        return getNth().getValue() > 0 ? String.format("-%sL", getNth()) : StringUtils.EMPTY;
+    }
+
+    private boolean isDefault(final IntegerFieldValue fieldValue) {
         return fieldValue.getValue() == DEFAULT_NTH_VALUE;
     }
 }

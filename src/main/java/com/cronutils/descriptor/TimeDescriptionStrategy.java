@@ -1,3 +1,16 @@
+/*
+ * Copyright 2014 jmrozanec
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.cronutils.descriptor;
 
 import java.util.HashSet;
@@ -15,29 +28,16 @@ import com.cronutils.utils.Preconditions;
 
 import static com.cronutils.model.field.expression.FieldExpression.always;
 
-/*
- * Copyright 2014 jmrozanec
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * http://www.apache.org/licenses/LICENSE-2.0
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 /**
  * Strategy to provide a human readable description to hh:mm:ss variations.
  */
 class TimeDescriptionStrategy extends DescriptionStrategy {
 
-    private FieldExpression hours;
-    private FieldExpression minutes;
-    private FieldExpression seconds;
-    private Set<Function<TimeFields, String>> descriptions;
-    private int defaultSeconds = 0;
+    private final FieldExpression hours;
+    private final FieldExpression minutes;
+    private final FieldExpression seconds;
+    private final Set<Function<TimeFields, String>> descriptions;
+    private static final int DEFAULTSECONDS = 0;
 
     /**
      * Constructor.
@@ -47,12 +47,12 @@ class TimeDescriptionStrategy extends DescriptionStrategy {
      * @param minutes - CronFieldExpression for minutes. If no instance is provided, an Always instance is created.
      * @param seconds - CronFieldExpression for seconds. If no instance is provided, an On instance is created.
      */
-    TimeDescriptionStrategy(ResourceBundle bundle, FieldExpression hours,
-            FieldExpression minutes, FieldExpression seconds) {
+    TimeDescriptionStrategy(final ResourceBundle bundle, final FieldExpression hours,
+            final FieldExpression minutes, final FieldExpression seconds) {
         super(bundle);
         this.hours = ensureInstance(hours, always());
         this.minutes = ensureInstance(minutes, always());
-        this.seconds = ensureInstance(seconds, new On(new IntegerFieldValue(defaultSeconds)));
+        this.seconds = ensureInstance(seconds, new On(new IntegerFieldValue(DEFAULTSECONDS)));
         descriptions = new HashSet<>();
         registerFunctions();
     }
@@ -62,9 +62,9 @@ class TimeDescriptionStrategy extends DescriptionStrategy {
      *
      * @param expression        - CronFieldExpression instance; may be null
      * @param defaultExpression - CronFieldExpression, never null;
-     * @return
+     * @return the given expression or the given defaultExpression in case the given expression is {@code null}
      */
-    private FieldExpression ensureInstance(FieldExpression expression, FieldExpression defaultExpression) {
+    private FieldExpression ensureInstance(final FieldExpression expression, final FieldExpression defaultExpression) {
         Preconditions.checkNotNull(defaultExpression, "Default expression must not be null");
         if (expression != null) {
             return expression;
@@ -75,15 +75,15 @@ class TimeDescriptionStrategy extends DescriptionStrategy {
 
     @Override
     public String describe() {
-        TimeFields fields = new TimeFields(hours, minutes, seconds);
-        for (Function<TimeFields, String> function : descriptions) {
+        final TimeFields fields = new TimeFields(hours, minutes, seconds);
+        for (final Function<TimeFields, String> function : descriptions) {
             if (!"".equals(function.apply(fields))) {
                 return function.apply(fields);
             }
         }
         String secondsDesc = "";
         String minutesDesc = "";
-        String hoursDesc = addTimeExpressions(describe(hours), bundle.getString("hour"), bundle.getString("hours"));
+        final String hoursDesc = addTimeExpressions(describe(hours), bundle.getString("hour"), bundle.getString("hours"));
         if (!(seconds instanceof On && isDefault((On) seconds))) {
             secondsDesc = addTimeExpressions(describe(seconds), bundle.getString("second"), bundle.getString("seconds"));
         }
@@ -93,7 +93,7 @@ class TimeDescriptionStrategy extends DescriptionStrategy {
         return String.format("%s %s %s", secondsDesc, minutesDesc, hoursDesc);
     }
 
-    private String addTimeExpressions(String description, String singular, String plural) {
+    private String addTimeExpressions(final String description, final String singular, final String plural) {
         return description
                 .replaceAll("%s", singular)
                 .replaceAll("%p", plural);
@@ -235,7 +235,7 @@ class TimeDescriptionStrategy extends DescriptionStrategy {
                     if (timeFields.hours instanceof Always
                             && timeFields.minutes instanceof Every
                             && timeFields.seconds instanceof On) {
-                        Every minute = (Every) timeFields.minutes;
+                        final Every minute = (Every) timeFields.minutes;
                         String desc;
                         if (minute.getPeriod().getValue() == 1 && TimeDescriptionStrategy.this.isDefault((On) timeFields.seconds)) {
                             desc = String.format("%s %s", bundle.getString("every"), bundle.getString("minute"));
@@ -258,12 +258,12 @@ class TimeDescriptionStrategy extends DescriptionStrategy {
                     if (timeFields.hours instanceof Every && timeFields.minutes instanceof On && timeFields.seconds instanceof On) {
                         //every hour
                         if (((On) timeFields.minutes).getTime().getValue() == 0 && ((On) timeFields.seconds).getTime().getValue() == 0) {
-                            Integer period = ((Every) timeFields.hours).getPeriod().getValue();
+                            final Integer period = ((Every) timeFields.hours).getPeriod().getValue();
                             if (period == null || period == 1) {
                                 return String.format("%s %s", bundle.getString("every"), bundle.getString("hour"));
                             }
                         }
-                        String result = String.format("%s %s %s %s %s %s ",
+                        final String result = String.format("%s %s %s %s %s %s ",
                                 bundle.getString("every"), ((Every) hours).getPeriod().getValue(), bundle.getString("hours"),
                                 bundle.getString("at"), bundle.getString("minute"), ((On) minutes).getTime().getValue());
                         if (TimeDescriptionStrategy.this.isDefault((On) timeFields.seconds)) {
@@ -282,11 +282,11 @@ class TimeDescriptionStrategy extends DescriptionStrategy {
      * Contains CronFieldExpression instances for hours, minutes and seconds.
      */
     class TimeFields {
-        public FieldExpression seconds;
-        public FieldExpression minutes;
-        public FieldExpression hours;
+        private final FieldExpression seconds;
+        private final FieldExpression minutes;
+        private final FieldExpression hours;
 
-        public TimeFields(FieldExpression hours, FieldExpression minutes, FieldExpression seconds) {
+        public TimeFields(final FieldExpression hours, final FieldExpression minutes, final FieldExpression seconds) {
             this.hours = hours;
             this.minutes = minutes;
             this.seconds = seconds;
@@ -299,7 +299,7 @@ class TimeDescriptionStrategy extends DescriptionStrategy {
      * @param on - On instance
      * @return boolean - true if time value matches a default; false otherwise.
      */
-    private boolean isDefault(On on) {
-        return on.getTime().getValue() == defaultSeconds;
+    private boolean isDefault(final On on) {
+        return on.getTime().getValue() == DEFAULTSECONDS;
     }
 }

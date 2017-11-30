@@ -1,5 +1,3 @@
-package com.cronutils.model.field.expression.visitor;
-
 /*
  * Copyright 2015 jmrozanec
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,6 +10,8 @@ package com.cronutils.model.field.expression.visitor;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+package com.cronutils.model.field.expression.visitor;
 
 import com.cronutils.model.field.expression.Always;
 import com.cronutils.model.field.expression.And;

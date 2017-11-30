@@ -36,7 +36,7 @@ public class CronParserField {
      * @param fieldName   - CronFieldName instance
      * @param constraints - FieldConstraints, constraints
      */
-    public CronParserField(CronFieldName fieldName, FieldConstraints constraints) {
+    public CronParserField(final CronFieldName fieldName, final FieldConstraints constraints) {
         this(fieldName, constraints, false);
     }
 
@@ -47,10 +47,10 @@ public class CronParserField {
      * @param constraints - FieldConstraints, constraints
      * @param optional    - optional tag
      */
-    public CronParserField(CronFieldName fieldName, FieldConstraints constraints, boolean optional) {
-        this.field = Preconditions.checkNotNull(fieldName, "CronFieldName must not be null");
+    public CronParserField(final CronFieldName fieldName, final FieldConstraints constraints, final boolean optional) {
+        field = Preconditions.checkNotNull(fieldName, "CronFieldName must not be null");
         this.constraints = Preconditions.checkNotNull(constraints, "FieldConstraints must not be null");
-        this.parser = new FieldParser(constraints);
+        parser = new FieldParser(constraints);
         this.optional = optional;
     }
 
@@ -78,7 +78,7 @@ public class CronParserField {
      * @param expression - cron expression
      * @return parse result as CronFieldParseResult instance - never null. May throw a RuntimeException if cron expression is bad.
      */
-    public CronField parse(String expression) {
+    public CronField parse(final String expression) {
         return new CronField(field, parser.parse(expression), constraints);
     }
 

@@ -1,5 +1,3 @@
-package com.cronutils.model.field.expression;
-
 /*
  * Copyright 2014 jmrozanec
  *
@@ -14,22 +12,21 @@ package com.cronutils.model.field.expression;
  * limitations under the License.
  */
 
+package com.cronutils.model.field.expression;
+
 /**
  * Represents a star (*) value on cron expression field.
  */
 public class Always extends FieldExpression {
 
-    @SuppressWarnings("deprecation")
+    private static final long serialVersionUID = -1221923855248365713L;
     static final Always INSTANCE = new Always();
 
     /**
      * Should be package private and not be instantiated elsewhere.
      * Class should become package private too.
-     *
-     * @deprecated rather use {@link FieldExpression#always()}
      */
-    @Deprecated
-    public Always() {
+    private Always() {
     }
 
     @Override

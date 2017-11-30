@@ -33,25 +33,25 @@ public class ValidationFieldExpressionVisitor implements FieldExpressionVisitor 
     private static final String OORANGE = "Value %s not in range [%s, %s]";
     private static final String EMPTY_STRING = "";
 
-    private FieldConstraints constraints;
-    private StringValidations stringValidations;
-    private boolean strictRanges;
+    private final FieldConstraints constraints;
+    private final StringValidations stringValidations;
+    private final boolean strictRanges;
 
-    public ValidationFieldExpressionVisitor(FieldConstraints constraints, boolean strictRanges) {
+    public ValidationFieldExpressionVisitor(final FieldConstraints constraints, final boolean strictRanges) {
         this.constraints = constraints;
-        this.stringValidations = new StringValidations(constraints);
+        stringValidations = new StringValidations(constraints);
         this.strictRanges = strictRanges;
     }
 
-    protected ValidationFieldExpressionVisitor(FieldConstraints constraints, StringValidations stringValidation, boolean strictRanges) {
+    protected ValidationFieldExpressionVisitor(final FieldConstraints constraints, final StringValidations stringValidation, final boolean strictRanges) {
         this.constraints = constraints;
-        this.stringValidations = stringValidation;
+        stringValidations = stringValidation;
         this.strictRanges = strictRanges;
     }
 
     @Override
-    public FieldExpression visit(FieldExpression expression) {
-        String unsupportedChars = stringValidations.removeValidChars(expression.asString());
+    public FieldExpression visit(final FieldExpression expression) {
+        final String unsupportedChars = stringValidations.removeValidChars(expression.asString());
         if (EMPTY_STRING.equals(unsupportedChars)) {
             if (expression instanceof Always) {
                 return visit((Always) expression);
@@ -79,25 +79,25 @@ public class ValidationFieldExpressionVisitor implements FieldExpressionVisitor 
     }
 
     @Override
-    public Always visit(Always always) {
+    public Always visit(final Always always) {
         return always;
     }
 
     @Override
-    public And visit(And and) {
-        for (FieldExpression expression : and.getExpressions()) {
+    public And visit(final And and) {
+        for (final FieldExpression expression : and.getExpressions()) {
             visit(expression);
         }
         return and;
     }
 
     @Override
-    public Between visit(Between between) {
+    public Between visit(final Between between) {
         preConditions(between);
 
         if (strictRanges && between.getFrom() instanceof IntegerFieldValue && between.getTo() instanceof IntegerFieldValue) {
-            int from = ((IntegerFieldValue) between.getFrom()).getValue();
-            int to = ((IntegerFieldValue) between.getTo()).getValue();
+            final int from = ((IntegerFieldValue) between.getFrom()).getValue();
+            final int to = ((IntegerFieldValue) between.getTo()).getValue();
             if (from > to) {
                 throw new IllegalArgumentException(String.format("Invalid range! [%s,%s]", from, to));
             }
@@ -107,7 +107,7 @@ public class ValidationFieldExpressionVisitor implements FieldExpressionVisitor 
     }
 
     @Override
-    public Every visit(Every every) {
+    public Every visit(final Every every) {
         if (every.getExpression() instanceof Between) {
             visit((Between) every.getExpression());
         }
@@ -119,7 +119,7 @@ public class ValidationFieldExpressionVisitor implements FieldExpressionVisitor 
     }
 
     @Override
-    public On visit(On on) {
+    public On visit(final On on) {
         if (!isDefault(on.getTime())) {
             isInRange(on.getTime());
         }
@@ -130,11 +130,11 @@ public class ValidationFieldExpressionVisitor implements FieldExpressionVisitor 
     }
 
     @Override
-    public QuestionMark visit(QuestionMark questionMark) {
+    public QuestionMark visit(final QuestionMark questionMark) {
         return questionMark;
     }
 
-    private void preConditions(Between between) {
+    private void preConditions(final Between between) {
         isInRange(between.getFrom());
         isInRange(between.getTo());
         if (isSpecialCharNotL(between.getFrom()) || isSpecialCharNotL(between.getTo())) {
@@ -149,9 +149,9 @@ public class ValidationFieldExpressionVisitor implements FieldExpressionVisitor 
      * @throws IllegalArgumentException - if not in range
      */
     @VisibleForTesting
-    protected void isInRange(FieldValue<?> fieldValue) {
+    protected void isInRange(final FieldValue<?> fieldValue) {
         if (fieldValue instanceof IntegerFieldValue) {
-            int value = ((IntegerFieldValue) fieldValue).getValue();
+            final int value = ((IntegerFieldValue) fieldValue).getValue();
             if (!constraints.isInRange(value)) {
                 throw new IllegalArgumentException(String.format(OORANGE, value, constraints.getStartRange(), constraints.getEndRange()));
             }
@@ -165,9 +165,9 @@ public class ValidationFieldExpressionVisitor implements FieldExpressionVisitor 
      * @throws IllegalArgumentException - if not in range
      */
     @VisibleForTesting
-    protected void isPeriodInRange(FieldValue<?> fieldValue) {
+    protected void isPeriodInRange(final FieldValue<?> fieldValue) {
         if (fieldValue instanceof IntegerFieldValue) {
-            int value = ((IntegerFieldValue) fieldValue).getValue();
+            final int value = ((IntegerFieldValue) fieldValue).getValue();
             if (!constraints.isPeriodInRange(value)) {
                 throw new IllegalArgumentException(
                         String.format("Period %s not in range (0, %s]", value, constraints.getEndRange() - constraints.getStartRange()));
@@ -176,11 +176,11 @@ public class ValidationFieldExpressionVisitor implements FieldExpressionVisitor 
     }
 
     @VisibleForTesting
-    protected boolean isDefault(FieldValue<?> fieldValue) {
+    protected boolean isDefault(final FieldValue<?> fieldValue) {
         return fieldValue instanceof IntegerFieldValue && ((IntegerFieldValue) fieldValue).getValue() == -1;
     }
 
-    protected boolean isSpecialCharNotL(FieldValue<?> fieldValue) {
+    protected boolean isSpecialCharNotL(final FieldValue<?> fieldValue) {
         return fieldValue instanceof SpecialCharFieldValue && !SpecialChar.L.equals(fieldValue.getValue());
     }
 }

@@ -1,5 +1,3 @@
-package com.cronutils.model.time.generator;
-
 /*
  * Copyright 2015 jmrozanec
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,6 +10,8 @@ package com.cronutils.model.time.generator;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+package com.cronutils.model.time.generator;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -45,21 +45,21 @@ import com.cronutils.utils.Preconditions;
  * @author phethmon
  */
 class BetweenDayOfWeekValueGenerator extends FieldValueGenerator {
-    private int year;
-    private int month;
-    private WeekDay mondayDoWValue;
-    private Set<Integer> dowValidValues;
+    private final int year;
+    private final int month;
+    private final WeekDay mondayDoWValue;
+    private final Set<Integer> dowValidValues;
 
-    public BetweenDayOfWeekValueGenerator(CronField cronField, int year, int month, WeekDay mondayDoWValue) {
+    public BetweenDayOfWeekValueGenerator(final CronField cronField, final int year, final int month, final WeekDay mondayDoWValue) {
         super(cronField);
         Preconditions.checkArgument(CronFieldName.DAY_OF_WEEK.equals(cronField.getField()), "CronField does not belong to day of week");
         this.year = year;
         this.month = month;
         this.mondayDoWValue = mondayDoWValue;
         dowValidValues = new HashSet<>();
-        Between between = (Between) cronField.getExpression();
+        final Between between = (Between) cronField.getExpression();
         int from = (Integer) between.getFrom().getValue();
-        int to = (Integer) between.getTo().getValue();
+        final int to = (Integer) between.getTo().getValue();
         while (from <= to) {
             dowValidValues.add(from);
             from += 1;
@@ -67,9 +67,9 @@ class BetweenDayOfWeekValueGenerator extends FieldValueGenerator {
     }
 
     @Override
-    protected List<Integer> generateCandidatesNotIncludingIntervalExtremes(int start, int end) {
-        List<Integer> values = new ArrayList<>();
-        Between between = (Between) cronField.getExpression();
+    protected List<Integer> generateCandidatesNotIncludingIntervalExtremes(final int start, final int end) {
+        final List<Integer> values = new ArrayList<>();
+        final Between between = (Between) cronField.getExpression();
 
         // we have a range of days of week, so we will generate a list for each day and then combine them
         int startDayOfWeek = 0;
@@ -87,15 +87,15 @@ class BetweenDayOfWeekValueGenerator extends FieldValueGenerator {
 
         for (int i = startDayOfWeek; i <= endDayOfWeek; i++) {
             // Build a CronField representing a single day of the week
-            FieldConstraintsBuilder fcb = FieldConstraintsBuilder.instance().forField(CronFieldName.DAY_OF_WEEK);
-            CronParserField parser = new CronParserField(CronFieldName.DAY_OF_WEEK, fcb.createConstraintsInstance());
-            CronField cronField = parser.parse(Integer.toString(i));
+            final FieldConstraintsBuilder fcb = FieldConstraintsBuilder.instance().forField(CronFieldName.DAY_OF_WEEK);
+            final CronParserField parser = new CronParserField(CronFieldName.DAY_OF_WEEK, fcb.createConstraintsInstance());
+            final CronField cronField = parser.parse(Integer.toString(i));
 
             // now a generator for matching days
-            OnDayOfWeekValueGenerator odow = new OnDayOfWeekValueGenerator(cronField, year, month, mondayDoWValue);
+            final OnDayOfWeekValueGenerator odow = new OnDayOfWeekValueGenerator(cronField, year, month, mondayDoWValue);
 
             // get the list of matching days
-            List<Integer> candidatesList = odow.generateCandidates(start, end);
+            final List<Integer> candidatesList = odow.generateCandidates(start, end);
 
             // add them to the master list
             if (candidatesList != null) {
@@ -107,28 +107,28 @@ class BetweenDayOfWeekValueGenerator extends FieldValueGenerator {
     }
 
     @Override
-    protected boolean matchesFieldExpressionClass(FieldExpression fieldExpression) {
+    protected boolean matchesFieldExpressionClass(final FieldExpression fieldExpression) {
         return fieldExpression instanceof Between;
     }
 
     @Override
-    public int generateNextValue(int reference) throws NoSuchValueException {
+    public int generateNextValue(final int reference) throws NoSuchValueException {
         // This method does not logically work.
         return 0;
     }
 
     @Override
-    public int generatePreviousValue(int reference) throws NoSuchValueException {
+    public int generatePreviousValue(final int reference) throws NoSuchValueException {
         // This method does not logically work.
         return 0;
     }
 
     @Override
-    public boolean isMatch(int value) {
+    public boolean isMatch(final int value) {
         // DayOfWeek getValue returns 1 (Monday) - 7 (Sunday),
         // so we should factor in the monday DoW used to generate
         // the valid DoW values
-        int localDateDoW = LocalDate.of(year, month, value).getDayOfWeek().getValue();
+        final int localDateDoW = LocalDate.of(year, month, value).getDayOfWeek().getValue();
 
         // Sunday's value is mondayDoWValue-1 when generating the valid values
         // Ex.
@@ -136,7 +136,7 @@ class BetweenDayOfWeekValueGenerator extends FieldValueGenerator {
         // quartz 1(Sun)-7(Sat), mondayDoW = 2
 
         // modulo 7 to convert Sunday from 7 to 0 and adjust to match the mondayDoWValue
-        int cronDoW = localDateDoW % 7 + (mondayDoWValue.getMondayDoWValue() - 1);
+        final int cronDoW = localDateDoW % 7 + (mondayDoWValue.getMondayDoWValue() - 1);
 
         return dowValidValues.contains(cronDoW);
     }

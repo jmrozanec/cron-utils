@@ -1,5 +1,3 @@
-package com.cronutils.model.time.generator;
-
 /*
  * Copyright 2015 jmrozanec
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,5 +10,10 @@ package com.cronutils.model.time.generator;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+package com.cronutils.model.time.generator;
+
 public class NoSuchValueException extends Exception {
+
+    private static final long serialVersionUID = 1658051404646250313L;
 }

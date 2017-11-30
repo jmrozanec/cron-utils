@@ -7,6 +7,7 @@ A Java library to parse, validate, migrate crons as well as get human readable d
 [![Coverage Status](https://coveralls.io/repos/jmrozanec/cron-utils/badge.png)](https://coveralls.io/r/jmrozanec/cron-utils)
 
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/35b1b558473d42c4980432a3ecf84f6c)](https://www.codacy.com/app/jmrozanec/cron-utils?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=jmrozanec/cron-utils&amp;utm_campaign=Badge_Grade)
+[![Quality Gate](https://sonarcloud.io/api/badges/gate?key=cron-utils)](https://sonarcloud.io/dashboard/index/cron-utils)
 [![Project stats by OpenHub](https://www.openhub.net/p/cron-utils/widgets/project_thin_badge.gif)](https://www.openhub.net/p/cron-utils/)
 
 **Download**
