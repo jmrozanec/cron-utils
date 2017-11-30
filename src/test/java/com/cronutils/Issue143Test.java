@@ -39,7 +39,7 @@ public class Issue143Test {
     @Before
     public void setUp() {
         // Make sure that current date is before Dec-31
-        currentDateTime = ZonedDateTime.of(LocalDateTime.of(2016, 12, 20, 12, 00),
+        currentDateTime = ZonedDateTime.of(LocalDateTime.of(2016, 12, 20, 12, 0),
                 ZoneId.systemDefault());
 
         parser = new CronParser(CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ));
@@ -47,15 +47,13 @@ public class Issue143Test {
 
     @Test
     public void testCase1() {
-        final ExecutionTime et = ExecutionTime.forCron(parser.parse("0 0 12 31 12 ? *"));
-        final Optional<ZonedDateTime> lastExecution = et.lastExecution(currentDateTime);
-        if (lastExecution.isPresent()) {
-            final ZonedDateTime actual = lastExecution.get();
+        ExecutionTime et = ExecutionTime.forCron(parser.parse("0 0 12 31 12 ? *"));
+        Optional<ZonedDateTime> olast = et.lastExecution(currentDateTime);
+        ZonedDateTime last = olast.orElse(null);
 
-            final ZonedDateTime expected = ZonedDateTime.of(LocalDateTime.of(2015, 12, 31, 12, 00),
-                    ZoneId.systemDefault());
-            Assert.assertEquals(expected, actual);
-        }
+        ZonedDateTime expected = ZonedDateTime.of(LocalDateTime.of(2015, 12, 31, 12, 0),
+                ZoneId.systemDefault());
+        Assert.assertEquals(expected, last);
     }
 
     @Test
