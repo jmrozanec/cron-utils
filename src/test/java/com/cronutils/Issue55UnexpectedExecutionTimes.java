@@ -91,10 +91,10 @@ public class Issue55UnexpectedExecutionTimes {
 
     private List<Instant> getInstants(ExecutionTime executionTime, ZonedDateTime startTime, ZonedDateTime endTime) {
         List<Instant> instantList = new ArrayList<>();
-        ZonedDateTime next = executionTime.nextExecution(startTime).get();
-        while (next.isBefore(endTime)) {
+        ZonedDateTime next = executionTime.nextExecution(startTime).isPresent()?executionTime.nextExecution(startTime).get():null;
+        while (next!=null && next.isBefore(endTime)) {
             instantList.add(next.toInstant());
-            next = executionTime.nextExecution(next).get();
+            next = executionTime.nextExecution(next).isPresent()?executionTime.nextExecution(next).get():null;
         }
         return instantList;
     }
