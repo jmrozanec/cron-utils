@@ -161,7 +161,7 @@ public class ExecutionTime {
      *
      * @param date - reference ZonedDateTime instance - never null;
      * @return ZonedDateTime instance, never null. Value obeys logic specified above.
-     * @throws NoSuchValueException
+     * @throws NoSuchValueException if there is no potential next year
      */
     private ZonedDateTime nextClosestMatch(final ZonedDateTime date) throws NoSuchValueException {
         ExecutionTimeResult result = new ExecutionTimeResult(date, false);
@@ -206,8 +206,12 @@ public class ExecutionTime {
         return new ExecutionTimeResult(date, true);
     }
 
-    private ExecutionTimeResult getNextPotentialYear(final ZonedDateTime date, final int lowestMonth, final int lowestHour, final int lowestMinute, final int lowestSecond)
-            throws NoSuchValueException {
+    private ExecutionTimeResult getNextPotentialYear(final ZonedDateTime date,
+                                                     final int lowestMonth,
+                                                     final int lowestHour,
+                                                     final int lowestMinute,
+                                                     final int lowestSecond)
+                                                     throws NoSuchValueException {
         final int newYear = yearsValueGenerator.generateNextValue(date.getYear());
         final Optional<TimeNode> optionalDays = generateDays(cronDefinition, ZonedDateTime.of(
                 LocalDate.of(newYear, lowestMonth, 1),
@@ -243,8 +247,11 @@ public class ExecutionTime {
         }
     }
 
-    private ExecutionTimeResult getNextPotentialDayOfMonth(final ZonedDateTime date, final int lowestHour, final int lowestMinute, final int lowestSecond, final TimeNode node)
-            throws NoSuchValueException {
+    private ExecutionTimeResult getNextPotentialDayOfMonth(final ZonedDateTime date,
+                                                           final int lowestHour,
+                                                           final int lowestMinute,
+                                                           final int lowestSecond,
+                                                           final TimeNode node) {
         final NearestValue nearestValue = node.getNextValue(date.getDayOfMonth(), 0);
         if (nearestValue.getShifts() > 0) {
             return new ExecutionTimeResult(date.truncatedTo(DAYS).withDayOfMonth(1).plusMonths(nearestValue.getShifts()), false);
@@ -304,7 +311,7 @@ public class ExecutionTime {
      *
      * @param date - reference ZonedDateTime instance - never null;
      * @return ZonedDateTime instance, never null. Value obeys logic specified above.
-     * @throws NoSuchValueException
+     * @throws NoSuchValueException if there is not previous year
      */
     private ZonedDateTime previousClosestMatch(final ZonedDateTime date) throws NoSuchValueException {
         ExecutionTimeResult result = new ExecutionTimeResult(date, false);
