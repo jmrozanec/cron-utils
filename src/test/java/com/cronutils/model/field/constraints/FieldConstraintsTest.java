@@ -1,15 +1,3 @@
-package com.cronutils.model.field.constraints;
-
-import java.util.Collections;
-import java.util.Map;
-import java.util.Set;
-
-import org.junit.Before;
-import org.junit.Test;
-
-import com.cronutils.model.field.constraint.FieldConstraints;
-import com.cronutils.model.field.value.SpecialChar;
-
 /*
  * Copyright 2015 jmrozanec
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,6 +10,19 @@ import com.cronutils.model.field.value.SpecialChar;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+package com.cronutils.model.field.constraints;
+
+import java.util.Collections;
+import java.util.Map;
+import java.util.Set;
+
+import org.junit.Before;
+import org.junit.Test;
+
+import com.cronutils.model.field.constraint.FieldConstraints;
+import com.cronutils.model.field.value.SpecialChar;
+
 public class FieldConstraintsTest {
 
     private Map<String, Integer> stringMapping;
@@ -31,7 +32,7 @@ public class FieldConstraintsTest {
     private int endRange;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         intMapping = Collections.emptyMap();
         stringMapping = Collections.emptyMap();
         specialCharSet = Collections.emptySet();
@@ -40,17 +41,17 @@ public class FieldConstraintsTest {
     }
 
     @Test(expected = NullPointerException.class)
-    public void testConstructorStringMappingNull() throws Exception {
+    public void testConstructorStringMappingNull() {
         new FieldConstraints(null, intMapping, specialCharSet, startRange, endRange);
     }
 
     @Test(expected = NullPointerException.class)
-    public void testConstructorIntMappingNull() throws Exception {
+    public void testConstructorIntMappingNull() {
         new FieldConstraints(stringMapping, null, specialCharSet, startRange, endRange);
     }
 
     @Test(expected = NullPointerException.class)
-    public void testSpecialCharsSetNull() throws Exception {
+    public void testSpecialCharsSetNull() {
         new FieldConstraints(stringMapping, intMapping, null, startRange, endRange);
     }
 }

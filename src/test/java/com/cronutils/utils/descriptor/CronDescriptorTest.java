@@ -1,3 +1,16 @@
+/*
+ * Copyright 2015 jmrozanec
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.cronutils.utils.descriptor;
 
 import java.util.ArrayList;
@@ -27,18 +40,6 @@ import com.cronutils.model.field.value.SpecialCharFieldValue;
 
 import static org.junit.Assert.assertEquals;
 
-/*
- * Copyright 2015 jmrozanec
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * http://www.apache.org/licenses/LICENSE-2.0
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 public class CronDescriptorTest {
     private CronDescriptor descriptor;
     private FieldConstraints nullFieldConstraints;
@@ -46,7 +47,7 @@ public class CronDescriptorTest {
     private CronDefinition mockDefinition;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         MockitoAnnotations.initMocks(this);
         descriptor = CronDescriptor.instance(Locale.UK);
         nullFieldConstraints =
@@ -58,7 +59,7 @@ public class CronDescriptorTest {
     }
 
     @Test
-    public void testDescribeEveryXTimeUnits() throws Exception {
+    public void testDescribeEveryXTimeUnits() {
         final int time = 3;
         final Every expression = new Every(new IntegerFieldValue(time));
         assertEquals(String.format("every %s seconds", time), descriptor.describe(
@@ -76,7 +77,7 @@ public class CronDescriptorTest {
     }
 
     @Test
-    public void testDescribeEveryXMinutesBetweenTime() throws Exception {
+    public void testDescribeEveryXMinutesBetweenTime() {
         final int hour = 11;
         final int start = 0;
         final int end = 10;
@@ -88,7 +89,7 @@ public class CronDescriptorTest {
     }
 
     @Test
-    public void testDescribeAtXTimeBetweenDaysOfWeek() throws Exception {
+    public void testDescribeAtXTimeBetweenDaysOfWeek() {
         final int hour = 11;
         final int minute = 30;
         final int start = 2;
@@ -102,7 +103,7 @@ public class CronDescriptorTest {
     }
 
     @Test
-    public void testDescribeAtXHours() throws Exception {
+    public void testDescribeAtXHours() {
         final int hour = 11;
         final List<CronField> results = new ArrayList<>();
         results.add(new CronField(CronFieldName.HOUR, new On(new IntegerFieldValue(hour)), nullFieldConstraints));
@@ -112,7 +113,7 @@ public class CronDescriptorTest {
     }
 
     @Test
-    public void testEverySecondInMonth() throws Exception {
+    public void testEverySecondInMonth() {
         final int month = 2;
         final List<CronField> results = new ArrayList<>();
         results.add(new CronField(CronFieldName.HOUR, FieldExpression.always(), nullFieldConstraints));
@@ -123,7 +124,7 @@ public class CronDescriptorTest {
     }
 
     @Test
-    public void testEveryMinuteBetweenMonths() throws Exception {
+    public void testEveryMinuteBetweenMonths() {
         final int monthStart = 2;
         final int monthEnd = 3;
         final List<CronField> results = new ArrayList<>();
@@ -134,7 +135,7 @@ public class CronDescriptorTest {
     }
 
     @Test
-    public void testLastDayOfWeekInMonth() throws Exception {
+    public void testLastDayOfWeekInMonth() {
         final int dayOfWeek = 2;
         final int hour = 10;
         final int minute = 15;
@@ -147,7 +148,7 @@ public class CronDescriptorTest {
     }
 
     @Test
-    public void testNthDayOfWeekInMonth() throws Exception {
+    public void testNthDayOfWeekInMonth() {
         final int dayOfWeek = 2;
         final int hour = 10;
         final int minute = 15;
@@ -160,7 +161,7 @@ public class CronDescriptorTest {
     }
 
     @Test
-    public void testLastDayOfMonth() throws Exception {
+    public void testLastDayOfMonth() {
         final int hour = 10;
         final int minute = 15;
         final List<CronField> results = new ArrayList<>();
@@ -171,7 +172,7 @@ public class CronDescriptorTest {
     }
 
     @Test
-    public void testNearestWeekdayToNthOfMonth() throws Exception {
+    public void testNearestWeekdayToNthOfMonth() {
         final int dayOfMonth = 22;
         final int hour = 10;
         final int minute = 15;

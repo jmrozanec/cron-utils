@@ -1,3 +1,16 @@
+/*
+ * Copyright 2015 jmrozanec
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.cronutils.parser;
 
 import java.util.UUID;
@@ -19,18 +32,6 @@ import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.field.constraint.FieldConstraints;
 import com.cronutils.model.field.expression.FieldExpression;
 
-/*
- * Copyright 2015 jmrozanec
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * http://www.apache.org/licenses/LICENSE-2.0
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ CronParserField.class, CronParser.class })
 public class CronParserFieldTest {
@@ -56,26 +57,26 @@ public class CronParserFieldTest {
     }
 
     @Test
-    public void testGetField() throws Exception {
+    public void testGetField() {
         Assert.assertEquals(testFieldName, cronParserField.getField());
     }
 
     @Test
-    public void testParse() throws Exception {
-        String cron = UUID.randomUUID().toString();
-        CronField result = cronParserField.parse(cron);
+    public void testParse() {
+        final String cron = UUID.randomUUID().toString();
+        final CronField result = cronParserField.parse(cron);
         Assert.assertEquals(mockParseResponse, result.getExpression());
         Assert.assertEquals(testFieldName, result.getField());
         Mockito.verify(mockParser).parse(cron);
     }
 
     @Test(expected = NullPointerException.class)
-    public void testConstructorNameNull() throws Exception {
+    public void testConstructorNameNull() {
         new CronParserField(null, Mockito.mock(FieldConstraints.class));
     }
 
     @Test(expected = NullPointerException.class)
-    public void testConstructorConstraintsNull() throws Exception {
+    public void testConstructorConstraintsNull() {
         new CronParserField(testFieldName, null);
     }
 }

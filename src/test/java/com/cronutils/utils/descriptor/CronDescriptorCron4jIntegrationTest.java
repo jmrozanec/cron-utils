@@ -1,3 +1,16 @@
+/*
+ * Copyright 2015 jmrozanec
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.cronutils.utils.descriptor;
 
 import java.util.Locale;
@@ -12,24 +25,14 @@ import com.cronutils.parser.CronParser;
 
 import static org.junit.Assert.assertEquals;
 
-/*
- * Copyright 2015 jmrozanec
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * http://www.apache.org/licenses/LICENSE-2.0
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 public class CronDescriptorCron4jIntegrationTest {
+
+    private static final String EVERY_MINUTE_EXPECTED = "every minute";
     private CronDescriptor descriptor;
     private CronParser parser;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         descriptor = CronDescriptor.instance(Locale.UK);
         parser = new CronParser(CronDefinitionBuilder.instanceDefinitionFor(CronType.CRON4J));
     }
@@ -41,9 +44,9 @@ public class CronDescriptorCron4jIntegrationTest {
 
     @Test
     public void testEveryMinute() {
-        assertEquals("every minute", descriptor.describe(parser.parse("* * * * *")));
-        assertEquals("every minute", descriptor.describe(parser.parse("*/1 * * * *")));
-        assertEquals("every minute", descriptor.describe(parser.parse("0/1 * * * *")));
+        assertEquals(EVERY_MINUTE_EXPECTED, descriptor.describe(parser.parse("* * * * *")));
+        assertEquals(EVERY_MINUTE_EXPECTED, descriptor.describe(parser.parse("*/1 * * * *")));
+        assertEquals(EVERY_MINUTE_EXPECTED, descriptor.describe(parser.parse("0/1 * * * *")));
     }
 
     @Test
@@ -70,7 +73,7 @@ public class CronDescriptorCron4jIntegrationTest {
      */
     @Test
     public void testDescribeIssue32Expression01() {
-        String cronExpr = "* 1,2,3,4,5,6 * 1,2,3 *";
+        final String cronExpr = "* 1,2,3,4,5,6 * 1,2,3 *";
         descriptor.describe(parser.parse(cronExpr));
     }
 
@@ -81,7 +84,7 @@ public class CronDescriptorCron4jIntegrationTest {
      */
     @Test
     public void testDescribeIssue32Expression02() {
-        String cronExpr = "* 1 1,2 * 4";
+        final String cronExpr = "* 1 1,2 * 4";
         descriptor.describe(parser.parse(cronExpr));
     }
 }

@@ -1,3 +1,16 @@
+/*
+ * Copyright 2015 jmrozanec
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.cronutils;
 
 import java.time.LocalDateTime;
@@ -81,34 +94,34 @@ public class Issue215Test {
                 LocalDateTime.of(2011, Month.JANUARY, 1, 8, 0));
     }
 
-    private void testFridayToSaturdayQuartz(LocalDateTime startDate, LocalDateTime expectedNextExecution) {
-        CronParser parser = new CronParser(CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ));
-        Cron quartzCron = parser.parse("0 0 8 ? * FRI-SAT");
+    private void testFridayToSaturdayQuartz(final LocalDateTime startDate, final LocalDateTime expectedNextExecution) {
+        final CronParser parser = new CronParser(CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ));
+        final Cron quartzCron = parser.parse("0 0 8 ? * FRI-SAT");
         checkNextExecution(startDate, expectedNextExecution, quartzCron);
     }
 
-    private void testFridayToSaturdayCron4j(LocalDateTime startDate, LocalDateTime expectedNextExecution) {
-        CronParser parser = new CronParser(CronDefinitionBuilder.instanceDefinitionFor(CronType.CRON4J));
-        Cron quartzCron = parser.parse("0 8 * * FRI-SAT");
+    private void testFridayToSaturdayCron4j(final LocalDateTime startDate, final LocalDateTime expectedNextExecution) {
+        final CronParser parser = new CronParser(CronDefinitionBuilder.instanceDefinitionFor(CronType.CRON4J));
+        final Cron quartzCron = parser.parse("0 8 * * FRI-SAT");
         checkNextExecution(startDate, expectedNextExecution, quartzCron);
     }
 
-    private void testWorkdays8Quartz(LocalDateTime startDate, LocalDateTime expectedNextExecution) {
-        CronParser parser = new CronParser(CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ));
-        Cron quartzCron = parser.parse("0 0 8 ? * MON-FRI");
+    private void testWorkdays8Quartz(final LocalDateTime startDate, final LocalDateTime expectedNextExecution) {
+        final CronParser parser = new CronParser(CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ));
+        final Cron quartzCron = parser.parse("0 0 8 ? * MON-FRI");
         checkNextExecution(startDate, expectedNextExecution, quartzCron);
     }
 
-    private void testWorkdays8Cron4j(LocalDateTime startDate, LocalDateTime expectedNextExecution) {
-        CronParser parser = new CronParser(CronDefinitionBuilder.instanceDefinitionFor(CronType.CRON4J));
-        Cron quartzCron = parser.parse("0 8 * * MON-FRI");
+    private void testWorkdays8Cron4j(final LocalDateTime startDate, final LocalDateTime expectedNextExecution) {
+        final CronParser parser = new CronParser(CronDefinitionBuilder.instanceDefinitionFor(CronType.CRON4J));
+        final Cron quartzCron = parser.parse("0 8 * * MON-FRI");
         checkNextExecution(startDate, expectedNextExecution, quartzCron);
     }
 
-    private void checkNextExecution(LocalDateTime startDate, LocalDateTime expectedNextExecution, Cron cron) {
-        ExecutionTime executionTime = ExecutionTime.forCron(cron);
-        ZonedDateTime zonedDateTime = ZonedDateTime.of(startDate, ZoneId.systemDefault());
-        Optional<ZonedDateTime> next = executionTime.nextExecution(zonedDateTime);
+    private void checkNextExecution(final LocalDateTime startDate, final LocalDateTime expectedNextExecution, final Cron cron) {
+        final ExecutionTime executionTime = ExecutionTime.forCron(cron);
+        final ZonedDateTime zonedDateTime = ZonedDateTime.of(startDate, ZoneId.systemDefault());
+        final Optional<ZonedDateTime> next = executionTime.nextExecution(zonedDateTime);
         assert (next.isPresent());
         assertEquals(ZonedDateTime.of(expectedNextExecution, ZoneId.systemDefault()), next.get());
     }

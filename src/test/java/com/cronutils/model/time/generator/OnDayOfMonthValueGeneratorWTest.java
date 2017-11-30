@@ -1,3 +1,16 @@
+/*
+ * Copyright 2015 jmrozanec
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.cronutils.model.time.generator;
 
 import java.util.List;
@@ -18,35 +31,23 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-/*
- * Copyright 2015 jmrozanec
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * http://www.apache.org/licenses/LICENSE-2.0
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 public class OnDayOfMonthValueGeneratorWTest {
     private FieldConstraints constraints;
     private OnDayOfMonthValueGenerator fieldValueGenerator;
     private static final int YEAR = 2015;
     private static final int SUNDAY_VALUE_MONTH = 2;
-    private int sundayValueDay = 15;
-    private int sundayValueWeekday = 16;
+    private static final int SUNDAY_VALUE_DAY = 15;
+    private static final int SUNDAY_VALUE_WEEKDAY = 16;
 
-    private int saturdayValueMonth = 2;
-    private int saturdayValueDay = 7;
-    private int saturdayValueWeekday = 6;
+    private static final int SATURDAY_VALUE_MONTH = 2;
+    private static final int SATURDAY_VALUE_DAY = 7;
+    private static final int SATURDAY_VALUE_WEEKDAY = 6;
 
-    private int firstDaySaturdayValueMonth = 8;
-    private int firstDaySaturdayValueDay = 1;
-    private int firstDaySaturdayValueWeekday = 3;
+    private static final int FIRST_DAY_SATURDAY_VALUE_MONTH = 8;
+    private static final int FIRST_DAY_SATURDAY_VALUE_DAY = 1;
+    private static final int FIRST_DAY_SATURDAY_VALUE_WEEKDAY = 3;
 
-    private int outOfScopeValue = 18;
+    private static final int OUT_OF_SCOPE_VALUE = 18;
 
     @Before
     public void setUp() {
@@ -54,91 +55,91 @@ public class OnDayOfMonthValueGeneratorWTest {
     }
 
     @Test(expected = NoSuchValueException.class)
-    public void testGenerateNextValueSundayValue() throws Exception {
-        testGenerateNextValue(SUNDAY_VALUE_MONTH, sundayValueDay, sundayValueWeekday);
+    public void testGenerateNextValueSundayValue() throws NoSuchValueException {
+        testGenerateNextValue(SUNDAY_VALUE_MONTH, SUNDAY_VALUE_DAY, SUNDAY_VALUE_WEEKDAY);
     }
 
     @Test(expected = NoSuchValueException.class)
-    public void testGenerateNextValueSaturdayValue() throws Exception {
-        testGenerateNextValue(saturdayValueMonth, saturdayValueDay, saturdayValueWeekday);
+    public void testGenerateNextValueSaturdayValue() throws NoSuchValueException {
+        testGenerateNextValue(SATURDAY_VALUE_MONTH, SATURDAY_VALUE_DAY, SATURDAY_VALUE_WEEKDAY);
     }
 
     @Test(expected = NoSuchValueException.class)
-    public void testGenerateNextValueFirstDaySaturdayValue() throws Exception {
-        testGenerateNextValue(firstDaySaturdayValueMonth, firstDaySaturdayValueDay, firstDaySaturdayValueWeekday);
+    public void testGenerateNextValueFirstDaySaturdayValue() throws NoSuchValueException {
+        testGenerateNextValue(FIRST_DAY_SATURDAY_VALUE_MONTH, FIRST_DAY_SATURDAY_VALUE_DAY, FIRST_DAY_SATURDAY_VALUE_WEEKDAY);
     }
 
     @Test(expected = NoSuchValueException.class)
-    public void testGeneratePreviousValueSundayValue() throws Exception {
-        testGeneratePreviousValue(SUNDAY_VALUE_MONTH, sundayValueDay, sundayValueWeekday);
+    public void testGeneratePreviousValueSundayValue() throws NoSuchValueException {
+        testGeneratePreviousValue(SUNDAY_VALUE_MONTH, SUNDAY_VALUE_DAY, SUNDAY_VALUE_WEEKDAY);
     }
 
     @Test(expected = NoSuchValueException.class)
-    public void testGeneratePreviousValueSaturdayValue() throws Exception {
-        testGeneratePreviousValue(saturdayValueMonth, saturdayValueDay, saturdayValueWeekday);
+    public void testGeneratePreviousValueSaturdayValue() throws NoSuchValueException {
+        testGeneratePreviousValue(SATURDAY_VALUE_MONTH, SATURDAY_VALUE_DAY, SATURDAY_VALUE_WEEKDAY);
     }
 
     @Test(expected = NoSuchValueException.class)
-    public void testGeneratePreviousValueFirstDaySaturdayValue() throws Exception {
-        testGeneratePreviousValue(firstDaySaturdayValueMonth, firstDaySaturdayValueDay, firstDaySaturdayValueWeekday);
+    public void testGeneratePreviousValueFirstDaySaturdayValue() throws NoSuchValueException {
+        testGeneratePreviousValue(FIRST_DAY_SATURDAY_VALUE_MONTH, FIRST_DAY_SATURDAY_VALUE_DAY, FIRST_DAY_SATURDAY_VALUE_WEEKDAY);
     }
 
     @Test
-    public void testGenerateCandidatesNotIncludingIntervalExtremesSundayValue() throws Exception {
-        testGenerateCandidatesNotIncludingIntervalExtremes(SUNDAY_VALUE_MONTH, sundayValueDay, sundayValueWeekday);
+    public void testGenerateCandidatesNotIncludingIntervalExtremesSundayValue() {
+        testGenerateCandidatesNotIncludingIntervalExtremes(SUNDAY_VALUE_MONTH, SUNDAY_VALUE_DAY, SUNDAY_VALUE_WEEKDAY);
     }
 
     @Test
-    public void testGenerateCandidatesNotIncludingIntervalExtremesSaturdayValue() throws Exception {
-        testGenerateCandidatesNotIncludingIntervalExtremes(saturdayValueMonth, saturdayValueDay, saturdayValueWeekday);
+    public void testGenerateCandidatesNotIncludingIntervalExtremesSaturdayValue() {
+        testGenerateCandidatesNotIncludingIntervalExtremes(SATURDAY_VALUE_MONTH, SATURDAY_VALUE_DAY, SATURDAY_VALUE_WEEKDAY);
     }
 
     @Test
-    public void testGenerateCandidatesNotIncludingIntervalExtremesFirstDaySaturdayValue() throws Exception {
-        testGenerateCandidatesNotIncludingIntervalExtremes(firstDaySaturdayValueMonth, firstDaySaturdayValueDay, firstDaySaturdayValueWeekday);
+    public void testGenerateCandidatesNotIncludingIntervalExtremesFirstDaySaturdayValue() {
+        testGenerateCandidatesNotIncludingIntervalExtremes(FIRST_DAY_SATURDAY_VALUE_MONTH, FIRST_DAY_SATURDAY_VALUE_DAY, FIRST_DAY_SATURDAY_VALUE_WEEKDAY);
     }
 
     @Test
-    public void testIsMatchSundayValue() throws Exception {
-        testIsMatch(SUNDAY_VALUE_MONTH, sundayValueDay, sundayValueWeekday);
+    public void testIsMatchSundayValue() {
+        testIsMatch(SUNDAY_VALUE_MONTH, SUNDAY_VALUE_DAY, SUNDAY_VALUE_WEEKDAY);
     }
 
     @Test
-    public void testIsMatchSaturdayValue() throws Exception {
-        testIsMatch(saturdayValueMonth, saturdayValueDay, saturdayValueWeekday);
+    public void testIsMatchSaturdayValue() {
+        testIsMatch(SATURDAY_VALUE_MONTH, SATURDAY_VALUE_DAY, SATURDAY_VALUE_WEEKDAY);
     }
 
     @Test
-    public void testIsMatchFirstDaySaturdayValue() throws Exception {
-        testIsMatch(firstDaySaturdayValueMonth, firstDaySaturdayValueDay, firstDaySaturdayValueWeekday);
+    public void testIsMatchFirstDaySaturdayValue() {
+        testIsMatch(FIRST_DAY_SATURDAY_VALUE_MONTH, FIRST_DAY_SATURDAY_VALUE_DAY, FIRST_DAY_SATURDAY_VALUE_WEEKDAY);
     }
 
-    private void testGenerateNextValue(int month, int day, int weekday) throws Exception {
+    private void testGenerateNextValue(final int month, final int day, final int weekday) throws NoSuchValueException {
         fieldValueGenerator = createFieldValueGeneratorInstance(month, day);
         assertEquals(weekday, fieldValueGenerator.generateNextValue(1));
-        fieldValueGenerator.generateNextValue(outOfScopeValue);
+        fieldValueGenerator.generateNextValue(OUT_OF_SCOPE_VALUE);
     }
 
-    public void testGeneratePreviousValue(int month, int day, int weekday) throws Exception {
+    private void testGeneratePreviousValue(final int month, final int day, final int weekday) throws NoSuchValueException {
         fieldValueGenerator = createFieldValueGeneratorInstance(month, day);
-        assertEquals(weekday, fieldValueGenerator.generatePreviousValue(outOfScopeValue));
+        assertEquals(weekday, fieldValueGenerator.generatePreviousValue(OUT_OF_SCOPE_VALUE));
         fieldValueGenerator.generatePreviousValue(1);
     }
 
-    public void testGenerateCandidatesNotIncludingIntervalExtremes(int month, int day, int weekday) throws Exception {
+    private void testGenerateCandidatesNotIncludingIntervalExtremes(final int month, final int day, final int weekday) {
         fieldValueGenerator = createFieldValueGeneratorInstance(month, day);
-        List<Integer> candidates = fieldValueGenerator.generateCandidatesNotIncludingIntervalExtremes(1, 32);
+        final List<Integer> candidates = fieldValueGenerator.generateCandidatesNotIncludingIntervalExtremes(1, 32);
         assertEquals(1, candidates.size());
         assertEquals(weekday, candidates.get(0), 0);
     }
 
-    public void testIsMatch(int month, int day, int weekday) throws Exception {
+    private void testIsMatch(final int month, final int day, final int weekday) {
         fieldValueGenerator = createFieldValueGeneratorInstance(month, day);
         assertTrue(fieldValueGenerator.isMatch(weekday));
         assertFalse(fieldValueGenerator.isMatch(weekday - 1));
     }
 
-    private OnDayOfMonthValueGenerator createFieldValueGeneratorInstance(int month, int day) {
+    private OnDayOfMonthValueGenerator createFieldValueGeneratorInstance(final int month, final int day) {
         return new OnDayOfMonthValueGenerator(
                 new CronField(
                         CronFieldName.DAY_OF_MONTH,
