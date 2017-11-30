@@ -15,7 +15,7 @@ public class ValueMappingFieldExpressionVisitorTest {
 
     @Before
     public void setUp() throws Exception {
-        final Function<FieldValue, FieldValue> transform = input -> input;
+        final Function<FieldValue<?>, FieldValue<?>> transform = input -> input;
         valueMappingFieldExpressionVisitor = new ValueMappingFieldExpressionVisitor(transform);
     }
 
