@@ -31,7 +31,8 @@ public class Issue223Test {
         Cron myCron2 = parser.parse("* * */1 * 3");
         time = ZonedDateTime.parse("2017-09-05T11:31:55.407-05:00");
 
-        ZonedDateTime next2 = ExecutionTime.forCron(myCron2).nextExecution(time).isPresent()?ExecutionTime.forCron(myCron2).nextExecution(time).get():null;
+        Optional<ZonedDateTime> onext2 = ExecutionTime.forCron(myCron2).nextExecution(time);
+        ZonedDateTime next2 = onext2.orElse(null);
         assertEquals(ZonedDateTime.parse("2017-09-06T00:00-05:00"), next2);
     }
 

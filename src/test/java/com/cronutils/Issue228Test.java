@@ -34,7 +34,7 @@ public class Issue228Test {
         // This is 9am on a day between the 1st and 7th which is a Monday (in this case it should be Oct 2
         Cron myCron = parser.parse("0 9 1-7 * 1");
         ZonedDateTime time = ZonedDateTime.parse("2017-09-29T14:46:01.166-07:00");
-        
+
         Optional<ZonedDateTime> onext = ExecutionTime.forCron(myCron).nextExecution(time);
         ZonedDateTime next = onext.orElse(null);
 

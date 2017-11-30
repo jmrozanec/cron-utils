@@ -5,6 +5,7 @@ import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -91,10 +92,14 @@ public class Issue55UnexpectedExecutionTimes {
 
     private List<Instant> getInstants(ExecutionTime executionTime, ZonedDateTime startTime, ZonedDateTime endTime) {
         List<Instant> instantList = new ArrayList<>();
-        ZonedDateTime next = executionTime.nextExecution(startTime).isPresent()?executionTime.nextExecution(startTime).get():null;
+
+        Optional<ZonedDateTime> onext = executionTime.nextExecution(startTime);
+        ZonedDateTime next = onext.orElse(null);
+
         while (next!=null && next.isBefore(endTime)) {
             instantList.add(next.toInstant());
-            next = executionTime.nextExecution(next).isPresent()?executionTime.nextExecution(next).get():null;
+            onext = executionTime.nextExecution(next);
+            next = onext.orElse(null);
         }
         return instantList;
     }
