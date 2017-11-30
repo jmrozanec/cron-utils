@@ -20,7 +20,7 @@ public class Issue143Test {
     @Before
     public void setUp() throws Exception {
         // Make sure that current date is before Dec-31
-        currentDateTime = ZonedDateTime.of(LocalDateTime.of(2016, 12, 20, 12, 00),
+        currentDateTime = ZonedDateTime.of(LocalDateTime.of(2016, 12, 20, 12, 0),
                 ZoneId.systemDefault());
 
         parser = new CronParser(CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ));
@@ -29,9 +29,9 @@ public class Issue143Test {
     @Test
     public void testCase1() {
         ExecutionTime et = ExecutionTime.forCron(parser.parse("0 0 12 31 12 ? *"));
-        ZonedDateTime actual = et.lastExecution(currentDateTime).get();
+        ZonedDateTime actual = et.lastExecution(currentDateTime).isPresent()?et.lastExecution(currentDateTime).get():null;
 
-        ZonedDateTime expected = ZonedDateTime.of(LocalDateTime.of(2015, 12, 31, 12, 00),
+        ZonedDateTime expected = ZonedDateTime.of(LocalDateTime.of(2015, 12, 31, 12, 0),
                 ZoneId.systemDefault());
         Assert.assertEquals(expected, actual);
     }
@@ -39,19 +39,19 @@ public class Issue143Test {
     @Test
     public void testCase2() {
         ExecutionTime et = ExecutionTime.forCron(parser.parse("0 0 12 ? 12 SAT#5 *"));
-        ZonedDateTime actual = et.lastExecution(currentDateTime).get();
+        ZonedDateTime actual = et.lastExecution(currentDateTime).isPresent()?et.lastExecution(currentDateTime).get():null;
 
-        ZonedDateTime expected = ZonedDateTime.of(LocalDateTime.of(2012, 12, 29, 12, 00),
+        ZonedDateTime expected = ZonedDateTime.of(LocalDateTime.of(2012, 12, 29, 12, 0),
                 ZoneId.systemDefault());
         Assert.assertEquals(expected, actual);
     }
 
-    //    @Test
+    //@Test TODO #289
     public void testCase3() {
         ExecutionTime et = ExecutionTime.forCron(parser.parse("0 0 12 31 1/1 ? *"));
-        ZonedDateTime actual = et.lastExecution(currentDateTime).get();
+        ZonedDateTime actual = et.lastExecution(currentDateTime).isPresent()?et.lastExecution(currentDateTime).get():null;
 
-        ZonedDateTime expected = ZonedDateTime.of(LocalDateTime.of(2015, 12, 31, 12, 00),
+        ZonedDateTime expected = ZonedDateTime.of(LocalDateTime.of(2015, 12, 31, 12, 0),
                 ZoneId.systemDefault());
         Assert.assertEquals(expected, actual);
     }
@@ -59,9 +59,9 @@ public class Issue143Test {
     @Test
     public void testCase4() {
         ExecutionTime et = ExecutionTime.forCron(parser.parse("0 0 12 ? 1/1 SAT#5 *"));
-        ZonedDateTime actual = et.lastExecution(currentDateTime).get();
+        ZonedDateTime actual = et.lastExecution(currentDateTime).isPresent()?et.lastExecution(currentDateTime).get():null;
 
-        ZonedDateTime expected = ZonedDateTime.of(LocalDateTime.of(2016, 10, 29, 12, 00),
+        ZonedDateTime expected = ZonedDateTime.of(LocalDateTime.of(2016, 10, 29, 12, 0),
                 ZoneId.systemDefault());
         Assert.assertEquals(expected, actual);
     }
