@@ -1,6 +1,7 @@
 package com.cronutils;
 
 import java.time.ZonedDateTime;
+import java.util.Optional;
 
 import org.junit.Test;
 
@@ -23,7 +24,8 @@ public class Issue223Test {
         CronParser parser = new CronParser(cronDefinition);
         Cron myCron = parser.parse("* * * * 3");
         ZonedDateTime time = ZonedDateTime.parse("2017-09-05T11:31:55.407-05:00");
-        ZonedDateTime next = ExecutionTime.forCron(myCron).nextExecution(time).isPresent()?ExecutionTime.forCron(myCron).nextExecution(time).get():null;
+        Optional<ZonedDateTime> onext = ExecutionTime.forCron(myCron).nextExecution(time);
+        ZonedDateTime next = onext.orElse(null);
         assertEquals(ZonedDateTime.parse("2017-09-06T00:00-05:00"), next);
 
         Cron myCron2 = parser.parse("* * */1 * 3");
