@@ -17,7 +17,7 @@ addons:
 script:
    - > 
      if [ "$TRAVIS_PULL_REQUEST" != "false" ];
-     then mvn verify --settings target/travis/settings.xml -Dsettings.security=target/travis/settings-security.xml -Dmaven.javadoc.skip=true;
+     then mvn org.jacoco:jacoco-maven-plugin:prepare-agent verify --settings target/travis/settings.xml -Dsettings.security=target/travis/settings-security.xml -Dmaven.javadoc.skip=true;
      fi
    - > 
      if [ "$TRAVIS_PULL_REQUEST" = "false" ];
