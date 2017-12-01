@@ -13,7 +13,7 @@ addons:
   sonarcloud:
     organization: "jmrozanec-github"
     token:
-      secure: "cbMGySWmB0LzXqbZp3LXETcpFD3QhpIEibiiHX5zOI0u5nsG762phgF0lpdfoLJ1WN6j1L+ctkZ0ZAd2lPckFp0g+HBYnvaxkV87JUJcgeDPUr2CNgyc3dXHp2AsULblnzGWnEOATVlyWqXNDm/eF8NIiiyxgRGjifcvKf+++N0="
+      secure: "ZmVdpiC5ivHP72R7NZsv3s9XM9WuZQ//psUbpxJf+HLJGes+dAUppkiIBBICLwGstCCdyfTx1XaW56Gh2zTohrNBhv2S7OmrWwp8+o+dCIb1k6B4PsQ3b6h5bplcorAItMstoBZB8EowG875QENwlrZuB/qBHGy61vgERiNzPgA="
 script:
    - > 
      if [ "$TRAVIS_PULL_REQUEST" != "false" ];
