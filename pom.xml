@@ -69,8 +69,8 @@
 
         <github.global.server>github</github.global.server>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <sonar.host.url>https://sonarqube.com</sonar.host.url>
-        <sonar.organization>jmrozanec-github</sonar.organization>
+        <!--sonar.host.url>https://sonarqube.com</sonar.host.url>
+        <sonar.organization>jmrozanec-github</sonar.organization-->
     </properties>
 
     <dependencies>
