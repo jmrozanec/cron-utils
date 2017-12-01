@@ -168,4 +168,25 @@ public class ExecutionTimeCustomDefinitionIntegrationTest {
             start = start.plusMinutes(1);
         }
     }
+
+    /**
+     * A CronDefinition with only 3 required fields is legal to instantiate, but the parser considers an expression
+     * with 4 fields as an error:
+     * java.lang.IllegalArgumentException: Cron expression contains 4 parts but we expect one of [6, 7]
+     */
+    @Test
+    public void testThreeRequiredFieldsSupported() throws Exception {
+        CronDefinition cronDefinition = CronDefinitionBuilder.defineCron()
+                .withSeconds().and()
+                .withMinutes().and()
+                .withHours().and()
+                .withDayOfMonth().supportsL().supportsW().supportsLW().supportsQuestionMark().optional().and()
+                .withMonth().optional().and()
+                .withDayOfWeek().withValidRange(1, 7).withMondayDoWValue(2).supportsHash().supportsL()
+                .supportsQuestionMark().optional().and()
+                .withYear().withValidRange(2000, 2099).optional().and()
+                .instance();
+        CronParser cronParser = new CronParser(cronDefinition);
+        cronParser.parse("* * 4 3");
+    }
 }
