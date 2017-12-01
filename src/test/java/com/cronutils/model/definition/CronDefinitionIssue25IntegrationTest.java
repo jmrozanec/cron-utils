@@ -1,15 +1,3 @@
-package com.cronutils.model.definition;
-
-import org.junit.Before;
-import org.junit.Test;
-
-import com.cronutils.model.Cron;
-import com.cronutils.model.field.CronFieldName;
-import com.cronutils.model.time.ExecutionTime;
-import com.cronutils.parser.CronParser;
-
-import static org.junit.Assert.assertEquals;
-
 /*
  * Copyright 2015 jmrozanec
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,9 +10,22 @@ import static org.junit.Assert.assertEquals;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+package com.cronutils.model.definition;
+
+import org.junit.Before;
+import org.junit.Test;
+
+import com.cronutils.model.Cron;
+import com.cronutils.model.field.CronFieldName;
+import com.cronutils.model.time.ExecutionTime;
+import com.cronutils.parser.CronParser;
+
+import static org.junit.Assert.assertEquals;
+
 public class CronDefinitionIssue25IntegrationTest {
     private CronDefinition cronDefinition;
-    final String CRON_EXPRESSION = "0 18 1";
+    static final String CRON_EXPRESSION = "0 18 1";
 
     @Before
     public void setUp() {
@@ -38,8 +39,8 @@ public class CronDefinitionIssue25IntegrationTest {
 
     @Test
     public void testParser() {
-        CronParser parser = new CronParser(cronDefinition);
-        Cron cron = parser.parse(CRON_EXPRESSION);
+        final CronParser parser = new CronParser(cronDefinition);
+        final Cron cron = parser.parse(CRON_EXPRESSION);
         assertEquals("0", cron.retrieve(CronFieldName.MINUTE).getExpression().asString());
         assertEquals("18", cron.retrieve(CronFieldName.HOUR).getExpression().asString());
         assertEquals("1", cron.retrieve(CronFieldName.DAY_OF_WEEK).getExpression().asString());
@@ -50,8 +51,8 @@ public class CronDefinitionIssue25IntegrationTest {
      */
     @Test
     public void testExecutionTime() {
-        CronParser parser = new CronParser(cronDefinition);
-        Cron cron = parser.parse(CRON_EXPRESSION);
+        final CronParser parser = new CronParser(cronDefinition);
+        final Cron cron = parser.parse(CRON_EXPRESSION);
         ExecutionTime.forCron(cron);
     }
 }

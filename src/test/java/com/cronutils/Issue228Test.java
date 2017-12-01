@@ -10,6 +10,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.cronutils;
 
 import java.time.ZonedDateTime;
@@ -26,10 +27,13 @@ import com.cronutils.parser.CronParser;
 import static org.junit.Assert.assertEquals;
 
 public class Issue228Test {
+
+    private static final String TEST_DATE = "2017-09-29T14:46:01.166-07:00";
+
     /**
-     * This is the UNIX cron definition with a single modification to match both Day Of Week and Day Of Month
+     * This is the UNIX cron definition with a single modification to match both Day Of Week and Day Of Month.
      */
-    private CronDefinition cronDefinition = CronDefinitionBuilder.defineCron()
+    private final CronDefinition cronDefinition = CronDefinitionBuilder.defineCron()
             .withMinutes().and()
             .withHours().and()
             .withDayOfMonth().and()
@@ -41,70 +45,60 @@ public class Issue228Test {
 
     @Test
     public void testFirstMondayOfTheMonthNextExecution() {
-        CronParser parser = new CronParser(cronDefinition);
+        final CronParser parser = new CronParser(cronDefinition);
 
         // This is 9am on a day between the 1st and 7th which is a Monday (in this case it should be Oct 2
-        Cron myCron = parser.parse("0 9 1-7 * 1");
-        ZonedDateTime time = ZonedDateTime.parse("2017-09-29T14:46:01.166-07:00");
-
-        Optional<ZonedDateTime> onext = ExecutionTime.forCron(myCron).nextExecution(time);
-        ZonedDateTime next = onext.orElse(null);
-
-        assertEquals(ZonedDateTime.parse("2017-10-02T09:00-07:00"), next);
+        final Cron myCron = parser.parse("0 9 1-7 * 1");
+        final ZonedDateTime time = ZonedDateTime.parse(TEST_DATE);
+        assertEquals(ZonedDateTime.parse("2017-10-02T09:00-07:00"), getNextExecutionTime(myCron, time));
     }
 
     @Test
     public void testEveryWeekdayFirstWeekOfMonthNextExecution() {
-        CronParser parser = new CronParser(cronDefinition);
+        final CronParser parser = new CronParser(cronDefinition);
 
         // This is 9am on Mon-Fri day between the 1st and 7th (in this case it should be Oct 2)
-        Cron myCron = parser.parse("0 9 1-7 * 1-5");
-        ZonedDateTime time = ZonedDateTime.parse("2017-09-29T14:46:01.166-07:00");
-
-        Optional<ZonedDateTime> onext = ExecutionTime.forCron(myCron).nextExecution(time);
-        ZonedDateTime next = onext.orElse(null);
-
-        assertEquals(ZonedDateTime.parse("2017-10-02T09:00-07:00"), next);
+        final Cron myCron = parser.parse("0 9 1-7 * 1-5");
+        final ZonedDateTime time = ZonedDateTime.parse(TEST_DATE);
+        assertEquals(ZonedDateTime.parse("2017-10-02T09:00-07:00"), getNextExecutionTime(myCron, time));
     }
 
     @Test
     public void testEveryWeekendFirstWeekOfMonthNextExecution() {
-        CronParser parser = new CronParser(cronDefinition);
+        final CronParser parser = new CronParser(cronDefinition);
 
         // This is 9am on Sat and Sun day between the 1st and 7th (in this case it should be Oct 1)
-        Cron myCron = parser.parse("0 9 1-7 * 6-7");
-        ZonedDateTime time = ZonedDateTime.parse("2017-09-29T14:46:01.166-07:00");
-
-        Optional<ZonedDateTime> onext = ExecutionTime.forCron(myCron).nextExecution(time);
-        ZonedDateTime next = onext.orElse(null);
-
-        assertEquals(ZonedDateTime.parse("2017-10-01T09:00-07:00"), next);
+        final Cron myCron = parser.parse("0 9 1-7 * 6-7");
+        final ZonedDateTime time = ZonedDateTime.parse(TEST_DATE);
+        assertEquals(ZonedDateTime.parse("2017-10-01T09:00-07:00"), getNextExecutionTime(myCron, time));
     }
 
     @Test
     public void testEveryWeekdaySecondWeekOfMonthNextExecution() {
-        CronParser parser = new CronParser(cronDefinition);
+        final CronParser parser = new CronParser(cronDefinition);
 
         // This is 9am on Mon-Fri day between the 8th and 14th (in this case it should be Oct 9 Mon)
-        Cron myCron = parser.parse("0 9 8-14 * 1-5");
-        ZonedDateTime time = ZonedDateTime.parse("2017-09-29T14:46:01.166-07:00");
-
-        Optional<ZonedDateTime> onext = ExecutionTime.forCron(myCron).nextExecution(time);
-        ZonedDateTime next = onext.orElse(null);
-        assertEquals(ZonedDateTime.parse("2017-10-09T09:00-07:00"), next);
+        final Cron myCron = parser.parse("0 9 8-14 * 1-5");
+        final ZonedDateTime time = ZonedDateTime.parse(TEST_DATE);
+        assertEquals(ZonedDateTime.parse("2017-10-09T09:00-07:00"), getNextExecutionTime(myCron, time));
     }
 
     @Test
     public void testEveryWeekendForthWeekOfMonthNextExecution() {
-        CronParser parser = new CronParser(cronDefinition);
+        final CronParser parser = new CronParser(cronDefinition);
 
         // This is 9am on Sat and Sun day between the 22nd and 28th (in this case it should be Oct 22)
-        Cron myCron = parser.parse("0 9 22-28 * 6-7");
-        ZonedDateTime time = ZonedDateTime.parse("2017-09-29T14:46:01.166-07:00");
+        final Cron myCron = parser.parse("0 9 22-28 * 6-7");
+        final ZonedDateTime time = ZonedDateTime.parse(TEST_DATE);
+        assertEquals(ZonedDateTime.parse("2017-10-22T09:00-07:00"), getNextExecutionTime(myCron, time));
+    }
 
-        Optional<ZonedDateTime> onext = ExecutionTime.forCron(myCron).nextExecution(time);
-        ZonedDateTime next = onext.orElse(null);
-
-        assertEquals(ZonedDateTime.parse("2017-10-22T09:00-07:00"), next);
+    private ZonedDateTime getNextExecutionTime(final Cron cron, final ZonedDateTime time) {
+        final Optional<ZonedDateTime> nextExecution = ExecutionTime.forCron(cron).nextExecution(time);
+        if (nextExecution.isPresent()) {
+            return nextExecution.get();
+        } else {
+            throw new NullPointerException("next execution was not present");
+        }
     }
 }

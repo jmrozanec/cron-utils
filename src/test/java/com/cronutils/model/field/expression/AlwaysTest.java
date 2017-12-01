@@ -1,9 +1,3 @@
-package com.cronutils.model.field.expression;
-
-import org.junit.Test;
-
-import static org.junit.Assert.assertEquals;
-
 /*
  * Copyright 2015 jmrozanec
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,6 +10,13 @@ import static org.junit.Assert.assertEquals;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+package com.cronutils.model.field.expression;
+
+import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
+
 public class AlwaysTest {
 
     @Test

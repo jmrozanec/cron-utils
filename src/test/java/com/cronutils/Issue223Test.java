@@ -10,6 +10,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.cronutils;
 
 import java.time.ZonedDateTime;
@@ -25,27 +26,34 @@ import com.cronutils.model.time.ExecutionTime;
 import com.cronutils.parser.CronParser;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 public class Issue223Test {
+
     /**
-     * Issue #223: for dayOfWeek value == 3 && division of day, nextExecution do not return correct results
+     * Issue #223: for dayOfWeek value == 3 && division of day, nextExecution do not return correct results.
      */
     @Test
     public void testEveryWednesdayOfEveryDayNextExecution() {
-        CronDefinition cronDefinition = CronDefinitionBuilder.instanceDefinitionFor(CronType.UNIX);
-        CronParser parser = new CronParser(cronDefinition);
-        Cron myCron = parser.parse("* * * * 3");
+        final CronDefinition cronDefinition = CronDefinitionBuilder.instanceDefinitionFor(CronType.UNIX);
+        final CronParser parser = new CronParser(cronDefinition);
+        final Cron myCron = parser.parse("* * * * 3");
         ZonedDateTime time = ZonedDateTime.parse("2017-09-05T11:31:55.407-05:00");
-        Optional<ZonedDateTime> onext = ExecutionTime.forCron(myCron).nextExecution(time);
-        ZonedDateTime next = onext.orElse(null);
-        assertEquals(ZonedDateTime.parse("2017-09-06T00:00-05:00"), next);
+        final Optional<ZonedDateTime> nextExecution = ExecutionTime.forCron(myCron).nextExecution(time);
+        if (nextExecution.isPresent()) {
+            assertEquals(ZonedDateTime.parse("2017-09-06T00:00-05:00"), nextExecution.get());
+        } else {
+            fail("next execution was not present");
+        }
 
-        Cron myCron2 = parser.parse("* * */1 * 3");
+        final Cron myCron2 = parser.parse("* * */1 * 3");
         time = ZonedDateTime.parse("2017-09-05T11:31:55.407-05:00");
-
-        Optional<ZonedDateTime> onext2 = ExecutionTime.forCron(myCron2).nextExecution(time);
-        ZonedDateTime next2 = onext2.orElse(null);
-        assertEquals(ZonedDateTime.parse("2017-09-06T00:00-05:00"), next2);
+        final Optional<ZonedDateTime> nextExecution2 = ExecutionTime.forCron(myCron2).nextExecution(time);
+        if (nextExecution2.isPresent()) {
+            assertEquals(ZonedDateTime.parse("2017-09-06T00:00-05:00"), nextExecution2.get());
+        } else {
+            fail("next execution was not present");
+        }
     }
 
 }

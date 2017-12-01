@@ -10,9 +10,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.cronutils.model.time.generator;
 
 import java.util.List;
+import java.util.Random;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -38,21 +40,21 @@ public class AlwaysFieldValueGeneratorTest {
     }
 
     @Test
-    public void testGenerateNextValue() throws Exception {
+    public void testGenerateNextValue() throws NoSuchValueException {
         for (int j = 0; j < 10; j++) {
-            assertEquals(j + 1, fieldValueGenerator.generateNextValue(j));
+            assertEquals(j + 1L, fieldValueGenerator.generateNextValue(j));
         }
     }
 
     @Test
-    public void testGeneratePreviousValue() throws Exception {
+    public void testGeneratePreviousValue() throws NoSuchValueException {
         for (int j = 1; j < 10; j++) {
-            assertEquals(j - 1, fieldValueGenerator.generatePreviousValue(j));
+            assertEquals(j - 1L, fieldValueGenerator.generatePreviousValue(j));
         }
     }
 
     @Test
-    public void testGenerateCandidatesNotIncludingIntervalExtremes() throws Exception {
+    public void testGenerateCandidatesNotIncludingIntervalExtremes() {
         final List<Integer> values = fieldValueGenerator.generateCandidatesNotIncludingIntervalExtremes(0, 10);
         for (int j = 1; j < 10; j++) {
             assertTrue(values.contains(j));
@@ -61,18 +63,19 @@ public class AlwaysFieldValueGeneratorTest {
     }
 
     @Test
-    public void testIsMatch() throws Exception {
-        assertTrue(fieldValueGenerator.isMatch((int) (10 * Math.random())));
+    public void testIsMatch() {
+        final Random random = new Random();
+        assertTrue(fieldValueGenerator.isMatch((random.nextInt(10))));
     }
 
     @Test
-    public void testMatchesFieldExpressionClass() throws Exception {
+    public void testMatchesFieldExpressionClass() {
         assertTrue(fieldValueGenerator.matchesFieldExpressionClass(mock(Always.class)));
         assertFalse(fieldValueGenerator.matchesFieldExpressionClass(mock(FieldExpression.class)));
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testConstructorNotMatchesAlways() throws Exception {
+    public void testConstructorNotMatchesAlways() {
         new AlwaysFieldValueGenerator(
                 new CronField(CronFieldName.HOUR, mock(FieldExpression.class), FieldConstraintsBuilder.instance().createConstraintsInstance()));
     }

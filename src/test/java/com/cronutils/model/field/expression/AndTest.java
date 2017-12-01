@@ -1,12 +1,3 @@
-package com.cronutils.model.field.expression;
-
-import org.junit.Before;
-import org.junit.Test;
-
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
 /*
  * Copyright 2015 jmrozanec
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,6 +10,16 @@ import static org.mockito.Mockito.when;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+package com.cronutils.model.field.expression;
+
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 public class AndTest {
 
     private And and;
@@ -26,14 +27,14 @@ public class AndTest {
     private FieldExpression expression2;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         and = new And();
         expression1 = mock(FieldExpression.class);
         expression2 = mock(FieldExpression.class);
     }
 
     @Test
-    public void testAnd() throws Exception {
+    public void testAnd() {
         and.and(expression1).and(expression2);
         assertEquals(2, and.getExpressions().size());
         assertEquals(expression1, and.getExpressions().get(0));
@@ -41,14 +42,14 @@ public class AndTest {
     }
 
     @Test(expected = UnsupportedOperationException.class)
-    public void testGetExpressionsImmutable() throws Exception {
+    public void testGetExpressionsImmutable() {
         and.and(expression1).getExpressions().add(expression2);
     }
 
     @Test
-    public void testAString() throws Exception {
-        String expression1String = "expression1";
-        String expression2String = "expression2";
+    public void testAString() {
+        final String expression1String = "expression1";
+        final String expression2String = "expression2";
         when(expression1.asString()).thenReturn(expression1String);
         when(expression2.asString()).thenReturn(expression2String);
         and.and(expression1).and(expression2);

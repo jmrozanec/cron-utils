@@ -20,6 +20,8 @@ import com.cronutils.utils.StringUtils;
 import com.cronutils.utils.VisibleForTesting;
 
 class SecondsDescriptor implements FieldExpressionVisitor {
+
+    private static final String EVERY = "every";
     protected ResourceBundle bundle;
 
     SecondsDescriptor(final ResourceBundle bundle) {
@@ -72,7 +74,7 @@ class SecondsDescriptor implements FieldExpressionVisitor {
      * @return human readable description - String
      */
     protected String describe(final Always always, final boolean and) {
-        return bundle.getString("every");
+        return bundle.getString(EVERY);
     }
 
     /**
@@ -205,9 +207,9 @@ class SecondsDescriptor implements FieldExpressionVisitor {
     public Every visit(final Every every) {
         String description;
         if (every.getPeriod().getValue() > 1) {
-            description = String.format("%s %s ", bundle.getString("every"), nominalValue(every.getPeriod())) + " %p ";
+            description = String.format("%s %s ", bundle.getString(EVERY), nominalValue(every.getPeriod())) + " %p ";
         } else {
-            description = bundle.getString("every") + " %s ";
+            description = bundle.getString(EVERY) + " %s ";
         }
         //TODO save the description?
         return every;

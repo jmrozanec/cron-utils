@@ -1,10 +1,3 @@
-package com.cronutils.model.time;
-
-import org.junit.Before;
-import org.junit.Test;
-
-import static org.junit.Assert.assertEquals;
-
 /*
  * Copyright 2015 jmrozanec
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,6 +10,14 @@ import static org.junit.Assert.assertEquals;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+package com.cronutils.model.time;
+
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
+
 public class NearestValueTest {
     private int value;
     private int shifts;
@@ -31,12 +32,12 @@ public class NearestValueTest {
     }
 
     @Test
-    public void testGetValue() throws Exception {
+    public void testGetValue() {
         assertEquals(value, nearestValue.getValue());
     }
 
     @Test
-    public void testGetShifts() throws Exception {
+    public void testGetShifts() {
         assertEquals(shifts, nearestValue.getShifts());
     }
 }

@@ -1,16 +1,3 @@
-package com.cronutils.model.time.generator;
-
-import org.junit.Before;
-import org.junit.Test;
-
-import com.cronutils.model.field.CronField;
-import com.cronutils.model.field.expression.FieldExpression;
-
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
-
 /*
  * Copyright 2015 jmrozanec
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,6 +10,22 @@ import static org.mockito.Mockito.mock;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+package com.cronutils.model.time.generator;
+
+import java.util.Random;
+
+import org.junit.Before;
+import org.junit.Test;
+
+import com.cronutils.model.field.CronField;
+import com.cronutils.model.field.expression.FieldExpression;
+
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+
 public class NullFieldValueGeneratorTest {
     private NullFieldValueGenerator fieldValueGenerator;
 
@@ -32,32 +35,35 @@ public class NullFieldValueGeneratorTest {
     }
 
     @Test(expected = NoSuchValueException.class)
-    public void testGenerateNextValue() throws Exception {
-        fieldValueGenerator.generateNextValue((int) (10 * Math.random()));
+    public void testGenerateNextValue() throws NoSuchValueException {
+        final Random random = new Random();
+        fieldValueGenerator.generateNextValue(random.nextInt(10));
     }
 
     @Test(expected = NoSuchValueException.class)
-    public void testGeneratePreviousValue() throws Exception {
-        fieldValueGenerator.generatePreviousValue((int) (10 * Math.random()));
+    public void testGeneratePreviousValue() throws NoSuchValueException {
+        final Random random = new Random();
+        fieldValueGenerator.generatePreviousValue(random.nextInt(10));
     }
 
     @Test
-    public void testGenerateCandidatesNotIncludingIntervalExtremes() throws Exception {
+    public void testGenerateCandidatesNotIncludingIntervalExtremes() {
         assertTrue(fieldValueGenerator.generateCandidatesNotIncludingIntervalExtremes(0, Integer.MAX_VALUE).isEmpty());
     }
 
     @Test
-    public void testIsMatch() throws Exception {
-        assertFalse(fieldValueGenerator.isMatch((int) (10 * Math.random())));
+    public void testIsMatch() {
+        final Random random = new Random();
+        assertFalse(fieldValueGenerator.isMatch(random.nextInt(10)));
     }
 
     @Test
-    public void testMatchesFieldExpressionClass() throws Exception {
+    public void testMatchesFieldExpressionClass() {
         assertTrue(fieldValueGenerator.matchesFieldExpressionClass(mock(FieldExpression.class)));
     }
 
     @Test
-    public void testConstructorNotMatchesNull() throws Exception {
+    public void testConstructorNotMatchesNull() {
         assertNotNull(new NullFieldValueGenerator(mock(CronField.class)));
     }
 }

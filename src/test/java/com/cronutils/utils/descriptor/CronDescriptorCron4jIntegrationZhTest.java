@@ -10,6 +10,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.cronutils.utils.descriptor;
 
 import java.util.Locale;
@@ -34,7 +35,7 @@ public class CronDescriptorCron4jIntegrationZhTest {
     private CronParser parser;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         descriptor = CronDescriptor.instance(Locale.CHINESE);
         parser = new CronParser(CronDefinitionBuilder.instanceDefinitionFor(CronType.CRON4J));
     }

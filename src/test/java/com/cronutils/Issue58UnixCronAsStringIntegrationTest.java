@@ -10,6 +10,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.cronutils;
 
 import org.junit.Before;
@@ -30,31 +31,31 @@ public class Issue58UnixCronAsStringIntegrationTest {
 
     @Before
     public void setup() {
-        CronDefinition cronDefinition = CronDefinitionBuilder.instanceDefinitionFor(CronType.UNIX);
+        final CronDefinition cronDefinition = CronDefinitionBuilder.instanceDefinitionFor(CronType.UNIX);
         cronParser = new CronParser(cronDefinition);
     }
 
     @Test
     public void everyEvenHourShouldBeParsedCorrectly() {
-        Cron cron = cronParser.parse("0 0/1 * * *");
+        final Cron cron = cronParser.parse("0 0/1 * * *");
         assertThat(cron.asString(), anyOf(is("0 0/1 * * *"), is("0 /1 * * *"), is("0 0 * * *")));
     }
 
     @Test
     public void everyOddHourShouldBeParsedCorrectly() {
-        Cron cron = cronParser.parse("0 1/2 * * *");
+        final Cron cron = cronParser.parse("0 1/2 * * *");
         assertThat(cron.asString(), is("0 1/2 * * *"));
     }
 
     @Test
     public void everyEvenMinuteShouldBeParsedCorrectly() {
-        Cron cron = cronParser.parse("0/1 * * * *");
+        final Cron cron = cronParser.parse("0/1 * * * *");
         assertThat(cron.asString(), anyOf(is("0/1 * * * *"), is("/1 * * * *"), is("0 * * * *")));
     }
 
     @Test
     public void everyOddMinuteShouldBeParsedCorrectly() {
-        Cron cron = cronParser.parse("1/2 * * * *");
+        final Cron cron = cronParser.parse("1/2 * * * *");
         assertThat(cron.asString(), is("1/2 * * * *"));
     }
 }

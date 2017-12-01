@@ -10,11 +10,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.cronutils.utils.descriptor;
 
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.util.Locale;
 
 import org.junit.Before;
@@ -28,38 +26,32 @@ import com.cronutils.parser.CronParser;
 
 import static org.junit.Assert.assertEquals;
 
-/**
- * @author minidmnv
- */
 public class Issue227Test {
+
     /**
-     * Issue #227 - Getting a leaking "%s" in description output
+     * Issue #227 - Getting a leaking "%s" in description output.
      */
     private CronParser parser;
-    private ZonedDateTime currentDateTime;
 
     @Before
-    public void setUp() throws Exception {
-        currentDateTime = ZonedDateTime.of(LocalDateTime.of(2016, 12, 20, 12, 00),
-                ZoneId.systemDefault());
-
+    public void setUp() {
         parser = new CronParser(CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ));
     }
 
     @Test
     public void testProperDescriptorOutput() {
-        Cron cron = parser.parse("0 5-35/30 * * * ?");
-        CronDescriptor descriptor = CronDescriptor.instance(Locale.US);
-        String description = descriptor.describe(cron);
+        final Cron cron = parser.parse("0 5-35/30 * * * ?");
+        final CronDescriptor descriptor = CronDescriptor.instance(Locale.US);
+        final String description = descriptor.describe(cron);
 
         assertEquals("every 30 minutes between 5 and 35", description);
     }
 
     @Test
     public void testProperDescriptorOutputWithSeconds() {
-        Cron cron = parser.parse("5-35/30 * * * * ?");
-        CronDescriptor descriptor = CronDescriptor.instance(Locale.US);
-        String description = descriptor.describe(cron);
+        final Cron cron = parser.parse("5-35/30 * * * * ?");
+        final CronDescriptor descriptor = CronDescriptor.instance(Locale.US);
+        final String description = descriptor.describe(cron);
 
         assertEquals("every 30 seconds between 5 and 35", description);
     }

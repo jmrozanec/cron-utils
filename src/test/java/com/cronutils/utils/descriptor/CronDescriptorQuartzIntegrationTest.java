@@ -10,6 +10,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.cronutils.utils.descriptor;
 
 import java.util.Locale;
@@ -29,7 +30,7 @@ public class CronDescriptorQuartzIntegrationTest {
     private CronParser parser;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         descriptor = CronDescriptor.instance(Locale.UK);
         parser = new CronParser(CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ));
     }
@@ -46,8 +47,8 @@ public class CronDescriptorQuartzIntegrationTest {
 
     @Test
     public void testCronAndWithRangesAndEveryExpressions() {
-        assertExpression("0 2-59/3 1,9,22 11-26 1-6 ?", "every 3 minutes between 2 and 59 at 1, 9 " +
-                "and 22 hours every day between 11 and 26 every month between January and June");
+        assertExpression("0 2-59/3 1,9,22 11-26 1-6 ?", "every 3 minutes between 2 and 59 at 1, 9 "
+                                                         + "and 22 hours every day between 11 and 26 every month between January and June");
     }
 
     @Test
@@ -68,65 +69,63 @@ public class CronDescriptorQuartzIntegrationTest {
 
     /* Examples exposed at cron documentations */
     @Test
-    public void testEveryDayFireAtNoon() throws Exception {
+    public void testEveryDayFireAtNoon() {
         assertExpression("0 0 12 * * ?", "at 12:00");
     }
 
     @Test
-    public void testEveryDayFireAtTenFifteen() throws Exception {
-        String description = "at 10:15";
+    public void testEveryDayFireAtTenFifteen() {
+        final String description = "at 10:15";
         assertExpression("0 15 10 ? * *", description);
         assertExpression("0 15 10 * * ?", description);
         assertExpression("0 15 10 * * ? *", description);
     }
 
     @Test
-    public void testEveryDayFireAtTenFifteenYear2005() throws Exception {
+    public void testEveryDayFireAtTenFifteenYear2005() {
         assertExpression("0 15 10 * * ? 2005", "at 10:15 at 2005 year");
     }
 
     @Test
-    public void testEveryMinuteBetween14and15EveryDay() throws Exception {
+    public void testEveryMinuteBetween14and15EveryDay() {
         assertExpression("0 * 14 * * ?", "at 14 hour");
     }
 
     @Test
-    public void testEveryFiveMinutesBetween14and15EveryDay() throws Exception {
+    public void testEveryFiveMinutesBetween14and15EveryDay() {
         assertExpression("0 0/5 14 * * ?", "every 5 minutes at 14 hour");
     }
 
     @Test
-    public void testEveryFiveMinutesBetween14and15AndBetween18And19EveryDay() throws Exception {
+    public void testEveryFiveMinutesBetween14and15AndBetween18And19EveryDay() {
         assertExpression("0 0/5 14,18 * * ?", "every 5 minutes at 14 and 18 hours");
     }
 
     /**
-     * Issue #43: getting bad description for expression
-     *
-     * @throws Exception
+     * Issue #43: getting bad description for expression.
      */
     @Test
-    public void testEveryDayEveryFourHoursFromHour2() throws Exception {
+    public void testEveryDayEveryFourHoursFromHour2() {
         assertExpression("0 0 2/4 * * ?", "every 4 hours at minute 0");
     }
 
     /*
      * Issue #103
      */
-    //TODO enable
+    @Test
     public void testDescriptionDayOfWeek() {
         assertExpression("* 0/1 * ? * TUE", "every minute at Tuesday day");
     }
 
     /**
-     * Issue #105
+     * Issue #105.
      */
     @Test
     public void testDoWRange() {
         assertExpression("0 0 0 ? * MON-FRI *", "at 00:00 every day between Monday and Friday");
     }
 
-    private void assertExpression(String cron, String description) {
+    private void assertExpression(final String cron, final String description) {
         assertEquals(description, descriptor.describe(parser.parse(cron)));
     }
 }

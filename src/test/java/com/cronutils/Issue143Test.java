@@ -10,6 +10,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.cronutils;
 
 import java.time.LocalDateTime;
@@ -19,6 +20,7 @@ import java.util.Optional;
 
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.cronutils.model.CronType;
@@ -26,12 +28,16 @@ import com.cronutils.model.definition.CronDefinitionBuilder;
 import com.cronutils.model.time.ExecutionTime;
 import com.cronutils.parser.CronParser;
 
+import static org.junit.Assert.fail;
+
 public class Issue143Test {
+
+    private static final String LAST_EXECUTION_NOT_PRESENT_ERROR = "last execution was not present";
     private CronParser parser;
     private ZonedDateTime currentDateTime;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         // Make sure that current date is before Dec-31
         currentDateTime = ZonedDateTime.of(LocalDateTime.of(2016, 12, 20, 12, 0),
                 ZoneId.systemDefault());
@@ -52,35 +58,39 @@ public class Issue143Test {
 
     @Test
     public void testCase2() {
-        ExecutionTime et = ExecutionTime.forCron(parser.parse("0 0 12 ? 12 SAT#5 *"));
-        Optional<ZonedDateTime> olast = et.lastExecution(currentDateTime);
-        ZonedDateTime last = olast.orElse(null);
-
-        ZonedDateTime expected = ZonedDateTime.of(LocalDateTime.of(2012, 12, 29, 12, 0),
-                ZoneId.systemDefault());
-        Assert.assertEquals(expected, last);
+        final ExecutionTime et = ExecutionTime.forCron(parser.parse("0 0 12 ? 12 SAT#5 *"));
+        final Optional<ZonedDateTime> lastExecution = et.lastExecution(currentDateTime);
+        if (lastExecution.isPresent()) {
+            final ZonedDateTime expected = ZonedDateTime.of(LocalDateTime.of(2012, 12, 29, 12, 00), ZoneId.systemDefault());
+            Assert.assertEquals(expected, lastExecution.get());
+        } else {
+            fail(LAST_EXECUTION_NOT_PRESENT_ERROR);
+        }
     }
 
-    //@Test TODO #289
+    @Test
+    @Ignore //FIXME Fix this test
     public void testCase3() {
-        ExecutionTime et = ExecutionTime.forCron(parser.parse("0 0 12 31 1/1 ? *"));
-        Optional<ZonedDateTime> olast = et.lastExecution(currentDateTime);
-        ZonedDateTime last = olast.orElse(null);
-
-        ZonedDateTime expected = ZonedDateTime.of(LocalDateTime.of(2015, 12, 31, 12, 0),
-                ZoneId.systemDefault());
-        Assert.assertEquals(expected, last);
+        final ExecutionTime et = ExecutionTime.forCron(parser.parse("0 0 12 31 1/1 ? *"));
+        final Optional<ZonedDateTime> lastExecution = et.lastExecution(currentDateTime);
+        if (lastExecution.isPresent()) {
+            final ZonedDateTime expected = ZonedDateTime.of(LocalDateTime.of(2015, 12, 31, 12, 00), ZoneId.systemDefault());
+            Assert.assertEquals(expected, lastExecution.get());
+        } else {
+            fail(LAST_EXECUTION_NOT_PRESENT_ERROR);
+        }
     }
 
     @Test
     public void testCase4() {
-        ExecutionTime et = ExecutionTime.forCron(parser.parse("0 0 12 ? 1/1 SAT#5 *"));
-        Optional<ZonedDateTime> olast = et.lastExecution(currentDateTime);
-        ZonedDateTime last = olast.orElse(null);
-
-        ZonedDateTime expected = ZonedDateTime.of(LocalDateTime.of(2016, 10, 29, 12, 0),
-                ZoneId.systemDefault());
-        Assert.assertEquals(expected, last);
+        final ExecutionTime et = ExecutionTime.forCron(parser.parse("0 0 12 ? 1/1 SAT#5 *"));
+        final Optional<ZonedDateTime> lastExecution = et.lastExecution(currentDateTime);
+        if (lastExecution.isPresent()) {
+            final ZonedDateTime expected = ZonedDateTime.of(LocalDateTime.of(2016, 10, 29, 12, 00), ZoneId.systemDefault());
+            Assert.assertEquals(expected, lastExecution.get());
+        } else {
+            fail(LAST_EXECUTION_NOT_PRESENT_ERROR);
+        }
     }
 
 }

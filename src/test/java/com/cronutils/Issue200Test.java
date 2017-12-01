@@ -10,6 +10,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.cronutils;
 
 import java.time.ZoneId;
@@ -33,16 +34,16 @@ public class Issue200Test {
 
     @Test
     public void testMustMatchCronEvenIfNanoSecondsVaries() {
-        CronDefinition cronDefinition =
+        final CronDefinition cronDefinition =
                 CronDefinitionBuilder.instanceDefinitionFor(QUARTZ);
 
-        CronParser parser = new CronParser(cronDefinition);
-        Cron quartzCron = parser.parse("00 00 10 * * ?");
+        final CronParser parser = new CronParser(cronDefinition);
+        final Cron quartzCron = parser.parse("00 00 10 * * ?");
 
         quartzCron.validate();
 
         // NOTE: Off by 3 nano seconds
-        ZonedDateTime zdt = ZonedDateTime.of(1999, 07, 18, 10, 00, 00, 03, ZoneId.systemDefault());
+        final ZonedDateTime zdt = ZonedDateTime.of(1999, 07, 18, 10, 00, 00, 03, ZoneId.systemDefault());
 
         // Must be true
         assertTrue("Nano seconds must not affect matching of Cron Expressions", ExecutionTime.forCron(quartzCron).isMatch(zdt));
@@ -51,15 +52,15 @@ public class Issue200Test {
     // Nano second-perfect (passes, no surprises here)
     @Test
     public void testMatchExact() {
-        CronDefinition cronDefinition =
+        final CronDefinition cronDefinition =
                 CronDefinitionBuilder.instanceDefinitionFor(QUARTZ);
 
-        CronParser parser = new CronParser(cronDefinition);
-        Cron quartzCron = parser.parse("00 00 10 * * ?");
+        final CronParser parser = new CronParser(cronDefinition);
+        final Cron quartzCron = parser.parse("00 00 10 * * ?");
 
         quartzCron.validate();
 
-        ZonedDateTime zdt = ZonedDateTime.of(1999, 07, 18, 10, 00, 00, 00, ZoneId.systemDefault());
+        final ZonedDateTime zdt = ZonedDateTime.of(1999, 07, 18, 10, 00, 00, 00, ZoneId.systemDefault());
 
         assertTrue("Nano seconds must not affect matching of Cron Expressions", ExecutionTime.forCron(quartzCron).isMatch(zdt));
     }

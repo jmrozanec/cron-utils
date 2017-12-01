@@ -10,6 +10,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.cronutils;
 
 import java.time.Instant;
@@ -21,6 +22,8 @@ import java.util.Optional;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.cronutils.model.Cron;
 import com.cronutils.model.definition.CronConstraint;
@@ -34,6 +37,8 @@ import com.cronutils.parser.CronParser;
 import static org.junit.Assert.assertEquals;
 
 public class Issue55UnexpectedExecutionTimes {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(Issue55UnexpectedExecutionTimes.class);
     private CronDefinition cronDefinition;
 
     /**
@@ -54,8 +59,11 @@ public class Issue55UnexpectedExecutionTimes {
                 .withCronValidation(
                         //both a day-of-week AND a day-of-month parameter should fail for this case; otherwise returned values are correct
                         new CronConstraint("Both, a day-of-week AND a day-of-month parameter, are not supported.") {
+
+                            private static final long serialVersionUID = -5934767434702909825L;
+
                             @Override
-                            public boolean validate(Cron cron) {
+                            public boolean validate(final Cron cron) {
                                 if (!(cron.retrieve(CronFieldName.DAY_OF_MONTH).getExpression() instanceof QuestionMark)) {
                                     return cron.retrieve(CronFieldName.DAY_OF_WEEK).getExpression() instanceof QuestionMark;
                                 } else {
@@ -71,16 +79,15 @@ public class Issue55UnexpectedExecutionTimes {
      */
     @Test
     public void testOnceEveryThreeDaysNoInstantsWithinTwoDays() {
-        System.out.println();
-        System.out.println("TEST1 - expecting 0 instants");
-        ZonedDateTime startTime = ZonedDateTime.of(0, 1, 1, 0, 0, 0, 0, ZoneOffset.UTC);
+        LOGGER.debug("TEST1 - expecting 0 instants");
+        final ZonedDateTime startTime = ZonedDateTime.of(0, 1, 1, 0, 0, 0, 0, ZoneOffset.UTC);
         final ZonedDateTime endTime = startTime.plusDays(2);
         final CronParser parser = new CronParser(cronDefinition);
         final Cron cron = parser.parse("0 0 */3 * ?");
         final ExecutionTime executionTime = ExecutionTime.forCron(cron);
-        List<Instant> instants = getInstants(executionTime, startTime, endTime);
-        System.out.println("instants.size() == " + instants.size());
-        System.out.println("instants: " + instants);
+        final List<Instant> instants = getInstants(executionTime, startTime, endTime);
+        LOGGER.debug("instants.size() == {}", instants.size());
+        LOGGER.debug("instants: {}", instants);
         assertEquals(0, instants.size());
     }
 
@@ -89,31 +96,36 @@ public class Issue55UnexpectedExecutionTimes {
      */
     @Test
     public void testOnceAMonthTwelveInstantsInYear() {
-        System.out.println();
-        System.out.println("TEST2 - expecting 12 instants");
-        ZonedDateTime startTime = ZonedDateTime.of(0, 1, 1, 0, 0, 0, 0, ZoneOffset.UTC);
+        LOGGER.debug("TEST2 - expecting 12 instants");
+        final ZonedDateTime startTime = ZonedDateTime.of(0, 1, 1, 0, 0, 0, 0, ZoneOffset.UTC);
         final ZonedDateTime endTime = startTime.plusYears(1);
         final CronParser parser = new CronParser(cronDefinition);
         final Cron cron = parser.parse("0 12 L * ?");
         final ExecutionTime executionTime = ExecutionTime.forCron(cron);
-        List<Instant> instants = getInstants(executionTime, startTime, endTime);
-        System.out.println("instants.size() == " + instants.size());
-        System.out.println("instants: " + instants);
+        final List<Instant> instants = getInstants(executionTime, startTime, endTime);
+        LOGGER.debug("instants.size() == {}", instants.size());
+        LOGGER.debug("instants: {}", instants);
         assertEquals(12, instants.size());
     }
 
-    private List<Instant> getInstants(ExecutionTime executionTime, ZonedDateTime startTime, ZonedDateTime endTime) {
-        List<Instant> instantList = new ArrayList<>();
-
-        Optional<ZonedDateTime> onext = executionTime.nextExecution(startTime);
-        ZonedDateTime next = onext.orElse(null);
-
-        while (next!=null && next.isBefore(endTime)) {
-            instantList.add(next.toInstant());
-            onext = executionTime.nextExecution(next);
-            next = onext.orElse(null);
+    private List<Instant> getInstants(final ExecutionTime executionTime, final ZonedDateTime startTime, final ZonedDateTime endTime) {
+        final List<Instant> instantList = new ArrayList<>();
+        final Optional<ZonedDateTime> startTimeExecution = executionTime.nextExecution(startTime);
+        if (startTimeExecution.isPresent()) {
+            ZonedDateTime next = startTimeExecution.get();
+            while (next.isBefore(endTime)) {
+                final Optional<ZonedDateTime> nextExecution = executionTime.nextExecution(next);
+                instantList.add(next.toInstant());
+                if (nextExecution.isPresent()) {
+                    next = nextExecution.get();
+                } else {
+                    throw new NullPointerException("next execution is not present");
+                }
+            }
+            return instantList;
+        } else {
+            throw new NullPointerException("starttime execution was not present");
         }
-        return instantList;
     }
 
 }

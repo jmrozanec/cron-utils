@@ -82,6 +82,10 @@ public class CronMapper {
         return cronRules.apply(new Cron(to, fields)).validate();
     }
 
+    /**
+     * Creates a CronMapper that maps a cron4j expression to a quartz expression.
+     * @return a CronMapper for mapping from cron4j to quartz
+     */
     public static CronMapper fromCron4jToQuartz() {
         return new CronMapper(
                 CronDefinitionBuilder.instanceDefinitionFor(CronType.CRON4J),
@@ -126,27 +130,26 @@ public class CronMapper {
         return cron -> {
             final CronField dow = cron.retrieve(CronFieldName.DAY_OF_WEEK);
             final CronField dom = cron.retrieve(CronFieldName.DAY_OF_MONTH);
-            if (dow != null && dom != null) {
-                if (dow.getExpression() instanceof QuestionMark || dom.getExpression() instanceof QuestionMark) {
-                    return cron;
+            if (dow == null && dom == null) {
+                return cron;
+            }
+            if (dow.getExpression() instanceof QuestionMark || dom.getExpression() instanceof QuestionMark) {
+                return cron;
+            }
+            final Map<CronFieldName, CronField> fields = new EnumMap<>(CronFieldName.class);
+            fields.putAll(cron.retrieveFieldsAsMap());
+            if (dow.getExpression() instanceof Always) {
+                fields.put(CronFieldName.DAY_OF_WEEK,
+                        new CronField(CronFieldName.DAY_OF_WEEK, questionMark(), fields.get(CronFieldName.DAY_OF_WEEK).getConstraints()));
+            } else {
+                if (dom.getExpression() instanceof Always) {
+                    fields.put(CronFieldName.DAY_OF_MONTH,
+                            new CronField(CronFieldName.DAY_OF_MONTH, questionMark(), fields.get(CronFieldName.DAY_OF_MONTH).getConstraints()));
                 } else {
-                    final Map<CronFieldName, CronField> fields = new EnumMap<>(CronFieldName.class);
-                    fields.putAll(cron.retrieveFieldsAsMap());
-                    if (dow.getExpression() instanceof Always) {
-                        fields.put(CronFieldName.DAY_OF_WEEK,
-                                new CronField(CronFieldName.DAY_OF_WEEK, questionMark(), fields.get(CronFieldName.DAY_OF_WEEK).getConstraints()));
-                    } else {
-                        if (dom.getExpression() instanceof Always) {
-                            fields.put(CronFieldName.DAY_OF_MONTH,
-                                    new CronField(CronFieldName.DAY_OF_MONTH, questionMark(), fields.get(CronFieldName.DAY_OF_MONTH).getConstraints()));
-                        } else {
-                            cron.validate();
-                        }
-                    }
-                    return new Cron(cron.getCronDefinition(), new ArrayList<>(fields.values()));
+                    cron.validate();
                 }
             }
-            return cron;
+            return new Cron(cron.getCronDefinition(), new ArrayList<>(fields.values()));
         };
     }
 
@@ -157,51 +160,50 @@ public class CronMapper {
      * @param to   - target CronDefinition
      */
     private void buildMappings(final CronDefinition from, final CronDefinition to) {
-        final Map<CronFieldName, FieldDefinition> sourceFieldDefinitions = new EnumMap<>(CronFieldName.class);
-        final Map<CronFieldName, FieldDefinition> destFieldDefinitions = new EnumMap<>(CronFieldName.class);
-        for (final FieldDefinition fieldDefinition : from.getFieldDefinitions()) {
-            sourceFieldDefinitions.put(fieldDefinition.getFieldName(), fieldDefinition);
-        }
-        for (final FieldDefinition fieldDefinition : to.getFieldDefinitions()) {
-            destFieldDefinitions.put(fieldDefinition.getFieldName(), fieldDefinition);
-        }
+        final Map<CronFieldName, FieldDefinition> sourceFieldDefinitions = getFieldDefinitions(from);
+        final Map<CronFieldName, FieldDefinition> destFieldDefinitions = getFieldDefinitions(to);
         boolean startedDestMapping = false;
         boolean startedSourceMapping = false;
         for (final CronFieldName name : CronFieldName.values()) {
-            if (destFieldDefinitions.get(name) != null) {
+            final FieldDefinition destinationFieldDefinition = destFieldDefinitions.get(name);
+            final FieldDefinition sourceFieldDefinition = sourceFieldDefinitions.get(name);
+            if (destinationFieldDefinition != null) {
                 startedDestMapping = true;
             }
-            if (sourceFieldDefinitions.get(name) != null) {
+            if (sourceFieldDefinition != null) {
                 startedSourceMapping = true;
             }
-            if (startedDestMapping && destFieldDefinitions.get(name) == null) {
+            if (startedDestMapping && destinationFieldDefinition == null) {
                 break;
             }
             //destination has fields before source definition starts. We default them to zero.
-            if (!startedSourceMapping && sourceFieldDefinitions.get(name) == null && destFieldDefinitions.get(name) != null) {
+            if (!startedSourceMapping && destinationFieldDefinition != null) {
                 mappings.put(name, returnOnZeroExpression(name));
             }
             //destination has fields after source definition was processed. We default them to always.
-            if (startedSourceMapping && sourceFieldDefinitions.get(name) == null && destFieldDefinitions.get(name) != null) {
+            if (startedSourceMapping && sourceFieldDefinition == null && destinationFieldDefinition != null) {
                 mappings.put(name, returnAlwaysExpression(name));
             }
-            if (sourceFieldDefinitions.get(name) != null && destFieldDefinitions.get(name) != null) {
-                if (CronFieldName.DAY_OF_WEEK.equals(name)) {
-                    mappings.put(name,
-                            dayOfWeekMapping(
-                                    (DayOfWeekFieldDefinition) sourceFieldDefinitions.get(name),
-                                    (DayOfWeekFieldDefinition) destFieldDefinitions.get(name)
-                            )
-                    );
-                } else {
-                    if (CronFieldName.DAY_OF_MONTH.equals(name)) {
-                        mappings.put(name, dayOfMonthMapping(sourceFieldDefinitions.get(name), destFieldDefinitions.get(name)));
-                    } else {
-                        mappings.put(name, returnSameExpression());
-                    }
-                }
+            if (sourceFieldDefinition == null || destinationFieldDefinition == null) {
+                continue;
+            }
+            if (CronFieldName.DAY_OF_WEEK.equals(name)) {
+                mappings.put(name, dayOfWeekMapping((DayOfWeekFieldDefinition) sourceFieldDefinition, (DayOfWeekFieldDefinition) destinationFieldDefinition));
+            } else if (CronFieldName.DAY_OF_MONTH.equals(name)) {
+                mappings.put(name, dayOfMonthMapping(sourceFieldDefinition, destinationFieldDefinition));
+            } else {
+                mappings.put(name, returnSameExpression());
             }
         }
+    }
+
+    private Map<CronFieldName, FieldDefinition> getFieldDefinitions(final CronDefinition from) {
+        final Map<CronFieldName, FieldDefinition> result = new EnumMap<>(CronFieldName.class);
+
+        for (final FieldDefinition fieldDefinition : from.getFieldDefinitions()) {
+            result.put(fieldDefinition.getFieldName(), fieldDefinition);
+        }
+        return result;
     }
 
     /**
