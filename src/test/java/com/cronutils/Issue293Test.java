@@ -1,5 +1,6 @@
 package com.cronutils;
 
+import java.util.Optional;
 import java.time.DayOfWeek;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -16,6 +17,7 @@ import com.cronutils.model.time.ExecutionTime;
 import com.cronutils.parser.CronParser;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 // https://github.com/jmrozanec/cron-utils/issues/293
 @RunWith(Parameterized.class)
