@@ -399,8 +399,11 @@ public class ExecutionTime {
             ).minusYears(nearestValue.getShifts());
             return new ExecutionTimeResult(newDate, false);
         }
-        return new ExecutionTimeResult(date.withMonth(previousMonths).withDayOfMonth(highestDay)
-                .with(LocalTime.of(highestHour, highestMinute, highestSecond)), false);
+        else {
+            newDate = ZonedDateTime.of(date.getYear(), date.getMonthValue(), 1, 0, 0, 0, 0, date.getZone()).minusNanos(1);
+
+            return new ExecutionTimeResult(newDate, false);
+        }
     }
 
     private ExecutionTimeResult getPreviousPotentialDayOfMonth(final ZonedDateTime date, final TimeNode days, final int highestHour, final int highestMinute,
