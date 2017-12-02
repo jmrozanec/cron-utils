@@ -57,8 +57,12 @@ public class Issue293Test {
         ZonedDateTime expected = ZonedDateTime.of(2017, 11, 30, 18, 15, 0, 0, ZONE);
         assertEquals(DayOfWeek.THURSDAY, expected.getDayOfWeek());
 
-        ZonedDateTime actual = et.lastExecution(vs).get();
-
-        assertEquals(expected, actual);
+	Optional<ZonedDateTime> lastExecution = et.lastExecution(vs);
+	if (lastExecution.isPresent()) {
+	    ZonedDateTime actual = lastExecution.get();
+	    assertEquals(expected, actual);
+	} else {
+	    fail("last execution was not present");
+	}
     }
 }
