@@ -22,7 +22,13 @@ import static org.junit.Assert.assertEquals;
 public class Issue293Test {
     private static final ZoneId ZONE = ZoneId.systemDefault();
 
-    @Parameterized.Parameters(name="{0}")
+    private final String cronText;
+
+    /**
+     * Each test is a cron spec excluding the reference month (December)
+     * @return unix cron
+     */
+    @Parameterized.Parameters(name = "{0}")
     public static String[] data() {
         return new String[] {
             "15 18 * 1-11 *",       // DateTimeException - Invalid date - Nov 31
@@ -31,8 +37,6 @@ public class Issue293Test {
             "15 18 * 1-11 1-5"      // Actual is 11/29
         };
     }
-
-    private final String cronText;
 
     public Issue293Test(String cronText) {
         this.cronText = cronText;
