@@ -20,7 +20,6 @@ import java.util.Optional;
 
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.cronutils.model.CronType;
@@ -61,7 +60,7 @@ public class Issue143Test {
         final ExecutionTime et = ExecutionTime.forCron(parser.parse("0 0 12 ? 12 SAT#5 *"));
         final Optional<ZonedDateTime> lastExecution = et.lastExecution(currentDateTime);
         if (lastExecution.isPresent()) {
-            final ZonedDateTime expected = ZonedDateTime.of(LocalDateTime.of(2012, 12, 29, 12, 00), ZoneId.systemDefault());
+            final ZonedDateTime expected = ZonedDateTime.of(LocalDateTime.of(2012, 12, 29, 12, 0), ZoneId.systemDefault());
             Assert.assertEquals(expected, lastExecution.get());
         } else {
             fail(LAST_EXECUTION_NOT_PRESENT_ERROR);
@@ -69,12 +68,11 @@ public class Issue143Test {
     }
 
     @Test
-    @Ignore //FIXME Fix this test
     public void testCase3() {
         final ExecutionTime et = ExecutionTime.forCron(parser.parse("0 0 12 31 1/1 ? *"));
         final Optional<ZonedDateTime> lastExecution = et.lastExecution(currentDateTime);
         if (lastExecution.isPresent()) {
-            final ZonedDateTime expected = ZonedDateTime.of(LocalDateTime.of(2015, 12, 31, 12, 00), ZoneId.systemDefault());
+            final ZonedDateTime expected = ZonedDateTime.of(LocalDateTime.of(2016, 10, 31, 12, 0), ZoneId.systemDefault());
             Assert.assertEquals(expected, lastExecution.get());
         } else {
             fail(LAST_EXECUTION_NOT_PRESENT_ERROR);
@@ -86,11 +84,10 @@ public class Issue143Test {
         final ExecutionTime et = ExecutionTime.forCron(parser.parse("0 0 12 ? 1/1 SAT#5 *"));
         final Optional<ZonedDateTime> lastExecution = et.lastExecution(currentDateTime);
         if (lastExecution.isPresent()) {
-            final ZonedDateTime expected = ZonedDateTime.of(LocalDateTime.of(2016, 10, 29, 12, 00), ZoneId.systemDefault());
+            final ZonedDateTime expected = ZonedDateTime.of(LocalDateTime.of(2016, 10, 29, 12, 0), ZoneId.systemDefault());
             Assert.assertEquals(expected, lastExecution.get());
         } else {
             fail(LAST_EXECUTION_NOT_PRESENT_ERROR);
         }
     }
-
 }
