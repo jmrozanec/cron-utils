@@ -215,9 +215,9 @@ public class ExecutionTimeCustomDefinitionIntegrationTest {
      * with 4 fields as an error:
      * java.lang.IllegalArgumentException: Cron expression contains 4 parts but we expect one of [6, 7]
      */
-    //@Test //TODO issue #291
-    public void testThreeRequiredFieldsSupported() throws Exception {
-        CronDefinition cronDefinition = CronDefinitionBuilder.defineCron()
+    //@Test //FIXME issue #291
+    public void testThreeRequiredFieldsSupported() {
+        final CronDefinition cronDefinition = CronDefinitionBuilder.defineCron()
                 .withSeconds().and()
                 .withMinutes().and()
                 .withHours().and()
@@ -227,7 +227,7 @@ public class ExecutionTimeCustomDefinitionIntegrationTest {
                 .supportsQuestionMark().optional().and()
                 .withYear().withValidRange(2000, 2099).optional().and()
                 .instance();
-        CronParser cronParser = new CronParser(cronDefinition);
+        final CronParser cronParser = new CronParser(cronDefinition);
         cronParser.parse("* * 4 3");
     }
 }
