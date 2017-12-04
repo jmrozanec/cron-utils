@@ -142,13 +142,8 @@ public class ExecutionTimeUnixIntegrationTest {
      */
     @Test
     public void testMondayWeekdayLastExecution() {
-        final String crontab = "* * * * 1";
-        final CronDefinition cronDefinition = CronDefinitionBuilder.instanceDefinitionFor(CronType.UNIX);
-        final CronParser parser = new CronParser(cronDefinition);
-        final Cron cron = parser.parse(crontab);
-        final ZonedDateTime date = ZonedDateTime.parse("2015-10-13T17:26:54.468-07:00");
-        final ExecutionTime executionTime = ExecutionTime.forCron(cron);
-        final Optional<ZonedDateTime> lastExecution = executionTime.lastExecution(date);
+        final Cron cron = getUnixCron("* * * * 1");
+        final Optional<ZonedDateTime> lastExecution = getLastExecutionFor(cron, ZonedDateTime.parse("2015-10-13T17:26:54.468-07:00"));
         if (lastExecution.isPresent()) {
             assertEquals(ZonedDateTime.parse("2015-10-12T23:59:00.000-07:00"), lastExecution.get());
         } else {
@@ -156,18 +151,24 @@ public class ExecutionTimeUnixIntegrationTest {
         }
     }
 
+    private Cron getUnixCron(final String cronExpression) {
+        final CronDefinition cronDefinition = CronDefinitionBuilder.instanceDefinitionFor(CronType.UNIX);
+        final CronParser parser = new CronParser(cronDefinition);
+        return parser.parse(cronExpression);
+    }
+
+    private Optional<ZonedDateTime> getLastExecutionFor(final Cron cron, final ZonedDateTime dateTime) {
+        final ExecutionTime executionTime = ExecutionTime.forCron(cron);
+        return  executionTime.lastExecution(dateTime);
+    }
+
     /**
      * Issue #45: next execution does not match expected date. Result is not in same timezone as reference date.
      */
     @Test
     public void testMondayWeekdayNextExecution() {
-        final String crontab = "* * * * 1";
-        final CronDefinition cronDefinition = CronDefinitionBuilder.instanceDefinitionFor(CronType.UNIX);
-        final CronParser parser = new CronParser(cronDefinition);
-        final Cron cron = parser.parse(crontab);
-        final ZonedDateTime date = ZonedDateTime.parse("2015-10-13T17:26:54.468-07:00");
-        final ExecutionTime executionTime = ExecutionTime.forCron(cron);
-        final Optional<ZonedDateTime> nextExecution = executionTime.nextExecution(date);
+        final Cron cron = getUnixCron("* * * * 1");
+        final Optional<ZonedDateTime> nextExecution = getLastExecutionFor(cron, ZonedDateTime.parse("2015-10-13T17:26:54.468-07:00"));//executionTime.nextExecution(date);
         if (nextExecution.isPresent()) {
             assertEquals(ZonedDateTime.parse("2015-10-19T00:00:00.000-07:00"), nextExecution.get());
         } else {
@@ -180,13 +181,8 @@ public class ExecutionTimeUnixIntegrationTest {
      */
     @Test
     public void testLastExecutionDaysOfWeekOverMonthBoundary() {
-        final String crontab = "0 11 * * 1";
-        final CronDefinition cronDefinition = CronDefinitionBuilder.instanceDefinitionFor(CronType.UNIX);
-        final CronParser parser = new CronParser(cronDefinition);
-        final Cron cron = parser.parse(crontab);
-        final ZonedDateTime date = ZonedDateTime.parse("2015-11-02T00:10:00Z");
-        final ExecutionTime executionTime = ExecutionTime.forCron(cron);
-        final Optional<ZonedDateTime> lastExecution = executionTime.lastExecution(date);
+        final Cron cron = getUnixCron("0 11 * * 1");
+        final Optional<ZonedDateTime> lastExecution = getLastExecutionFor(cron, ZonedDateTime.parse("2015-11-02T00:10:00Z"));
         if (lastExecution.isPresent()) {
             assertEquals(ZonedDateTime.parse("2015-10-26T11:00:00Z"), lastExecution.get());
         } else {
@@ -200,13 +196,8 @@ public class ExecutionTimeUnixIntegrationTest {
      */
     @Test
     public void testWeekdayAndLastExecution() {
-        final String crontab = "* * * * 1,2";
-        final CronDefinition cronDefinition = CronDefinitionBuilder.instanceDefinitionFor(CronType.UNIX);
-        final CronParser parser = new CronParser(cronDefinition);
-        final Cron cron = parser.parse(crontab);
-        final ZonedDateTime date = ZonedDateTime.parse("2015-11-10T17:01:00Z");
-        final ExecutionTime executionTime = ExecutionTime.forCron(cron);
-        final Optional<ZonedDateTime> lastExecution = executionTime.lastExecution(date);
+        final Cron cron = getUnixCron("* * * * 1,2");
+        final Optional<ZonedDateTime> lastExecution = getLastExecutionFor(cron, ZonedDateTime.parse("2015-11-10T17:01:00Z"));
         if (lastExecution.isPresent()) {
             assertEquals(ZonedDateTime.parse("2015-11-10T17:00:00Z"), lastExecution.get());
         } else {
@@ -220,13 +211,8 @@ public class ExecutionTimeUnixIntegrationTest {
      */
     @Test
     public void testWeekdayAndWithMixOfOnAndBetweenLastExecution() {
-        final String crontab = "* * * * 1,2-3";
-        final CronDefinition cronDefinition = CronDefinitionBuilder.instanceDefinitionFor(CronType.UNIX);
-        final CronParser parser = new CronParser(cronDefinition);
-        final Cron cron = parser.parse(crontab);
-        final ZonedDateTime date = ZonedDateTime.parse("2015-11-10T17:01:00Z");
-        final ExecutionTime executionTime = ExecutionTime.forCron(cron);
-        final Optional<ZonedDateTime> lastExecution = executionTime.lastExecution(date);
+        final Cron cron = getUnixCron("* * * * 1,2-3");
+        final Optional<ZonedDateTime> lastExecution = getLastExecutionFor(cron, ZonedDateTime.parse("2015-11-10T17:01:00Z"));
         if (lastExecution.isPresent()) {
             assertEquals(ZonedDateTime.parse("2015-11-10T17:00:00Z"), lastExecution.get());
         } else {
@@ -241,13 +227,8 @@ public class ExecutionTimeUnixIntegrationTest {
      */
     @Test
     public void testCorrectMonthScaleForNextExecution1() {
-        final CronDefinition cronDefinition = CronDefinitionBuilder.instanceDefinitionFor(CronType.UNIX);
-        final CronParser parser = new CronParser(cronDefinition);
-        final String crontab = "* * */3 */4 */5";//m,h,dom,M,dow
-        final Cron cron = parser.parse(crontab);
-        final ExecutionTime executionTime = ExecutionTime.forCron(cron);
-        final ZonedDateTime scanTime = ZonedDateTime.parse("2015-12-10T16:32:56.586-08:00");
-        final Optional<ZonedDateTime> nextExecution = executionTime.nextExecution(scanTime);
+        final Cron cron = getUnixCron("* * */3 */4 */5");//m,h,dom,M,dow
+        final Optional<ZonedDateTime> nextExecution = getLastExecutionFor(cron, ZonedDateTime.parse("2015-12-10T16:32:56.586-08:00"));
         if (nextExecution.isPresent()) {
             //DoW: 0-6 -> 0, 5 (sunday, friday)
             //DoM: 1-31 -> 1, 4, 7, 10, 13, 16, 19, 22, 25, 28, 31
@@ -264,13 +245,8 @@ public class ExecutionTimeUnixIntegrationTest {
      */
     @Test
     public void testCorrectMonthScaleForNextExecution2() {
-        final CronDefinition cronDefinition = CronDefinitionBuilder.instanceDefinitionFor(CronType.UNIX);
-        final CronParser parser = new CronParser(cronDefinition);
-        final String crontab = "* * */4 * *";//m,h,dom,M,dow
-        final Cron cron = parser.parse(crontab);
-        final ExecutionTime executionTime = ExecutionTime.forCron(cron);
-        final ZonedDateTime scanTime = ZonedDateTime.parse("2015-12-10T16:32:56.586-08:00");
-        final Optional<ZonedDateTime> nextExecution = executionTime.nextExecution(scanTime);
+        final Cron cron = getUnixCron("* * */4 * *");//m,h,dom,M,dow
+        final Optional<ZonedDateTime> nextExecution = getLastExecutionFor(cron, ZonedDateTime.parse("2015-12-10T16:32:56.586-08:00"));
         if (nextExecution.isPresent()) {
             assertEquals(ZonedDateTime.parse("2015-12-13T00:00:00.000-08:00"), nextExecution.get());
         } else {
@@ -284,14 +260,9 @@ public class ExecutionTimeUnixIntegrationTest {
      */
     @Test
     public void testCorrectNextExecutionDoW() {
-        final CronDefinition cronDefinition = CronDefinitionBuilder.instanceDefinitionFor(CronType.UNIX);
-        final CronParser parser = new CronParser(cronDefinition);
-        final String crontab = "* * * * */4";//m,h,dom,M,dow
         //DoW: 0-6 -> 0, 4 (sunday, thursday)
-        final Cron cron = parser.parse(crontab);
-        final ExecutionTime executionTime = ExecutionTime.forCron(cron);
-        final ZonedDateTime scanTime = ZonedDateTime.parse("2016-01-28T16:32:56.586-08:00");
-        final Optional<ZonedDateTime> nextExecution = executionTime.nextExecution(scanTime);
+        final Cron cron = getUnixCron("* * * * */4");//m,h,dom,M,dow
+        final Optional<ZonedDateTime> nextExecution = getLastExecutionFor(cron, ZonedDateTime.parse("2016-01-28T16:32:56.586-08:00"));
         if (nextExecution.isPresent()) {
             assertEquals(ZonedDateTime.parse("2016-02-04T00:00:00.000-08:00"), nextExecution.get());
         } else {
@@ -361,13 +332,8 @@ public class ExecutionTimeUnixIntegrationTest {
      */
     @Test
     public void testNextExecution2014() {
-        final String crontab = "0 8 * * 1";//m,h,dom,m,dow ; every monday at 8AM
-        final CronDefinition cronDefinition = CronDefinitionBuilder.instanceDefinitionFor(CronType.UNIX);
-        final CronParser parser = new CronParser(cronDefinition);
-        final Cron cron = parser.parse(crontab);
-        final ZonedDateTime date = ZonedDateTime.parse("2014-11-30T00:00:00Z");
-        final ExecutionTime executionTime = ExecutionTime.forCron(cron);
-        final Optional<ZonedDateTime> nextExecution = executionTime.nextExecution(date);
+        final Cron cron = getUnixCron("0 8 * * 1");//m,h,dom,m,dow ; every monday at 8AM
+        final Optional<ZonedDateTime> nextExecution = getLastExecutionFor(cron, ZonedDateTime.parse("2014-11-30T00:00:00Z"));
         if (nextExecution.isPresent()) {
             assertEquals(ZonedDateTime.parse("2014-12-01T08:00:00Z"), nextExecution.get());
         } else {
