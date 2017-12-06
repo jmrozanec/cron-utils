@@ -76,7 +76,7 @@ public class CronDescriptor {
      * @param fields - fields to describe;
      * @return description - String
      */
-    private String describeHHmmss(final Map<CronFieldName, CronField> fields) {
+    public String describeHHmmss(final Map<CronFieldName, CronField> fields) {
         return DescriptionStrategyFactory.hhMMssInstance(
                 resourceBundle,
                 fields.containsKey(CronFieldName.HOUR) ? fields.get(CronFieldName.HOUR).getExpression() : null,
@@ -91,7 +91,7 @@ public class CronDescriptor {
      * @param fields - fields to describe;
      * @return description - String
      */
-    private String describeDayOfMonth(final Map<CronFieldName, CronField> fields) {
+    public String describeDayOfMonth(final Map<CronFieldName, CronField> fields) {
         final String description = DescriptionStrategyFactory.daysOfMonthInstance(
                 resourceBundle,
                 fields.containsKey(CronFieldName.DAY_OF_MONTH) ? fields.get(CronFieldName.DAY_OF_MONTH).getExpression() : null
@@ -105,7 +105,7 @@ public class CronDescriptor {
      * @param fields - fields to describe;
      * @return description - String
      */
-    private String describeMonth(final Map<CronFieldName, CronField> fields) {
+    public String describeMonth(final Map<CronFieldName, CronField> fields) {
         final String description = DescriptionStrategyFactory.monthsInstance(
                 resourceBundle,
                 fields.containsKey(CronFieldName.MONTH) ? fields.get(CronFieldName.MONTH).getExpression() : null
@@ -126,7 +126,7 @@ public class CronDescriptor {
      * @param fields - fields to describe;
      * @return description - String
      */
-    private String describeDayOfWeek(final Map<CronFieldName, CronField> fields, final Map<CronFieldName, FieldDefinition> definitions) {
+    public String describeDayOfWeek(final Map<CronFieldName, CronField> fields, final Map<CronFieldName, FieldDefinition> definitions) {
 
         final String description = DescriptionStrategyFactory.daysOfWeekInstance(
                 resourceBundle,
@@ -148,7 +148,7 @@ public class CronDescriptor {
      * @param fields - fields to describe;
      * @return description - String
      */
-    private String describeYear(final Map<CronFieldName, CronField> fields) {
+    public String describeYear(final Map<CronFieldName, CronField> fields) {
         return String.format(
                 DescriptionStrategyFactory.plainInstance(
                         resourceBundle,
