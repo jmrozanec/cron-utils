@@ -29,10 +29,9 @@ public class TestDescriptor {
     //every 2 years starting in 2017
     @Test
     public void testFull() {
-        final CronDefinition cronDefinition = CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ);
-        final CronParser parser = new CronParser(cronDefinition);
-        final Cron cron = parser.parse("3/4 5/6 7/8 9/2 10/2 ? 2017");
-        System.out.println(CronDescriptor.instance().describe(cron));
+        final Cron cron = getCron("3/4 5/6 7/8 9/2 10/2 ? 2017");
+        assertEquals("every 4 seconds starting at second 03, every 6 minutes starting at minute 05, every 8 hours starting at 07am, "
+                     + "every 2 days startint on the 9th, every 2 months starting in October, in 2017", descriptor.describe(cron));
     }
 
     private Cron getCron(final String quartzExpression) {
