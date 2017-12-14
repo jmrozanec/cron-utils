@@ -175,4 +175,13 @@ public class CronDescriptor {
     public static CronDescriptor instance(final Locale locale) {
         return new CronDescriptor(locale);
     }
+
+    /**
+     * Gets the current resource bundle that is in use to allow custom reuse of text phrases.
+     *
+     * @return ResourceBundle - never null.
+     */
+    public ResourceBundle getResourceBundle() {
+        return resourceBundle;
+    }
 }
