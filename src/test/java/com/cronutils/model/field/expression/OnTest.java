@@ -67,6 +67,12 @@ public class OnTest {
     }
 
     @Test
+    public void testAsStringSpecialCharLWithNth() {
+        final String expression = "L-3";
+        assertEquals(expression, new On(new IntegerFieldValue(-1), new SpecialCharFieldValue(SpecialChar.L), new IntegerFieldValue(3)).asString());
+    }
+
+    @Test
     public void testAsStringWithNth() {
         final int first = 3;
         final int second = 4;

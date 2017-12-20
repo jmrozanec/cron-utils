@@ -81,7 +81,7 @@ public class On extends FieldExpression {
     }
 
     private String getNthStringRepresentation() {
-        return getNth().getValue() > 0 ? String.format("-%sL", getNth()) : StringUtils.EMPTY;
+        return isDefault(getNth()) ? StringUtils.EMPTY : String.format("-%s", getNth());
     }
 
     private boolean isDefault(final IntegerFieldValue fieldValue) {
