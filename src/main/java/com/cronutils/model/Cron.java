@@ -13,6 +13,7 @@
 
 package com.cronutils.model;
 
+import javax.ejb.ScheduleExpression;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -32,7 +33,6 @@ import com.cronutils.utils.Preconditions;
  * Represents a cron expression.
  */
 public class Cron implements Serializable {
-
     private static final long serialVersionUID = 7487370826825439098L;
     private final CronDefinition cronDefinition;
     private final Map<CronFieldName, CronField> fields;
@@ -130,6 +130,38 @@ public class Cron implements Serializable {
      */
     public boolean equivalent(final Cron cron) {
         return asString().equals(cron.asString());
+    }
+
+    public ScheduleExpression asScheduleExpression(){
+        if(asString().contains("?")){
+            throw new IllegalArgumentException("? not supported by ScheduleExpression");
+        }
+        ScheduleExpression expression = new ScheduleExpression();
+        if(cronDefinition.containsFieldDefinition(CronFieldName.YEAR)){
+            expression.year(retrieve(CronFieldName.YEAR).getExpression().asString());
+        }
+        if(cronDefinition.containsFieldDefinition(CronFieldName.DAY_OF_YEAR)){
+            throw new IllegalArgumentException("DoY not supported by ScheduleExpression");
+        }
+        if(cronDefinition.containsFieldDefinition(CronFieldName.DAY_OF_WEEK)){
+            expression.dayOfWeek(retrieve(CronFieldName.DAY_OF_WEEK).getExpression().asString());
+        }
+        if(cronDefinition.containsFieldDefinition(CronFieldName.MONTH)){
+            expression.month(retrieve(CronFieldName.MONTH).getExpression().asString());
+        }
+        if(cronDefinition.containsFieldDefinition(CronFieldName.DAY_OF_MONTH)){
+            expression.dayOfMonth(retrieve(CronFieldName.DAY_OF_MONTH).getExpression().asString());
+        }
+        if(cronDefinition.containsFieldDefinition(CronFieldName.HOUR)){
+            expression.hour(retrieve(CronFieldName.HOUR).getExpression().asString());
+        }
+        if(cronDefinition.containsFieldDefinition(CronFieldName.MINUTE)){
+            expression.minute(retrieve(CronFieldName.MINUTE).getExpression().asString());
+        }
+        if(cronDefinition.containsFieldDefinition(CronFieldName.SECOND)){
+            expression.second(retrieve(CronFieldName.SECOND).getExpression().asString());
+        }
+        return expression;
     }
 }
 

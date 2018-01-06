@@ -102,4 +102,29 @@ public class TestCronDefinitionsFactory {
                 .withCronValidation(CronConstraintsFactory.ensureEitherDayOfWeekOrDayOfMonth())
                 .instance();
     }
+
+    public static CronDefinition withDayOfYearDefinitionWhereNoQuestionMarkSupported() {
+        return CronDefinitionBuilder.defineCron()
+                .withSeconds().and()
+                .withMinutes().and()
+                .withHours().and()
+                .withDayOfMonth().supportsL().supportsW().supportsLW().and()
+                .withMonth().and()
+                .withDayOfWeek().withValidRange(1, 7).withMondayDoWValue(2).supportsHash().supportsL().and()
+                .withYear().withValidRange(1970, 2099).and()
+                .withDayOfYear().withValidRange(1, LEAP_YEAR_DAY_COUNT).and()
+                .instance();
+    }
+
+    public static CronDefinition quartzNoDoWAndDoMRestrictionBothSameTime() {
+        return CronDefinitionBuilder.defineCron()
+                .withSeconds().and()
+                .withMinutes().and()
+                .withHours().and()
+                .withDayOfMonth().supportsL().supportsW().supportsLW().supportsQuestionMark().and()
+                .withMonth().and()
+                .withDayOfWeek().withValidRange(1, 7).withMondayDoWValue(2).supportsHash().supportsL().supportsQuestionMark().and()
+                .withYear().withValidRange(1970, 2099).optional().and()
+                .instance();
+    }
 }

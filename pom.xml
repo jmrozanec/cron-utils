@@ -66,6 +66,7 @@
         <powermock.version>1.6.2</powermock.version>
         <guava.version>18.0</guava.version>
         <commonscli.version>1.4</commonscli.version>
+        <javaee-api.version>8.0</javaee-api.version>
 
         <github.global.server>github</github.global.server>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -84,6 +85,13 @@
             <artifactId>commons-cli</artifactId>
             <version>${commonscli.version}</version>
         </dependency>
+        <dependency>
+            <groupId>javax</groupId>
+            <artifactId>javaee-api</artifactId>
+            <version>${javaee-api.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
         <!--dependency>
             <groupId>eu.lp0.slf4j</groupId>
             <artifactId>slf4j-android</artifactId>

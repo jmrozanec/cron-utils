@@ -13,6 +13,7 @@
 
 package com.cronutils.model;
 
+import javax.ejb.ScheduleExpression;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -27,8 +28,10 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import com.cronutils.mapper.CronMapper;
+import com.cronutils.model.definition.CronConstraintsFactory;
 import com.cronutils.model.definition.CronDefinition;
 import com.cronutils.model.definition.CronDefinitionBuilder;
+import com.cronutils.model.definition.TestCronDefinitionsFactory;
 import com.cronutils.model.field.CronField;
 import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.field.expression.FieldExpression;
@@ -145,5 +148,38 @@ public class CronTest {
                 assertEquals(expected.asString(), actual.asString());
             }
         }
+    }
+
+    @Test
+    public void testAsScheduleExpression(){
+        final CronDefinition cronDefinition = TestCronDefinitionsFactory.quartzNoDoWAndDoMRestrictionBothSameTime();
+        final CronParser cronParser = new CronParser(cronDefinition);
+        final Cron cron = cronParser.parse("0 * * 1 * MON *");
+        ScheduleExpression expression = cron.asScheduleExpression();
+
+        assertNotNull(expression);
+        assertEquals(cron.retrieve(CronFieldName.SECOND).getExpression().asString(), expression.getSecond());
+        assertEquals(cron.retrieve(CronFieldName.MINUTE).getExpression().asString(), expression.getMinute());
+        assertEquals(cron.retrieve(CronFieldName.HOUR).getExpression().asString(), expression.getHour());
+        assertEquals(cron.retrieve(CronFieldName.DAY_OF_MONTH).getExpression().asString(), expression.getDayOfMonth());
+        assertEquals(cron.retrieve(CronFieldName.MONTH).getExpression().asString(), expression.getMonth());
+        assertEquals(cron.retrieve(CronFieldName.DAY_OF_WEEK).getExpression().asString(), expression.getDayOfWeek());
+        assertEquals(cron.retrieve(CronFieldName.YEAR).getExpression().asString(), expression.getYear());
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testAsScheduleExpressionQuestionMarkFails(){
+        final CronDefinition quartzcd = CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ);
+        final CronParser quartz = new CronParser(quartzcd);
+        final Cron cron = quartz.parse("0 * * ? * MON *");
+        cron.asScheduleExpression();
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testAsScheduleExpressionDoYNotSupported(){
+        final CronDefinition cronDefinition = TestCronDefinitionsFactory.withDayOfYearDefinitionWhereNoQuestionMarkSupported();
+        final CronParser cronParser= new CronParser(cronDefinition);
+        final Cron cron = cronParser.parse("0 0 0 1 1-3 * * 1/14");
+        cron.asScheduleExpression();
     }
 }
