@@ -42,6 +42,7 @@ For Android developers, cron-utils 7.0.0 assumes Android 26+. For earlier Androi
     * [Cron4j](http://www.sauronsoftware.it/projects/cron4j/)
     * [Quartz](http://quartz-scheduler.org/)
  * Obtain last/next execution time as well as time from last execution/time to next execution.
+ * Obtain weekdays count between two dates, considering different weekend policies as well as holidays.
  * Need to map constants between different cron/time libraries? Use ConstantsMapper.
 
 **Usage Examples**
