@@ -18,6 +18,7 @@ import java.util.Collections;
 import java.util.List;
 
 public class DateUtils {
+    private DateUtils(){}
 
     public static int workdaysCount(ZonedDateTime startDate, int days, List<ZonedDateTime> holidays, WeekendPolicy weekendPolicy){
         return workdaysCount(startDate, startDate.plusDays(days), holidays, weekendPolicy);
