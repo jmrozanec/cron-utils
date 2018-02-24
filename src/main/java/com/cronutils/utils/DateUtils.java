@@ -28,13 +28,13 @@ public class DateUtils {
         holidays = holidaysInRange(startDate, endDate, holidays);
         int daysToWeekend = WeekendPolicy.daysToWeekend(weekendPolicy, startDate);
         int daysFromWeekend = WeekendPolicy.daysToWeekend(weekendPolicy, endDate);
-        long daysBetween = Duration.between(startDate, endDate).toDays()+1;
+        int daysBetween = (int)Duration.between(startDate, endDate).toDays()+1;
 
         //2+ [xxx+2]/7*5
-        long tmpWeekdays = (daysBetween-daysToWeekend-daysFromWeekend-2)/7*5;
+        int tmpWeekdays = (daysBetween-daysToWeekend-daysFromWeekend-2)/7*5;
         tmpWeekdays = tmpWeekdays-holidays.size();
 
-        return new Long(tmpWeekdays+daysToWeekend+daysFromWeekend).intValue();
+        return tmpWeekdays+daysToWeekend+daysFromWeekend;
     }
 
     private static List<ZonedDateTime> holidaysInRange(ZonedDateTime startDate, ZonedDateTime endDate, List<ZonedDateTime> holidays){
