@@ -21,24 +21,24 @@ public enum WeekendPolicy {
         int dow = date.getDayOfWeek().getValue();
         switch (policy){
             case THURSDAY_FRIDAY:
-                if(dow<4){
-                    return 4-dow;
+                if(dow < 4){
+                    return 4 - dow;
                 }
-                if(dow>5){
-                    return 7-dow+4;
+                if(dow > 5){
+                    return 7 - dow + 4;
                 }
                 break;
             case FRIDAY_SATURDAY:
-                if(dow<5){
-                    return 6-dow;
+                if(dow < 5){
+                    return 6 - dow;
                 }
-                if(dow>6){
-                    return 7-dow+5;
+                if(dow > 6){
+                    return 7 - dow + 5;
                 }
                 break;
             case SATURDAY_SUNDAY:
-                if(dow<6){
-                    return Math.max(0, 6-dow);
+                if(dow < 6){
+                    return Math.max(0, 6 - dow);
                 }
                 break;
         }

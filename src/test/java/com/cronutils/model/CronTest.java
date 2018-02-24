@@ -45,7 +45,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public class CronTest {
-
     private Cron cron;
     private CronFieldName testName;
     private List<CronField> fields;
@@ -168,7 +167,7 @@ public class CronTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testAsScheduleExpressionQuestionMarkFails(){
+    public void testAsScheduleExpressionQuestionMarkFails() {
         final CronDefinition quartzcd = CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ);
         final CronParser quartz = new CronParser(quartzcd);
         final Cron cron = quartz.parse("0 * * ? * MON *");
@@ -176,7 +175,7 @@ public class CronTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testAsScheduleExpressionDoYNotSupported(){
+    public void testAsScheduleExpressionDoYNotSupported() {
         final CronDefinition cronDefinition = TestCronDefinitionsFactory.withDayOfYearDefinitionWhereNoQuestionMarkSupported();
         final CronParser cronParser= new CronParser(cronDefinition);
         final Cron cron = cronParser.parse("0 0 0 1 1-3 * * 1/14");
