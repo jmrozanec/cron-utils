@@ -38,6 +38,7 @@ import com.cronutils.parser.CronParser;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.fail;
 
 public class ExecutionTimeUnixIntegrationTest {
@@ -553,5 +554,15 @@ public class ExecutionTimeUnixIntegrationTest {
         } else {
             fail(LAST_EXECUTION_NOT_PRESENT_ERROR);
         }
+    }
+
+    @Test
+    public void invalidDayInMonthCron() {
+        final CronDefinition cronDefinition = CronDefinitionBuilder.instanceDefinitionFor(CronType.UNIX);
+        final CronParser parser = new CronParser(cronDefinition);
+        final Cron myCron = parser.parse("0 0 31 2 *");
+        final ZonedDateTime time = ZonedDateTime.parse("2015-09-17T00:00:00.000-07:00");
+        final Optional<ZonedDateTime> nextExecution = ExecutionTime.forCron(myCron).nextExecution(time);
+        assertFalse(nextExecution.isPresent());
     }
 }

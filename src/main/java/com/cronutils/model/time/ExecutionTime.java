@@ -167,6 +167,9 @@ public class ExecutionTime {
         ExecutionTimeResult result = new ExecutionTimeResult(date, false);
         do {
             result = potentialNextClosestMatch(result.getTime());
+            if (result.getTime().getYear() - date.getYear() > 100) {
+                throw new NoSuchValueException();
+            }
         } while (!result.isMatch());
         return result.getTime();
     }
