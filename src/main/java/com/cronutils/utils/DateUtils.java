@@ -28,7 +28,7 @@ public class DateUtils {
         Collections.sort(holidays);
         holidays = holidaysInRange(startDate, endDate, holidays);
         int daysToWeekend = WeekendPolicy.daysToWeekend(weekendPolicy, startDate);
-        int daysFromWeekend = WeekendPolicy.daysToWeekend(weekendPolicy, endDate);
+        int daysFromWeekend = WeekendPolicy.daysFromWeekend(weekendPolicy, endDate);
         int daysBetween = (int)Duration.between(startDate, endDate).toDays()+1;
 
         //2+ [xxx+2]/7*5
