@@ -187,9 +187,9 @@ public class CronTest {
 
     //@Test TODO
     public void testIssue308(){
-        CronDefinition cronDefinition = CronDefinitionBuilder.instanceDefinitionFor( CronType.QUARTZ );
-        CronParser parser = new CronParser( cronDefinition );
-        Cron quartzCron = parser.parse( "0 0 11 L-2 * ?" );
+        CronDefinition cronDefinition = CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ);
+        CronParser parser = new CronParser(cronDefinition);
+        Cron quartzCron = parser.parse("0 0 11 L-2 * ?");
         CronDescriptor descriptor = CronDescriptor.instance(Locale.ENGLISH);
         String description = descriptor.describe(quartzCron);
 
