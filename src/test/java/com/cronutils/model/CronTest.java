@@ -21,12 +21,14 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import com.cronutils.descriptor.CronDescriptor;
 import com.cronutils.mapper.CronMapper;
 import com.cronutils.model.definition.CronDefinition;
 import com.cronutils.model.definition.CronDefinitionBuilder;
@@ -39,6 +41,7 @@ import com.cronutils.utils.CronUtils;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
@@ -180,5 +183,17 @@ public class CronTest {
         final CronParser cronParser= new CronParser(cronDefinition);
         final Cron cron = cronParser.parse("0 0 0 1 1-3 * * 1/14");
         CronUtils.asScheduleExpression(cron);
+    }
+
+    //@Test TODO
+    public void testIssue308(){
+        CronDefinition cronDefinition = CronDefinitionBuilder.instanceDefinitionFor( CronType.QUARTZ );
+        CronParser parser = new CronParser( cronDefinition );
+        Cron quartzCron = parser.parse( "0 0 11 L-2 * ?" );
+        CronDescriptor descriptor = CronDescriptor.instance(Locale.ENGLISH);
+        String description = descriptor.describe(quartzCron);
+
+        // not sure what the exact string 'should' be ..
+        assertEquals( "at 11:00 two days before the last day of month", description);
     }
 }
