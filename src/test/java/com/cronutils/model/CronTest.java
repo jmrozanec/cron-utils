@@ -28,7 +28,6 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import com.cronutils.mapper.CronMapper;
-import com.cronutils.model.definition.CronConstraintsFactory;
 import com.cronutils.model.definition.CronDefinition;
 import com.cronutils.model.definition.CronDefinitionBuilder;
 import com.cronutils.model.definition.TestCronDefinitionsFactory;
@@ -36,6 +35,7 @@ import com.cronutils.model.field.CronField;
 import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.field.expression.FieldExpression;
 import com.cronutils.parser.CronParser;
+import com.cronutils.utils.CronUtils;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -154,7 +154,7 @@ public class CronTest {
         final CronDefinition cronDefinition = TestCronDefinitionsFactory.quartzNoDoWAndDoMRestrictionBothSameTime();
         final CronParser cronParser = new CronParser(cronDefinition);
         final Cron cron = cronParser.parse("0 * * 1 * MON *");
-        ScheduleExpression expression = cron.asScheduleExpression();
+        ScheduleExpression expression = CronUtils.asScheduleExpression(cron);
 
         assertNotNull(expression);
         assertEquals(cron.retrieve(CronFieldName.SECOND).getExpression().asString(), expression.getSecond());
@@ -171,7 +171,7 @@ public class CronTest {
         final CronDefinition quartzcd = CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ);
         final CronParser quartz = new CronParser(quartzcd);
         final Cron cron = quartz.parse("0 * * ? * MON *");
-        cron.asScheduleExpression();
+        CronUtils.asScheduleExpression(cron);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -179,6 +179,6 @@ public class CronTest {
         final CronDefinition cronDefinition = TestCronDefinitionsFactory.withDayOfYearDefinitionWhereNoQuestionMarkSupported();
         final CronParser cronParser= new CronParser(cronDefinition);
         final Cron cron = cronParser.parse("0 0 0 1 1-3 * * 1/14");
-        cron.asScheduleExpression();
+        CronUtils.asScheduleExpression(cron);
     }
 }
