@@ -19,13 +19,22 @@ import java.util.Set;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.cronutils.builder.CronBuilder;
+import com.cronutils.mapper.ConstantsMapper;
+import com.cronutils.mapper.CronMapper;
+import com.cronutils.mapper.WeekDay;
 import com.cronutils.model.Cron;
 import com.cronutils.model.CronType;
 import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.field.constraint.FieldConstraints;
+import com.cronutils.model.field.definition.DayOfWeekFieldDefinition;
 import com.cronutils.model.field.definition.FieldDefinition;
+import com.cronutils.model.field.expression.Weekdays;
 import com.cronutils.parser.CronParser;
 
+import static com.cronutils.model.field.expression.FieldExpressionFactory.always;
+import static com.cronutils.model.field.expression.FieldExpressionFactory.on;
+import static com.cronutils.model.field.expression.FieldExpressionFactory.questionMark;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
@@ -161,5 +170,27 @@ public class CronDefinitionBuilderTest {
                 .withDayOfWeek().withValidRange(0, 7).withMondayDoWValue(1).withIntMapping(7, 0).and()
                 .enforceStrictRanges()
                 .instance();
+    }
+
+    /**
+     * Test for issue https://github.com/jmrozanec/cron-utils/issues/315
+     * We need to provide means to easily perform accurate DoW values mapping when building a cron expression.
+     */
+    @Test
+    public void testDoWProperWeekdayOffset(){
+        CronDefinition cronDefinition = CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ);
+        CronBuilder builder = CronBuilder.cron(cronDefinition)
+                .withYear(always())
+                .withMonth(always())
+                .withDoW(on(Weekdays.FRIDAY.getWeekday(cronDefinition)))
+                .withDoM(questionMark())
+                .withHour(on(12))
+                .withMinute(on(0))
+                .withSecond(on(0));
+
+        Cron cron = builder.instance();
+        String result = cron.asString();
+
+        assertEquals("0 0 12 ? * 6 *", result);
     }
 }
