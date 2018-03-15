@@ -37,8 +37,4 @@ public class CronUtils {
         }
         return expression;
     }
-
-    public static CronRangeSets asRangeSets(Cron cron){
-        return new CronRangeSets(cron);
-    }
 }
