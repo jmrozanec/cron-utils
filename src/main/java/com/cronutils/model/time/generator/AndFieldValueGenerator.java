@@ -108,7 +108,11 @@ class AndFieldValueGenerator extends FieldValueGenerator {
         final And and = (And) cronField.getExpression();
         final List<Integer> candidates = new ArrayList<>();
         for (final FieldExpression expression : and.getExpressions()) {
-            candidates.add(function.apply(createCandidateGeneratorInstance(new CronField(cronField.getField(), expression, cronField.getConstraints()))));
+            candidates.add(
+                    function.apply(
+                                createCandidateGeneratorInstance(new CronField(cronField.getField(), expression, cronField.getConstraints()))
+                    )
+            );
         }
         final List<Integer> filteredCandidates = new ArrayList<>();
         for (final Integer candidate : candidates) {

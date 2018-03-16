@@ -183,7 +183,18 @@ public class ExecutionTime {
 
         if (year.isEmpty()) {
             return getNextPotentialYear(date, lowestMonth, lowestHour, lowestMinute, lowestSecond);
+            /* TODO solve issue 305
+            int endyear = cronDefinition.getFieldDefinition(CronFieldName.YEAR).getConstraints().getEndRange();
+            final List<Integer> years = yearsValueGenerator.generateCandidates(date.getYear(), endyear);
+            Optional<Integer> validnextyear = years.stream().filter(y->y>date.getYear()).min(Integer::compareTo);
+            if(validnextyear.isPresent()){
+                return potentialNextClosestMatch(ZonedDateTime.of(validnextyear.get(), 1, 1, 0, 0, 0, 0, date.getZone()));
+            }else{
+                return getNextPotentialYear(date, lowestMonth, lowestHour, lowestMinute, lowestSecond);
+            }
+            */
         }
+
         if (!months.getValues().contains(date.getMonthValue())) {
             return getNextPotentialMonth(date, lowestHour, lowestMinute, lowestSecond);
         }
@@ -206,6 +217,7 @@ public class ExecutionTime {
         if (!seconds.getValues().contains(date.getSecond())) {
             return getNextPotentialSecond(date);
         }
+
         return new ExecutionTimeResult(date, true);
     }
 
@@ -325,6 +337,8 @@ public class ExecutionTime {
     }
 
     private ExecutionTimeResult potentialPreviousClosestMatch(final ZonedDateTime date) throws NoSuchValueException {
+        //int startyear = cronDefinition.getFieldDefinition(CronFieldName.YEAR).getConstraints().getStartRange();
+        //final List<Integer> year = yearsValueGenerator.generateCandidates(startyear, date.getYear());
         final List<Integer> year = yearsValueGenerator.generateCandidates(date.getYear(), date.getYear());
         final Optional<TimeNode> optionalDays = generateDays(cronDefinition, date);
         TimeNode days;
@@ -342,6 +356,20 @@ public class ExecutionTime {
         if (year.isEmpty()) {
             return getPreviousPotentialYear(date, days, highestMonth, highestDay, highestHour, highestMinute, highestSecond);
         }
+        //TODO Issue 305
+        /*
+        else{
+            if(!year.contains(date.getYear())){
+                Optional<Integer> validprevyear = year.stream().filter(y->y<date.getYear()).max(Integer::compareTo);
+                if(validprevyear.isPresent()){
+                    int minus = date.getYear()-validprevyear.get();
+                    return getPreviousPotentialYear(date.minusYears(minus), days, highestMonth, highestDay, highestHour, highestMinute, highestSecond);
+                }else{
+                    return getPreviousPotentialYear(date.minusYears(1), days, highestMonth, highestDay, highestHour, highestMinute, highestSecond);
+                }
+            }
+        }
+        */
         if (!months.getValues().contains(date.getMonthValue())) {
             return getPreviousPotentialMonth(date, highestDay, highestHour, highestMinute, highestSecond);
         }
