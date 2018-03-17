@@ -18,6 +18,7 @@ import java.util.EnumMap;
 import java.util.Map;
 
 import com.cronutils.model.Cron;
+import com.cronutils.model.SingleCron;
 import com.cronutils.model.definition.CronDefinition;
 import com.cronutils.model.field.CronField;
 import com.cronutils.model.field.CronFieldName;
@@ -82,7 +83,7 @@ public class CronBuilder {
     }
 
     public Cron instance() {
-        return new Cron(definition, new ArrayList<>(fields.values())).validate();
+        return new SingleCron(definition, new ArrayList<>(fields.values())).validate();
     }
 
     @VisibleForTesting

@@ -21,6 +21,7 @@ import java.util.Map;
 import com.cronutils.Function;
 import com.cronutils.model.Cron;
 import com.cronutils.model.CronType;
+import com.cronutils.model.SingleCron;
 import com.cronutils.model.definition.CronDefinition;
 import com.cronutils.model.definition.CronDefinitionBuilder;
 import com.cronutils.model.field.CronField;
@@ -79,7 +80,7 @@ public class CronMapper {
                 fields.add(mappings.get(name).apply(cron.retrieve(name)));
             }
         }
-        return cronRules.apply(new Cron(to, fields)).validate();
+        return cronRules.apply(new SingleCron(to, fields)).validate();
     }
 
     /**
@@ -149,7 +150,7 @@ public class CronMapper {
                     cron.validate();
                 }
             }
-            return new Cron(cron.getCronDefinition(), new ArrayList<>(fields.values()));
+            return new SingleCron(cron.getCronDefinition(), new ArrayList<>(fields.values()));
         };
     }
 

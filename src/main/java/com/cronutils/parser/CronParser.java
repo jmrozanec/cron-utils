@@ -21,6 +21,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import com.cronutils.model.Cron;
+import com.cronutils.model.SingleCron;
 import com.cronutils.model.definition.CronDefinition;
 import com.cronutils.model.field.CronField;
 import com.cronutils.model.field.definition.FieldDefinition;
@@ -94,7 +95,7 @@ public class CronParser {
             for (int j = 0; j < size; j++) {
                 results.add(fields.get(j).parse(expressionParts[j]));
             }
-            return new Cron(cronDefinition, results).validate();
+            return new SingleCron(cronDefinition, results).validate();
         } catch (final IllegalArgumentException e) {
             throw new IllegalArgumentException(String.format("Failed to parse '%s'. %s", expression, e.getMessage()), e);
         }
