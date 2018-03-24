@@ -1,21 +1,21 @@
 package com.cronutils.model;
 
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.Before;
 import org.junit.Test;
 
-import com.cronutils.builder.CronBuilder;
 import com.cronutils.mapper.CronMapper;
 import com.cronutils.model.definition.CronDefinition;
 import com.cronutils.model.definition.CronDefinitionBuilder;
 import com.cronutils.model.field.CronFieldName;
+import com.cronutils.model.time.ExecutionTime;
 import com.cronutils.parser.CronParser;
 
-import static com.cronutils.model.field.expression.FieldExpression.questionMark;
-import static com.cronutils.model.field.expression.FieldExpressionFactory.every;
-import static com.cronutils.model.field.expression.FieldExpressionFactory.on;
+import static java.time.ZoneOffset.UTC;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
 
@@ -29,8 +29,6 @@ public class CompositeCronTest {
         definition1 = CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ);
         CronParser parser = new CronParser(definition1);
 
-        // CronParser parser = new CronParser(cronDefinition);
-        // Cron quartzCron = parser.parse("0 0 0 15 8 ? 2015/2");
         Cron cron1 = parser.parse("0 0 0 15 8 ? 2015/2");
         Cron cron2 = parser.parse("0 0 0 16 9 ? 2015/2");
         Cron cron3 = parser.parse("0 0 0 17 10 ? 2015/2");
@@ -39,8 +37,8 @@ public class CompositeCronTest {
         crons.add(cron2);
         this.cron1 = new CompositeCron(crons);
         List<Cron> crons2 = new ArrayList<>();
-        crons.add(cron2);
-        crons.add(cron3);
+        crons2.add(cron2);
+        crons2.add(cron3);
         this.cron2 = new CompositeCron(crons2);
     }
 
@@ -50,8 +48,6 @@ public class CompositeCronTest {
         CronParser parser = new CronParser(definition1);
         CronParser parser2 = new CronParser(definition2);
 
-        // CronParser parser = new CronParser(cronDefinition);
-        // Cron quartzCron = parser.parse("0 0 0 15 8 ? 2015/2");
         Cron cron1 = parser.parse("0 0 0 15 8 ? 2015/2");
         Cron cron2 = parser2.parse("0 0 0 * *");
         List<Cron> crons = new ArrayList<>();
@@ -88,7 +84,11 @@ public class CompositeCronTest {
     @Test
     public void validate() throws Exception {
         cron1.validate();
-        cron2.validate();
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void validateThrowsExceptionEmptyCrons(){
+        new CompositeCron(new ArrayList<>());
     }
 
     @Test(expected = UnsupportedOperationException.class)
@@ -100,5 +100,37 @@ public class CompositeCronTest {
     public void equivalent1() throws Exception {
         assertTrue(cron1.equivalent(cron1));
         assertFalse(cron1.equivalent(cron2));
+    }
+
+    @Test
+    public void testExampleIssue318(){
+        CronDefinition definition = CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ);
+        CronParser parser = new CronParser(definition);
+        Cron cron1 = parser.parse("0 0 9 * * ? *");
+        Cron cron2 = parser.parse("0 0 10 * * ? *");
+        Cron cron3 = parser.parse("0 30 11 * * ? *");
+        Cron cron4 = parser.parse("0 0 12 * * ? *");
+
+        List<Cron> crons = new ArrayList<>();
+        crons.add(cron1);
+        crons.add(cron2);
+        crons.add(cron3);
+        crons.add(cron4);
+        Cron composite = new CompositeCron(crons);
+
+        ZonedDateTime defaultt = ZonedDateTime.of(2000, 4, 15, 0, 0, 0, 0, UTC);
+
+        assertEquals("0 0|0|30|0 9|10|11|12 * * ? *", composite.asString());
+        ExecutionTime executionTime = ExecutionTime.forCron(composite);
+        ZonedDateTime date1 = ZonedDateTime.of(2015, 4, 15, 0, 0, 0, 0, UTC);
+        assertEquals(ZonedDateTime.of(2015, 4, 15, 9, 0, 0, 0, UTC), executionTime.nextExecution(date1).orElse(defaultt));
+        ZonedDateTime date2 = ZonedDateTime.of(2015, 4, 15, 9, 30, 0, 0, UTC);
+        assertEquals(ZonedDateTime.of(2015, 4, 15, 10, 0, 0, 0, UTC), executionTime.nextExecution(date2).orElse(defaultt));
+        ZonedDateTime date3 = ZonedDateTime.of(2015, 4, 15, 11, 0, 0, 0, UTC);
+        assertEquals(ZonedDateTime.of(2015, 4, 15, 11, 30, 0, 0, UTC), executionTime.nextExecution(date3).orElse(defaultt));
+        ZonedDateTime date4 = ZonedDateTime.of(2015, 4, 15, 11, 30, 0, 0, UTC);
+        assertEquals(ZonedDateTime.of(2015, 4, 15, 12, 0, 0, 0, UTC), executionTime.nextExecution(date4).orElse(defaultt));
+        ZonedDateTime date5 = ZonedDateTime.of(2015, 4, 15, 12, 30, 0, 0, UTC);
+        assertEquals(ZonedDateTime.of(2015, 4, 16, 9, 0, 0, 0, UTC), executionTime.nextExecution(date5).orElse(defaultt));
     }
 }

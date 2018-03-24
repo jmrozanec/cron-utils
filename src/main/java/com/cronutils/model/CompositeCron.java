@@ -3,6 +3,7 @@ package com.cronutils.model;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import com.cronutils.mapper.CronMapper;
@@ -12,6 +13,7 @@ import com.cronutils.model.field.CronFieldName;
 import com.cronutils.utils.Preconditions;
 
 public class CompositeCron implements Cron {
+    private Pattern split = Pattern.compile("\\|");
     private List<Cron> crons;
     private CronDefinition definition;
 
@@ -20,6 +22,10 @@ public class CompositeCron implements Cron {
         Preconditions.checkNotNullNorEmpty(crons, "List of Cron cannot be null or empty");
         this.definition = crons.get(0).getCronDefinition();
         Preconditions.checkArgument(crons.size()==crons.stream().filter(c->c.getCronDefinition().equals(definition)).count(), "All Cron objects must have same definition for CompositeCron");
+    }
+
+    public List<Cron> getCrons() {
+        return crons;
     }
 
     @Override
@@ -43,6 +49,9 @@ public class CompositeCron implements Cron {
                 fieldbuilder.append(String.format("%s ", pattern.split(" ")[j]));
             }
             String fieldstring = fieldbuilder.toString().trim().replaceAll(" ", "|");
+            if(split.splitAsStream(fieldstring).distinct().limit(2).count() <= 1){
+                fieldstring = split.split(fieldstring)[0];
+            }
             builder.append(String.format("%s ", fieldstring));
         }
         return builder.toString().trim();

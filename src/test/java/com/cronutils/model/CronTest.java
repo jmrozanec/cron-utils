@@ -41,7 +41,6 @@ import com.cronutils.utils.CronUtils;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
@@ -60,17 +59,17 @@ public class CronTest {
         testName = CronFieldName.SECOND;
         when(mockField.getField()).thenReturn(testName);
         fields = Collections.singletonList(mockField);
-        cron = new Cron(mock(CronDefinition.class), fields);
+        cron = new SingleCron(mock(CronDefinition.class), fields);
     }
 
     @Test(expected = NullPointerException.class)
     public void testConstructorNullFieldsParameter() {
-        new Cron(mock(CronDefinition.class), null);
+        new SingleCron(mock(CronDefinition.class), null);
     }
 
     @Test(expected = NullPointerException.class)
     public void testConstructorNullDefinitionParameter() {
-        new Cron(null, fields);
+        new SingleCron(null, fields);
     }
 
     @Test

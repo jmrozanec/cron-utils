@@ -142,7 +142,7 @@ class ExecutionTimeBuilder {
                     constraints);
         }
 
-        return new ExecutionTime(cronDefinition,
+        return new SingleExecutionTime(cronDefinition,
                 yearsValueGenerator, daysOfWeekCronField, daysOfMonthCronField, daysOfYearCronField,
                 months, hours, minutes, seconds
         );
