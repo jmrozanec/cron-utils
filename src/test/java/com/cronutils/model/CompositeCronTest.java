@@ -133,4 +133,13 @@ public class CompositeCronTest {
         ZonedDateTime date5 = ZonedDateTime.of(2015, 4, 15, 12, 30, 0, 0, UTC);
         assertEquals(ZonedDateTime.of(2015, 4, 16, 9, 0, 0, 0, UTC), executionTime.nextExecution(date5).orElse(defaultt));
     }
+
+    @Test
+    public void testIssue263(){
+        String multicron = "0 1 0 ? 1/1 MON#2|MON#3|MON#4|MON#5 *";
+        CronDefinition definition = CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ);
+        CronParser parser = new CronParser(definition);
+        Cron cron = parser.parse(multicron);
+        assertEquals(multicron.replaceAll("MON", "2"), cron.asString());
+    }
 }

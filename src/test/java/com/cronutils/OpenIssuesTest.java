@@ -67,5 +67,15 @@ public class OpenIssuesTest {
             throw new NullPointerException("next execution is not present");
         }
     }
+
+    @Test
+    public void generateExpressions(){
+        /*
+        "0 0 12 31 12 ? *";
+        "0 0 12 ? 12 SAT#5 *"
+        "0 0 12 31 1/1 ? *"
+        "0 0 12 ? 1/1 SAT#5 *"
+        */
+    }
 }
 
