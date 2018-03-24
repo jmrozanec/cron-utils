@@ -15,11 +15,14 @@
 package com.cronutils.parser;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.IntSupplier;
 import java.util.stream.Collectors;
 
+import com.cronutils.model.CompositeCron;
 import com.cronutils.model.Cron;
 import com.cronutils.model.SingleCron;
 import com.cronutils.model.definition.CronDefinition;
@@ -82,22 +85,40 @@ public class CronParser {
         if (StringUtils.isEmpty(replaced)) {
             throw new IllegalArgumentException("Empty expression!");
         }
-        final String[] expressionParts = replaced.toUpperCase().split(" ");
-        final int expressionLength = expressionParts.length;
-        final List<CronParserField> fields = expressions.get(expressionLength);
-        if (fields == null) {
-            throw new IllegalArgumentException(
-                    String.format("Cron expression contains %s parts but we expect one of %s", expressionLength, expressions.keySet()));
-        }
-        try {
-            final int size = fields.size();
-            final List<CronField> results = new ArrayList<>(size + 1);
-            for (int j = 0; j < size; j++) {
-                results.add(fields.get(j).parse(expressionParts[j]));
+
+        if(expression.contains("|")){
+            List<String> crons = new ArrayList<>();
+            int cronscount = Arrays.stream(expression.split("\\s+")).mapToInt(s->s.split("\\|").length).max().orElseGet(() -> 0);
+            for(int j=0; j<cronscount; j++){
+                StringBuilder builder = new StringBuilder();
+                for(String s : expression.split("\\s+")){
+                    if(s.contains("|")){
+                        builder.append(String.format("%s ", s.split("\\|")[j]));
+                    }else{
+                        builder.append(String.format("%s ", s));
+                    }
+                }
+                crons.add(builder.toString().trim());
             }
-            return new SingleCron(cronDefinition, results).validate();
-        } catch (final IllegalArgumentException e) {
-            throw new IllegalArgumentException(String.format("Failed to parse '%s'. %s", expression, e.getMessage()), e);
+            return new CompositeCron(crons.stream().map(c->parse(c)).collect(Collectors.toList()));
+        }else{
+            final String[] expressionParts = replaced.toUpperCase().split(" ");
+            final int expressionLength = expressionParts.length;
+            final List<CronParserField> fields = expressions.get(expressionLength);
+            if (fields == null) {
+                throw new IllegalArgumentException(
+                        String.format("Cron expression contains %s parts but we expect one of %s", expressionLength, expressions.keySet()));
+            }
+            try {
+                final int size = fields.size();
+                final List<CronField> results = new ArrayList<>(size + 1);
+                for (int j = 0; j < size; j++) {
+                    results.add(fields.get(j).parse(expressionParts[j]));
+                }
+                return new SingleCron(cronDefinition, results).validate();
+            } catch (final IllegalArgumentException e) {
+                throw new IllegalArgumentException(String.format("Failed to parse '%s'. %s", expression, e.getMessage()), e);
+            }
         }
     }
 }

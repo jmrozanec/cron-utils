@@ -168,4 +168,12 @@ public class CronParserTest {
         parser = new CronParser(TestCronDefinitionsFactory.withDayOfYearDefinitionWhereYearAndDoYOptionals());
         parser.parse("0 0 0 1 * ? 2017 ?"); //i.e. same as "0 0 0 1 * ? 2017" with question mark being omitted
     }
+
+    @Test
+    public void testParseMulticron(){
+        String multicron = "0 0|0|30|0 9|10|11|12 * * ? *";
+        parser = new CronParser(CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ));
+        Cron cron = parser.parse(multicron);
+        assertEquals(multicron, cron.asString());
+    }
 }
