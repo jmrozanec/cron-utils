@@ -282,6 +282,77 @@ public class CronDefinitionBuilder {
     }
 
     /**
+     * Creates CronDefinition instance matching Spring specification.
+     *
+     * <p>The cron expression is expected to be a string comprised of 6
+     * fields separated by white space. Fields can contain any of the allowed
+     * values, along with various combinations of the allowed special characters
+     * for that field. The fields are as follows:
+     *
+     * <table style="width:100%">
+     * <tr>
+     * <th>Field Name</th>
+     * <th>Mandatory</th>
+     * <th>Allowed Values</th>
+     * <th>Allowed Special Characters</th>
+     * </tr>
+     * <tr>
+     * <td>Seconds</td>
+     * <td>YES</td>
+     * <td>0-59</td>
+     * <td>* , - /</td>
+     * </tr>
+     * <tr>
+     * <td>Minutes</td>
+     * <td>YES</td>
+     * <td>0-59</td>
+     * <td>* , - /</td>
+     * </tr>
+     * <tr>
+     * <td>Hours</td>
+     * <td>YES</td>
+     * <td>0-23</td>
+     * <td>* , - /</td>
+     * </tr>
+     * <tr>
+     * <td>Day of month</td>
+     * <td>YES</td>
+     * <td>1-31</td>
+     * <td>* ? , - / L W</td>
+     * </tr>
+     * <tr>
+     * <td>Month</td>
+     * <td>YES</td>
+     * <td>1-12 or JAN-DEC</td>
+     * <td>* , -</td>
+     * </tr>
+     * <tr>
+     * <td>Day of week</td>
+     * <td>YES</td>
+     * <td>1-7 or SUN-SAT</td>
+     * <td>* ? , - / L #</td>
+     * </tr>
+     * </table>
+     *
+     * <p>Thus in general Spring cron expressions are as follows:
+     *
+     * <p>S M H DoM M DoW
+     *
+     * @return {@link CronDefinition} instance, never {@code null}
+     */
+    private static CronDefinition spring() {
+        return CronDefinitionBuilder.defineCron()
+                .withSeconds().and()
+                .withMinutes().and()
+                .withHours().and()
+                .withDayOfMonth().supportsL().supportsW().supportsLW().supportsQuestionMark().and()
+                .withMonth().and()
+                .withDayOfWeek().withValidRange(1, 7).withMondayDoWValue(2).supportsHash().supportsL().supportsQuestionMark().and()
+                .withCronValidation(CronConstraintsFactory.ensureEitherDayOfWeekOrDayOfMonth())
+                .instance();
+    }
+
+    /**
      * Creates CronDefinition instance matching unix crontab specification.
      *
      * @return CronDefinition instance, never null;
@@ -311,6 +382,8 @@ public class CronDefinitionBuilder {
                 return quartz();
             case UNIX:
                 return unixCrontab();
+            case SPRING:
+                return spring();
             default:
                 throw new IllegalArgumentException(String.format("No cron definition found for %s", cronType));
         }

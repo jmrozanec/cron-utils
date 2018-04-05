@@ -33,6 +33,7 @@ import com.cronutils.model.field.expression.Weekdays;
 import com.cronutils.parser.CronParser;
 
 import static com.cronutils.model.field.expression.FieldExpressionFactory.always;
+import static com.cronutils.model.field.expression.FieldExpressionFactory.every;
 import static com.cronutils.model.field.expression.FieldExpressionFactory.on;
 import static com.cronutils.model.field.expression.FieldExpressionFactory.questionMark;
 import static org.junit.Assert.assertEquals;
@@ -192,5 +193,22 @@ public class CronDefinitionBuilderTest {
         String result = cron.asString();
 
         assertEquals("0 0 12 ? * 6 *", result);
+    }
+
+    @Test
+    public void testSpringSchedule(){
+        CronDefinition cronDefinition = CronDefinitionBuilder.instanceDefinitionFor(CronType.SPRING);
+        CronBuilder builder = CronBuilder.cron(cronDefinition)
+                .withMonth(always())
+                .withDoW(questionMark())
+                .withDoM(always())
+                .withHour(always())
+                .withMinute(every(on(0), 5))
+                .withSecond(always());
+
+        Cron cron = builder.instance();
+        String result = cron.asString();
+
+        assertEquals("* 0/5 * * * ?", result);
     }
 }
