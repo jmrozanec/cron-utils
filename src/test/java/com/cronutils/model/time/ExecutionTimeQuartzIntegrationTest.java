@@ -65,7 +65,7 @@ public class ExecutionTimeQuartzIntegrationTest {
 
     @Test
     public void testForCron() {
-        assertEquals(ExecutionTime.class, ExecutionTime.forCron(parser.parse(EVERY_SECOND)).getClass());
+        assertEquals(SingleExecutionTime.class, ExecutionTime.forCron(parser.parse(EVERY_SECOND)).getClass());
     }
 
     @Test
