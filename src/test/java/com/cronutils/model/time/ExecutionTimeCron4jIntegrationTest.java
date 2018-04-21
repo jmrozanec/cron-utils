@@ -46,7 +46,7 @@ public class ExecutionTimeCron4jIntegrationTest {
 
     @Test
     public void testForCron() {
-        assertEquals(ExecutionTime.class, ExecutionTime.forCron(cron4jCronParser.parse(EVERY_MONDAY_AT_18)).getClass());
+        assertEquals(SingleExecutionTime.class, ExecutionTime.forCron(cron4jCronParser.parse(EVERY_MONDAY_AT_18)).getClass());
     }
 
     /**

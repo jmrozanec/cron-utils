@@ -48,10 +48,10 @@ public class ExecutionTimeQuartzWithDayOfYearExtensionIntegrationTest {
 
     @Test
     public void testForCron() {
-        assertEquals(ExecutionTime.class, ExecutionTime.forCron(parser.parse(BI_WEEKLY_STARTING_WITH_FIRST_DAY_OF_YEAR)).getClass());
-        assertEquals(ExecutionTime.class, ExecutionTime.forCron(parser.parse(FIRST_QUARTER_BI_WEEKLY_STARTING_WITH_FIRST_DAY_OF_YEAR)).getClass());
-        assertEquals(ExecutionTime.class, ExecutionTime.forCron(parser.parse(WITHOUT_DAY_OF_YEAR)).getClass());
-        assertEquals(ExecutionTime.class, ExecutionTime.forCron(parser.parse(WITHOUT_SPECIFIC_DAY_OF_YEAR)).getClass());
+        assertEquals(SingleExecutionTime.class, ExecutionTime.forCron(parser.parse(BI_WEEKLY_STARTING_WITH_FIRST_DAY_OF_YEAR)).getClass());
+        assertEquals(SingleExecutionTime.class, ExecutionTime.forCron(parser.parse(FIRST_QUARTER_BI_WEEKLY_STARTING_WITH_FIRST_DAY_OF_YEAR)).getClass());
+        assertEquals(SingleExecutionTime.class, ExecutionTime.forCron(parser.parse(WITHOUT_DAY_OF_YEAR)).getClass());
+        assertEquals(SingleExecutionTime.class, ExecutionTime.forCron(parser.parse(WITHOUT_SPECIFIC_DAY_OF_YEAR)).getClass());
     }
 
     @Test //issue #249
