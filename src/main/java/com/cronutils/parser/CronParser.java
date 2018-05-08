@@ -53,7 +53,7 @@ public class CronParser {
 		for(FieldDefinition fieldDefinition: fieldDefinitions){
 			sortedExpression.add(new CronParserField(fieldDefinition.getFieldName(), fieldDefinition.getConstraints(), fieldDefinition.isOptional()));
 		}
-		sortedExpression.sort(CronParserField.createFieldTypeComparator());
+		Collections.sort(sortedExpression, CronParserField.createFieldTypeComparator());
 		ImmutableList.Builder<CronParserField> expressionBuilder = ImmutableList.builder();
 		for (CronParserField field : sortedExpression) {
 			if (field.isOptional()) {
