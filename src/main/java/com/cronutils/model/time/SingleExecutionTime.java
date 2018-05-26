@@ -21,17 +21,14 @@ import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import com.cronutils.mapper.WeekDay;
-import com.cronutils.model.Cron;
 import com.cronutils.model.definition.CronDefinition;
 import com.cronutils.model.field.CronField;
-import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.field.definition.DayOfWeekFieldDefinition;
 import com.cronutils.model.field.expression.Always;
 import com.cronutils.model.field.expression.QuestionMark;
@@ -407,7 +404,7 @@ public class SingleExecutionTime implements ExecutionTime {
             return new ExecutionTimeResult(newDate, false);
         }
         return new ExecutionTimeResult(date.withDayOfMonth(nearestValue.getValue())
-                .with(LocalTime.of(highestHour, highestMinute, highestSecond)), false);
+                .with(LocalTime.of(highestHour, highestMinute, highestSecond)).truncatedTo(SECONDS), false);
     }
 
     private ExecutionTimeResult getPreviousPotentialHour(final ZonedDateTime date, final int highestMinute, final int highestSecond) {
@@ -418,7 +415,7 @@ public class SingleExecutionTime implements ExecutionTime {
             newDate = date.truncatedTo(DAYS).plusDays(1).minusSeconds(1).minusDays(nearestValue.getShifts());
             return new ExecutionTimeResult(newDate, false);
         }
-        return new ExecutionTimeResult(date.with(LocalTime.of(nearestValue.getValue(), highestMinute, highestSecond)), false);
+        return new ExecutionTimeResult(date.with(LocalTime.of(nearestValue.getValue(), highestMinute, highestSecond)).truncatedTo(SECONDS), false);
     }
 
     private ExecutionTimeResult getPreviousPotentialMinute(final ZonedDateTime date, final int highestSecond) {
@@ -429,7 +426,7 @@ public class SingleExecutionTime implements ExecutionTime {
             newDate = date.truncatedTo(HOURS).plusHours(1).minusSeconds(1).minusHours(nearestValue.getShifts());
             return new ExecutionTimeResult(newDate, false);
         }
-        return new ExecutionTimeResult(date.withMinute(nearestValue.getValue()).withSecond(highestSecond), false);
+        return new ExecutionTimeResult(date.truncatedTo(MINUTES).withMinute(nearestValue.getValue()).withSecond(highestSecond), false);
     }
 
     private ExecutionTimeResult getPreviousPotentialSecond(final ZonedDateTime date) {
@@ -441,7 +438,7 @@ public class SingleExecutionTime implements ExecutionTime {
             newDate = date.truncatedTo(MINUTES).plusMinutes(1).minusSeconds(1).minusMinutes(nearestValue.getShifts());
             return new ExecutionTimeResult(newDate, false);
         }
-        return new ExecutionTimeResult(date.withSecond(previousSeconds), false);
+        return new ExecutionTimeResult(date.truncatedTo(SECONDS).withSecond(previousSeconds), false);
     }
 
     private ZonedDateTime toEndOfPreviousMonth(final ZonedDateTime datetime) {
