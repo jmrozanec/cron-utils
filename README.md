@@ -99,14 +99,7 @@ CronParser parser = new CronParser(cronDefinition);
 Cron quartzCron = parser.parse("0 23 * ? * 1-5 *");
 ```
 
-... even multi-cron expressions! How about squashing multiple crons into a single line?
-
-- 0 0 9 * * ? *
-- 0 0 10 * * ? *
-- 0 30 11 * * ? *
-- 0 0 12 * * ? *
-
-This can be wrapped into ```0 0|0|30|0 9|10|11|12 * * ? *```
+... even multi-cron expressions! How about squashing multiple crons into a single line? Instead of writting ```0 0 9 * * ? *```, ```0 0 10 * * ? *```, ```0 30 11 * * ? *``` and ```0 0 12 * * ? *``` we can wrap it into ```0 0|0|30|0 9|10|11|12 * * ? *```
 
 
 ***Describe***
