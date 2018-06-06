@@ -36,12 +36,14 @@ If using ScheduleExpression from Java EE, this should be provided as a runtime d
     * no need to remember fields and constraints for each cron provider
     * crons become decoupled from cron provider: anytime you can export to another format.
  * Check if cron expressions are equivalent
+ * Squash multiple cron expressions into a single one!
  * Validate if cron string expressions match a cron definition
  * Convert crons between different cron definitions: if you need to migrate expressions, CronMapper may help you!
  * Pre-defined definitions for the following cron libraries are provided:
     * [Unix](http://www.unix.com/man-page/linux/5/crontab/)
     * [Cron4j](http://www.sauronsoftware.it/projects/cron4j/)
     * [Quartz](http://quartz-scheduler.org/)
+    * [Spring](https://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/scheduling/support/CronSequenceGenerator.html)
  * Obtain last/next execution time as well as time from last execution/time to next execution.
  * Obtain weekdays count between two dates, considering different weekend policies as well as holidays.
  * Need to map constants between different cron/time libraries? Use ConstantsMapper.
@@ -97,12 +99,7 @@ CronParser parser = new CronParser(cronDefinition);
 Cron quartzCron = parser.parse("0 23 * ? * 1-5 *");
 ```
 
-... even multi-cron expressions! How about squashing multiple crons into a single line?
-- 0 0 9 * * ? *
-- 0 0 10 * * ? *
-- 0 30 11 * * ? *
-- 0 0 12 * * ? *
-This can be wrapped into ```0 0|0|30|0 9|10|11|12 * * ? *```
+... even multi-cron expressions! How about squashing multiple crons into a single line? Instead of writting ```0 0 9 * * ? *```, ```0 0 10 * * ? *```, ```0 30 11 * * ? *``` and ```0 0 12 * * ? *``` we can wrap it into ```0 0|0|30|0 9|10|11|12 * * ? *```
 
 
 ***Describe***
