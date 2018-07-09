@@ -23,6 +23,7 @@ cron-utils is available on [Maven central](http://search.maven.org/#search%7Cga%
 For Android developers, cron-utils 7.0.0 assumes Android 26+. For earlier Android versions consider using cron-utils 6.x.y.
 If using ScheduleExpression from Java EE, this should be provided as a runtime dependency.
 
+Now we are developing a new generation of cron-descriptors using neural-translation! Any kind of contributions are welcome: from help with dataset generation to machine learning models training and utilities to load them! If interested, please follow issue [#3](https://github.com/jmrozanec/cron-utils/issues/3)
 
 **Features**
 
