@@ -74,35 +74,29 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>${slf4j.version}</version>
-        </dependency>
-        <dependency>
             <groupId>javax</groupId>
             <artifactId>javaee-api</artifactId>
             <version>${javaee-api.version}</version>
             <scope>provided</scope>
         </dependency>
 
-        <!--dependency>
-            <groupId>eu.lp0.slf4j</groupId>
-            <artifactId>slf4j-android</artifactId>
-            <version>1.7.22-0</version>
-            <scope>test</scope>
-        </dependency-->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-log4j12</artifactId>
             <version>${slf4j.version}</version>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
             <version>${log4j.version}</version>
-            <scope>test</scope>
         </dependency>
+
+        <!--test dependencies-->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
@@ -161,7 +155,7 @@
 				<configuration>
 					<archive>
 						<manifest>
-							<mainClass>com.cronutils.cli.CronUtilsCLI</mainClass>
+							<!--mainClass>com.cronutils.cli.CronUtilsCLI</mainClass-->
 						</manifest>
 					</archive>
 					<descriptorRefs>
@@ -201,7 +195,7 @@
 						<manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
 						<manifest>
 							<addClasspath>true</addClasspath>
-							<mainClass>com.cronutils.cli.CronUtilsCLI</mainClass>
+							<!--mainClass>com.cronutils.cli.CronUtilsCLI</mainClass-->
 						</manifest>
 					</archive>
 				</configuration>
