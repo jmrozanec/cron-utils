@@ -224,10 +224,6 @@ public class SingleExecutionTime implements ExecutionTime {
         if (nearestValue.getShifts() > 0) {
             return new ExecutionTimeResult(date.truncatedTo(DAYS).withDayOfMonth(1).plusMonths(nearestValue.getShifts()), false);
         }
-        if (nearestValue.getValue() < date.getDayOfMonth()) {
-            return new ExecutionTimeResult(date.truncatedTo(SECONDS).plusMonths(1).withDayOfMonth(nearestValue.getValue())
-                    .with(LocalTime.of(lowestHour, lowestMinute, lowestSecond)), false);
-        }
         return new ExecutionTimeResult(date.truncatedTo(SECONDS).withDayOfMonth(nearestValue.getValue())
                 .with(LocalTime.of(lowestHour, lowestMinute, lowestSecond)), false);
     }
@@ -238,9 +234,6 @@ public class SingleExecutionTime implements ExecutionTime {
         if (nearestValue.getShifts() > 0) {
             return new ExecutionTimeResult(date.truncatedTo(DAYS).plusDays(nearestValue.getShifts()), false);
         }
-        if (nearestValue.getValue() < date.getHour()) {
-            return new ExecutionTimeResult(date.truncatedTo(SECONDS).plusDays(1).with(LocalTime.of(nextHours, lowestMinute, lowestSecond)), false);
-        }
         return new ExecutionTimeResult(date.truncatedTo(SECONDS).with(LocalTime.of(nextHours, lowestMinute, lowestSecond)), false);
     }
 
@@ -249,9 +242,6 @@ public class SingleExecutionTime implements ExecutionTime {
         final int nextMinutes = nearestValue.getValue();
         if (nearestValue.getShifts() > 0) {
             return new ExecutionTimeResult(date.truncatedTo(HOURS).plusHours(nearestValue.getShifts()), false);
-        }
-        if (nearestValue.getValue() < date.getMinute()) {
-            return new ExecutionTimeResult(date.truncatedTo(SECONDS).plusHours(1).withMinute(nextMinutes).withSecond(lowestSecond), false);
         }
         return new ExecutionTimeResult(date.truncatedTo(SECONDS).withMinute(nextMinutes).withSecond(lowestSecond), false);
     }
@@ -262,9 +252,6 @@ public class SingleExecutionTime implements ExecutionTime {
         final int nextSeconds = nearestValue.getValue();
         if (nearestValue.getShifts() > 0) {
             return new ExecutionTimeResult(date.truncatedTo(MINUTES).plusMinutes(nearestValue.getShifts()), false);
-        }
-        if (nearestValue.getValue() < date.getSecond()) {
-            return new ExecutionTimeResult(date.truncatedTo(SECONDS).withMinute(1).withSecond(nextSeconds), false);
         }
         return new ExecutionTimeResult(date.truncatedTo(SECONDS).withSecond(nextSeconds), false);
     }
@@ -392,11 +379,9 @@ public class SingleExecutionTime implements ExecutionTime {
 
     private ExecutionTimeResult getPreviousPotentialDayOfMonth(final ZonedDateTime date, final TimeNode days, final int highestHour, final int highestMinute,
             final int highestSecond) {
-        NearestValue nearestValue;
-        ZonedDateTime newDate;
-        nearestValue = days.getPreviousValue(date.getDayOfMonth(), 0);
+        NearestValue nearestValue = days.getPreviousValue(date.getDayOfMonth(), 0);
         if (nearestValue.getShifts() > 0) {
-            newDate = ZonedDateTime.of(
+            ZonedDateTime newDate = ZonedDateTime.of(
                     LocalDate.of(date.getYear(), date.getMonthValue(), 1),
                     MAX_SECONDS,
                     date.getZone()
@@ -408,34 +393,28 @@ public class SingleExecutionTime implements ExecutionTime {
     }
 
     private ExecutionTimeResult getPreviousPotentialHour(final ZonedDateTime date, final int highestMinute, final int highestSecond) {
-        NearestValue nearestValue;
-        ZonedDateTime newDate;
-        nearestValue = hours.getPreviousValue(date.getHour(), 0);
+        NearestValue nearestValue = hours.getPreviousValue(date.getHour(), 0);
         if (nearestValue.getShifts() > 0) {
-            newDate = date.truncatedTo(DAYS).plusDays(1).minusSeconds(1).minusDays(nearestValue.getShifts());
+            ZonedDateTime newDate = date.truncatedTo(DAYS).minusDays(nearestValue.getShifts() - 1).minusSeconds(1);
             return new ExecutionTimeResult(newDate, false);
         }
         return new ExecutionTimeResult(date.with(LocalTime.of(nearestValue.getValue(), highestMinute, highestSecond)).truncatedTo(SECONDS), false);
     }
 
     private ExecutionTimeResult getPreviousPotentialMinute(final ZonedDateTime date, final int highestSecond) {
-        NearestValue nearestValue;
-        ZonedDateTime newDate;
-        nearestValue = minutes.getPreviousValue(date.getMinute(), 0);
+        NearestValue nearestValue = minutes.getPreviousValue(date.getMinute(), 0);
         if (nearestValue.getShifts() > 0) {
-            newDate = date.truncatedTo(HOURS).plusHours(1).minusSeconds(1).minusHours(nearestValue.getShifts());
+            ZonedDateTime newDate = date.truncatedTo(HOURS).minusHours(nearestValue.getShifts() - 1).minusSeconds(1);
             return new ExecutionTimeResult(newDate, false);
         }
         return new ExecutionTimeResult(date.truncatedTo(MINUTES).withMinute(nearestValue.getValue()).withSecond(highestSecond), false);
     }
 
     private ExecutionTimeResult getPreviousPotentialSecond(final ZonedDateTime date) {
-        NearestValue nearestValue;
-        ZonedDateTime newDate;
-        nearestValue = seconds.getPreviousValue(date.getSecond(), 0);
+        NearestValue nearestValue = seconds.getPreviousValue(date.getSecond(), 0);
         final int previousSeconds = nearestValue.getValue();
         if (nearestValue.getShifts() > 0) {
-            newDate = date.truncatedTo(MINUTES).plusMinutes(1).minusSeconds(1).minusMinutes(nearestValue.getShifts());
+            ZonedDateTime newDate = date.truncatedTo(MINUTES).minusMinutes(nearestValue.getShifts() - 1).minusSeconds(1);
             return new ExecutionTimeResult(newDate, false);
         }
         return new ExecutionTimeResult(date.truncatedTo(SECONDS).withSecond(previousSeconds), false);
