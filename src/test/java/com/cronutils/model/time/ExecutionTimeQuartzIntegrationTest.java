@@ -29,8 +29,6 @@ import java.util.Date;
 import java.util.Optional;
 import java.util.TimeZone;
 
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -39,6 +37,8 @@ import com.cronutils.descriptor.CronDescriptor;
 import com.cronutils.model.Cron;
 import com.cronutils.model.definition.CronDefinitionBuilder;
 import com.cronutils.parser.CronParser;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static com.cronutils.model.CronType.QUARTZ;
 import static java.time.ZoneOffset.UTC;
@@ -52,7 +52,7 @@ public class ExecutionTimeQuartzIntegrationTest {
     private CronParser parser;
     private static final String EVERY_SECOND = "* * * * * ? *";
 
-    private static final Logger LOGGER = LogManager.getLogger(ExecutionTimeQuartzIntegrationTest.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ExecutionTimeQuartzIntegrationTest.class);
     private static final String NEXT_EXECUTION_NOT_PRESENT_ERROR = "next execution was not present";
     private static final String LAST_EXECUTION_NOT_PRESENT_ERROR = "last execution was not present";
     private static final String DURATION_NOT_PRESENT_ERROR = "duration was not present";
