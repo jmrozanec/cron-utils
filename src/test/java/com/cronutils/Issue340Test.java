@@ -6,13 +6,14 @@ import com.cronutils.model.definition.CronDefinitionBuilder;
 import com.cronutils.model.time.ExecutionTime;
 import com.cronutils.parser.CronParser;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.time.Duration;
 import java.time.ZonedDateTime;
 
 import static com.cronutils.model.CronType.QUARTZ;
-
+@Ignore
 public class Issue340Test {
 
     @Test
