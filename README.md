@@ -105,7 +105,7 @@ CronParser parser = new CronParser(cronDefinition);
 Cron quartzCron = parser.parse("0 23 * ? * 1-5 *");
 ```
 
-... even multi-cron expressions! How about squashing multiple crons into a single line? Instead of writting ```0 0 9 * * ? *```, ```0 0 10 * * ? *```, ```0 30 11 * * ? *``` and ```0 0 12 * * ? *``` we can wrap it into ```0 0|0|30|0 9|10|11|12 * * ? *```
+... even multi-cron expressions! How about squashing multiple crons into a single line? Instead of writing ```0 0 9 * * ? *```, ```0 0 10 * * ? *```, ```0 30 11 * * ? *``` and ```0 0 12 * * ? *``` we can wrap it into ```0 0|0|30|0 9|10|11|12 * * ? *```
 
 
 ***Describe***
@@ -221,7 +221,7 @@ Support us donating once or by subscription through Flattr!
 **Other cron-utils projects**
 
 You are welcome to visit and use the following cron-utils projects:
- * [htime](https://github.com/jmrozanec/htime): A Java library to make it easy for humans format a date. You no longer need to remember date time formatting chars: just write an example, and you will get the appropiate formatter.
+ * [htime](https://github.com/jmrozanec/htime): A Java library to make it easy for humans format a date. You no longer need to remember date time formatting chars: just write an example, and you will get the appropriate formatter.
  * [cron-utils-spring](https://github.com/jmrozanec/cron-utils-spring): A Java library to describe cron expressions in human readable language at Spring framework, using cron-utils.
  * [cron-utils-cli](https://github.com/jmrozanec/cron-utils-cli): cron-utils features made available through a CLI.
  * [cron-utils-sisyphus](https://github.com/jmrozanec/cron-utils-sisyphus): A Scala scheduler that supports multiple cron notations.
