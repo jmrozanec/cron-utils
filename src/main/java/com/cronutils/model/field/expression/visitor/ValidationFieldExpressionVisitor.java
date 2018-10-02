@@ -114,7 +114,7 @@ public class ValidationFieldExpressionVisitor implements FieldExpressionVisitor 
         if (every.getExpression() instanceof On) {
             visit((On) every.getExpression());
         }
-        isPeriodInRange(every.getPeriod());
+        isInRange(every.getPeriod());
         return every;
     }
 
