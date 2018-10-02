@@ -13,28 +13,34 @@
 
 package com.cronutils.utils.descriptor;
 
-import org.junit.Ignore;
-import org.junit.Test;
-
 import com.cronutils.model.Cron;
 import com.cronutils.model.CronType;
 import com.cronutils.model.definition.CronDefinition;
 import com.cronutils.model.definition.CronDefinitionBuilder;
 import com.cronutils.parser.CronParser;
+import org.junit.Test;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 
-//FIXME
-@Ignore ("Ignore this until someone is working on a fix")
 public class Issue281Test {
 
     private static final String ISSUE_EXPRESSION = "0 0 0 24 1/12 ?";
+    private static final String WRONG_PERIOD_EXPRESSION = "0 0 0 24 1/13 ?";
 
     @Test
     public void testCronTypeQuartz() {
+        final Cron cron = buildCron(ISSUE_EXPRESSION);
+        assertThat("cron is not null", cron != null);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void shouldThrowException() {
+        final Cron cron = buildCron(WRONG_PERIOD_EXPRESSION);
+    }
+
+    private Cron buildCron(String expression) {
         final CronDefinition cronDefinition = CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ);
         final CronParser parser = new CronParser(cronDefinition);
-        final Cron cron = parser.parse(ISSUE_EXPRESSION);
-        assertThat("cron is not null", cron != null);
+        return parser.parse(expression);
     }
 }
