@@ -13,28 +13,49 @@
 
 package com.cronutils.utils.descriptor;
 
-import org.junit.Ignore;
-import org.junit.Test;
-
 import com.cronutils.model.Cron;
 import com.cronutils.model.CronType;
 import com.cronutils.model.definition.CronDefinition;
 import com.cronutils.model.definition.CronDefinitionBuilder;
 import com.cronutils.parser.CronParser;
+import org.junit.Test;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 
-//FIXME
-@Ignore ("Ignore this until someone is working on a fix")
 public class Issue281Test {
 
-    private static final String ISSUE_EXPRESSION = "0 0 0 24 1/12 ?";
+    @Test
+    public void shouldAcceptLastMonth() {
+        final Cron cron = buildCron("0 0 0 24 1/12 ?");
+        assertThat("cron is not null", cron != null);
+    }
 
     @Test
-    public void testCronTypeQuartz() {
+    public void shouldAcceptFirstMonth() {
+        final Cron cron = buildCron("0 0 0 24/1 1/12 ?");
+        assertThat("cron is not null", cron != null);
+    }
+
+    @Test
+    public void shouldAcceptLastDayOfMonth() {
+        final Cron cron = buildCron("0 0 0 1/31 7 ?");
+        assertThat("cron is not null", cron != null);
+    }
+
+    @Test
+    public void shouldAcceptFirstDayOfMonth() {
+        final Cron cron = buildCron("0 0 0 24/1 1/12 ?");
+        assertThat("cron is not null", cron != null);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void shouldThrowExceptionWhenMonthExceeded() {
+        final Cron cron = buildCron("0 0 0 24 1/13 ?");
+    }
+
+    private Cron buildCron(String expression) {
         final CronDefinition cronDefinition = CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ);
         final CronParser parser = new CronParser(cronDefinition);
-        final Cron cron = parser.parse(ISSUE_EXPRESSION);
-        assertThat("cron is not null", cron != null);
+        return parser.parse(expression);
     }
 }
