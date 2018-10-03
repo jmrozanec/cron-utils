@@ -24,18 +24,33 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 public class Issue281Test {
 
-    private static final String ISSUE_EXPRESSION = "0 0 0 24 1/12 ?";
-    private static final String WRONG_PERIOD_EXPRESSION = "0 0 0 24 1/13 ?";
+    @Test
+    public void shouldAcceptLastMonth() {
+        final Cron cron = buildCron("0 0 0 24 1/12 ?");
+        assertThat("cron is not null", cron != null);
+    }
 
     @Test
-    public void testCronTypeQuartz() {
-        final Cron cron = buildCron(ISSUE_EXPRESSION);
+    public void shouldAcceptFirstMonth() {
+        final Cron cron = buildCron("0 0 0 24/1 1/12 ?");
+        assertThat("cron is not null", cron != null);
+    }
+
+    @Test
+    public void shouldAcceptLastDayOfMonth() {
+        final Cron cron = buildCron("0 0 0 1/31 7 ?");
+        assertThat("cron is not null", cron != null);
+    }
+
+    @Test
+    public void shouldAcceptFirstDayOfMonth() {
+        final Cron cron = buildCron("0 0 0 24/1 1/12 ?");
         assertThat("cron is not null", cron != null);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void shouldThrowException() {
-        final Cron cron = buildCron(WRONG_PERIOD_EXPRESSION);
+    public void shouldThrowExceptionWhenMonthExceeded() {
+        final Cron cron = buildCron("0 0 0 24 1/13 ?");
     }
 
     private Cron buildCron(String expression) {
