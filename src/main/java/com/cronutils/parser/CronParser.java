@@ -58,9 +58,16 @@ public class CronParser {
                 .sorted(CronParserField.createFieldTypeComparator())
                 .collect(Collectors.toList());
 
-        if (lastFieldIsOptional(sortedExpression)) {
-            expressions.put(sortedExpression.size() - 1, new ArrayList<>(sortedExpression.subList(0, sortedExpression.size() - 1)));
+        List<CronParserField> tempExpression = sortedExpression;
+
+        while(lastFieldIsOptional(tempExpression)) {
+            int expressionLength = tempExpression.size() - 1;
+            ArrayList<CronParserField> possibleExpression = new ArrayList<>(tempExpression.subList(0, expressionLength));
+
+            expressions.put(expressionLength, possibleExpression);
+            tempExpression = possibleExpression;
         }
+
         expressions.put(sortedExpression.size(), sortedExpression);
     }
 
