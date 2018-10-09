@@ -13,10 +13,10 @@ import com.cronutils.model.time.generator.NoSuchValueException;
 import com.cronutils.parser.CronParser;
 
 public class Issue319Test {
-    //@Test
+    @Test
     // Daylightsaving change in EU is - 2018-03-25T02:00
     // - Bug319: endless loop/fails/hangs at 2018-03-25T02:00 and 2018-03-26T02:00
-    public void testPreviousClosestMatchDailightSavingsChangeBug319_loop() throws NoSuchValueException {
+    public void testPreviousClosestMatchDailightSavingsChangeBug319_loop() {
         CronParser cronparser = new CronParser(CronDefinitionBuilder.instanceDefinitionFor(CronType.UNIX));
         for (int month = 1; month < 13; month++) {
             for (int day = 1; day < 29; day++) {
