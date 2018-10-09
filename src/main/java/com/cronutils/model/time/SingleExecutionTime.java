@@ -18,7 +18,10 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZonedDateTime;
+import java.time.temporal.ChronoField;
 import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalField;
+import java.time.temporal.TemporalUnit;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -327,10 +330,10 @@ public class SingleExecutionTime implements ExecutionTime {
             return getPreviousPotentialDayOfMonth(date, days, highestHour, highestMinute, highestSecond);
         }
         if (!hours.getValues().contains(date.getHour())) {
-            return getPreviousPotentialHour(date, highestMinute, highestSecond);
+            return getPreviousPotentialHour(date);
         }
         if (!minutes.getValues().contains(date.getMinute())) {
-            return getPreviousPotentialMinute(date, highestSecond);
+            return getPreviousPotentialMinute(date);
         }
         if (!seconds.getValues().contains(date.getSecond())) {
             return getPreviousPotentialSecond(date);
@@ -402,32 +405,44 @@ public class SingleExecutionTime implements ExecutionTime {
                 .with(LocalTime.of(highestHour, highestMinute, highestSecond)).truncatedTo(SECONDS), false);
     }
 
-    private ExecutionTimeResult getPreviousPotentialHour(final ZonedDateTime date, final int highestMinute, final int highestSecond) {
-        NearestValue nearestValue = hours.getPreviousValue(date.getHour(), 0);
-        if (nearestValue.getShifts() > 0) {
-            ZonedDateTime newDate = date.truncatedTo(DAYS).minusDays(nearestValue.getShifts() - 1).minusSeconds(1);
-            return new ExecutionTimeResult(newDate, false);
-        }
-        return new ExecutionTimeResult(date.with(LocalTime.of(nearestValue.getValue(), highestMinute, highestSecond)).truncatedTo(SECONDS), false);
+    private ExecutionTimeResult getPreviousPotentialHour(final ZonedDateTime date) throws NoSuchValueException {
+        return getPreviousPotentialValue(date, hours, ChronoField.HOUR_OF_DAY);
     }
 
-    private ExecutionTimeResult getPreviousPotentialMinute(final ZonedDateTime date, final int highestSecond) {
-        NearestValue nearestValue = minutes.getPreviousValue(date.getMinute(), 0);
-        if (nearestValue.getShifts() > 0) {
-            ZonedDateTime newDate = date.truncatedTo(HOURS).minusHours(nearestValue.getShifts() - 1).minusSeconds(1);
-            return new ExecutionTimeResult(newDate, false);
-        }
-        return new ExecutionTimeResult(date.truncatedTo(MINUTES).withMinute(nearestValue.getValue()).withSecond(highestSecond), false);
+    private ExecutionTimeResult getPreviousPotentialMinute(final ZonedDateTime date) throws NoSuchValueException {
+        return getPreviousPotentialValue(date, minutes, ChronoField.MINUTE_OF_HOUR);
     }
 
-    private ExecutionTimeResult getPreviousPotentialSecond(final ZonedDateTime date) {
-        NearestValue nearestValue = seconds.getPreviousValue(date.getSecond(), 0);
-        final int previousSeconds = nearestValue.getValue();
-        if (nearestValue.getShifts() > 0) {
-            ZonedDateTime newDate = date.truncatedTo(MINUTES).minusMinutes(nearestValue.getShifts() - 1).minusSeconds(1);
-            return new ExecutionTimeResult(newDate, false);
+    private ExecutionTimeResult getPreviousPotentialSecond(final ZonedDateTime date) throws NoSuchValueException {
+        return getPreviousPotentialValue(date, seconds, ChronoField.SECOND_OF_MINUTE);
+    }
+
+    private static ExecutionTimeResult getPreviousPotentialValue(
+            final ZonedDateTime date,
+            final TimeNode node,
+            final TemporalField field) throws NoSuchValueException {
+        Set<Integer> values = new HashSet<>(node.values);
+
+        TemporalUnit unit = field.getBaseUnit();
+
+        long maximum = field.range().getMaximum();
+        long minimum = field.range().getMinimum();
+        long range = maximum - minimum;
+
+        ZonedDateTime newDate = date;
+        for (long i = 0; i < 2 * range; i++) {
+            newDate = newDate.minus(1, unit);
+
+            if (values.contains(newDate.get(field))) {
+                newDate = newDate
+                        .truncatedTo(unit)
+                        .plus(1, unit)
+                        .minusSeconds(1);
+                return new ExecutionTimeResult(newDate, false);
+            }
         }
-        return new ExecutionTimeResult(date.truncatedTo(SECONDS).withSecond(previousSeconds), false);
+
+        throw new NoSuchValueException();
     }
 
     private ZonedDateTime toEndOfPreviousMonth(final ZonedDateTime datetime) {
