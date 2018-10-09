@@ -36,7 +36,7 @@ Now we are developing a new generation of cron-descriptors using neural-translat
  * You can flag last field as optional!
  * Supports all cron special characters: * / , -
     * Non-standard characters L, W, LW, '?' and # are supported as well!
- * Print to locale specific human readable format (Chinese, English, German, Indonesian, Korean, Polish, Spanish, Swahili and Turkish are fully supported. Dutch, French, Italian, Portuguese and Russian have basic support).
+ * Print to locale specific human readable format (Chinese, English, German, Greek, Indonesian, Korean, Polish, Spanish, Swahili and Turkish are fully supported. Dutch, French, Italian, Portuguese and Russian have basic support).
  * Parse and Description process are decoupled: parse once and operate with the result!
  * Build cron expressions using CronBuilder: 
     * no need to remember fields and constraints for each cron provider

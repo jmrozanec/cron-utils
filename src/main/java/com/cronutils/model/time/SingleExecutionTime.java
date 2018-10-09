@@ -61,6 +61,8 @@ import static java.time.temporal.TemporalAdjusters.lastDayOfMonth;
  */
 public class SingleExecutionTime implements ExecutionTime {
 
+    private static final int MAX_ITERATIONS = 100_000;
+
     private static final LocalTime MAX_SECONDS = LocalTime.MAX.truncatedTo(SECONDS);
 
     private final CronDefinition cronDefinition;
@@ -118,13 +120,17 @@ public class SingleExecutionTime implements ExecutionTime {
      */
     private ZonedDateTime nextClosestMatch(final ZonedDateTime date) throws NoSuchValueException {
         ExecutionTimeResult result = new ExecutionTimeResult(date, false);
-        do {
+        for (int i = 0; i < MAX_ITERATIONS; i++) {
             result = potentialNextClosestMatch(result.getTime());
+            if (result.isMatch()) {
+                return result.getTime();
+            }
             if (result.getTime().getYear() - date.getYear() > 100) {
                 throw new NoSuchValueException();
             }
-        } while (!result.isMatch());
-        return result.getTime();
+        }
+
+        throw new NoSuchValueException();
     }
 
     private ExecutionTimeResult potentialNextClosestMatch(final ZonedDateTime date) throws NoSuchValueException {
@@ -270,10 +276,14 @@ public class SingleExecutionTime implements ExecutionTime {
      */
     private ZonedDateTime previousClosestMatch(final ZonedDateTime date) throws NoSuchValueException {
         ExecutionTimeResult result = new ExecutionTimeResult(date, false);
-        do {
+
+        for (int i = 0; i < MAX_ITERATIONS; i++) {
             result = potentialPreviousClosestMatch(result.getTime());
-        } while (!result.isMatch());
-        return result.getTime();
+            if (result.isMatch()) {
+                return result.getTime();
+            }
+        }
+        throw new NoSuchValueException();
     }
 
     private ExecutionTimeResult potentialPreviousClosestMatch(final ZonedDateTime date) throws NoSuchValueException {

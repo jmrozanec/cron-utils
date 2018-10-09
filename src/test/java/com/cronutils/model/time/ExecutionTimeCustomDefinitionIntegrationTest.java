@@ -215,7 +215,7 @@ public class ExecutionTimeCustomDefinitionIntegrationTest {
      * with 4 fields as an error:
      * java.lang.IllegalArgumentException: Cron expression contains 4 parts but we expect one of [6, 7]
      */
-    //@Test //FIXME issue #291
+    @Test
     public void testThreeRequiredFieldsSupported() {
         final CronDefinition cronDefinition = CronDefinitionBuilder.defineCron()
                 .withSeconds().and()
@@ -229,5 +229,26 @@ public class ExecutionTimeCustomDefinitionIntegrationTest {
                 .instance();
         final CronParser cronParser = new CronParser(cronDefinition);
         cronParser.parse("* * 4 3");
+    }
+
+    /**
+     * A CronDefinition with only 5 required fields is legal to instantiate, but the parser considers an expression
+     * with 5 fields as an error:
+     * java.lang.IllegalArgumentException: Cron expression contains 4 parts but we expect one of [6, 7]
+     */
+    @Test
+    public void testFiveRequiredFieldsSupported() {
+        final CronDefinition cronDefinition = CronDefinitionBuilder.defineCron()
+                .withSeconds().and()
+                .withMinutes().and()
+                .withHours().and()
+                .withDayOfMonth().supportsL().supportsW().supportsLW().supportsQuestionMark().and()
+                .withMonth().and()
+                .withDayOfWeek().withValidRange(1, 7).withMondayDoWValue(2).supportsHash().supportsL()
+                .supportsQuestionMark().optional().and()
+                .withYear().withValidRange(2000, 2099).optional().and()
+                .instance();
+        final CronParser cronParser = new CronParser(cronDefinition);
+        cronParser.parse("* * 4 3 *");
     }
 }
