@@ -54,9 +54,7 @@ public class CronConstraintsFactory {
             public boolean validate(Cron cron) {
                 CronField dayOfYearField = cron.retrieve(CronFieldName.DAY_OF_YEAR);
                 if (dayOfYearField == null || dayOfYearField.getExpression() instanceof QuestionMark) {
-                    if (!(cron.retrieve(CronFieldName.DAY_OF_MONTH).getExpression() instanceof QuestionMark)) {
-                        return cron.retrieve(CronFieldName.DAY_OF_WEEK).getExpression() instanceof QuestionMark;
-                    } else {
+                    if (cron.retrieve(CronFieldName.DAY_OF_MONTH).getExpression() instanceof QuestionMark) {
                         return !(cron.retrieve(CronFieldName.DAY_OF_WEEK).getExpression() instanceof QuestionMark);
                     }
                 }
