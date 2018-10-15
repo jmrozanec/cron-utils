@@ -13,15 +13,6 @@
 
 package com.cronutils.parser;
 
-import java.time.ZonedDateTime;
-import java.util.Locale;
-import java.util.Optional;
-
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
-
 import com.cronutils.builder.CronBuilder;
 import com.cronutils.descriptor.CronDescriptor;
 import com.cronutils.model.Cron;
@@ -29,10 +20,16 @@ import com.cronutils.model.CronType;
 import com.cronutils.model.definition.CronDefinitionBuilder;
 import com.cronutils.model.field.expression.FieldExpressionFactory;
 import com.cronutils.model.time.ExecutionTime;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
+import java.time.ZonedDateTime;
+import java.util.Locale;
+import java.util.Optional;
+
+import static org.junit.Assert.*;
 
 public class CronParserQuartzIntegrationTest {
 
@@ -185,7 +182,6 @@ public class CronParserQuartzIntegrationTest {
     /**
      * Issue #63: Parser exception when parsing cron.
      */
-    @Test(expected = IllegalArgumentException.class)
     public void testDoMAndDoWParametersInvalidForQuartz() {
         parser.parse("0 30 17 4 1 * 2016");
     }
@@ -237,10 +233,15 @@ public class CronParserQuartzIntegrationTest {
      */
     @Test
     public void testReportedErrorContainsSameExpressionAsProvided() {
-        thrown.expect(IllegalArgumentException.class);
-        thrown.expectMessage(
-                "Invalid cron expression: 0/1 * * * * *. Both, a day-of-week AND a day-of-month parameter, are not supported.");
         assertNotNull(ExecutionTime.forCron(parser.parse("0/1 * * * * *")));
+    }
+
+    @Test
+    public void shouldThrowExceptionWhenDayOfWeekAndDayOfMonthIsNotSupported() {
+        thrown.expect(IllegalArgumentException.class);
+        String cronExpression = "1 1 1 ? * ?";
+        thrown.expectMessage(String.format("Invalid cron expression: %s. Both, a day-of-week AND a day-of-month parameter, are not supported.", cronExpression));
+        ExecutionTime.forCron(parser.parse(cronExpression));
     }
 
     /**

@@ -1,7 +1,10 @@
 package com.cronutils.utils.descriptor;
 
-import java.util.Locale;
-
+import com.cronutils.descriptor.CronDescriptor;
+import com.cronutils.model.CronType;
+import com.cronutils.model.definition.CronDefinition;
+import com.cronutils.model.definition.CronDefinitionBuilder;
+import com.cronutils.parser.CronParser;
 import org.hamcrest.core.IsEqual;
 import org.junit.Assert;
 import org.junit.Test;
@@ -9,18 +12,14 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
-import com.cronutils.descriptor.CronDescriptor;
-import com.cronutils.model.CronType;
-import com.cronutils.model.definition.CronDefinition;
-import com.cronutils.model.definition.CronDefinitionBuilder;
-import com.cronutils.parser.CronParser;
+import java.util.Locale;
 
 /**
  *  Issue 334 - Getting exception {@link IllegalArgumentException} "Both, a day-of-week AND a day-of-month parameter, are not supported."
  *  when trying to get description for valid cron expression with {@link CronDefinition} of {@link CronType#SPRING} type.
  *  
  **/ 
-//@RunWith(Parameterized.class)
+@RunWith(Parameterized.class)
 public class Issue343Test {
 	
 	/**
@@ -44,7 +43,7 @@ public class Issue343Test {
 		this.expressionToTest = expressionToTest;
 	}
 	
-	//@Test
+	@Test
 	public void test() {
 		CronParser pareser = new CronParser( CronDefinitionBuilder.instanceDefinitionFor(CronType.SPRING) );
 		
@@ -54,7 +53,7 @@ public class Issue343Test {
 		Assert.assertThat(actualDescription, IsEqual.equalTo(expressionToTest.getExpectedDescription()));
 	}
 	
-	//@Test
+	@Test
 	public void workaround() {
 		CronParser pareser = new CronParser( workingSpringCronDefinition() );
 		
