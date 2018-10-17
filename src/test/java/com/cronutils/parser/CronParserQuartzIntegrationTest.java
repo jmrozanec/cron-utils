@@ -244,6 +244,18 @@ public class CronParserQuartzIntegrationTest {
         ExecutionTime.forCron(parser.parse(cronExpression));
     }
 
+    @Test
+    public void shouldntThrowExceptionWhenDayOfWeekIsSupportedButDoMNot() {
+        String cronExpression = "1 1 1 ? * *";
+        ExecutionTime.forCron(parser.parse(cronExpression));
+    }
+
+    @Test
+    public void shouldntThrowExceptionWhenDayOfMonthIsSupportedButDoWNot() {
+        String cronExpression = "1 1 1 * * ?";
+        ExecutionTime.forCron(parser.parse(cronExpression));
+    }
+
     /**
      * Issue #109: Missing expression and invalid chars in error message
      * https://github.com/jmrozanec/cron-utils/issues/109
