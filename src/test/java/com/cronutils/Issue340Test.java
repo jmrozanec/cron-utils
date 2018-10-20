@@ -10,13 +10,9 @@ import org.junit.Test;
 import org.mockito.internal.util.collections.Sets;
 
 import java.time.Duration;
-import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 import static com.cronutils.model.CronType.QUARTZ;
 
