@@ -822,6 +822,25 @@ public class ExecutionTimeQuartzIntegrationTest {
         assertEquals("year constraint shouldn't have an impact on match result", executionTime.isMatch(start), constraintExecutionTime.isMatch(start));
     }
 
+    /**
+     * Issue #312
+     * https://github.com/jmrozanec/cron-utils/issues/312
+     */
+    @Test
+    public void testLastExecutionIssue312() {
+        // Every day at 20:00
+        ExecutionTime executionTime = ExecutionTime.forCron(parser.parse("0 0 20 * * ? *"));
+        ZonedDateTime time = ZonedDateTime.now();
+        Optional<ZonedDateTime> lastExecution = executionTime.lastExecution(time);
+        assertTrue("There was no last execution", lastExecution.isPresent());
+        assertEquals("Last execution did not happen at 20:00 hours", LocalTime.of(20, 0), lastExecution.get().toLocalTime());
+        if (time.toLocalTime().isBefore(LocalTime.of(20, 0))) {
+            assertEquals("The last execution should be on the previous day", lastExecution.get().toLocalDate(), time.toLocalDate().minusDays(1));
+        } else {
+            assertEquals("The last execution should be on the same day", lastExecution.get().toLocalDate(), time.toLocalDate());
+        }
+    }
+
     private Duration getMinimumInterval(final String quartzPattern) {
         final ExecutionTime executionTime = ExecutionTime.forCron(parser.parse(quartzPattern));
         final ZonedDateTime coolDay = ZonedDateTime.of(2016, 1, 1, 0, 0, 0, 0, UTC);
