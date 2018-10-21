@@ -19,6 +19,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.IntStream;
 
 import com.cronutils.mapper.WeekDay;
 import com.cronutils.model.field.CronField;
@@ -60,36 +61,23 @@ class BetweenDayOfWeekValueGenerator extends FieldValueGenerator {
         final Between between = (Between) cronField.getExpression();
         int from = (Integer) between.getFrom().getValue();
         final int to = (Integer) between.getTo().getValue();
-        while (from <= to) {
-            dowValidValues.add(from);
-            from += 1;
+        if (to >= from) {
+            IntStream.rangeClosed(from, to).forEach(dowValidValues::add);
+        } else {
+            // Handle a rollover situation for #340, ex. FRI-WED should be handled as FRI-SAT,SUN-WED
+            IntStream.rangeClosed(from, cronField.getConstraints().getEndRange()).forEach(dowValidValues::add);
+            IntStream.rangeClosed(cronField.getConstraints().getStartRange(), to).forEach(dowValidValues::add);
         }
     }
 
     @Override
     protected List<Integer> generateCandidatesNotIncludingIntervalExtremes(final int start, final int end) {
         final List<Integer> values = new ArrayList<>();
-        final Between between = (Between) cronField.getExpression();
-
-        // we have a range of days of week, so we will generate a list for each day and then combine them
-        int startDayOfWeek = 0;
-        int endDayOfWeek = 0;
-        Object obj = between.getFrom().getValue();
-        if (obj instanceof Integer) {
-            startDayOfWeek = (Integer) obj;
-
-        }
-        obj = between.getTo().getValue();
-        if (obj instanceof Integer) {
-            endDayOfWeek = (Integer) obj;
-
-        }
-
-        for (int i = startDayOfWeek; i <= endDayOfWeek; i++) {
+        for (Integer dayOfWeek: dowValidValues) {
             // Build a CronField representing a single day of the week
             final FieldConstraintsBuilder fcb = FieldConstraintsBuilder.instance().forField(CronFieldName.DAY_OF_WEEK);
             final CronParserField parser = new CronParserField(CronFieldName.DAY_OF_WEEK, fcb.createConstraintsInstance());
-            final CronField cronField = parser.parse(Integer.toString(i));
+            final CronField cronField = parser.parse(dayOfWeek.toString());
 
             // now a generator for matching days
             final OnDayOfWeekValueGenerator odow = new OnDayOfWeekValueGenerator(cronField, year, month, mondayDoWValue);
