@@ -149,12 +149,12 @@ public class CronDescriptor {
      * @return description - String
      */
     public String describeYear(final Map<CronFieldName, CronField> fields) {
-        return String.format(
+        final String description =
                 DescriptionStrategyFactory.plainInstance(
                         resourceBundle,
                         fields.containsKey(CronFieldName.YEAR) ? fields.get(CronFieldName.YEAR).getExpression() : null
-                ).describe(),
-                resourceBundle.getString("year"));
+                ).describe();
+        return addExpressions(description, resourceBundle.getString("year"), resourceBundle.getString("years"));
     }
 
     /**
