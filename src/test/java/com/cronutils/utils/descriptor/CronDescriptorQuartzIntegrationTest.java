@@ -125,6 +125,11 @@ public class CronDescriptorQuartzIntegrationTest {
         assertExpression("0 0 0 ? * MON-FRI *", "at 00:00 every day between Monday and Friday");
     }
 
+    @Test
+    public void testEveryTwoYears() {
+        assertExpression("*/4 */6 */8 */2 * ? */2", "every 4 seconds every 6 minutes every 8 hours every 2 days every 2 years");
+    }
+
     private void assertExpression(final String cron, final String description) {
         assertEquals(description, descriptor.describe(parser.parse(cron)));
     }
