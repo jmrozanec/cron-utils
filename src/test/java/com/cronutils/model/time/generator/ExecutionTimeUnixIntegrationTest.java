@@ -272,8 +272,14 @@ public class ExecutionTimeUnixIntegrationTest {
     @Test
     public void testCorrectNextExecutionDoW() {
         //DoW: 0-6 -> 0, 4 (sunday, thursday)
-        final Cron cron = getUnixCron("* * * * */4");
-        final Optional<ZonedDateTime> nextExecution = getNextExecutionFor(cron, ZonedDateTime.parse("2016-01-28T16:32:56.586-08:00"));
+        final Cron cron = getUnixCron("0 0 * * */4");
+        Optional<ZonedDateTime> nextExecution = getNextExecutionFor(cron, ZonedDateTime.parse("2016-01-28T16:32:56.586-08:00"));
+        if (nextExecution.isPresent()) {
+            assertEquals(ZonedDateTime.parse("2016-01-31T00:00:00.000-08:00"), nextExecution.get());
+        } else {
+            fail(NEXT_EXECUTION_NOT_PRESENT_ERROR);
+        }
+        nextExecution = getNextExecutionFor(cron, nextExecution.get());
         if (nextExecution.isPresent()) {
             assertEquals(ZonedDateTime.parse("2016-02-04T00:00:00.000-08:00"), nextExecution.get());
         } else {
@@ -564,5 +570,21 @@ public class ExecutionTimeUnixIntegrationTest {
         final ZonedDateTime time = ZonedDateTime.parse("2015-09-17T00:00:00.000-07:00");
         final Optional<ZonedDateTime> nextExecution = ExecutionTime.forCron(myCron).nextExecution(time);
         assertFalse(nextExecution.isPresent());
+    }
+
+    /**
+     * https://github.com/jmrozanec/cron-utils/issues/336
+     */
+    @Test
+    public void testEveryDayPerWeek() {
+        CronParser cronParser = new CronParser(CronDefinitionBuilder.instanceDefinitionFor(CronType.UNIX));
+        // every 3 days - Sun (1), Wed (4), Sat (7)
+        String cronString = "0 0 * * */3";
+        Cron cron = cronParser.parse(cronString);
+        ExecutionTime executionTime = ExecutionTime.forCron(cron);
+        Optional<ZonedDateTime> nextExecution = executionTime
+                .nextExecution(ZonedDateTime.of(2018, 2, 8, 0, 0, 0, 0, ZoneId.of("UTC")));
+        assertTrue(nextExecution.isPresent());
+        assertEquals(ZonedDateTime.of(2018, 2, 10, 0, 0, 0, 0, ZoneId.of("UTC")), nextExecution.get());
     }
 }
