@@ -13,6 +13,17 @@
 
 package com.cronutils.model.time.generator;
 
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.Year;
+import java.util.Arrays;
+import java.util.EnumSet;
+import java.util.List;
+import java.util.Set;
+
+import org.junit.Before;
+import org.junit.Test;
+
 import com.cronutils.mapper.WeekDay;
 import com.cronutils.model.field.CronField;
 import com.cronutils.model.field.CronFieldName;
@@ -22,18 +33,10 @@ import com.cronutils.model.field.expression.Between;
 import com.cronutils.model.field.expression.Every;
 import com.cronutils.model.field.expression.FieldExpression;
 import com.cronutils.model.field.value.IntegerFieldValue;
-import org.junit.Before;
-import org.junit.Test;
 
-import java.time.DayOfWeek;
-import java.time.LocalDate;
-import java.time.Year;
-import java.util.Arrays;
-import java.util.EnumSet;
-import java.util.List;
-import java.util.Set;
-
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 
 public class EveryDayOfWeekValueGeneratorTest {

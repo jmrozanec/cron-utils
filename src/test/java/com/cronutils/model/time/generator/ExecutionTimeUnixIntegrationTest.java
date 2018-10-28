@@ -27,7 +27,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
-import com.cronutils.descriptor.CronDescriptor;
 import org.junit.Test;
 
 import com.cronutils.model.Cron;

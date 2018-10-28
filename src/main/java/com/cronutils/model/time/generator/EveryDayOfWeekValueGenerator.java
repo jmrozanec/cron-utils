@@ -13,19 +13,19 @@
 
 package com.cronutils.model.time.generator;
 
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.EnumSet;
+import java.util.List;
+import java.util.Set;
+
 import com.cronutils.mapper.ConstantsMapper;
 import com.cronutils.mapper.WeekDay;
 import com.cronutils.model.field.CronField;
 import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.field.expression.Every;
-import com.cronutils.model.field.expression.FieldExpression;
-import com.cronutils.model.field.expression.On;
 import com.cronutils.utils.Preconditions;
-
-import java.time.DayOfWeek;
-import java.time.LocalDate;
-import java.util.*;
-import java.util.stream.IntStream;
 
 /**
  * Generates matching days for a given year and month for a given day of week cron field with an every expression.
@@ -80,8 +80,7 @@ class EveryDayOfWeekValueGenerator extends EveryFieldValueGenerator {
         int day = reference;
         do {
             day--;
-        }
-        while (!isMatch(day) && day > 0);
+        } while (!isMatch(day) && day > 0);
         if (day <= 0) {
             throw new NoSuchValueException();
         }
@@ -101,6 +100,7 @@ class EveryDayOfWeekValueGenerator extends EveryFieldValueGenerator {
                 }
             }
         } catch (NoSuchValueException ignored) {
+            // next generated value would be beyond the end of the month, so just ignore it and finish
         }
         return candidates;
     }
@@ -108,7 +108,7 @@ class EveryDayOfWeekValueGenerator extends EveryFieldValueGenerator {
     @Override
     public boolean isMatch(final int value) {
         // value is the day of the month
-        if (value > lastDayOfMonth || value < 1){
+        if (value > lastDayOfMonth || value < 1) {
             return false;
         }
         DayOfWeek dayOfWeek = LocalDate.of(year, month, value).getDayOfWeek();

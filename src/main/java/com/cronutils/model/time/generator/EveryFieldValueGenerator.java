@@ -25,8 +25,8 @@ import com.cronutils.utils.VisibleForTesting;
 
 class EveryFieldValueGenerator extends FieldValueGenerator {
 
-    final int from;
-    final int to;
+    protected final int from;
+    protected final int to;
 
     public EveryFieldValueGenerator(final CronField cronField) {
         super(cronField);

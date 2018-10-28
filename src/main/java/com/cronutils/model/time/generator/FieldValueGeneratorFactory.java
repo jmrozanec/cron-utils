@@ -79,7 +79,7 @@ public class FieldValueGeneratorFactory {
         if (fieldExpression instanceof And) {
             return new AndDayOfWeekValueGenerator(cronField, year, month, mondayDoWValue);
         }
-        if (fieldExpression instanceof Every){
+        if (fieldExpression instanceof Every) {
             return new EveryDayOfWeekValueGenerator(cronField, year, month, mondayDoWValue);
         }
         return forCronField(cronField);
