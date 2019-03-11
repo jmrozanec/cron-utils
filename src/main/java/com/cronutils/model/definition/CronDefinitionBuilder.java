@@ -348,7 +348,6 @@ public class CronDefinitionBuilder {
                 .withDayOfMonth().supportsL().supportsW().supportsLW().supportsQuestionMark().and()
                 .withMonth().and()
                 .withDayOfWeek().withValidRange(1, 7).withMondayDoWValue(2).supportsHash().supportsL().supportsQuestionMark().and()
-                .withCronValidation(CronConstraintsFactory.ensureEitherDayOfWeekOrDayOfMonth())
                 .instance();
     }
 
