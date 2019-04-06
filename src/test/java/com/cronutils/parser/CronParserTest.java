@@ -71,15 +71,29 @@ public class CronParserTest {
 
     @Test
     public void testParseIncompleteEvery() {
+        parseIncompleteExpression("*/","Missing steps for expression: */");
+    }
+
+    @Test // issue #369
+    public void testParseIncompleteRangeNoValues() {
+        parseIncompleteExpression("-", "Missing values for range: -");
+    }
+
+    @Test // issue #369
+    public void testParseIncompleteRangeOnlyLeftValue() {
+        parseIncompleteExpression("1-", "Missing values for range: 1-");
+    }
+
+    private void parseIncompleteExpression(String expression, String expectedMessage) {
         final Set<FieldDefinition> set =
                 Collections.singleton(new FieldDefinition(CronFieldName.SECOND, FieldConstraintsBuilder.instance().createConstraintsInstance()));
         when(definition.getFieldDefinitions()).thenReturn(set);
         parser = new CronParser(definition);
 
         expectedException.expect(IllegalArgumentException.class);
-        expectedException.expectMessage("Missing steps for expression: */");
+        expectedException.expectMessage(expectedMessage);
 
-        assertNotNull(parser.parse("*/"));
+        assertNotNull(parser.parse(expression));
     }
 
     /**
