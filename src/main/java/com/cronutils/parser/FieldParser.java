@@ -83,6 +83,9 @@ public class FieldParser {
                 return commaSplitResult(array);
             } else {
                 final String[] splitted = expression.split("-");
+                if (expression.contains("-") && splitted.length != 2) {
+                    throw new IllegalArgumentException("Missing values for range: " + expression);
+                }
                 return splitted[0].equalsIgnoreCase(L_STRING)
                         ? parseOnWithL(splitted[0], mapToIntegerFieldValue(splitted[1]))
                         : dashSplitResult(expression, splitted);
