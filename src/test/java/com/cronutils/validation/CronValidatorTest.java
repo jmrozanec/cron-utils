@@ -1,5 +1,6 @@
 package com.cronutils.validation;
 
+import com.cronutils.model.CronType;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -27,7 +28,6 @@ public class CronValidatorTest {
 
     @Parameterized.Parameters(name = "{0} ")
     public static Object[] expressions() {
-        // List of expressions from https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/scheduling/support/CronSequenceGenerator.html
         return new Object[][]{
                 {"0 0 * * * *", true},
                 {"*/10 * * * * *", true},
@@ -36,7 +36,9 @@ public class CronValidatorTest {
                 {"0 0/30 8-10 * * *", true},
                 {"0 0 9-17 * * MON-FRI", true},
                 {"0 0 0 25 12 ?", true},
-                {"1, * * * * *", false}
+                {"0 0 0 L 12 ?", false},
+                {"1,2, * * * * *", false},
+                {"1- * * * * *", false}
         };
     }
 
@@ -53,7 +55,7 @@ public class CronValidatorTest {
     }
 
     public static class TestPojo {
-        @Cron
+        @Cron(type = CronType.SPRING)
         private final String cron;
 
         public TestPojo(String cron) {

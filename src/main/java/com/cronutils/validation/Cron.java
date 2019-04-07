@@ -19,6 +19,6 @@ public @interface Cron {
 
     Class<? extends Payload>[] payload() default {};
 
-    CronType type() default CronType.SPRING;
+    CronType type();
 
 }
