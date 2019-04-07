@@ -111,6 +111,10 @@ public class CronParser {
         }else{
             final String[] expressionParts = replaced.toUpperCase().split(" ");
             final int expressionLength = expressionParts.length;
+            String fieldWithTrailingCommas = Arrays.stream(expressionParts).filter(x -> x.endsWith(",")).findAny().orElse(null);
+            if(fieldWithTrailingCommas!=null){
+                throw new IllegalArgumentException(String.format("Invalid field value! Trailing commas not permitted! '%s'", fieldWithTrailingCommas));
+            }
             final List<CronParserField> fields = expressions.get(expressionLength);
             if (fields == null) {
                 throw new IllegalArgumentException(

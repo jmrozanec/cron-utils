@@ -74,6 +74,33 @@ public class CronParserTest {
         parseIncompleteExpression("*/","Missing steps for expression: */");
     }
 
+    private static void validateExpression(CronType cronType, String expression) {
+        CronDefinition cronDefinition = CronDefinitionBuilder.instanceDefinitionFor(cronType);
+        CronParser parser = new CronParser(cronDefinition);
+        System.out.println(String.format("Validating expression '%s' using %s definition", expression, cronType));
+        parser.parse(expression);
+    }
+
+    @Test(expected = IllegalArgumentException.class) // issue #368
+    public void testTrailingCommaListCron4j(){
+        validateExpression(CronType.CRON4J, "1, * * * *");
+    }
+
+    @Test(expected = IllegalArgumentException.class) // issue #368
+    public void testTrailingCommaListQuartz(){
+        validateExpression(CronType.QUARTZ, "1, * * * * ?");
+    }
+
+    @Test(expected = IllegalArgumentException.class) // issue #368
+    public void testTrailingCommaListSpring(){
+        validateExpression(CronType.SPRING, "1,2, * * * * ?");
+    }
+
+    @Test(expected = IllegalArgumentException.class) // issue #368
+    public void testTrailingCommaListUnix(){
+        validateExpression(CronType.UNIX, "1, * * * *");
+    }
+
     @Test // issue #369
     public void testParseIncompleteRangeNoValues() {
         parseIncompleteExpression("-", "Missing values for range: -");
