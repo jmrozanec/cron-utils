@@ -327,4 +327,15 @@ public class CronParserQuartzIntegrationTest {
         thrown.expectMessage("Missing steps for expression: */");
         assertNotNull(ExecutionTime.forCron(parser.parse("*/ * * * * ?")));
     }
+
+    /**
+     * Issue #375: Quartz Last Day of Week pattern does not support Day of Week as text
+     * https://github.com/jmrozanec/cron-utils/issues/375
+     */
+    @Test
+    public void testLastDayOfWeek() {
+        final String cronExpression = "0 0 1 ? 1/1 MONL *";
+        final CronParser quartzCronParser = new CronParser(CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ));
+        quartzCronParser.parse(cronExpression);
+    }
 }
