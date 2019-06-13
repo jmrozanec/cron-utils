@@ -9,6 +9,7 @@ import org.junit.Test;
 
 import java.time.ZonedDateTime;
 
+import static java.time.Duration.ofMillis;
 import static java.time.ZoneOffset.UTC;
 import static org.junit.Assert.assertEquals;
 
@@ -21,10 +22,8 @@ public class Issue382Test {
         Cron cron = cronParser.parse(cronString);
         ExecutionTime executionTime = ExecutionTime.forCron(cron);
 
-        ZonedDateTime date = ZonedDateTime.of(2019, 6, 12, 0, 0, 0, 123, UTC);
-        ZonedDateTime expected = ZonedDateTime.of(2019, 6, 12, 0, 0, 0, 0, UTC);
-        ZonedDateTime actual = executionTime.lastExecution(date).get();
-
-        assertEquals(expected, actual);
+        ZonedDateTime date = ZonedDateTime.of(2019, 6, 12, 0, 0, 0, 0, UTC);
+        ZonedDateTime lastExecution = executionTime.lastExecution(date.plus(ofMillis(300))).get();
+        assertEquals(date, lastExecution);
     }
 }

@@ -556,7 +556,7 @@ public class ExecutionTimeUnixIntegrationTest {
         time = time.plus(diff);
         final Optional<Duration> timeFromLastExecution = ExecutionTime.forCron(cron).timeFromLastExecution(time);
         if (timeFromLastExecution.isPresent()) {
-            assertEquals(timeFromLastExecution.get(), Duration.ofDays(1).plus(diff));
+            assertEquals(timeFromLastExecution.get(), diff);
         } else {
             fail(LAST_EXECUTION_NOT_PRESENT_ERROR);
         }
