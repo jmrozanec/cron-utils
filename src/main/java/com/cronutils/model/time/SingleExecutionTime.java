@@ -346,7 +346,7 @@ public class SingleExecutionTime implements ExecutionTime {
         if (!seconds.getValues().contains(date.getSecond())) {
             return getPreviousPotentialSecond(date);
         }
-        return new ExecutionTimeResult(date, true);
+        return new ExecutionTimeResult(date.truncatedTo(SECONDS), true);
     }
 
     private ExecutionTimeResult getPreviousPotentialYear(final ZonedDateTime date, final TimeNode days, final int highestMonth, int highestDay,
