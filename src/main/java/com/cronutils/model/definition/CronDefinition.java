@@ -33,7 +33,6 @@ public class CronDefinition implements Serializable {
     private static final long serialVersionUID = 7067112327461432170L;
     private final Map<CronFieldName, FieldDefinition> fieldDefinitions;
     private final Set<CronConstraint> cronConstraints;
-    private final boolean strictRanges;
     private final boolean matchDayOfWeekAndDayOfMonth;
 
     /**
@@ -43,8 +42,7 @@ public class CronDefinition implements Serializable {
      *                         Throws a NullPointerException if a null values is received
      *                         Throws an IllegalArgumentException if an empty list is received
      */
-    public CronDefinition(final List<FieldDefinition> fieldDefinitions, final Set<CronConstraint> cronConstraints,
-            final boolean strictRanges, final boolean matchDayOfWeekAndDayOfMonth) {
+    public CronDefinition(final List<FieldDefinition> fieldDefinitions, final Set<CronConstraint> cronConstraints, final boolean matchDayOfWeekAndDayOfMonth) {
         Preconditions.checkNotNull(fieldDefinitions, "Field definitions must not be null");
         Preconditions.checkNotNull(cronConstraints, "Cron validations must not be null");
         Preconditions.checkNotNullNorEmpty(fieldDefinitions, "Field definitions must not be empty");
@@ -54,17 +52,7 @@ public class CronDefinition implements Serializable {
             this.fieldDefinitions.put(field.getFieldName(), field);
         }
         this.cronConstraints = Collections.unmodifiableSet(cronConstraints);
-        this.strictRanges = strictRanges;
         this.matchDayOfWeekAndDayOfMonth = matchDayOfWeekAndDayOfMonth;
-    }
-
-    /**
-     * If ranges for field values should be strictly enforced ('from' greater than 'to').
-     *
-     * @return true if should be enforced, false otherwise.
-     */
-    public boolean isStrictRanges() {
-        return strictRanges;
     }
 
     /**

@@ -67,6 +67,16 @@ public class FieldDefinitionBuilder {
     }
 
     /**
+     * Specifies that defined range for given field must be a strict range.
+     *
+     * @return same FieldDefinitionBuilder instance
+     */
+    public FieldDefinitionBuilder withStrictRange() {
+        constraints.withStrictRange();
+        return this;
+    }
+
+    /**
      * Allows to tag a field as optional.
      *
      * @return this instance

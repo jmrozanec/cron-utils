@@ -14,6 +14,8 @@
 package com.cronutils.model.time.generator;
 
 import java.util.Collections;
+import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 
 import com.cronutils.model.field.CronField;
@@ -56,13 +58,14 @@ public abstract class FieldValueGenerator {
     public abstract boolean isMatch(int value);
 
     public final List<Integer> generateCandidates(final int start, final int end) {
-        final List<Integer> candidates = generateCandidatesNotIncludingIntervalExtremes(start, end);
+        List<Integer> candidates = generateCandidatesNotIncludingIntervalExtremes(start, end);
         if (isMatch(start)) {
             candidates.add(start);
         }
         if (isMatch(end)) {
             candidates.add(end);
         }
+        candidates = new LinkedList<>(new HashSet<>(candidates));
         Collections.sort(candidates);
         return candidates;
     }

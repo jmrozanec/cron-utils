@@ -85,4 +85,7 @@ public class FieldValueGeneratorFactory {
         return forCronField(cronField);
     }
 
+    public static FieldValueGenerator createYearValueGeneratorInstance(final CronField cronField) {
+        return forCronField(cronField);
+    }
 }

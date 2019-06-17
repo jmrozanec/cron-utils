@@ -20,14 +20,10 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.cronutils.builder.CronBuilder;
-import com.cronutils.mapper.ConstantsMapper;
-import com.cronutils.mapper.CronMapper;
-import com.cronutils.mapper.WeekDay;
 import com.cronutils.model.Cron;
 import com.cronutils.model.CronType;
 import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.field.constraint.FieldConstraints;
-import com.cronutils.model.field.definition.DayOfWeekFieldDefinition;
 import com.cronutils.model.field.definition.FieldDefinition;
 import com.cronutils.model.field.expression.Weekdays;
 import com.cronutils.parser.CronParser;
@@ -124,7 +120,7 @@ public class CronDefinitionBuilderTest {
                         new FieldConstraints(
                                 Collections.emptyMap(),
                                 Collections.emptyMap(),
-                                Collections.emptySet(), 0, 1)
+                                Collections.emptySet(), 0, 1, true)
                 );
         builder.register(testFieldDefinition);
         final Set<FieldDefinition> definitions = builder.instance().getFieldDefinitions();
@@ -169,7 +165,6 @@ public class CronDefinitionBuilderTest {
                 .withDayOfMonth().optional().and()
                 .withMonth().optional().and()
                 .withDayOfWeek().withValidRange(0, 7).withMondayDoWValue(1).withIntMapping(7, 0).and()
-                .enforceStrictRanges()
                 .instance();
     }
 

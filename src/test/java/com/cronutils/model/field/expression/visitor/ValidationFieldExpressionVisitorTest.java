@@ -57,18 +57,18 @@ public class ValidationFieldExpressionVisitorTest {
         MockitoAnnotations.initMocks(this);
         final int startRange = 0;
         final int endRange = 59;
-        fieldConstraints = new FieldConstraints(Collections.emptyMap(), Collections.emptyMap(), Collections.emptySet(), startRange, endRange);
+        fieldConstraints = new FieldConstraints(Collections.emptyMap(), Collections.emptyMap(), Collections.emptySet(), startRange, endRange, true);
 
         when(stringValidations.removeValidChars(any(String.class))).thenReturn(StringUtils.EMPTY);
         when(invalidStringValidations.removeValidChars(any(String.class))).thenReturn("$$$");
 
-        strictVisitor = new ValidationFieldExpressionVisitor(fieldConstraints, stringValidations, true);
-        visitor = new ValidationFieldExpressionVisitor(fieldConstraints, stringValidations, false);
+        strictVisitor = new ValidationFieldExpressionVisitor(fieldConstraints, stringValidations);
+        visitor = new ValidationFieldExpressionVisitor(fieldConstraints, stringValidations);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testVisitWithInvalidChars() {
-        final ValidationFieldExpressionVisitor tempVisitor = new ValidationFieldExpressionVisitor(fieldConstraints, invalidStringValidations, true);
+        final ValidationFieldExpressionVisitor tempVisitor = new ValidationFieldExpressionVisitor(fieldConstraints, invalidStringValidations);
         final FieldExpression exp = FieldExpression.always();
         tempVisitor.visit(exp);
     }
@@ -232,8 +232,24 @@ public class ValidationFieldExpressionVisitorTest {
         visitor.visit(new Between(new IntegerFieldValue(LOWOOR), new IntegerFieldValue(HIGHOOR)));
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void testVisitBetweenOOOrderStrict() {
+        final int startRange = 0;
+        final int endRange = 59;
+        fieldConstraints = new FieldConstraints(Collections.emptyMap(), Collections.emptyMap(), Collections.emptySet(), startRange, endRange, true);
+        visitor = new ValidationFieldExpressionVisitor(fieldConstraints, stringValidations);
+
+        final Between between = new Between(new IntegerFieldValue(HIGH), new IntegerFieldValue(LOW));
+        assertEquals(between, visitor.visit(between));
+    }
+
     @Test
-    public void testVisitBetweenOOOrder() {
+    public void testVisitBetweenOOOrderNonStrict() {
+        final int startRange = 0;
+        final int endRange = 59;
+        fieldConstraints = new FieldConstraints(Collections.emptyMap(), Collections.emptyMap(), Collections.emptySet(), startRange, endRange, false);
+        visitor = new ValidationFieldExpressionVisitor(fieldConstraints, stringValidations);
+
         final Between between = new Between(new IntegerFieldValue(HIGH), new IntegerFieldValue(LOW));
         assertEquals(between, visitor.visit(between));
     }

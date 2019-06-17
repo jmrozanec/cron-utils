@@ -91,7 +91,7 @@ public class CronBuilder {
         checkState(definition != null, "CronBuilder not initialized.");
 
         final FieldConstraints constraints = definition.getFieldDefinition(name).getConstraints();
-        expression.accept(new ValidationFieldExpressionVisitor(constraints, definition.isStrictRanges()));
+        expression.accept(new ValidationFieldExpressionVisitor(constraints));
         fields.put(name, new CronField(name, expression, constraints));
 
         return this;

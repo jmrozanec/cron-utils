@@ -34,7 +34,6 @@ import com.cronutils.model.field.definition.FieldSpecialCharsDefinitionBuilder;
 public class CronDefinitionBuilder {
     private final Map<CronFieldName, FieldDefinition> fields = new EnumMap<>(CronFieldName.class);
     private final Set<CronConstraint> cronConstraints = new HashSet<>();
-    private boolean enforceStrictRanges;
     private boolean matchDayOfWeekAndDayOfMonth;
 
     /**
@@ -124,16 +123,6 @@ public class CronDefinitionBuilder {
     }
 
     /**
-     * Sets enforceStrictRanges value to true.
-     *
-     * @return this CronDefinitionBuilder instance
-     */
-    public CronDefinitionBuilder enforceStrictRanges() {
-        enforceStrictRanges = true;
-        return this;
-    }
-
-    /**
      * Sets matchDayOfWeekAndDayOfMonth value to true.
      *
      * @return this CronDefinitionBuilder instance
@@ -183,7 +172,7 @@ public class CronDefinitionBuilder {
         validations.addAll(cronConstraints);
         final List<FieldDefinition> values = new ArrayList<>(fields.values());
         values.sort(FieldDefinition.createFieldDefinitionComparator());
-        return new CronDefinition(values, validations, enforceStrictRanges, matchDayOfWeekAndDayOfMonth);
+        return new CronDefinition(values, validations, matchDayOfWeekAndDayOfMonth);
     }
 
     /**
@@ -193,12 +182,11 @@ public class CronDefinitionBuilder {
      */
     private static CronDefinition cron4j() {
         return CronDefinitionBuilder.defineCron()
-                .withMinutes().and()
-                .withHours().and()
-                .withDayOfMonth().supportsL().and()
-                .withMonth().and()
-                .withDayOfWeek().withValidRange(0, 6).withMondayDoWValue(1).and()
-                .enforceStrictRanges()
+                .withMinutes().withStrictRange().and()
+                .withHours().withStrictRange().and()
+                .withDayOfMonth().supportsL().withStrictRange().and()
+                .withMonth().withStrictRange().and()
+                .withDayOfWeek().withValidRange(0, 6).withMondayDoWValue(1).withStrictRange().and()
                 .matchDayOfWeekAndDayOfMonth()
                 .instance();
     }
@@ -270,13 +258,13 @@ public class CronDefinitionBuilder {
      */
     private static CronDefinition quartz() {
         return CronDefinitionBuilder.defineCron()
-                .withSeconds().and()
-                .withMinutes().and()
-                .withHours().and()
-                .withDayOfMonth().withValidRange(1, 32).supportsL().supportsW().supportsLW().supportsQuestionMark().and()
+                .withSeconds().withStrictRange().and()
+                .withMinutes().withStrictRange().and()
+                .withHours().withStrictRange().and()
+                .withDayOfMonth().withValidRange(1, 32).supportsL().supportsW().supportsLW().supportsQuestionMark().withStrictRange().and()
                 .withMonth().withValidRange(1, 13).and()
                 .withDayOfWeek().withValidRange(1, 7).withMondayDoWValue(2).supportsHash().supportsL().supportsQuestionMark().and()
-                .withYear().withValidRange(1970, 2099).optional().and()
+                .withYear().withValidRange(1970, 2099).withStrictRange().optional().and()
                 .withCronValidation(CronConstraintsFactory.ensureEitherDayOfWeekOrDayOfMonth())
                 .instance();
     }
@@ -342,9 +330,9 @@ public class CronDefinitionBuilder {
      */
     private static CronDefinition spring() {
         return CronDefinitionBuilder.defineCron()
-                .withSeconds().and()
-                .withMinutes().and()
-                .withHours().and()
+                .withSeconds().withStrictRange().and()
+                .withMinutes().withStrictRange().and()
+                .withHours().withStrictRange().and()
                 .withDayOfMonth().supportsQuestionMark().and()
                 .withMonth().and()
                 .withDayOfWeek().withValidRange(1, 7).withMondayDoWValue(2).supportsQuestionMark().and()
@@ -358,12 +346,11 @@ public class CronDefinitionBuilder {
      */
     private static CronDefinition unixCrontab() {
         return CronDefinitionBuilder.defineCron()
-                .withMinutes().and()
-                .withHours().and()
-                .withDayOfMonth().and()
-                .withMonth().and()
-                .withDayOfWeek().withValidRange(0, 7).withMondayDoWValue(1).withIntMapping(7, 0).and()
-                .enforceStrictRanges()
+                .withMinutes().withStrictRange().and()
+                .withHours().withStrictRange().and()
+                .withDayOfMonth().withStrictRange().and()
+                .withMonth().withStrictRange().and()
+                .withDayOfWeek().withValidRange(0, 7).withMondayDoWValue(1).withIntMapping(7, 0).withStrictRange().and()
                 .instance();
     }
 
@@ -388,4 +375,3 @@ public class CronDefinitionBuilder {
         }
     }
 }
-

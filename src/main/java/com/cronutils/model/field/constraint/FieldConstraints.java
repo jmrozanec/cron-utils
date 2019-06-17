@@ -34,6 +34,7 @@ public class FieldConstraints implements Serializable {
     private final Set<SpecialChar> specialChars;
     private final Integer startRange;
     private final Integer endRange;
+    private final boolean strictRange;
 
     /**
      * Constructor.
@@ -41,14 +42,16 @@ public class FieldConstraints implements Serializable {
      * @param specialChars - allowed special chars.
      * @param startRange   - lowest possible value
      * @param endRange     - highest possible value
+     * @param strictRange  - if we shall consider strict ranges for this field - regardless global strict ranges criteria
      */
     public FieldConstraints(final Map<String, Integer> stringMapping, final Map<Integer, Integer> intMapping, final Set<SpecialChar> specialChars, final int startRange,
-            final int endRange) {
+            final int endRange, final boolean strictRange) {
         this.stringMapping = Collections.unmodifiableMap(Preconditions.checkNotNull(stringMapping, "String mapping must not be null"));
         this.intMapping = Collections.unmodifiableMap(Preconditions.checkNotNull(intMapping, "Integer mapping must not be null"));
         this.specialChars = Collections.unmodifiableSet(Preconditions.checkNotNull(specialChars, "Special (non-standard) chars set must not be null"));
         this.startRange = startRange;
         this.endRange = endRange;
+        this.strictRange = strictRange;
     }
 
     public int getStartRange() {
@@ -94,4 +97,7 @@ public class FieldConstraints implements Serializable {
         return intMapping.get(exp);
     }
 
+    public boolean isStrictRange() {
+        return strictRange;
+    }
 }

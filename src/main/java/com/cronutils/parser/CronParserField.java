@@ -79,8 +79,8 @@ public class CronParserField {
      * @return parse result as CronFieldParseResult instance - never null. May throw a RuntimeException if cron expression is bad.
      */
     public CronField parse(final String expression) {
-        String newExpression = expression.toUpperCase();
-        if(getField().equals(CronFieldName.DAY_OF_WEEK) && newExpression.endsWith("L")){
+        String newExpression = expression;
+        if(getField().equals(CronFieldName.DAY_OF_WEEK) && newExpression.endsWith("L") && newExpression.length()>1){
             newExpression = ""+constraints.getStringMappingValue(newExpression.replaceAll("L", ""));
         }
         return new CronField(field, parser.parse(newExpression), constraints);

@@ -30,6 +30,7 @@ public class FieldConstraintsBuilder {
     private final Map<Integer, Integer> intMapping;
     private int startRange;
     private int endRange;
+    private boolean strictRange;
     private final Set<SpecialChar> specialChars;
 
     /**
@@ -40,6 +41,7 @@ public class FieldConstraintsBuilder {
         intMapping = new HashMap<>();
         startRange = 0;//no negatives!
         endRange = Integer.MAX_VALUE;
+        strictRange = false;
         specialChars = new HashSet<>();
         specialChars.add(SpecialChar.NONE);
     }
@@ -157,6 +159,16 @@ public class FieldConstraintsBuilder {
     }
 
     /**
+     * With strict range.
+     *
+     * @return same FieldConstraintsBuilder instance
+     */
+    public FieldConstraintsBuilder withStrictRange() {
+        this.strictRange = true;
+        return this;
+    }
+
+    /**
      * Shifts integer representation of weekday/month names.
      *
      * @param shiftSize - size of the shift
@@ -184,7 +196,7 @@ public class FieldConstraintsBuilder {
      * @return new FieldConstraints instance
      */
     public FieldConstraints createConstraintsInstance() {
-        return new FieldConstraints(stringMapping, intMapping, specialChars, startRange, endRange);
+        return new FieldConstraints(stringMapping, intMapping, specialChars, startRange, endRange, strictRange);
     }
 
     /**

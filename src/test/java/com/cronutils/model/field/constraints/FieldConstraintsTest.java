@@ -30,6 +30,7 @@ public class FieldConstraintsTest {
     private Set<SpecialChar> specialCharSet;
     private int startRange;
     private int endRange;
+    private boolean strictRange;
 
     @Before
     public void setUp() {
@@ -38,20 +39,21 @@ public class FieldConstraintsTest {
         specialCharSet = Collections.emptySet();
         startRange = 0;
         endRange = 59;
+        strictRange = true;
     }
 
     @Test(expected = NullPointerException.class)
     public void testConstructorStringMappingNull() {
-        new FieldConstraints(null, intMapping, specialCharSet, startRange, endRange);
+        new FieldConstraints(null, intMapping, specialCharSet, startRange, endRange, strictRange);
     }
 
     @Test(expected = NullPointerException.class)
     public void testConstructorIntMappingNull() {
-        new FieldConstraints(stringMapping, null, specialCharSet, startRange, endRange);
+        new FieldConstraints(stringMapping, null, specialCharSet, startRange, endRange, strictRange);
     }
 
     @Test(expected = NullPointerException.class)
     public void testSpecialCharsSetNull() {
-        new FieldConstraints(stringMapping, intMapping, null, startRange, endRange);
+        new FieldConstraints(stringMapping, intMapping, null, startRange, endRange, strictRange);
     }
 }

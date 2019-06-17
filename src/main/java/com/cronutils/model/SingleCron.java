@@ -81,7 +81,7 @@ public class SingleCron implements Cron {
         for (final Map.Entry<CronFieldName, CronField> field : retrieveFieldsAsMap().entrySet()) {
             final CronFieldName fieldName = field.getKey();
             field.getValue().getExpression().accept(
-                    new ValidationFieldExpressionVisitor(getCronDefinition().getFieldDefinition(fieldName).getConstraints(), cronDefinition.isStrictRanges())
+                    new ValidationFieldExpressionVisitor(getCronDefinition().getFieldDefinition(fieldName).getConstraints())
             );
         }
         for (final CronConstraint constraint : getCronDefinition().getCronConstraints()) {

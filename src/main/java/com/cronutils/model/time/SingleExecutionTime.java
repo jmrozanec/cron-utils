@@ -32,10 +32,14 @@ import java.util.stream.Stream;
 import com.cronutils.mapper.WeekDay;
 import com.cronutils.model.definition.CronDefinition;
 import com.cronutils.model.field.CronField;
+import com.cronutils.model.field.CronFieldName;
+import com.cronutils.model.field.constraint.FieldConstraintsBuilder;
 import com.cronutils.model.field.definition.DayOfWeekFieldDefinition;
 import com.cronutils.model.field.expression.Always;
 import com.cronutils.model.field.expression.QuestionMark;
+
 import com.cronutils.model.time.generator.FieldValueGenerator;
+import com.cronutils.model.time.generator.FieldValueGeneratorFactory;
 import com.cronutils.model.time.generator.NoSuchValueException;
 import com.cronutils.utils.Preconditions;
 import com.cronutils.utils.VisibleForTesting;
@@ -49,9 +53,7 @@ import static com.cronutils.model.field.CronFieldName.MONTH;
 import static com.cronutils.model.field.CronFieldName.SECOND;
 import static com.cronutils.model.field.CronFieldName.YEAR;
 import static com.cronutils.model.field.value.SpecialChar.QUESTION_MARK;
-import static com.cronutils.model.time.generator.FieldValueGeneratorFactory.createDayOfMonthValueGeneratorInstance;
-import static com.cronutils.model.time.generator.FieldValueGeneratorFactory.createDayOfWeekValueGeneratorInstance;
-import static com.cronutils.model.time.generator.FieldValueGeneratorFactory.createDayOfYearValueGeneratorInstance;
+import static com.cronutils.model.time.generator.FieldValueGeneratorFactory.*;
 import static com.cronutils.utils.Predicates.not;
 import static java.time.temporal.ChronoUnit.DAYS;
 import static java.time.temporal.ChronoUnit.SECONDS;
@@ -78,11 +80,19 @@ public class SingleExecutionTime implements ExecutionTime {
     private final TimeNode seconds;
 
     @VisibleForTesting
-    SingleExecutionTime(final CronDefinition cronDefinition, final FieldValueGenerator yearsValueGenerator, final CronField daysOfWeekCronField,
+    SingleExecutionTime(final CronDefinition cronDefinition, final CronField yearsValueCronField, final CronField daysOfWeekCronField,
             final CronField daysOfMonthCronField, final CronField daysOfYearCronField, final TimeNode months, final TimeNode hours,
             final TimeNode minutes, final TimeNode seconds) {
         this.cronDefinition = Preconditions.checkNotNull(cronDefinition);
-        this.yearsValueGenerator = Preconditions.checkNotNull(yearsValueGenerator);
+        FieldValueGenerator alwaysGenerator = FieldValueGeneratorFactory.forCronField(new CronField(CronFieldName.YEAR, Always.always(), FieldConstraintsBuilder.instance().createConstraintsInstance()));
+        if(cronDefinition.containsFieldDefinition(CronFieldName.YEAR)){
+            if(!cronDefinition.getFieldDefinition(CronFieldName.YEAR).isOptional()){
+                Preconditions.checkNotNull(yearsValueCronField);
+            }
+            this.yearsValueGenerator = yearsValueCronField==null?alwaysGenerator:createYearValueGeneratorInstance(yearsValueCronField);
+        } else{
+            this.yearsValueGenerator = alwaysGenerator;
+        }
         this.daysOfWeekCronField = Preconditions.checkNotNull(daysOfWeekCronField);
         this.daysOfMonthCronField = Preconditions.checkNotNull(daysOfMonthCronField);
         this.daysOfYearCronField = daysOfYearCronField;
@@ -135,7 +145,7 @@ public class SingleExecutionTime implements ExecutionTime {
     }
 
     private ExecutionTimeResult potentialNextClosestMatch(final ZonedDateTime date) throws NoSuchValueException {
-        final List<Integer> year = yearsValueGenerator.generateCandidates(date.getYear(), date.getYear());
+        final List<Integer> year = yearsValueGenerator.generateCandidates(date.getYear(), date.getYear()).stream().filter(d->d>=date.getYear()).collect(Collectors.toList());
         final int lowestMonth = months.getValues().get(0);
         final int lowestHour = hours.getValues().get(0);
         final int lowestMinute = minutes.getValues().get(0);
@@ -143,16 +153,6 @@ public class SingleExecutionTime implements ExecutionTime {
 
         if (year.isEmpty()) {
             return getNextPotentialYear(date, lowestMonth, lowestHour, lowestMinute, lowestSecond);
-            /* TODO solve issue 305
-            int endyear = cronDefinition.getFieldDefinition(CronFieldName.YEAR).getConstraints().getEndRange();
-            final List<Integer> years = yearsValueGenerator.generateCandidates(date.getYear(), endyear);
-            Optional<Integer> validnextyear = years.stream().filter(y->y>date.getYear()).min(Integer::compareTo);
-            if(validnextyear.isPresent()){
-                return potentialNextClosestMatch(ZonedDateTime.of(validnextyear.get(), 1, 1, 0, 0, 0, 0, date.getZone()));
-            }else{
-                return getNextPotentialYear(date, lowestMonth, lowestHour, lowestMinute, lowestSecond);
-            }
-            */
         }
 
         if (!months.getValues().contains(date.getMonthValue())) {

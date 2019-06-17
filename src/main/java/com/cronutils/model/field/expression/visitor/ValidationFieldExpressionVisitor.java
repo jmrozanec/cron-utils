@@ -35,18 +35,15 @@ public class ValidationFieldExpressionVisitor implements FieldExpressionVisitor 
 
     private final FieldConstraints constraints;
     private final StringValidations stringValidations;
-    private final boolean strictRanges;
 
-    public ValidationFieldExpressionVisitor(final FieldConstraints constraints, final boolean strictRanges) {
+    public ValidationFieldExpressionVisitor(final FieldConstraints constraints) {
         this.constraints = constraints;
         stringValidations = new StringValidations(constraints);
-        this.strictRanges = strictRanges;
     }
 
-    protected ValidationFieldExpressionVisitor(final FieldConstraints constraints, final StringValidations stringValidation, final boolean strictRanges) {
+    protected ValidationFieldExpressionVisitor(final FieldConstraints constraints, final StringValidations stringValidation) {
         this.constraints = constraints;
         stringValidations = stringValidation;
-        this.strictRanges = strictRanges;
     }
 
     @Override
@@ -95,7 +92,7 @@ public class ValidationFieldExpressionVisitor implements FieldExpressionVisitor 
     public Between visit(final Between between) {
         preConditions(between);
 
-        if (strictRanges && between.getFrom() instanceof IntegerFieldValue && between.getTo() instanceof IntegerFieldValue) {
+        if ((constraints.isStrictRange()) && between.getFrom() instanceof IntegerFieldValue && between.getTo() instanceof IntegerFieldValue) {
             final int from = ((IntegerFieldValue) between.getFrom()).getValue();
             final int to = ((IntegerFieldValue) between.getTo()).getValue();
             if (from > to) {

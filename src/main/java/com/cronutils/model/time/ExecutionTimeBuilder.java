@@ -13,6 +13,7 @@
 
 package com.cronutils.model.time;
 
+import com.cronutils.model.Cron;
 import com.cronutils.model.definition.CronDefinition;
 import com.cronutils.model.field.CronField;
 import com.cronutils.model.field.CronFieldName;
@@ -31,7 +32,7 @@ import static com.cronutils.model.field.expression.FieldExpression.always;
  * Builds required components to get previous/next execution to certain reference date.
  */
 class ExecutionTimeBuilder {
-    private final CronDefinition cronDefinition;
+    private final Cron cron;
     private FieldValueGenerator yearsValueGenerator;
     private CronField daysOfWeekCronField;
     private CronField daysOfMonthCronField;
@@ -42,8 +43,8 @@ class ExecutionTimeBuilder {
     private TimeNode minutes;
     private TimeNode seconds;
 
-    protected ExecutionTimeBuilder(final CronDefinition cronDefinition) {
-        this.cronDefinition = cronDefinition;
+    protected ExecutionTimeBuilder(final Cron cron) {
+        this.cron = cron;
     }
 
     protected ExecutionTimeBuilder forSecondsMatching(final CronField cronField) {
@@ -73,6 +74,7 @@ class ExecutionTimeBuilder {
     protected ExecutionTimeBuilder forYearsMatching(final CronField cronField) {
         validate(CronFieldName.YEAR, cronField);
         yearsValueGenerator = FieldValueGeneratorFactory.forCronField(cronField);
+        System.out.println(String.format("We for an %s builder", yearsValueGenerator.getClass()));//TODO delete
         return this;
     }
 
@@ -142,8 +144,8 @@ class ExecutionTimeBuilder {
                     constraints);
         }
 
-        return new SingleExecutionTime(cronDefinition,
-                yearsValueGenerator, daysOfWeekCronField, daysOfMonthCronField, daysOfYearCronField,
+        return new SingleExecutionTime(this.cron.getCronDefinition(),
+                this.cron.retrieve(CronFieldName.YEAR), daysOfWeekCronField, daysOfMonthCronField, daysOfYearCronField,
                 months, hours, minutes, seconds
         );
     }
@@ -174,8 +176,8 @@ class ExecutionTimeBuilder {
     }
 
     private FieldConstraints getConstraint(final CronFieldName name) {
-        return cronDefinition.getFieldDefinition(name) != null
-                ? cronDefinition.getFieldDefinition(name).getConstraints()
+        return cron.getCronDefinition().getFieldDefinition(name) != null
+                ? cron.getCronDefinition().getFieldDefinition(name).getConstraints()
                 : FieldConstraintsBuilder.instance().forField(name).createConstraintsInstance();
     }
 }

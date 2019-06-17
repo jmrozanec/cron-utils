@@ -39,7 +39,7 @@ public interface ExecutionTime {
     public static ExecutionTime forCron(final Cron cron) {
         if(cron instanceof SingleCron){
             final Map<CronFieldName, CronField> fields = cron.retrieveFieldsAsMap();
-            final ExecutionTimeBuilder executionTimeBuilder = new ExecutionTimeBuilder(cron.getCronDefinition());
+            final ExecutionTimeBuilder executionTimeBuilder = new ExecutionTimeBuilder(cron);
             for (final CronFieldName name : CronFieldName.values()) {
                 if (fields.get(name) != null) {
                     switch (name) {

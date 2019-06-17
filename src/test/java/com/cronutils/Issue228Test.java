@@ -34,12 +34,11 @@ public class Issue228Test {
      * This is the UNIX cron definition with a single modification to match both Day Of Week and Day Of Month.
      */
     private final CronDefinition cronDefinition = CronDefinitionBuilder.defineCron()
-            .withMinutes().and()
-            .withHours().and()
-            .withDayOfMonth().and()
-            .withMonth().and()
-            .withDayOfWeek().withValidRange(0, 7).withMondayDoWValue(1).withIntMapping(7, 0).and()
-            .enforceStrictRanges()
+            .withMinutes().withStrictRange().and()
+            .withHours().withStrictRange().and()
+            .withDayOfMonth().withStrictRange().and()
+            .withMonth().withStrictRange().and()
+            .withDayOfWeek().withValidRange(0, 7).withMondayDoWValue(1).withIntMapping(7, 0).withStrictRange().and()
             .matchDayOfWeekAndDayOfMonth() // the regular UNIX cron definition permits matching either DoW or DoM
             .instance();
 
