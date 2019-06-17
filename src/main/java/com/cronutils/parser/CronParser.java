@@ -95,7 +95,7 @@ public class CronParser {
 
         if(expression.contains("|")){
             List<String> crons = new ArrayList<>();
-            int cronscount = Arrays.stream(expression.split("\\s+")).mapToInt(s->s.split("\\|").length).max().orElseGet(() -> 0);
+            int cronscount = Arrays.stream(expression.split("\\s+")).mapToInt(s->s.split("\\|").length).max().orElse(0);
             for(int j=0; j<cronscount; j++){
                 StringBuilder builder = new StringBuilder();
                 for(String s : expression.split("\\s+")){
