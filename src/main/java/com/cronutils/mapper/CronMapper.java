@@ -119,6 +119,14 @@ public class CronMapper {
         );
     }
 
+    public static CronMapper fromQuartzToSpring() {
+        return new CronMapper(
+                CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ),
+                CronDefinitionBuilder.instanceDefinitionFor(CronType.SPRING),
+                setQuestionMark()
+        );
+    }
+
     public static CronMapper sameCron(final CronDefinition cronDefinition) {
         return new CronMapper(cronDefinition, cronDefinition, sameCron());
     }

@@ -63,6 +63,13 @@ public class CronMapperIntegrationTest {
     }
 
     @Test
+    public void testRangeOfTimeQuartzToSpring() {
+        final String expected = "5 0 9-18 ? * 1-3";
+        final String expression = "5 0 9-18 ? * 1-3 1984";
+        assertEquals(expected, CronMapper.fromQuartzToSpring().map(quartzParser().parse(expression)).asString());
+    }
+
+    @Test
     public void testDaysOfWeekUnixToQuartz() {
         final String input = "* * * * 3,5-6";
         final String expected = "0 * * ? * 4,6-7 *";
