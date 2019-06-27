@@ -38,6 +38,8 @@ public class CronParserFieldTest {
 
     private CronFieldName testFieldName;
     @Mock
+    private FieldConstraints mockConstraints;
+    @Mock
     private FieldParser mockParser;
     @Mock
     private FieldExpression mockParseResponse;
@@ -53,7 +55,7 @@ public class CronParserFieldTest {
         PowerMockito.whenNew(FieldParser.class)
                 .withArguments(Matchers.any(FieldConstraints.class)).thenReturn(mockParser);
 
-        cronParserField = new CronParserField(testFieldName, Mockito.mock(FieldConstraints.class));
+        cronParserField = new CronParserField(testFieldName, mockConstraints);
     }
 
     @Test
@@ -68,6 +70,34 @@ public class CronParserFieldTest {
         Assert.assertEquals(mockParseResponse, result.getExpression());
         Assert.assertEquals(testFieldName, result.getField());
         Mockito.verify(mockParser).parse(cron);
+    }
+
+    @Test
+    public void testParse_lastDoWInteger() {
+        cronParserField = new CronParserField(CronFieldName.DAY_OF_WEEK, mockConstraints);
+
+        Mockito.when(mockConstraints.getStringMappingValue("1")).thenReturn(null);
+
+        final CronField result = cronParserField.parse("1L");
+        Assert.assertEquals(mockParseResponse, result.getExpression());
+        Assert.assertEquals(CronFieldName.DAY_OF_WEEK, result.getField());
+
+        Mockito.verify(mockConstraints).getStringMappingValue("1");
+        Mockito.verify(mockParser).parse("1L");
+    }
+
+    @Test
+    public void testParse_lastDoWString() {
+        cronParserField = new CronParserField(CronFieldName.DAY_OF_WEEK, mockConstraints);
+
+        Mockito.when(mockConstraints.getStringMappingValue("MON")).thenReturn(1);
+
+        final CronField result = cronParserField.parse("MONL");
+        Assert.assertEquals(mockParseResponse, result.getExpression());
+        Assert.assertEquals(CronFieldName.DAY_OF_WEEK, result.getField());
+
+        Mockito.verify(mockConstraints).getStringMappingValue("MON");
+        Mockito.verify(mockParser).parse("1L");
     }
 
     @Test(expected = NullPointerException.class)
