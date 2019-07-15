@@ -74,7 +74,6 @@ class ExecutionTimeBuilder {
     protected ExecutionTimeBuilder forYearsMatching(final CronField cronField) {
         validate(CronFieldName.YEAR, cronField);
         yearsValueGenerator = FieldValueGeneratorFactory.forCronField(cronField);
-        System.out.println(String.format("We for an %s builder", yearsValueGenerator.getClass()));//TODO delete
         return this;
     }
 
