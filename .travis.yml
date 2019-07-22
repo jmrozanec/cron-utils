@@ -5,7 +5,7 @@ branches:
     - master
 
 jdk:
-  - oraclejdk8
+  - oraclejdk9
 
 before_install: "git clone -b travis `git config --get remote.origin.url` target/travis"
 
