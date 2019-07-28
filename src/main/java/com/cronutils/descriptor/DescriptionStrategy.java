@@ -119,7 +119,7 @@ abstract class DescriptionStrategy {
         final StringBuilder builder = new StringBuilder();
         if (!onExpressions.isEmpty()) {
             builder.append(bundle.getString("at"));
-            createAndDescription(builder, onExpressions).append(" %p");
+            createAndDescription(builder, onExpressions).append(" replace_plural");
         }
         if (!expressions.isEmpty()) {
             createAndDescription(builder, expressions);
@@ -148,7 +148,7 @@ abstract class DescriptionStrategy {
     protected String describe(final Every every, final boolean and) {
         String description;
         if (every.getPeriod().getValue() > 1) {
-            description = String.format("%s %s ", bundle.getString(EVERY), nominalValue(every.getPeriod())) + " %p ";
+            description = String.format("%s %s ", bundle.getString(EVERY), nominalValue(every.getPeriod())) + " replace_plural ";
         } else {
             description = bundle.getString(EVERY) + " %s ";
         }

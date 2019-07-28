@@ -207,7 +207,7 @@ class SecondsDescriptor implements FieldExpressionVisitor {
     public Every visit(final Every every) {
         String description;
         if (every.getPeriod().getValue() > 1) {
-            description = String.format("%s %s ", bundle.getString(EVERY), nominalValue(every.getPeriod())) + " %p ";
+            description = String.format("%s %s ", bundle.getString(EVERY), nominalValue(every.getPeriod())) + " replace_plural ";
         } else {
             description = bundle.getString(EVERY) + " %s ";
         }

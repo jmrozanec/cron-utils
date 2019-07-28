@@ -102,7 +102,7 @@ class TimeDescriptionStrategy extends DescriptionStrategy {
     private String addTimeExpressions(final String description, final String singular, final String plural) {
         return description
                 .replaceAll("%s", singular)
-                .replaceAll("%p", plural);
+                .replaceAll("replace_plural", plural);
     }
 
     /**
