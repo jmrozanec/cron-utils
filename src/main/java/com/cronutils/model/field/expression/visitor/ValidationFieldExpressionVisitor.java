@@ -167,7 +167,7 @@ public class ValidationFieldExpressionVisitor implements FieldExpressionVisitor 
             final int value = ((IntegerFieldValue) fieldValue).getValue();
             if (!constraints.isPeriodInRange(value)) {
                 throw new IllegalArgumentException(
-                        String.format("Period %s not in range (0, %s]", value, constraints.getEndRange() - constraints.getStartRange()));
+                        String.format("Period %s not in range (%s, %s]", value, constraints.getStartRange(), constraints.getEndRange()));
             }
         }
     }
