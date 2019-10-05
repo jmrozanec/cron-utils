@@ -258,10 +258,10 @@ public class CronDefinitionBuilder {
      */
     private static CronDefinition quartz() {
         return CronDefinitionBuilder.defineCron()
-                .withSeconds().withStrictRange().and()
-                .withMinutes().withStrictRange().and()
-                .withHours().withStrictRange().and()
-                .withDayOfMonth().withValidRange(1, 32).supportsL().supportsW().supportsLW().supportsQuestionMark().withStrictRange().and()
+                .withSeconds().and()
+                .withMinutes().and()
+                .withHours().and()
+                .withDayOfMonth().withValidRange(1, 32).supportsL().supportsW().supportsLW().supportsQuestionMark().and()
                 .withMonth().withValidRange(1, 13).and()
                 .withDayOfWeek().withValidRange(1, 7).withMondayDoWValue(2).supportsHash().supportsL().supportsQuestionMark().and()
                 .withYear().withValidRange(1970, 2099).withStrictRange().optional().and()
