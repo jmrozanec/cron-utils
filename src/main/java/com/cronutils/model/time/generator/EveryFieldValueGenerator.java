@@ -13,15 +13,15 @@
 
 package com.cronutils.model.time.generator;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.cronutils.model.field.CronField;
 import com.cronutils.model.field.expression.Between;
 import com.cronutils.model.field.expression.Every;
 import com.cronutils.model.field.expression.FieldExpression;
 import com.cronutils.model.field.expression.On;
 import com.cronutils.utils.VisibleForTesting;
+
+import java.util.ArrayList;
+import java.util.List;
 
 class EveryFieldValueGenerator extends FieldValueGenerator {
 
@@ -52,11 +52,7 @@ class EveryFieldValueGenerator extends FieldValueGenerator {
         }
         final Every every = (Every) cronField.getExpression();
 
-        final int referenceWithoutOffset = reference - offset();
-        final int period = every.getPeriod().getValue();
-        final int remainder = referenceWithoutOffset % period;
-
-        final int next = reference + (period - remainder);
+        final int next = getNext(reference, every);
         if (next < from) {
             return from;
         }
@@ -65,6 +61,19 @@ class EveryFieldValueGenerator extends FieldValueGenerator {
         }
 
         return next;
+    }
+
+    private int getNext(int reference, Every every) {
+        final int offset = offset();
+        if (reference >= offset) {
+            final int referenceWithoutOffset = reference - offset;
+            final int period = every.getPeriod().getValue();
+            final int remainder = referenceWithoutOffset % period;
+
+            return reference + (period - remainder);
+        } else {
+            return offset;
+        }
     }
 
     @Override
@@ -104,7 +113,7 @@ class EveryFieldValueGenerator extends FieldValueGenerator {
     public boolean isMatch(final int value) {
         final Every every = (Every) cronField.getExpression();
         final int start = offset();
-        return ((value - start) % every.getPeriod().getValue()) == 0 && value >= from && value <= to;
+        return value >= start && ((value - start) % every.getPeriod().getValue()) == 0 && value >= from && value <= to;
     }
 
     @Override
