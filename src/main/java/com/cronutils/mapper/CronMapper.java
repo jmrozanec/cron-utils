@@ -77,7 +77,10 @@ public class CronMapper {
         final List<CronField> fields = new ArrayList<>();
         for (final CronFieldName name : CronFieldName.values()) {
             if (mappings.containsKey(name)) {
-                fields.add(mappings.get(name).apply(cron.retrieve(name)));
+                final CronField field = mappings.get(name).apply(cron.retrieve(name));
+                if (field != null) {
+                    fields.add(field);
+                }
             }
         }
         return cronRules.apply(new SingleCron(to, fields)).validate();
