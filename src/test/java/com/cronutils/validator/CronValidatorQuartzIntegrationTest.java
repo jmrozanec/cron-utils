@@ -85,4 +85,19 @@ public class CronValidatorQuartzIntegrationTest {
         parser.parse("0 0 12 ? * FRI-SAT");
         parser.parse("0 0 12 ? * SAT-SUN");
     }
+
+    /**
+     * Issue #396: overflow ranges
+     * Quartz cron expressions should support overflowing ranges
+     * See https://github.com/quartz-scheduler/quartz/blob/master/quartz-core/src/main/java/org/quartz/CronExpression.java
+     */
+    @Test
+    public void testOverflowRange() {
+        parser.parse("20-10 0 0 ? * 3"); // second overflow
+        parser.parse("0 40-20 0 ? * 3"); // minute overflow
+        parser.parse("0 0 12-2 ? * 3"); // hour overflow
+        parser.parse("0 0 0 24-7 * ?"); // day of month overflow
+        parser.parse("0 0 0 ? 10-3 3"); // month overflow
+        parser.parse("0 0 0 ? * 5-1"); // day of week overflow
+    }
 }

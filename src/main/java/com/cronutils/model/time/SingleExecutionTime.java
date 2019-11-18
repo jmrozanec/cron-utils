@@ -691,10 +691,11 @@ public class SingleExecutionTime implements ExecutionTime {
                     .stream().distinct().sorted()
                     .collect(Collectors.toList());
         } else {
-            return Stream.concat(
-                    createDayOfWeekValueGeneratorInstance(daysOfWeekCronField, year, month, mondayDoWValue).generateCandidates(1, lengthOfMonth).stream(),
-                    createDayOfMonthValueGeneratorInstance(daysOfMonthCronField, year, month).generateCandidates(1, lengthOfMonth).stream()
-            ).distinct().sorted().collect(Collectors.toList());
+            Set<Integer> candidates = new HashSet<>(createDayOfMonthValueGeneratorInstance(daysOfMonthCronField, year, month).generateCandidates(1, lengthOfMonth));
+            Set<Integer> daysOfWeek = new HashSet<>(createDayOfWeekValueGeneratorInstance(daysOfWeekCronField, year, month, mondayDoWValue).generateCandidates(1, lengthOfMonth));
+            // Only the intersection of valid days from the days of week and valid days of month should be returned.
+            candidates.retainAll(daysOfWeek);
+            return candidates.stream().sorted().collect(Collectors.toList());
         }
     }
 

@@ -10,7 +10,7 @@
 
     <groupId>com.cronutils</groupId>
     <artifactId>cron-utils</artifactId>
-    <version>9.0.2-SNAPSHOT</version>
+    <version>9.0.3-SNAPSHOT</version>
 
     <name>cron-utils</name>
     <description>A Java library to parse, migrate and validate crons as well as describe them in human readable
@@ -126,6 +126,16 @@
             <version>2.2.5</version>
             <scope>test</scope>
         </dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>3.9</version>
+		</dependency>
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<version>1.18.10</version>
+		</dependency>
     </dependencies>
 
 	<build>
