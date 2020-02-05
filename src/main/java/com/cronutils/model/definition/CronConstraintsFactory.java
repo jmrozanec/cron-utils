@@ -53,11 +53,13 @@ public class CronConstraintsFactory {
             @Override
             public boolean validate(Cron cron) {
                 CronField dayOfYearField = cron.retrieve(CronFieldName.DAY_OF_YEAR);
+                CronField dayOfMonthField = cron.retrieve(CronFieldName.DAY_OF_MONTH);
+                CronField dayOfWeekField = cron.retrieve(CronFieldName.DAY_OF_WEEK);
                 if (dayOfYearField == null || dayOfYearField.getExpression() instanceof QuestionMark) {
-                    if (!(cron.retrieve(CronFieldName.DAY_OF_MONTH).getExpression() instanceof QuestionMark)) {
-                        return cron.retrieve(CronFieldName.DAY_OF_WEEK).getExpression() instanceof QuestionMark;
+                    if (dayOfMonthField != null && !(dayOfMonthField.getExpression() instanceof QuestionMark)) {
+                        return dayOfWeekField != null && dayOfWeekField.getExpression() instanceof QuestionMark;
                     } else {
-                        return !(cron.retrieve(CronFieldName.DAY_OF_WEEK).getExpression() instanceof QuestionMark);
+                        return dayOfWeekField != null && !(dayOfWeekField.getExpression() instanceof QuestionMark);
                     }
                 }
 
