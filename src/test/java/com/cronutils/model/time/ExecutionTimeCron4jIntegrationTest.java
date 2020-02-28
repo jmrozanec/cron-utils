@@ -263,4 +263,24 @@ public class ExecutionTimeCron4jIntegrationTest {
             assertEquals("Incorrect month", month, next.getMonthValue());
         }
     }
+
+    @Test
+    public void testEvery4HoursPast10Hours() {
+        ExecutionTime execTime = ExecutionTime.forCron(cron4jCronParser.parse("0 10/4 * * *"));
+        final ZonedDateTime startDate = ZonedDateTime.parse("2019-11-08T00:00Z");
+        Optional<ZonedDateTime> next = execTime.nextExecution(startDate);
+
+        assertTrue(next.isPresent());
+        assertEquals(ZonedDateTime.parse("2019-11-08T10:00Z"), next.get());
+    }
+
+    @Test
+    public void testAt20MinutesEvery1HourPast23Hours() {
+        ExecutionTime execTime = ExecutionTime.forCron(cron4jCronParser.parse("20 23/1 * * *"));
+        final ZonedDateTime startDate = ZonedDateTime.parse("2019-11-08T23:20Z");
+        Optional<ZonedDateTime> next = execTime.nextExecution(startDate);
+
+        assertTrue(next.isPresent());
+        assertEquals(ZonedDateTime.parse("2019-11-09T23:20Z"), next.get());
+    }
 }
