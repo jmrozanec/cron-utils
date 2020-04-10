@@ -121,7 +121,8 @@ public class CronParser {
                         String.format("Cron expression contains %s parts but we expect one of %s", expressionLength, expressions.keySet()));
             }
             try {
-                final int size = fields.size();
+
+                final int size = expressionParts.length;
                 final List<CronField> results = new ArrayList<>(size + 1);
                 for (int j = 0; j < size; j++) {
                     results.add(fields.get(j).parse(expressionParts[j]));
@@ -133,3 +134,4 @@ public class CronParser {
         }
     }
 }
+

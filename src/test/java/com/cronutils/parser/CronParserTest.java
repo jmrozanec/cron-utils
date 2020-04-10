@@ -101,6 +101,11 @@ public class CronParserTest {
         validateExpression(CronType.UNIX, "1, * * * *");
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void testHashListUnix(){
+        validateExpression(CronType.UNIX, "0 0 0 ? * #");
+    }
+
     @Test // issue #369
     public void testParseIncompleteRangeNoValues() {
         parseIncompleteExpression("-", "Missing values for range: -");
@@ -216,5 +221,11 @@ public class CronParserTest {
         parser = new CronParser(CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ));
         Cron cron = parser.parse(multicron);
         assertEquals(multicron, cron.asString());
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testParseQuartzCronWithHash() {
+        parser = new CronParser(TestCronDefinitionsFactory.withDayOfYearDefinitionWhereYearAndDoYOptionals());
+        parser.parse("0 0 0 ? * #");
     }
 }
