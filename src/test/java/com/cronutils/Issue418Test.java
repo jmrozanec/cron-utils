@@ -59,7 +59,7 @@ public class Issue418Test {
             parser.parse("0 0 2 ? * 0/7 *");
             fail("Expected exception for invalid expression");
         } catch (IllegalArgumentException expected) {
-            assertEquals("Failed to parse '0 0 2 ? * 0/7 *'. Period 0 not in range [1, 7]", expected.getMessage());
+            assertEquals("Failed to parse '0 0 2 ? * 0/7 *'. Value 0 not in range [1, 7]", expected.getMessage());
         }
     }
 
