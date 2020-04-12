@@ -50,4 +50,28 @@ public class Issue418Test {
         assert(nextExecution.isPresent());
         assertEquals( expectedDates[1], nextExecution.get());
     }
+
+    @Test
+    public void TestInvalidWeekDayStart() {
+        try {
+            final CronDefinition cronDefinition = CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ);
+            final CronParser parser = new CronParser(cronDefinition);
+            parser.parse("0 0 2 ? * 0/7 *");
+            fail("Expected exception for invalid expression");
+        } catch (IllegalArgumentException expected) {
+            assertEquals("Failed to parse '0 0 2 ? * 0/7 *'. Period 0 not in range [1, 7]", expected.getMessage());
+        }
+    }
+
+    @Test
+    public void TestInvalidWeekDayEnd() {
+        try {
+            final CronDefinition cronDefinition = CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ);
+            final CronParser parser = new CronParser(cronDefinition);
+            parser.parse("0 0 2 ? * 1/8 *");
+            fail("Expected exception for invalid expression");
+        } catch (IllegalArgumentException expected) {
+            assertEquals("Failed to parse '0 0 2 ? * 1/8 *'. Period 8 not in range [1, 7]", expected.getMessage());
+        }
+    }
 }
