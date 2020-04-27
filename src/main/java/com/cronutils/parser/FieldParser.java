@@ -182,6 +182,9 @@ public class FieldParser {
         }
         final SpecialCharFieldValue specialChar = new SpecialCharFieldValue(HASH);
         final String[] array = exp.split(HASH_TAG);
+        if (array.length == 0) {
+            throw new IllegalArgumentException("Invalid Position of # Character!");
+        }
         final IntegerFieldValue nth = mapToIntegerFieldValue(array[1]);
         if (array[0].isEmpty()) {
             throw new IllegalArgumentException("Time should be specified!");
