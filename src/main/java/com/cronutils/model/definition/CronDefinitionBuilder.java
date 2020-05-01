@@ -182,10 +182,10 @@ public class CronDefinitionBuilder {
      */
     private static CronDefinition cron4j() {
         return CronDefinitionBuilder.defineCron()
-                .withMinutes().withStrictRange().and()
-                .withHours().withStrictRange().and()
-                .withDayOfMonth().supportsL().withStrictRange().and()
-                .withMonth().withStrictRange().and()
+                .withMinutes().withValidRange(0, 59).withStrictRange().and()
+                .withHours().withValidRange(0, 23).withStrictRange().and()
+                .withDayOfMonth().withValidRange(0, 31).supportsL().withStrictRange().and()
+                .withMonth().withValidRange(1, 12).withStrictRange().and()
                 .withDayOfWeek().withValidRange(0, 6).withMondayDoWValue(1).withStrictRange().and()
                 .matchDayOfWeekAndDayOfMonth()
                 .instance();
@@ -258,11 +258,11 @@ public class CronDefinitionBuilder {
      */
     private static CronDefinition quartz() {
         return CronDefinitionBuilder.defineCron()
-                .withSeconds().and()
-                .withMinutes().and()
-                .withHours().and()
-                .withDayOfMonth().withValidRange(1, 32).supportsL().supportsW().supportsLW().supportsQuestionMark().and()
-                .withMonth().withValidRange(1, 13).and()
+                .withSeconds().withValidRange(0, 59).and()
+                .withMinutes().withValidRange(0, 59).and()
+                .withHours().withValidRange(0, 23).and()
+                .withDayOfMonth().withValidRange(1, 31).supportsL().supportsW().supportsLW().supportsQuestionMark().and()
+                .withMonth().withValidRange(1, 12).and()
                 .withDayOfWeek().withValidRange(1, 7).withMondayDoWValue(2).supportsHash().supportsL().supportsQuestionMark().and()
                 .withYear().withValidRange(1970, 2099).withStrictRange().optional().and()
                 .withCronValidation(CronConstraintsFactory.ensureEitherDayOfWeekOrDayOfMonth())
@@ -330,11 +330,11 @@ public class CronDefinitionBuilder {
      */
     private static CronDefinition spring() {
         return CronDefinitionBuilder.defineCron()
-                .withSeconds().withStrictRange().and()
-                .withMinutes().withStrictRange().and()
-                .withHours().withStrictRange().and()
-                .withDayOfMonth().supportsQuestionMark().and()
-                .withMonth().and()
+                .withSeconds().withValidRange(0, 59).withStrictRange().and()
+                .withMinutes().withValidRange(0, 59).withStrictRange().and()
+                .withHours().withValidRange(0, 23).withStrictRange().and()
+                .withDayOfMonth().withValidRange(1, 31).supportsQuestionMark().and()
+                .withMonth().withValidRange(1, 12).and()
                 .withDayOfWeek().withValidRange(0, 7).withMondayDoWValue(1).withIntMapping(7,0).supportsQuestionMark().and()
                 .instance();
     }
@@ -346,10 +346,10 @@ public class CronDefinitionBuilder {
      */
     private static CronDefinition unixCrontab() {
         return CronDefinitionBuilder.defineCron()
-                .withMinutes().withStrictRange().and()
-                .withHours().withStrictRange().and()
-                .withDayOfMonth().withStrictRange().and()
-                .withMonth().withStrictRange().and()
+                .withMinutes().withValidRange(0, 59).withStrictRange().and()
+                .withHours().withValidRange(0, 23).withStrictRange().and()
+                .withDayOfMonth().withValidRange(1, 31).withStrictRange().and()
+                .withMonth().withValidRange(1, 12).withStrictRange().and()
                 .withDayOfWeek().withValidRange(0, 7).withMondayDoWValue(1).withIntMapping(7, 0).withStrictRange().and()
                 .instance();
     }

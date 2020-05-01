@@ -52,7 +52,7 @@ public class Issue418Test {
     }
 
     @Test
-    public void TestInvalidWeekDayStart() {
+    public void testInvalidWeekDayStart() {
         try {
             final CronDefinition cronDefinition = CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ);
             final CronParser parser = new CronParser(cronDefinition);
@@ -64,7 +64,7 @@ public class Issue418Test {
     }
 
     @Test
-    public void TestInvalidWeekDayEnd() {
+    public void testInvalidWeekDayEnd() {
         try {
             final CronDefinition cronDefinition = CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ);
             final CronParser parser = new CronParser(cronDefinition);

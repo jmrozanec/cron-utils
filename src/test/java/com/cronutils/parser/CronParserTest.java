@@ -184,7 +184,6 @@ public class CronParserTest {
     public void testRejectionOfPeriodUpperLimitExceedance() {
         final CronDefinition quartzDefinition = CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ);
         parser = new CronParser(quartzDefinition);
-
         parser.parse("0/60 0 0 1 1 ? 2017/3");
     }
 
