@@ -65,6 +65,7 @@ class EveryFieldValueGenerator extends FieldValueGenerator {
 
     private int getNext(int reference, Every every) {
         final int offset = offset();
+
         if (reference >= offset) {
             final int referenceWithoutOffset = reference - offset;
             final int period = every.getPeriod().getValue();

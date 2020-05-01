@@ -317,7 +317,7 @@ public class CronDefinitionBuilder {
      * <tr>
      * <td>Day of week</td>
      * <td>YES</td>
-     * <td>1-7 or SUN-SAT</td>
+     * <td>0-7 or SUN-SAT</td>
      * <td>* ? , - /</td>
      * </tr>
      * </table>
@@ -335,7 +335,7 @@ public class CronDefinitionBuilder {
                 .withHours().withStrictRange().and()
                 .withDayOfMonth().supportsQuestionMark().and()
                 .withMonth().and()
-                .withDayOfWeek().withValidRange(1, 7).withMondayDoWValue(2).supportsQuestionMark().and()
+                .withDayOfWeek().withValidRange(0, 7).withMondayDoWValue(1).withIntMapping(7,0).supportsQuestionMark().and()
                 .instance();
     }
 
