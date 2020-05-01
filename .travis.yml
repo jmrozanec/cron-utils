@@ -17,7 +17,7 @@ addons:
 script:
    - > 
      if [ "$TRAVIS_PULL_REQUEST" != "false" ];then 
-        mvn org.jacoco:jacoco-maven-plugin:prepare-agent package -Dmaven.javadoc.skip=true;
+        mvn org.jacoco:jacoco-maven-plugin:prepare-agent clean compile test -Dmaven.javadoc.skip=true;
         sonar-scanner
      fi
    - > 
