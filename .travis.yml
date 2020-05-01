@@ -1,4 +1,6 @@
 language: java
+jobs:
+  fast_finish: true
 
 branches:
   only:
