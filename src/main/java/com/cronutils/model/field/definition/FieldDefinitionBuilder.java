@@ -68,6 +68,8 @@ public class FieldDefinitionBuilder {
 
     /**
      * Specifies that defined range for given field must be a strict range.
+     * We understand strict range as a range defined as: "lowValue - highValue"
+     * If some range value such as "highValue-lowValue" is specified in a field, it will fail to parse the field.
      *
      * @return same FieldDefinitionBuilder instance
      */
