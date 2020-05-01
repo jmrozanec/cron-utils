@@ -6,6 +6,7 @@ import com.cronutils.model.definition.CronDefinition;
 import com.cronutils.model.definition.CronDefinitionBuilder;
 import com.cronutils.model.time.ExecutionTime;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.time.*;
@@ -31,6 +32,7 @@ public class Issue421Test {
             .withCronValidation(CronConstraintsFactory.ensureEitherDayOfYearOrMonth())
             .instance();
 
+    @Ignore
     @Test
     public void testWrongIntervalsForEvery6Months() {
         LocalDateTime firstOfJanuary = LocalDateTime.of(2020, 4, 25, 0, 0);
@@ -50,6 +52,7 @@ public class Issue421Test {
         Assert.assertEquals(4, nextRun.getMonthValue());
     }
 
+    @Ignore
     @Test
     public void testWrongEveryXMonthsDescription() {
         ZonedDateTime now = ZonedDateTime.now();
