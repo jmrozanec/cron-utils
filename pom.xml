@@ -59,7 +59,7 @@
     </distributionManagement>
 
     <properties>
-        <slf4j.version>1.7.12</slf4j.version>
+        <slf4j.version>1.7.30</slf4j.version>
         <junit.version>4.12</junit.version>
         <mockito.version>1.10.19</mockito.version>
         <powermock.version>1.6.2</powermock.version>
@@ -74,6 +74,11 @@
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
             <version>${slf4j.version}</version>
         </dependency>
         <dependency>
@@ -117,7 +122,9 @@
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-validator</artifactId>
-            <version>6.1.2.Final</version>
+            <!-- https://stackoverflow.com/questions/48323244/java-lang-nosuchmethoderror-javax-validation-bootstrapconfiguration-getclockproExecutionTimeQuartzIntegrationTest -->
+            <!-- https://stackoverflow.com/questions/24386771/javax-validation-validationexception-hv000183-unable-to-load-javax-el-express -->
+            <version>5.2.4.Final</version>
             <scope>test</scope>
         </dependency>
         <dependency>
