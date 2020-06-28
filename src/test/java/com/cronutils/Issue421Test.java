@@ -1,3 +1,5 @@
+package com.cronutils;
+
 import com.cronutils.builder.CronBuilder;
 import com.cronutils.descriptor.CronDescriptor;
 import com.cronutils.model.Cron;
