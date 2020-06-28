@@ -124,7 +124,7 @@
             <artifactId>hibernate-validator</artifactId>
             <!-- https://stackoverflow.com/questions/48323244/java-lang-nosuchmethoderror-javax-validation-bootstrapconfiguration-getclockproExecutionTimeQuartzIntegrationTest -->
             <!-- https://stackoverflow.com/questions/24386771/javax-validation-validationexception-hv000183-unable-to-load-javax-el-express -->
-            <version>5.2.4.Final</version>
+            <version>5.3.5.Final</version>
             <scope>test</scope>
         </dependency>
         <dependency>
