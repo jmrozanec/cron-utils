@@ -318,7 +318,7 @@ public class SingleExecutionTime implements ExecutionTime {
             return getPreviousPotentialYear(date, days, highestMonth, highestDay, highestHour, highestMinute, highestSecond);
         }
         //TODO Issue 305
-        /*
+
         else{
             if(!year.contains(date.getYear())){
                 Optional<Integer> validprevyear = year.stream().filter(y->y<date.getYear()).max(Integer::compareTo);
@@ -330,7 +330,7 @@ public class SingleExecutionTime implements ExecutionTime {
                 }
             }
         }
-        */
+
         if (!months.getValues().contains(date.getMonthValue())) {
             return getPreviousPotentialMonth(date, highestDay, highestHour, highestMinute, highestSecond);
         }
