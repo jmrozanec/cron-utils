@@ -29,11 +29,11 @@ public enum Weekdays {
     }
 
     public int getWeekday() {
-        return getWeekday(ConstantsMapper.CRONTAB_WEEK_DAY);
+        return getWeekday(ConstantsMapper.JAVA8);
     }
 
     public int getWeekday(WeekDay weekDay) {
-        return ConstantsMapper.weekDayMapping(ConstantsMapper.CRONTAB_WEEK_DAY, weekDay, this.weekday);
+        return ConstantsMapper.weekDayMapping(ConstantsMapper.JAVA8, weekDay, this.weekday);
     }
 
     public int getWeekday(CronDefinition cronDefinition){
