@@ -34,29 +34,54 @@ public class Issue421Test {
             .withCronValidation(CronConstraintsFactory.ensureEitherDayOfYearOrMonth())
             .instance();
 
-    @Ignore
     @Test
-    public void testWrongIntervalsForEvery6Months() {
-        LocalDateTime firstOfJanuary = LocalDateTime.of(2020, 4, 25, 0, 0);
+    public void testIntervals_Every5thMonths_SinceASpecificMonth() {
+        LocalDateTime firstOfJanuary = LocalDateTime.of(2020, 2, 10, 0, 0);
         Clock clock = Clock.fixed(firstOfJanuary.toInstant(ZoneOffset.UTC), ZoneId.systemDefault());
         ZonedDateTime now = ZonedDateTime.now(clock);
         System.out.println("now: " + now);
 
-        Cron cron = getEveryMonth(now, 6).instance();
+        Cron cron = getEveryMonthFromNow(now, 5).instance();
         ZonedDateTime nextRun;
 
         nextRun = nextRun(cron, now); // first run
         Assert.assertEquals(2020, nextRun.getYear());
-        Assert.assertEquals(10, nextRun.getMonthValue());
+        Assert.assertEquals(7, nextRun.getMonthValue());
 
-        nextRun = nextRun(cron, nextRun); // second
+        nextRun = nextRun(cron, nextRun); // first run
+        Assert.assertEquals(2020, nextRun.getYear());
+        Assert.assertEquals(12, nextRun.getMonthValue());
+
+        nextRun = nextRun(cron, nextRun); // first run
         Assert.assertEquals(2021, nextRun.getYear());
-        Assert.assertEquals(4, nextRun.getMonthValue());
+        Assert.assertEquals(2, nextRun.getMonthValue());
     }
 
-    @Ignore
     @Test
-    public void testWrongEveryXMonthsDescription() {
+    public void testIntervals_Every5thMonth() {
+        LocalDateTime firstOfJanuary = LocalDateTime.of(2020, 2, 10, 0, 0);
+        Clock clock = Clock.fixed(firstOfJanuary.toInstant(ZoneOffset.UTC), ZoneId.systemDefault());
+        ZonedDateTime now = ZonedDateTime.now(clock);
+        System.out.println("now: " + now);
+
+        Cron cron = getEveryMonth(now, 5).instance();
+        ZonedDateTime nextRun;
+
+        nextRun = nextRun(cron, now); // first run
+        Assert.assertEquals(2020, nextRun.getYear());
+        Assert.assertEquals(6, nextRun.getMonthValue());
+
+        nextRun = nextRun(cron, nextRun); // first run
+        Assert.assertEquals(2020, nextRun.getYear());
+        Assert.assertEquals(11, nextRun.getMonthValue());
+
+        nextRun = nextRun(cron, nextRun); // first run
+        Assert.assertEquals(2021, nextRun.getYear());
+        Assert.assertEquals(1, nextRun.getMonthValue());
+    }
+
+    @Test
+    public void testDescription_EveryXMonths() {
         ZonedDateTime now = ZonedDateTime.now();
 
         String description = CronDescriptor.instance(Locale.US).describe(getEveryMonth(now, 3).instance());
@@ -76,6 +101,15 @@ public class Issue421Test {
                 .withDoM(on(now.getDayOfMonth()))
                 .withDoY(questionMark())
                 .withMonth(every(every));
+    }
+    public static CronBuilder getEveryMonthFromNow(ZonedDateTime now, int every) {
+        return CronBuilder.cron(definition)
+                .withMinute(on(now.getMinute()))
+                .withHour(on(now.getHour()))
+                .withDoW(questionMark())
+                .withDoM(on(now.getDayOfMonth()))
+                .withDoY(questionMark())
+                .withMonth(every(on(now.getMonthValue()),every));
     }
 
     private static ZonedDateTime nextRun(Cron cron, ZonedDateTime when) {

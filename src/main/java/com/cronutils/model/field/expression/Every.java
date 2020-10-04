@@ -18,7 +18,9 @@ import com.cronutils.utils.Preconditions;
 
 /**
  * Represents every x time on a cron field.
- */
+ * Usage examples:
+ * - To represent a scheduling every 3 months on a specific time (the standard 0 0 0 *&#47;3 *), use the Every(3) constructor
+ * - To represent a scheduling every 3 months FROM NOW, use the Every(on(now.getMonth, 3)) constructor */
 public class Every extends FieldExpression {
 
     private static final long serialVersionUID = -1103196842332906994L;
