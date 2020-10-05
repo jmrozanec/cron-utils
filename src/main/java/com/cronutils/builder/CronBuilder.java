@@ -23,6 +23,7 @@ import com.cronutils.model.definition.CronDefinition;
 import com.cronutils.model.field.CronField;
 import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.field.constraint.FieldConstraints;
+import com.cronutils.model.field.definition.FieldDefinition;
 import com.cronutils.model.field.expression.FieldExpression;
 import com.cronutils.model.field.expression.visitor.ValidationFieldExpressionVisitor;
 import com.cronutils.utils.VisibleForTesting;
@@ -90,7 +91,10 @@ public class CronBuilder {
     CronBuilder addField(final CronFieldName name, final FieldExpression expression) {
         checkState(definition != null, "CronBuilder not initialized.");
 
-        final FieldConstraints constraints = definition.getFieldDefinition(name).getConstraints();
+        final FieldDefinition fieldDefinition = definition.getFieldDefinition(name);
+        checkState(fieldDefinition != null, "Cron field definition does not exist: %s", name);
+
+        final FieldConstraints constraints = fieldDefinition.getConstraints();
         expression.accept(new ValidationFieldExpressionVisitor(constraints));
         fields.put(name, new CronField(name, expression, constraints));
 

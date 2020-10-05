@@ -93,6 +93,10 @@ public class CronParser {
             throw new IllegalArgumentException("Empty expression!");
         }
 
+        if(expression.contains("||")) {
+            List<Cron> crons = Arrays.stream(expression.split("\\|\\|")).map(this::parse).collect(Collectors.toList());
+            return new CompositeCron(crons);
+        }
         if(expression.contains("|")){
             List<String> crons = new ArrayList<>();
             int cronscount = Arrays.stream(expression.split("\\s+")).mapToInt(s->s.split("\\|").length).max().orElse(0);
@@ -107,7 +111,7 @@ public class CronParser {
                 }
                 crons.add(builder.toString().trim());
             }
-            return new CompositeCron(crons.stream().map(c->parse(c)).collect(Collectors.toList()));
+            return new CompositeCron(crons.stream().map(this::parse).collect(Collectors.toList()));
         }else{
             final String[] expressionParts = replaced.toUpperCase().split(" ");
             final int expressionLength = expressionParts.length;
@@ -121,7 +125,8 @@ public class CronParser {
                         String.format("Cron expression contains %s parts but we expect one of %s", expressionLength, expressions.keySet()));
             }
             try {
-                final int size = fields.size();
+
+                final int size = expressionParts.length;
                 final List<CronField> results = new ArrayList<>(size + 1);
                 for (int j = 0; j < size; j++) {
                     results.add(fields.get(j).parse(expressionParts[j]));
@@ -133,3 +138,4 @@ public class CronParser {
         }
     }
 }
+

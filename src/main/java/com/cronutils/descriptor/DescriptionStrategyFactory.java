@@ -13,6 +13,7 @@
 
 package com.cronutils.descriptor;
 
+import com.cronutils.model.field.expression.Every;
 import java.time.DayOfWeek;
 import java.time.Month;
 import java.time.format.TextStyle;
@@ -102,7 +103,13 @@ class DescriptionStrategyFactory {
      * @return - DescriptionStrategy instance, never null
      */
     public static DescriptionStrategy monthsInstance(final ResourceBundle bundle, final FieldExpression expression) {
-        return new NominalDescriptionStrategy(bundle, integer -> Month.of(integer).getDisplayName(TextStyle.FULL, bundle.getLocale()), expression);
+        Function<Integer, String> mappingFunction;
+        if (expression instanceof Every) {
+            mappingFunction = Object::toString;
+        } else {
+            mappingFunction = integer -> Month.of(integer).getDisplayName(TextStyle.FULL, bundle.getLocale());
+        }
+        return new NominalDescriptionStrategy(bundle, mappingFunction, expression);
     }
 
     /**

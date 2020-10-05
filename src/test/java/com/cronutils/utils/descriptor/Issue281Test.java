@@ -50,7 +50,7 @@ public class Issue281Test {
 
     @Test(expected = IllegalArgumentException.class)
     public void shouldThrowExceptionWhenMonthExceeded() {
-        final Cron cron = buildCron("0 0 0 24 1/13 ?");
+        buildCron("0 0 0 24 1/13 ?");
     }
 
     private Cron buildCron(String expression) {

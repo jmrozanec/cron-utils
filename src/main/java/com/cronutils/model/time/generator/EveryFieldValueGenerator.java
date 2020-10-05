@@ -38,6 +38,12 @@ class EveryFieldValueGenerator extends FieldValueGenerator {
 
             from = Math.max(cronField.getConstraints().getStartRange(), BetweenFieldValueGenerator.map(between.getFrom()));
             to = Math.min(cronField.getConstraints().getEndRange(), BetweenFieldValueGenerator.map(between.getTo()));
+        } else if(everyExpression instanceof On){
+
+            final On on = (On) everyExpression;
+
+            from = on.getTime().getValue();
+            to = cronField.getConstraints().getEndRange();
         } else {
             from = cronField.getConstraints().getStartRange();
             to = cronField.getConstraints().getEndRange();
@@ -65,6 +71,7 @@ class EveryFieldValueGenerator extends FieldValueGenerator {
 
     private int getNext(int reference, Every every) {
         final int offset = offset();
+
         if (reference >= offset) {
             final int referenceWithoutOffset = reference - offset;
             final int period = every.getPeriod().getValue();

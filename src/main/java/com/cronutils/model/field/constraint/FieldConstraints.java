@@ -82,7 +82,7 @@ public class FieldConstraints implements Serializable {
      * @return {@code true} if period is compatible, {@code false} otherwise.
      */
     public boolean isPeriodInRange(final int period) {
-        return period > 0 && period <= getEndRange() - getStartRange();
+        return period > 0 && period <= (getEndRange() - getStartRange() +1) && period <= getEndRange();
     }
 
     public Set<String> getStringMappingKeySet() {

@@ -29,7 +29,6 @@ import com.cronutils.model.field.value.SpecialCharFieldValue;
 import com.cronutils.utils.VisibleForTesting;
 
 public class ValidationFieldExpressionVisitor implements FieldExpressionVisitor {
-
     private static final String OORANGE = "Value %s not in range [%s, %s]";
     private static final String EMPTY_STRING = "";
 
@@ -167,7 +166,7 @@ public class ValidationFieldExpressionVisitor implements FieldExpressionVisitor 
             final int value = ((IntegerFieldValue) fieldValue).getValue();
             if (!constraints.isPeriodInRange(value)) {
                 throw new IllegalArgumentException(
-                        String.format("Period %s not in range (%s, %s]", value, constraints.getStartRange(), constraints.getEndRange()));
+                        String.format("Period %s not in range [%s, %s]", value, constraints.getStartRange(), constraints.getEndRange()));
             }
         }
     }

@@ -33,6 +33,15 @@ public class CronDescriptor {
     private final ResourceBundle resourceBundle;
 
     /**
+     * Constructor creating a descriptor for given ResourceBundle.
+     *
+     * @param resourceBundle - ResourceBundle which contains descriptions
+     */
+    public CronDescriptor(final ResourceBundle resourceBundle) {
+        this.resourceBundle = resourceBundle;
+    }
+
+    /**
      * Constructor creating a descriptor for given Locale.
      *
      * @param locale - Locale in which descriptions are given
