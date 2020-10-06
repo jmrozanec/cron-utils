@@ -212,7 +212,11 @@ abstract class DescriptionStrategy {
 		if (!builder.toString().startsWith(bundle.getString("at"))) {
 			builder.append(String.format(" %s ", bundle.getString("and")));
 		} else {
-			builder.append(" ");
+			if (builder.toString().equals(bundle.getString("at"))) {
+				builder.insert(0, "Every second ");
+			} else {
+				builder.append(" ");
+			}
 		}
 		builder.append(describe(expressions.get(expressions.size() - 1), true));
 		return builder;

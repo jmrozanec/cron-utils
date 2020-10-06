@@ -25,6 +25,6 @@ public class Issue440Test {
 	public void testCase1() {
 		CronDescriptor descriptor = CronDescriptor.instance(Locale.UK);
 		String description = descriptor.describe(parser.parse("* 2,1/31 * * * ?"));
-		assertTrue(description.equalsIgnoreCase("at 2 minutes every 31 minutes"));
+		assertTrue(description.equalsIgnoreCase("Every second at 2 minutes and every 31 minutes"));
 	}
 }
