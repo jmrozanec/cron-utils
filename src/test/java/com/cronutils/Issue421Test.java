@@ -35,24 +35,6 @@ public class Issue421Test {
             .instance();
 
     @Test
-    public void testWrongIntervalsForEvery6Months() {
-        LocalDateTime dayOfApril = LocalDateTime.of(2020, 4, 25, 0, 0);
-        Clock clock = Clock.fixed(dayOfApril.toInstant(ZoneOffset.UTC), ZoneId.systemDefault());
-        ZonedDateTime dayOfAprilInLocalTimezone = ZonedDateTime.now(clock);
-        System.out.println("now: " + dayOfAprilInLocalTimezone);
-        Cron cron = getEveryMonthFromNow(dayOfAprilInLocalTimezone, 6).instance();
-
-        ZonedDateTime nextRun = nextRun(cron, dayOfAprilInLocalTimezone); // first run
-        Assert.assertEquals(2020, nextRun.getYear());
-        Assert.assertEquals(10, nextRun.getMonthValue());
-
-        nextRun = nextRun(cron, nextRun); // second
-        System.out.println(nextRun);
-        Assert.assertEquals(2021, nextRun.getYear());
-        Assert.assertEquals(4, nextRun.getMonthValue());
-    }
-
-    @Test
     public void testIntervalsEvery5thMonthsSinceASpecificMonth() {
         LocalDateTime firstOfJanuary = LocalDateTime.of(2020, 2, 10, 0, 0);
         Clock clock = Clock.fixed(firstOfJanuary.toInstant(ZoneOffset.UTC), ZoneId.systemDefault());
@@ -120,6 +102,7 @@ public class Issue421Test {
                 .withDoY(questionMark())
                 .withMonth(every(every));
     }
+
     public static CronBuilder getEveryMonthFromNow(ZonedDateTime now, int every) {
         return CronBuilder.cron(definition)
                 .withMinute(on(now.getMinute()))

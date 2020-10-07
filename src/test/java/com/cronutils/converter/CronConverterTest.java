@@ -53,6 +53,7 @@ public class CronConverterTest {
 
 	@Test
 	public void testCronConverterBuilder() {
+		// TODO: after checkout I've found this two methods not working
 //		cronConverter.setToCalendarConverter(new CronToCalendarTransformer());
 //		cronConverter.setToCronConverter(new CalendarToCronTransformer());
 //		assertEquals(expectedCronExpression,
