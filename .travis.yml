@@ -7,9 +7,10 @@ branches:
     - master
 
 jdk:
-  - oraclejdk9
-
-before_install: "git clone -b travis `git config --get remote.origin.url` target/travis"
+  - oraclejdk8
+  - oraclejdk11
+  - openjdk10
+  - openjdk11
 
 addons:
   sonarcloud:
