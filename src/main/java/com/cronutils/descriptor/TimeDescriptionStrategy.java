@@ -20,11 +20,7 @@ import java.util.ResourceBundle;
 import java.util.Set;
 
 import com.cronutils.Function;
-import com.cronutils.model.field.expression.Always;
-import com.cronutils.model.field.expression.Between;
-import com.cronutils.model.field.expression.Every;
-import com.cronutils.model.field.expression.FieldExpression;
-import com.cronutils.model.field.expression.On;
+import com.cronutils.model.field.expression.*;
 import com.cronutils.model.field.value.IntegerFieldValue;
 import com.cronutils.utils.Preconditions;
 import com.cronutils.utils.StringUtils;
@@ -268,6 +264,30 @@ class TimeDescriptionStrategy extends DescriptionStrategy {
 							bundle.getString("at"), bundle.getString(MINUTE),
 							((On) timeFields.minutes).getTime().getValue(), bundle.getString("of_every_hour"));
 				}
+			}
+			return StringUtils.EMPTY;
+		});
+
+		// case: every second at minute 00 and every x minutes
+		descriptions.add(timeFields -> {
+			if (timeFields.hours instanceof Always && timeFields.seconds instanceof Always) {
+				if (timeFields.minutes instanceof And) {
+					// Every
+					String minutesDesc = addTimeExpressions(describe(timeFields.minutes),
+							bundle.getString("minute"), bundle.getString("minutes"));
+					return String.format("%s %s %s", bundle.getString(EVERY), bundle.getString(SECOND), minutesDesc);
+				}
+			}
+			return StringUtils.EMPTY;
+		});
+
+		// case: every second at x, y and z hours
+		descriptions.add(timeFields -> {
+			if (timeFields.hours instanceof And && timeFields.minutes instanceof Always && timeFields.seconds instanceof Always) {
+				// Every
+				String hoursDesc = addTimeExpressions(describe(timeFields.hours),
+							bundle.getString("hour"), bundle.getString("hours"));
+					return String.format("%s %s %s", bundle.getString(EVERY), bundle.getString(SECOND), hoursDesc);
 			}
 			return StringUtils.EMPTY;
 		});

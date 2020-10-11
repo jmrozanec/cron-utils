@@ -122,10 +122,20 @@ abstract class DescriptionStrategy {
 		}
 		final StringBuilder builder = new StringBuilder();
 		if (!onExpressions.isEmpty()) {
-			builder.append(bundle.getString("at"));
-			createAndDescription(builder, onExpressions).append(" replace_plural");
+			if(onExpressions.size()==1){
+				builder.append(bundle.getString("at"));
+				builder.append(" %s ");
+				createAndDescription(builder, onExpressions);
+			}else{
+				builder.append(bundle.getString("at"));
+				createAndDescription(builder, onExpressions).append(" replace_plural ");
+			}
 		}
+
 		if (!expressions.isEmpty()) {
+			if(!onExpressions.isEmpty()){
+				builder.append(String.format(" %s ", bundle.getString("and")));
+			}
 			createAndDescription(builder, expressions);
 		}
 
@@ -203,22 +213,15 @@ abstract class DescriptionStrategy {
 	 * @return same StringBuilder instance as parameter
 	 */
 	private StringBuilder createAndDescription(final StringBuilder builder, final List<FieldExpression> expressions) {
-		if ((expressions.size() - 2) >= 0) {
+		if(expressions.size()>1){
 			for (int j = 0; j < expressions.size() - 2; j++) {
 				builder.append(String.format(" %s, ", describe(expressions.get(j), true)));
 			}
 			builder.append(String.format(" %s ", describe(expressions.get(expressions.size() - 2), true)));
-		}
-		if (!builder.toString().startsWith(bundle.getString("at"))) {
 			builder.append(String.format(" %s ", bundle.getString("and")));
-		} else {
-			if (builder.toString().equals(bundle.getString("at"))) {
-				builder.insert(0, "Every second ");
-			} else {
-				builder.append(" ");
-			}
 		}
-		builder.append(describe(expressions.get(expressions.size() - 1), true));
+
+		builder.append(String.format(" %s ", describe(expressions.get(expressions.size() - 1), true)));
 		return builder;
 	}
 }

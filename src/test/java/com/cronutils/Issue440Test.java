@@ -1,10 +1,8 @@
 package com.cronutils;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
 
 import java.util.Locale;
-
-import org.junit.Before;
 import org.junit.Test;
 
 import com.cronutils.descriptor.CronDescriptor;
@@ -14,17 +12,21 @@ import com.cronutils.parser.CronParser;
 
 public class Issue440Test {
 
-	private CronParser parser;
+	@Test
+	public void testCase1() {
+		CronParser parser = new CronParser(CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ));
+		CronDescriptor descriptor = CronDescriptor.instance(Locale.UK);
+		String description = descriptor.describe(parser.parse("* 2,1/31 * * * ?"));
 
-	@Before
-	public void setUp() {
-		parser = new CronParser(CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ));
+		assertEquals("every second at minute 2 and every 31 minutes", description);
 	}
 
 	@Test
-	public void testCase1() {
+	public void testCase2() {
+		CronParser parser = new CronParser(CronDefinitionBuilder.instanceDefinitionFor(CronType.UNIX));
 		CronDescriptor descriptor = CronDescriptor.instance(Locale.UK);
-		String description = descriptor.describe(parser.parse("* 2,1/31 * * * ?"));
-		assertTrue(description.equalsIgnoreCase("Every second at 2 minutes and every 31 minutes"));
+		String description = descriptor.describe(parser.parse("2,1/31 * * * *"));
+
+		assertEquals("at minute 2 and every 31 minutes", description);
 	}
 }
