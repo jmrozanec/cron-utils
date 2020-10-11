@@ -1,7 +1,7 @@
 # This workflow will build a package using Maven and then publish it to GitHub packages when a release is created
 # For more information see: https://github.com/actions/setup-java#apache-maven-with-a-settings-path
 
-name: publish
+name: test
 
 on:
   release:
@@ -13,7 +13,7 @@ on:
         required: true
         default: 'warning'
       tags:
-        description: 'test, build and publish'  
+        description: 'test'  
 
 jobs:
   build:
@@ -26,16 +26,6 @@ jobs:
       uses: actions/setup-java@v1
       with:
         java-version: 1.8
-        server-id: github # Value of the distributionManagement/repository/id field of the pom.xml
-        settings-path: ${{ github.workspace }} # location for the settings.xml file
 
     - name: compile and test
       run: mvn compile test --file pom.xml
-
-    - name: build source code
-      run: mvn -B package --file pom.xml
-
-    - name: Publish to GitHub Packages Apache Maven
-      run: mvn deploy -s $GITHUB_WORKSPACE/settings.xml
-      env:
-        GITHUB_TOKEN: ${{ github.token }}
