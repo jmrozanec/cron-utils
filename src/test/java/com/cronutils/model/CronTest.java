@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Locale;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -148,7 +149,8 @@ public class CronTest {
         }
     }
 
-    //@Test //TODO
+    @Ignore
+    @Test
     public void testIssue308(){
         CronDefinition cronDefinition = CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ);
         CronParser parser = new CronParser(cronDefinition);
