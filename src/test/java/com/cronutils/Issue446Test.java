@@ -18,7 +18,7 @@ import static com.cronutils.model.field.expression.FieldExpressionFactory.every;
 import static com.cronutils.model.field.expression.FieldExpressionFactory.on;
 import static junit.framework.TestCase.fail;
 
-@Ignore
+
 public class Issue446Test {
     private static final CronDefinition definition = CronDefinitionBuilder.defineCron()
             .withMinutes().and()
