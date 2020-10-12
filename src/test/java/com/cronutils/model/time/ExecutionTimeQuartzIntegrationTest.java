@@ -25,6 +25,7 @@ import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalAdjusters;
 import java.util.Date;
 import java.util.Optional;
 import java.util.TimeZone;
@@ -838,6 +839,24 @@ public class ExecutionTimeQuartzIntegrationTest {
             assertEquals("The last execution should be on the previous day", lastExecution.get().toLocalDate(), time.toLocalDate().minusDays(1));
         } else {
             assertEquals("The last execution should be on the same day", lastExecution.get().toLocalDate(), time.toLocalDate());
+        }
+    }
+
+    /**
+     * Issue #424
+     * https://github.com/jmrozanec/cron-utils/issues/424
+     * Last execution time incorrectly calculated when using day of week expression
+     */
+    @Test
+    public void testLastExecutionIssue424() {
+        // Every day at 20:00
+        ExecutionTime executionTime = ExecutionTime.forCron(parser.parse("0 0 12 ? * SUN#4 2020"));
+        LocalDate date = LocalDate.of(2021, 1, 1);
+        LocalTime time = LocalTime.of(0, 0, 0);
+        ZonedDateTime dateTime = ZonedDateTime.of(date, time, ZoneOffset.UTC);
+        for (int index = 0, size = 12; index < size; index++) {
+            dateTime = executionTime.lastExecution(dateTime).orElse(null);
+            assertEquals(LocalDateTime.of(2020, 12 - index, 1, 12, 0, 0).with(TemporalAdjusters.dayOfWeekInMonth(4, DayOfWeek.SUNDAY)), dateTime.toLocalDateTime());
         }
     }
 

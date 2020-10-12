@@ -308,7 +308,7 @@ public class SingleExecutionTime implements ExecutionTime {
         final List<Integer> year = yearsValueGenerator.generateCandidates(date.getYear(), date.getYear());
         final Optional<TimeNode> optionalDays = generateDays(cronDefinition, date);
         TimeNode days;
-        if (optionalDays.isPresent()) {
+        if (optionalDays.isPresent() && optionalDays.get().getValues().stream().anyMatch(i -> i <= date.getDayOfMonth())) {
             days = optionalDays.get();
         } else {
             return new ExecutionTimeResult(toEndOfPreviousMonth(date), false);
