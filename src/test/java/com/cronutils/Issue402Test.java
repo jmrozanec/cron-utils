@@ -37,10 +37,10 @@ public class Issue402Test {
 
         Optional<ZonedDateTime> lastExecution = execution.lastExecution(currentDateTime);
         assertTrue(lastExecution.isPresent());
-        assertEquals(ZonedDateTime.of(LocalDate.of(2013, 3, 1), LocalTime.MIDNIGHT, ZoneOffset.UTC), nextExecution.get());
+        assertEquals(ZonedDateTime.of(LocalDate.of(2013, 3, 1), LocalTime.MIDNIGHT, ZoneOffset.UTC), lastExecution.get());
 
         lastExecution = execution.lastExecution(nextExecution.get());
         assertTrue(lastExecution.isPresent());
-        assertEquals(ZonedDateTime.of(LocalDate.of(2013, 3, 1), LocalTime.MIDNIGHT, ZoneOffset.UTC), nextExecution.get());
+        assertEquals(ZonedDateTime.of(LocalDate.of(2013, 3, 1), LocalTime.MIDNIGHT, ZoneOffset.UTC), lastExecution.get());
     }
 }
