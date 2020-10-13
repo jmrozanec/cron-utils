@@ -44,6 +44,7 @@ import org.slf4j.LoggerFactory;
 import static com.cronutils.model.CronType.QUARTZ;
 import static java.time.ZoneOffset.UTC;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -840,6 +841,49 @@ public class ExecutionTimeQuartzIntegrationTest {
         } else {
             assertEquals("The last execution should be on the same day", lastExecution.get().toLocalDate(), time.toLocalDate());
         }
+    }
+
+    /**
+     * Issue #402
+     * https://github.com/jmrozanec/cron-utils/issues/402
+     * Fix last and next execution time when using every X years
+     */
+    @Test
+    public void testLastExecutionIssue402() {
+        // Every 2 years at March 1st midnight
+        ExecutionTime execution = ExecutionTime.forCron(parser.parse("0 0 0 1 3 ? 2001-2020/2"));
+
+        ZonedDateTime currentDateTime = ZonedDateTime.of(LocalDate.of(2015, 1, 15), LocalTime.MIDNIGHT, ZoneOffset.UTC);
+        // Check next execution time is correct
+        Optional<ZonedDateTime> nextExecution = execution.nextExecution(currentDateTime);
+        assertTrue(nextExecution.isPresent());
+        assertEquals(ZonedDateTime.of(LocalDate.of(2015, 3, 1), LocalTime.MIDNIGHT, ZoneOffset.UTC), nextExecution.get());
+        // Check previous execution time is correct
+        Optional<ZonedDateTime> lastExecution = execution.lastExecution(currentDateTime);
+        assertTrue(lastExecution.isPresent());
+        assertEquals(ZonedDateTime.of(LocalDate.of(2013, 3, 1), LocalTime.MIDNIGHT, ZoneOffset.UTC), lastExecution.get());
+
+        lastExecution = execution.lastExecution(nextExecution.get());
+        assertTrue(lastExecution.isPresent());
+        assertEquals(ZonedDateTime.of(LocalDate.of(2013, 3, 1), LocalTime.MIDNIGHT, ZoneOffset.UTC), lastExecution.get());
+
+        // Assume the current time is before the start time of every expression, check last and next execution.ß
+        ZonedDateTime timeBeforeStart = ZonedDateTime.of(LocalDate.of(1996, 1, 15), LocalTime.MIDNIGHT, ZoneOffset.UTC);
+        Optional<ZonedDateTime> nextBeforeStart = execution.nextExecution(timeBeforeStart);
+        assertTrue(nextBeforeStart.isPresent());
+        assertEquals(ZonedDateTime.of(LocalDate.of(2001, 3, 1), LocalTime.MIDNIGHT, ZoneOffset.UTC), nextBeforeStart.get());
+
+        Optional<ZonedDateTime> lastBeforeStart = execution.lastExecution(nextBeforeStart.get());
+        assertFalse(lastBeforeStart.isPresent());
+
+        // Assume the current time is before the start time of every expression, check last and next execution.ß
+        ZonedDateTime timeAfterEnd = ZonedDateTime.of(LocalDate.of(2025, 1, 15), LocalTime.MIDNIGHT, ZoneOffset.UTC);
+        Optional<ZonedDateTime> nextAfterEnd = execution.nextExecution(timeAfterEnd);
+        assertFalse(nextAfterEnd.isPresent());
+
+        Optional<ZonedDateTime> lastAfterEnd = execution.lastExecution(timeAfterEnd);
+        assertTrue(lastAfterEnd.isPresent());
+        assertEquals(ZonedDateTime.of(LocalDate.of(2019, 3, 1), LocalTime.MIDNIGHT, ZoneOffset.UTC), lastAfterEnd.get());
     }
 
     /**
