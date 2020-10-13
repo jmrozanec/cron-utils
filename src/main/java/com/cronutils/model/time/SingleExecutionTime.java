@@ -85,14 +85,17 @@ public class SingleExecutionTime implements ExecutionTime {
             final CronField daysOfMonthCronField, final CronField daysOfYearCronField, final TimeNode months, final TimeNode hours,
             final TimeNode minutes, final TimeNode seconds) {
         this.cronDefinition = Preconditions.checkNotNull(cronDefinition);
-        FieldValueGenerator alwaysGenerator = FieldValueGeneratorFactory.forCronField(new CronField(CronFieldName.YEAR, Always.always(), FieldConstraintsBuilder.instance().createConstraintsInstance()));
         if(cronDefinition.containsFieldDefinition(CronFieldName.YEAR)){
             if(!cronDefinition.getFieldDefinition(CronFieldName.YEAR).isOptional()){
                 Preconditions.checkNotNull(yearsValueCronField);
             }
-            this.yearsValueGenerator = yearsValueCronField==null?alwaysGenerator:createYearValueGeneratorInstance(yearsValueCronField);
-        } else{
-            this.yearsValueGenerator = alwaysGenerator;
+            this.yearsValueGenerator = (yearsValueCronField == null)
+                    ? FieldValueGeneratorFactory.forCronField(new CronField(CronFieldName.YEAR, Always.always(),
+                    cronDefinition.getFieldDefinition(CronFieldName.YEAR).getConstraints()))
+                    : createYearValueGeneratorInstance(yearsValueCronField);
+        } else {
+            this.yearsValueGenerator = FieldValueGeneratorFactory.forCronField(new CronField(CronFieldName.YEAR, Always.always(),
+                    FieldConstraintsBuilder.instance().createConstraintsInstance()));
         }
         this.daysOfWeekCronField = Preconditions.checkNotNull(daysOfWeekCronField);
         this.daysOfMonthCronField = Preconditions.checkNotNull(daysOfMonthCronField);

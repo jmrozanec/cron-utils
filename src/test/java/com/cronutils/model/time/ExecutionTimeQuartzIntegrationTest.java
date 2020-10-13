@@ -30,6 +30,9 @@ import java.util.Date;
 import java.util.Optional;
 import java.util.TimeZone;
 
+import com.cronutils.model.CronType;
+import com.cronutils.model.definition.CronDefinition;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -902,6 +905,26 @@ public class ExecutionTimeQuartzIntegrationTest {
             dateTime = executionTime.lastExecution(dateTime).orElse(null);
             assertEquals(LocalDateTime.of(2020, 12 - index, 1, 12, 0, 0).with(TemporalAdjusters.dayOfWeekInMonth(4, DayOfWeek.SUNDAY)), dateTime.toLocalDateTime());
         }
+    }
+
+    /**
+     * Issue #428
+     * Enforce year constraints from Quartz cron definition
+     */
+    @Test
+    public void testBoundary() {
+        ExecutionTime execution = ExecutionTime.forCron(parser.parse("0 0 12 * * ?"));
+        // Before 1970
+        ZonedDateTime dateTimeBefore1970 = ZonedDateTime.of(1900, 1, 1, 0, 0, 0, 0, ZoneOffset.UTC);
+        Optional<ZonedDateTime> next = execution.nextExecution(dateTimeBefore1970);
+        assertTrue(next.isPresent());
+        Assert.assertEquals(ZonedDateTime.of(1970, 1, 1, 12, 0, 0, 0, ZoneOffset.UTC), next.get());
+
+        // After 2099
+        ZonedDateTime dateTimeAfter2099 = ZonedDateTime.of(2150, 1, 1, 0, 0, 0, 0, ZoneOffset.UTC);
+        Optional<ZonedDateTime> last = execution.lastExecution(dateTimeAfter2099);
+        assertTrue(last.isPresent());
+        Assert.assertEquals(ZonedDateTime.of(2099, 12, 31, 12, 0, 0, 0, ZoneOffset.UTC), last.get());
     }
 
     private Duration getMinimumInterval(final String quartzPattern) {
