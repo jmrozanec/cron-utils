@@ -86,8 +86,14 @@ class EveryFieldValueGenerator extends FieldValueGenerator {
     @Override
     public int generatePreviousValue(final int reference) throws NoSuchValueException {
         final Every every = (Every) cronField.getExpression();
+        if (reference < from) {
+            throw new NoSuchValueException();
+        }
+        if (reference > to) {
+            return to;
+        }
         final int period = every.getPeriod().getValue();
-        final int remainder = reference % period;
+        final int remainder = (reference - from) % period;
         if (remainder == 0) {
             return reference - period;
         } else {
@@ -100,7 +106,7 @@ class EveryFieldValueGenerator extends FieldValueGenerator {
         final List<Integer> values = new ArrayList<>();
         try {
             final int offset = offset();
-            if (start != offset) {
+            if (start < offset && offset < end) {
                 values.add(offset);
             }
             int reference = generateNextValue(start);
