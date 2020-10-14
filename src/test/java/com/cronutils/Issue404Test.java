@@ -34,7 +34,7 @@ import com.cronutils.parser.CronParser;
  */
 public class Issue404Test {
 
-	@Ignore
+
 	@Test
 	public void testNovember3Midnight() {
 		final CronDefinition cronDefinition = CronDefinitionBuilder.defineCron().withMinutes().and().withHours().and()
@@ -44,7 +44,7 @@ public class Issue404Test {
 
 		final ExecutionTime executionTime = ExecutionTime.forCron(cron);
 
-		final ZonedDateTime time = LocalDateTime.of(2019, 11, 3, 0, 0, 1).atZone(ZoneId.of("America/Sao_Paulo"));
+		final ZonedDateTime time = ZonedDateTime.of(2019, 11, 3, 0, 0, 1, 0, ZoneId.of("America/Sao_Paulo"));
 
 		final Duration timeFromLastExecution = executionTime.timeFromLastExecution(time).get();
 
@@ -61,7 +61,7 @@ public class Issue404Test {
 
 		final ExecutionTime executionTime = ExecutionTime.forCron(cron);
 
-		final ZonedDateTime time = LocalDateTime.of(2019, 11, 3, 12, 0, 0).atZone(ZoneId.of("America/Sao_Paulo"));
+		final ZonedDateTime time = ZonedDateTime.of(2019, 11, 3, 12, 0, 1, 0, ZoneId.of("America/Sao_Paulo"));
 
 		final Duration timeFromLastExecution = executionTime.timeFromLastExecution(time).get();
 

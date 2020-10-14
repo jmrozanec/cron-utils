@@ -324,10 +324,7 @@ public class SingleExecutionTime implements ExecutionTime {
 
         if (year.isEmpty()) {
             return getPreviousPotentialYear(date, days, highestMonth, highestDay, highestHour, highestMinute, highestSecond);
-        }
-        //TODO Issue 305
-
-        else{
+        } else {
             if(!year.contains(date.getYear())){
                 Optional<Integer> validprevyear = year.stream().filter(y->y<date.getYear()).max(Integer::compareTo);
                 if(validprevyear.isPresent()){
