@@ -25,10 +25,14 @@ import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalAdjusters;
 import java.util.Date;
 import java.util.Optional;
 import java.util.TimeZone;
 
+import com.cronutils.model.CronType;
+import com.cronutils.model.definition.CronDefinition;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -43,6 +47,7 @@ import org.slf4j.LoggerFactory;
 import static com.cronutils.model.CronType.QUARTZ;
 import static java.time.ZoneOffset.UTC;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -839,6 +844,87 @@ public class ExecutionTimeQuartzIntegrationTest {
         } else {
             assertEquals("The last execution should be on the same day", lastExecution.get().toLocalDate(), time.toLocalDate());
         }
+    }
+
+    /**
+     * Issue #402
+     * https://github.com/jmrozanec/cron-utils/issues/402
+     * Fix last and next execution time when using every X years
+     */
+    @Test
+    public void testLastExecutionIssue402() {
+        // Every 2 years at March 1st midnight
+        ExecutionTime execution = ExecutionTime.forCron(parser.parse("0 0 0 1 3 ? 2001-2020/2"));
+
+        ZonedDateTime currentDateTime = ZonedDateTime.of(LocalDate.of(2015, 1, 15), LocalTime.MIDNIGHT, ZoneOffset.UTC);
+        // Check next execution time is correct
+        Optional<ZonedDateTime> nextExecution = execution.nextExecution(currentDateTime);
+        assertTrue(nextExecution.isPresent());
+        assertEquals(ZonedDateTime.of(LocalDate.of(2015, 3, 1), LocalTime.MIDNIGHT, ZoneOffset.UTC), nextExecution.get());
+        // Check previous execution time is correct
+        Optional<ZonedDateTime> lastExecution = execution.lastExecution(currentDateTime);
+        assertTrue(lastExecution.isPresent());
+        assertEquals(ZonedDateTime.of(LocalDate.of(2013, 3, 1), LocalTime.MIDNIGHT, ZoneOffset.UTC), lastExecution.get());
+
+        lastExecution = execution.lastExecution(nextExecution.get());
+        assertTrue(lastExecution.isPresent());
+        assertEquals(ZonedDateTime.of(LocalDate.of(2013, 3, 1), LocalTime.MIDNIGHT, ZoneOffset.UTC), lastExecution.get());
+
+        // Assume the current time is before the start time of every expression, check last and next execution.ß
+        ZonedDateTime timeBeforeStart = ZonedDateTime.of(LocalDate.of(1996, 1, 15), LocalTime.MIDNIGHT, ZoneOffset.UTC);
+        Optional<ZonedDateTime> nextBeforeStart = execution.nextExecution(timeBeforeStart);
+        assertTrue(nextBeforeStart.isPresent());
+        assertEquals(ZonedDateTime.of(LocalDate.of(2001, 3, 1), LocalTime.MIDNIGHT, ZoneOffset.UTC), nextBeforeStart.get());
+
+        Optional<ZonedDateTime> lastBeforeStart = execution.lastExecution(nextBeforeStart.get());
+        assertFalse(lastBeforeStart.isPresent());
+
+        // Assume the current time is before the start time of every expression, check last and next execution.ß
+        ZonedDateTime timeAfterEnd = ZonedDateTime.of(LocalDate.of(2025, 1, 15), LocalTime.MIDNIGHT, ZoneOffset.UTC);
+        Optional<ZonedDateTime> nextAfterEnd = execution.nextExecution(timeAfterEnd);
+        assertFalse(nextAfterEnd.isPresent());
+
+        Optional<ZonedDateTime> lastAfterEnd = execution.lastExecution(timeAfterEnd);
+        assertTrue(lastAfterEnd.isPresent());
+        assertEquals(ZonedDateTime.of(LocalDate.of(2019, 3, 1), LocalTime.MIDNIGHT, ZoneOffset.UTC), lastAfterEnd.get());
+    }
+
+    /**
+     * Issue #424
+     * https://github.com/jmrozanec/cron-utils/issues/424
+     * Last execution time incorrectly calculated when using day of week expression
+     */
+    @Test
+    public void testLastExecutionIssue424() {
+        // Every day at 20:00
+        ExecutionTime executionTime = ExecutionTime.forCron(parser.parse("0 0 12 ? * SUN#4 2020"));
+        LocalDate date = LocalDate.of(2021, 1, 1);
+        LocalTime time = LocalTime.of(0, 0, 0);
+        ZonedDateTime dateTime = ZonedDateTime.of(date, time, ZoneOffset.UTC);
+        for (int index = 0, size = 12; index < size; index++) {
+            dateTime = executionTime.lastExecution(dateTime).orElse(null);
+            assertEquals(LocalDateTime.of(2020, 12 - index, 1, 12, 0, 0).with(TemporalAdjusters.dayOfWeekInMonth(4, DayOfWeek.SUNDAY)), dateTime.toLocalDateTime());
+        }
+    }
+
+    /**
+     * Issue #428
+     * Enforce year constraints from Quartz cron definition
+     */
+    @Test
+    public void testBoundary() {
+        ExecutionTime execution = ExecutionTime.forCron(parser.parse("0 0 12 * * ?"));
+        // Before 1970
+        ZonedDateTime dateTimeBefore1970 = ZonedDateTime.of(1900, 1, 1, 0, 0, 0, 0, ZoneOffset.UTC);
+        Optional<ZonedDateTime> next = execution.nextExecution(dateTimeBefore1970);
+        assertTrue(next.isPresent());
+        Assert.assertEquals(ZonedDateTime.of(1970, 1, 1, 12, 0, 0, 0, ZoneOffset.UTC), next.get());
+
+        // After 2099
+        ZonedDateTime dateTimeAfter2099 = ZonedDateTime.of(2150, 1, 1, 0, 0, 0, 0, ZoneOffset.UTC);
+        Optional<ZonedDateTime> last = execution.lastExecution(dateTimeAfter2099);
+        assertTrue(last.isPresent());
+        Assert.assertEquals(ZonedDateTime.of(2099, 12, 31, 12, 0, 0, 0, ZoneOffset.UTC), last.get());
     }
 
     private Duration getMinimumInterval(final String quartzPattern) {

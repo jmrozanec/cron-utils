@@ -17,7 +17,7 @@ import static org.junit.Assert.assertEquals;
 
 public class Issue388Test {
 
-    //@Test //TODO fix!
+    @Test
     public void testLastAndNextExecutionWithDowAndDom() {
 
         ZonedDateTime dateTime = ZonedDateTime.of(2019, 07, 01, 8, 0, 0, 0, UTC);

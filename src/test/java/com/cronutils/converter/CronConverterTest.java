@@ -17,7 +17,10 @@ import static org.mockito.Mockito.spy;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -53,12 +56,11 @@ public class CronConverterTest {
 
 	@Test
 	public void testCronConverterBuilder() {
-		// TODO: after checkout I've found this two methods not working
-//		cronConverter.setToCalendarConverter(new CronToCalendarTransformer());
-//		cronConverter.setToCronConverter(new CalendarToCronTransformer());
-//		assertEquals(expectedCronExpression,
-//				cronConverter.using(inputCronExpression)
-//						.from(ZoneId.of(timezone)).to(ZoneId.of("UTC"))
-//						.convert());
+		cronConverter.setToCalendarConverter(new CronToCalendarTransformer());
+		cronConverter.setToCronConverter(new CalendarToCronTransformer());
+		Assert.assertEquals(expectedCronExpression,
+				cronConverter.using(inputCronExpression)
+						.from(ZoneId.of(timezone)).to(ZoneId.of("UTC"))
+						.convert());
 	}
 }

@@ -22,6 +22,7 @@ import com.cronutils.model.field.CronField;
 import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.field.definition.FieldDefinition;
 import com.cronutils.utils.Preconditions;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Provides human readable description for a given cron.
@@ -69,14 +70,13 @@ public class CronDescriptor {
         final Map<CronFieldName, CronField> expressions = cron.retrieveFieldsAsMap();
         final Map<CronFieldName, FieldDefinition> fieldDefinitions = cron.getCronDefinition().retrieveFieldDefinitionsAsMap();
 
-        return
-                new StringBuilder()
-                        .append(describeHHmmss(expressions)).append(" ")
-                        .append(describeDayOfMonth(expressions)).append(" ")
-                        .append(describeMonth(expressions)).append(" ")
-                        .append(describeDayOfWeek(expressions, fieldDefinitions)).append(" ")
-                        .append(describeYear(expressions))
-                        .toString().replaceAll("\\s+", " ").trim();
+        return new StringBuilder()
+                                    .append(describeHHmmss(expressions)).append(" ")
+                                    .append(describeDayOfMonth(expressions)).append(" ")
+                                    .append(describeMonth(expressions)).append(" ")
+                                    .append(describeDayOfWeek(expressions, fieldDefinitions)).append(" ")
+                                    .append(describeYear(expressions))
+                                    .toString().replaceAll("\\s+", " ").trim();
     }
 
     /**

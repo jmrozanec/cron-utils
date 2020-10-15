@@ -18,6 +18,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoField;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalField;
@@ -63,7 +64,7 @@ import static java.time.temporal.TemporalAdjusters.lastDayOfMonth;
  * Calculates execution time given a cron pattern.
  */
 public class SingleExecutionTime implements ExecutionTime {
-
+    private static DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
     private static final int MAX_ITERATIONS = 100_000;
 
     private static final LocalTime MAX_SECONDS = LocalTime.MAX.truncatedTo(SECONDS);
@@ -84,14 +85,17 @@ public class SingleExecutionTime implements ExecutionTime {
             final CronField daysOfMonthCronField, final CronField daysOfYearCronField, final TimeNode months, final TimeNode hours,
             final TimeNode minutes, final TimeNode seconds) {
         this.cronDefinition = Preconditions.checkNotNull(cronDefinition);
-        FieldValueGenerator alwaysGenerator = FieldValueGeneratorFactory.forCronField(new CronField(CronFieldName.YEAR, Always.always(), FieldConstraintsBuilder.instance().createConstraintsInstance()));
         if(cronDefinition.containsFieldDefinition(CronFieldName.YEAR)){
             if(!cronDefinition.getFieldDefinition(CronFieldName.YEAR).isOptional()){
                 Preconditions.checkNotNull(yearsValueCronField);
             }
-            this.yearsValueGenerator = yearsValueCronField==null?alwaysGenerator:createYearValueGeneratorInstance(yearsValueCronField);
-        } else{
-            this.yearsValueGenerator = alwaysGenerator;
+            this.yearsValueGenerator = (yearsValueCronField == null)
+                    ? FieldValueGeneratorFactory.forCronField(new CronField(CronFieldName.YEAR, Always.always(),
+                    cronDefinition.getFieldDefinition(CronFieldName.YEAR).getConstraints()))
+                    : createYearValueGeneratorInstance(yearsValueCronField);
+        } else {
+            this.yearsValueGenerator = FieldValueGeneratorFactory.forCronField(new CronField(CronFieldName.YEAR, Always.always(),
+                    FieldConstraintsBuilder.instance().createConstraintsInstance()));
         }
         this.daysOfWeekCronField = Preconditions.checkNotNull(daysOfWeekCronField);
         this.daysOfMonthCronField = Preconditions.checkNotNull(daysOfMonthCronField);
@@ -114,6 +118,10 @@ public class SingleExecutionTime implements ExecutionTime {
             ZonedDateTime nextMatch = nextClosestMatch(date);
             if (nextMatch.equals(date)) {
                 nextMatch = nextClosestMatch(date.plusSeconds(1));
+
+                if(nextMatch.format(DATE_TIME_FORMATTER).equals(date.format(DATE_TIME_FORMATTER))){ // daylight saving case: issue #446
+                    nextMatch = nextClosestMatch(date.plusSeconds(1).plusHours(1));
+                }
             }
             return Optional.of(nextMatch);
         } catch (final NoSuchValueException e) {
@@ -303,7 +311,7 @@ public class SingleExecutionTime implements ExecutionTime {
         final List<Integer> year = yearsValueGenerator.generateCandidates(date.getYear(), date.getYear());
         final Optional<TimeNode> optionalDays = generateDays(cronDefinition, date);
         TimeNode days;
-        if (optionalDays.isPresent()) {
+        if (optionalDays.isPresent() && optionalDays.get().getValues().stream().anyMatch(i -> i <= date.getDayOfMonth())) {
             days = optionalDays.get();
         } else {
             return new ExecutionTimeResult(toEndOfPreviousMonth(date), false);
@@ -316,10 +324,7 @@ public class SingleExecutionTime implements ExecutionTime {
 
         if (year.isEmpty()) {
             return getPreviousPotentialYear(date, days, highestMonth, highestDay, highestHour, highestMinute, highestSecond);
-        }
-        //TODO Issue 305
-
-        else{
+        } else {
             if(!year.contains(date.getYear())){
                 Optional<Integer> validprevyear = year.stream().filter(y->y<date.getYear()).max(Integer::compareTo);
                 if(validprevyear.isPresent()){

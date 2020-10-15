@@ -439,7 +439,8 @@ public class ExecutionTimeUnixIntegrationTest {
                 final LocalDateTime expectedLocalDateTime = LocalDateTime.of(year, Month.NOVEMBER, dayOfMonth, 1, 30);
                 final Optional<ZonedDateTime> nextExecution = executionTime.nextExecution(date);
                 assert (nextExecution.isPresent());
-                date = nextExecution.get();
+
+                final ZonedDateTime nextExecutionDate = nextExecution.get();
 
                 final ZoneOffset expectedOffset = pastDSTEnd ? easternStandardTimeOffset : easternDaylightTimeOffset;
 
@@ -447,13 +448,11 @@ public class ExecutionTimeUnixIntegrationTest {
                     if (!pastDSTEnd) {
                         // next iteration should be past the DST transition
                         pastDSTEnd = true;
-                    } else {
-                        dayOfMonth++;
                     }
-                } else {
-                    dayOfMonth++;
                 }
-                assertEquals(ZonedDateTime.ofInstant(expectedLocalDateTime, expectedOffset, zoneId), date);
+                dayOfMonth++;
+                assertEquals(ZonedDateTime.ofInstant(expectedLocalDateTime, expectedOffset, zoneId), nextExecutionDate);
+                date = nextExecutionDate;
             }
         }
     }
