@@ -14,6 +14,7 @@
 package com.cronutils.descriptor;
 
 import com.cronutils.model.field.expression.Every;
+import java.text.MessageFormat;
 import java.time.DayOfWeek;
 import java.time.Month;
 import java.time.format.TextStyle;
@@ -84,11 +85,10 @@ class DescriptionStrategyFactory {
                                 .format("%s %s %s ", bundle.getString("the_nearest_weekday_to_the"), on.getTime().getValue(), bundle.getString("of_the_month"));
                     case L:
                         Integer daysBefore = on.getNth().getValue();
-                        if (daysBefore > 0) {
-                            String daysRep =
-                                daysBefore == 1 ? bundle.getString("day") : bundle.getString("days");
-                            return String.format("%d %s %s", daysBefore, daysRep,
-                                bundle.getString("before_last_day_of_month"));
+                        if (daysBefore > 1) {
+                            return MessageFormat.format(bundle.getString("days_before_last_day_of_month"), daysBefore);
+                        } else if (daysBefore == 1){
+                            return bundle.getString("day_before_last_day_of_month");
                         } else {
                             return bundle.getString("last_day_of_month");
                         }

@@ -380,7 +380,7 @@ public class TestDescriptor {
         CronDescriptor descriptor = CronDescriptor.instance(Locale.ENGLISH);
         String description = descriptor.describe(quartzCron);
 
-        assertEquals( "at 11:00 1 day before the last day of the month", description);
+        assertEquals( "at 11:00 one day before the last day of the month", description);
     }
 
 
