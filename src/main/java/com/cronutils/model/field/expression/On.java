@@ -18,6 +18,7 @@ import com.cronutils.model.field.value.SpecialChar;
 import com.cronutils.model.field.value.SpecialCharFieldValue;
 import com.cronutils.utils.Preconditions;
 import com.cronutils.utils.StringUtils;
+import org.apache.commons.lang3.Validate;
 
 import static com.cronutils.utils.Preconditions.checkArgument;
 

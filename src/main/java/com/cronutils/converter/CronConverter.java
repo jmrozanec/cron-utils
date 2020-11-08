@@ -25,26 +25,22 @@ import lombok.Setter;
 
 public class CronConverter {
 
-	private static final Logger LOGGER = LoggerFactory
-			.getLogger(CronConverter.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(CronConverter.class);
 
 	private static final String CRON_FIELDS_SEPARATOR = " ";
-
 	private String[] cronParts;
-
 	private Calendar fromCalendar;
-
 	private String sourceCron;
-
 	private ZoneId sourceZoneId;
-
 	private ZoneId targetZoneId;
 
-	@Setter
-	CronToCalendarTransformer toCalendarConverter = new CronToCalendarTransformer();
+	private CronToCalendarTransformer toCalendarConverter;
+	private CalendarToCronTransformer toCronConverter;
 
-	@Setter
-	CalendarToCronTransformer toCronConverter = new CalendarToCronTransformer();
+	public CronConverter(CronToCalendarTransformer toCalendarConverter, CalendarToCronTransformer toCronConverter){
+		this.toCalendarConverter = toCalendarConverter;
+		this.toCronConverter = toCronConverter;
+	}
 
 	public CronConverter using(String cronExpression) {
 		this.sourceCron = cronExpression;

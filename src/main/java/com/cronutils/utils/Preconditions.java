@@ -92,8 +92,7 @@ import java.util.Collection;
  * @since 2.0 (imported from Google Collections Library)
  */
 public class Preconditions {
-    private Preconditions() {
-    }
+    private Preconditions() {}
 
     /**
      * Ensures the truth of an expression involving one or more parameters to the calling method.
@@ -105,6 +104,12 @@ public class Preconditions {
      */
     public static void checkArgument(final boolean expression, final Object errorMessage) {
         if (!expression) {
+            throw new IllegalArgumentException(String.valueOf(errorMessage));
+        }
+    }
+
+    public static void checkPositive(final int value, final Object errorMessage) {
+        if (value < 0) {
             throw new IllegalArgumentException(String.valueOf(errorMessage));
         }
     }
