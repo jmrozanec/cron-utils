@@ -13,21 +13,15 @@
 
 package com.cronutils.model.time.generator;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
+import com.cronutils.Function;
+import com.cronutils.model.field.CronField;
+import com.cronutils.model.field.expression.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.cronutils.Function;
-import com.cronutils.model.field.CronField;
-import com.cronutils.model.field.expression.Always;
-import com.cronutils.model.field.expression.And;
-import com.cronutils.model.field.expression.Between;
-import com.cronutils.model.field.expression.Every;
-import com.cronutils.model.field.expression.FieldExpression;
-import com.cronutils.model.field.expression.On;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 class AndFieldValueGenerator extends FieldValueGenerator {
     private static final Logger log = LoggerFactory.getLogger(AndFieldValueGenerator.class);

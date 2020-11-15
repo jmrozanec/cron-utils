@@ -14,10 +14,10 @@
 
 package com.cronutils.model.field.expression;
 
-import java.io.Serializable;
-
 import com.cronutils.model.field.expression.visitor.FieldExpressionVisitor;
 import com.cronutils.utils.Preconditions;
+
+import java.io.Serializable;
 
 public abstract class FieldExpression implements Serializable {
 

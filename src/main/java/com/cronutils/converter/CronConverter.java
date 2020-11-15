@@ -13,15 +13,13 @@
 
 package com.cronutils.converter;
 
-import java.time.ZoneId;
-import java.util.Calendar;
-import java.util.TimeZone;
-
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import lombok.Setter;
+import java.time.ZoneId;
+import java.util.Calendar;
+import java.util.TimeZone;
 
 public class CronConverter {
 

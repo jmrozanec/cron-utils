@@ -13,12 +13,11 @@
 
 package com.cronutils.model.field.expression;
 
-import org.junit.Before;
-import org.junit.Test;
-
 import com.cronutils.model.field.value.IntegerFieldValue;
 import com.cronutils.model.field.value.SpecialChar;
 import com.cronutils.model.field.value.SpecialCharFieldValue;
+import org.junit.Before;
+import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 

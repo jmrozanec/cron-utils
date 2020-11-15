@@ -13,10 +13,6 @@
 
 package com.cronutils.builder;
 
-import java.util.ArrayList;
-import java.util.EnumMap;
-import java.util.Map;
-
 import com.cronutils.model.Cron;
 import com.cronutils.model.SingleCron;
 import com.cronutils.model.definition.CronDefinition;
@@ -28,14 +24,11 @@ import com.cronutils.model.field.expression.FieldExpression;
 import com.cronutils.model.field.expression.visitor.ValidationFieldExpressionVisitor;
 import com.cronutils.utils.VisibleForTesting;
 
-import static com.cronutils.model.field.CronFieldName.DAY_OF_MONTH;
-import static com.cronutils.model.field.CronFieldName.DAY_OF_WEEK;
-import static com.cronutils.model.field.CronFieldName.DAY_OF_YEAR;
-import static com.cronutils.model.field.CronFieldName.HOUR;
-import static com.cronutils.model.field.CronFieldName.MINUTE;
-import static com.cronutils.model.field.CronFieldName.MONTH;
-import static com.cronutils.model.field.CronFieldName.SECOND;
-import static com.cronutils.model.field.CronFieldName.YEAR;
+import java.util.ArrayList;
+import java.util.EnumMap;
+import java.util.Map;
+
+import static com.cronutils.model.field.CronFieldName.*;
 import static com.cronutils.utils.Preconditions.checkState;
 
 public class CronBuilder {

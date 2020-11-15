@@ -13,11 +13,6 @@
 
 package com.cronutils.model.time.generator;
 
-import java.util.Random;
-
-import org.junit.Before;
-import org.junit.Test;
-
 import com.cronutils.model.field.CronField;
 import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.field.constraint.FieldConstraints;
@@ -25,6 +20,10 @@ import com.cronutils.model.field.constraint.FieldConstraintsBuilder;
 import com.cronutils.model.field.expression.FieldExpression;
 import com.cronutils.model.field.expression.On;
 import com.cronutils.model.field.value.IntegerFieldValue;
+import org.junit.Before;
+import org.junit.Test;
+
+import java.util.Random;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;

@@ -13,15 +13,6 @@
 
 package com.cronutils.parser;
 
-import java.time.ZonedDateTime;
-import java.util.Locale;
-import java.util.Optional;
-
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
-
 import com.cronutils.builder.CronBuilder;
 import com.cronutils.descriptor.CronDescriptor;
 import com.cronutils.model.Cron;
@@ -29,10 +20,16 @@ import com.cronutils.model.CronType;
 import com.cronutils.model.definition.CronDefinitionBuilder;
 import com.cronutils.model.field.expression.FieldExpressionFactory;
 import com.cronutils.model.time.ExecutionTime;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
+import java.time.ZonedDateTime;
+import java.util.Locale;
+import java.util.Optional;
+
+import static org.junit.Assert.*;
 
 public class CronParserQuartzIntegrationTest {
 

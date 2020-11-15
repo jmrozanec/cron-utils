@@ -7,21 +7,18 @@
 
 package com.cronutils.model.time;
 
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.util.Optional;
-
-import org.junit.Test;
-
 import com.cronutils.model.Cron;
 import com.cronutils.model.definition.CronDefinition;
 import com.cronutils.model.definition.CronDefinitionBuilder;
 import com.cronutils.parser.CronParser;
+import org.junit.Test;
+
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.util.Optional;
 
 import static java.time.ZoneOffset.UTC;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 public class ExecutionTimeCustomDefinitionIntegrationTest {
 

@@ -13,13 +13,13 @@
 
 package com.cronutils.model.field.constraint;
 
+import com.cronutils.model.field.value.SpecialChar;
+import com.cronutils.utils.Preconditions;
+
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
-
-import com.cronutils.model.field.value.SpecialChar;
-import com.cronutils.utils.Preconditions;
 
 /**
  * Holds information on valid values for a field and allows to perform mappings and validations. Example of information for valid field

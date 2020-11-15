@@ -1,19 +1,15 @@
 package com.cronutils.utils.descriptor;
 
-import java.util.Locale;
-
-import org.hamcrest.core.IsEqual;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
-
 import com.cronutils.descriptor.CronDescriptor;
 import com.cronutils.model.CronType;
 import com.cronutils.model.definition.CronDefinition;
 import com.cronutils.model.definition.CronDefinitionBuilder;
 import com.cronutils.parser.CronParser;
+import org.hamcrest.core.IsEqual;
+import org.junit.Assert;
+import org.junit.runners.Parameterized.Parameters;
+
+import java.util.Locale;
 
 /**
  *  Issue 334 - Getting exception {@link IllegalArgumentException} "Both, a day-of-week AND a day-of-month parameter, are not supported."

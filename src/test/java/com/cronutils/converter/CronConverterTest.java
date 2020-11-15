@@ -13,16 +13,16 @@
 
 package com.cronutils.converter;
 
-import static org.mockito.Mockito.spy;
-
-import java.util.Arrays;
-import java.util.Collection;
-import java.time.ZoneId;
-
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+
+import java.time.ZoneId;
+import java.util.Arrays;
+import java.util.Collection;
+
+import static org.mockito.Mockito.spy;
 
 @RunWith(Parameterized.class)
 public class CronConverterTest {

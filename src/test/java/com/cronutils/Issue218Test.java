@@ -13,14 +13,13 @@
 
 package com.cronutils;
 
-import java.time.ZonedDateTime;
-
-import org.junit.Test;
-
 import com.cronutils.model.Cron;
 import com.cronutils.model.definition.CronDefinition;
 import com.cronutils.model.time.ExecutionTime;
 import com.cronutils.parser.CronParser;
+import org.junit.Test;
+
+import java.time.ZonedDateTime;
 
 import static com.cronutils.model.definition.CronDefinitionBuilder.defineCron;
 

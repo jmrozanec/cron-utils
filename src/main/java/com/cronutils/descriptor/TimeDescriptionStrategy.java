@@ -13,17 +13,17 @@
 
 package com.cronutils.descriptor;
 
-import static com.cronutils.model.field.expression.FieldExpression.always;
-
-import java.util.HashSet;
-import java.util.ResourceBundle;
-import java.util.Set;
-
 import com.cronutils.Function;
 import com.cronutils.model.field.expression.*;
 import com.cronutils.model.field.value.IntegerFieldValue;
 import com.cronutils.utils.Preconditions;
 import com.cronutils.utils.StringUtils;
+
+import java.util.HashSet;
+import java.util.ResourceBundle;
+import java.util.Set;
+
+import static com.cronutils.model.field.expression.FieldExpression.always;
 
 /**
  * Strategy to provide a human readable description to hh:mm:ss variations.

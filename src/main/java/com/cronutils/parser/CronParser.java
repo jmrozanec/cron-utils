@@ -14,14 +14,6 @@
 
 package com.cronutils.parser;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.function.IntSupplier;
-import java.util.stream.Collectors;
-
 import com.cronutils.model.CompositeCron;
 import com.cronutils.model.Cron;
 import com.cronutils.model.SingleCron;
@@ -30,6 +22,9 @@ import com.cronutils.model.field.CronField;
 import com.cronutils.model.field.definition.FieldDefinition;
 import com.cronutils.utils.Preconditions;
 import com.cronutils.utils.StringUtils;
+
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Parser for cron expressions.

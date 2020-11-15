@@ -13,16 +13,15 @@
 
 package com.cronutils.descriptor;
 
-import java.util.Locale;
-import java.util.Map;
-import java.util.ResourceBundle;
-
 import com.cronutils.model.Cron;
 import com.cronutils.model.field.CronField;
 import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.field.definition.FieldDefinition;
 import com.cronutils.utils.Preconditions;
-import org.apache.commons.lang3.StringUtils;
+
+import java.util.Locale;
+import java.util.Map;
+import java.util.ResourceBundle;
 
 /**
  * Provides human readable description for a given cron.

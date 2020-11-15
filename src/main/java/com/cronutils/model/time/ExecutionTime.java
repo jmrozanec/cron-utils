@@ -13,17 +13,17 @@
 
 package com.cronutils.model.time;
 
-import java.time.Duration;
-import java.time.ZonedDateTime;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
 import com.cronutils.model.CompositeCron;
 import com.cronutils.model.Cron;
 import com.cronutils.model.SingleCron;
 import com.cronutils.model.field.CronField;
 import com.cronutils.model.field.CronFieldName;
+
+import java.time.Duration;
+import java.time.ZonedDateTime;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * Calculates execution time given a cron pattern.

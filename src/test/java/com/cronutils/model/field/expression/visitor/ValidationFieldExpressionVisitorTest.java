@@ -1,34 +1,23 @@
 package com.cronutils.model.field.expression.visitor;
 
-import java.util.Collections;
-
+import com.cronutils.StringValidations;
+import com.cronutils.model.field.constraint.FieldConstraints;
+import com.cronutils.model.field.expression.*;
+import com.cronutils.model.field.value.IntegerFieldValue;
+import com.cronutils.model.field.value.SpecialChar;
+import com.cronutils.model.field.value.SpecialCharFieldValue;
+import com.cronutils.utils.StringUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
-import com.cronutils.StringValidations;
-import com.cronutils.model.field.constraint.FieldConstraints;
-import com.cronutils.model.field.expression.Always;
-import com.cronutils.model.field.expression.And;
-import com.cronutils.model.field.expression.Between;
-import com.cronutils.model.field.expression.Every;
-import com.cronutils.model.field.expression.FieldExpression;
-import com.cronutils.model.field.expression.On;
-import com.cronutils.model.field.expression.QuestionMark;
-import com.cronutils.model.field.value.IntegerFieldValue;
-import com.cronutils.model.field.value.SpecialChar;
-import com.cronutils.model.field.value.SpecialCharFieldValue;
-import com.cronutils.utils.StringUtils;
+import java.util.Collections;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 public class ValidationFieldExpressionVisitorTest {
 

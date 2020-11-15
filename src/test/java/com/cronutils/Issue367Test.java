@@ -13,7 +13,12 @@
 
 package com.cronutils;
 
-import static org.junit.Assert.assertTrue;
+import com.cronutils.model.Cron;
+import com.cronutils.model.CronType;
+import com.cronutils.model.definition.CronDefinitionBuilder;
+import com.cronutils.parser.CronParser;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.text.ParseException;
 import java.time.ZoneId;
@@ -22,13 +27,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.TimeZone;
 
-import org.junit.Before;
-import org.junit.Test;
-
-import com.cronutils.model.Cron;
-import com.cronutils.model.CronType;
-import com.cronutils.model.definition.CronDefinitionBuilder;
-import com.cronutils.parser.CronParser;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Provide an example on how convert a cron expression to ISO8601

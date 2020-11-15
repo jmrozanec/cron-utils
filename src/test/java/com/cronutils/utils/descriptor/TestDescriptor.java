@@ -1,11 +1,5 @@
 package com.cronutils.utils.descriptor;
 
-import java.util.Locale;
-import java.util.ResourceBundle;
-
-import org.junit.Ignore;
-import org.junit.Test;
-
 import com.cronutils.descriptor.CronDescriptor;
 import com.cronutils.descriptor.refactor.TimeDescriptor;
 import com.cronutils.model.Cron;
@@ -13,6 +7,11 @@ import com.cronutils.model.CronType;
 import com.cronutils.model.definition.CronDefinition;
 import com.cronutils.model.definition.CronDefinitionBuilder;
 import com.cronutils.parser.CronParser;
+import org.junit.Ignore;
+import org.junit.Test;
+
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 import static org.junit.Assert.assertEquals;
 

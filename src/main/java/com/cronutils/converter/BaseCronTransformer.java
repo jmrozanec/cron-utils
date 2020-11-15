@@ -13,15 +13,15 @@
 
 package com.cronutils.converter;
 
-import static org.apache.commons.lang3.StringUtils.isNumeric;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import static org.apache.commons.lang3.StringUtils.isNumeric;
 
 public abstract class BaseCronTransformer {
 
