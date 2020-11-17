@@ -121,11 +121,12 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-validator</artifactId>
+            <groupId>org.apache.bval</groupId>
+            <artifactId>bval-jsr</artifactId>
+            <version>1.1.2</version>
+            <!--The Hibernate dependency is no longer used, due to security vulnerabilities -->
             <!-- https://stackoverflow.com/questions/48323244/java-lang-nosuchmethoderror-javax-validation-bootstrapconfiguration-getclockproExecutionTimeQuartzIntegrationTest -->
             <!-- https://stackoverflow.com/questions/24386771/javax-validation-validationexception-hv000183-unable-to-load-javax-el-express -->
-            <version>5.3.6.Final</version>
             <scope>test</scope>
         </dependency>
         <dependency>
