@@ -326,7 +326,8 @@ public class CronDefinitionBuilder {
                 .withHours().withValidRange(0, 23).withStrictRange().and()
                 .withDayOfMonth().withValidRange(1, 31).supportsQuestionMark().and()
                 .withMonth().withValidRange(1, 12).and()
-                .withDayOfWeek().withValidRange(0, 7).withMondayDoWValue(1).withIntMapping(7,0).supportsQuestionMark().and()
+                .withDayOfWeek().withValidRange(0, 7).withMondayDoWValue(1).withIntMapping(7,0)
+                    .supportsHash().supportsQuestionMark().and()
                 .instance();
     }
 
