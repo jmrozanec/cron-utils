@@ -13,10 +13,13 @@ public class CronParserSpringIntegrationTest {
         parser = new CronParser(CronDefinitionBuilder.instanceDefinitionFor(CronType.SPRING));
     }
 
+    /**
+     * The example is adapted from: https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/scheduling/support/CronExpression.html
+     */
     @Test
     public void testSpringCronSupportNthDayOfWeek(){
-        CronExpression.parse("0 0 0 ? * WED#2");
-        parser.parse("0 0 0 ? * WED#2");
+        CronExpression.parse("0 0 0 ? * FRI#1");
+        parser.parse("0 0 0 ? * FRI#1");
     }
 
 }
