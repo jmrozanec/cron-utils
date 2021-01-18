@@ -17,6 +17,8 @@
 
 package com.cronutils.utils;
 
+import java.util.StringJoiner;
+
 /**
  * <p>Operations on {@link java.lang.String} that are
  * {@code null} safe.</p>
