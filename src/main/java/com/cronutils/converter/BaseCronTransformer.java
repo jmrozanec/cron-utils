@@ -21,7 +21,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.apache.commons.lang3.StringUtils.isNumeric;
+import com.cronutils.utils.StringUtils;
 
 public abstract class BaseCronTransformer {
 
@@ -55,7 +55,7 @@ public abstract class BaseCronTransformer {
 		this.cronParts = cronParts;
 		this.calendarInstance = calendarInstance;
 		for (int i = 0; i < cronParts.length; i++) {
-			if (isNumeric(cronParts[i])) {
+			if (StringUtils.isNumeric(cronParts[i])) {
 				calendarField = CRON_FIELDS_POSITION_MAP.get(i);
 				cronFieldPosition = i;
 				cronFieldValue = Integer.parseInt(cronParts[i]);
