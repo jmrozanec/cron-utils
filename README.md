@@ -1,6 +1,8 @@
-cron-utils
-===========
-A Java library to parse, validate, migrate crons as well as get human readable descriptions for them. The project follows the [Semantic Versioning Convention](http://semver.org/), provides OSGi metadata and uses Apache 2.0 license.
+# cron-utils
+_We define crons. And support them._
+
+
+cron-utils is a Java library to define, parse, validate, migrate crons as well as get human readable descriptions for them. The project follows the [Semantic Versioning Convention](http://semver.org/), provides OSGi metadata and uses Apache 2.0 license.
 
 [![Gitter Chat](http://img.shields.io/badge/chat-online-brightgreen.svg)](https://gitter.im/jmrozanec/cron-utils)
 [![Build Status](https://travis-ci.org/jmrozanec/cron-utils.png?branch=master)](https://travis-ci.org/jmrozanec/cron-utils)
@@ -20,7 +22,7 @@ cron-utils is available on [Maven central](http://search.maven.org/#search%7Cga%
     <dependency>
         <groupId>com.cronutils</groupId>
         <artifactId>cron-utils</artifactId>
-        <version>9.1.2</version>
+        <version>9.1.3</version>
     </dependency>
 
 For Android developers, cron-utils 7.0.0 assumes Android 26+. For earlier Android versions consider using cron-utils 6.0.6.
@@ -49,7 +51,7 @@ Now we are developing a new generation of cron-descriptors using neural-translat
     * [Unix](http://www.unix.com/man-page/linux/5/crontab/)
     * [Cron4j](http://www.sauronsoftware.it/projects/cron4j/)
     * [Quartz](http://quartz-scheduler.org/)
-    * [Spring](https://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/scheduling/support/CronSequenceGenerator.html)
+    * [Spring](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/scheduling/support/CronExpression.html)
  * Obtain last/next execution time as well as time from last execution/time to next execution.
  * Obtain weekdays count between two dates, considering different weekend policies as well as holidays.
  * Need to map constants between different cron/time libraries? Use ConstantsMapper.
