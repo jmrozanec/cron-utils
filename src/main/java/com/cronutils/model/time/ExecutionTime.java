@@ -90,6 +90,12 @@ public interface ExecutionTime {
     /**
      * Provide nearest time for next execution.
      *
+     * Due to the question #468 we clarify: crons execute on local instance time.
+     * See: https://serverfault.com/questions/791713/what-time-zone-is-a-cron-job-using
+     * We ask for a ZonedDateTime for two reasons:
+     *  (i) to provide flexibility on which timezone the cron is being executed
+     *  (ii) to be able to reproduce issues regardless of our own local time (e.g.: daylight savings, etc.)
+     *
      * @param date - ZonedDateTime instance. If null, a NullPointerException will be raised.
      * @return Duration instance, never null. Time to next execution.
      */
@@ -98,6 +104,12 @@ public interface ExecutionTime {
     /**
      * Provide nearest date for last execution.
      *
+     * Due to the question #468 we clarify: crons execute on local instance time.
+     * See: https://serverfault.com/questions/791713/what-time-zone-is-a-cron-job-using
+     * We ask for a ZonedDateTime for two reasons:
+     * (i) to provide flexibility on which timezone the cron is being executed
+     * (ii) to be able to reproduce issues regardless of our own local time (e.g.: daylight savings, etc.)
+     * 
      * @param date - ZonedDateTime instance. If null, a NullPointerException will be raised.
      * @return Optional ZonedDateTime instance, never null. Last execution time or empty.
      */
