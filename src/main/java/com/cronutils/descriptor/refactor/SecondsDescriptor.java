@@ -172,11 +172,6 @@ class SecondsDescriptor implements FieldExpressionVisitor {
     }
 
     @Override
-    public FieldExpression visit(final FieldExpression expression) {
-        return null;
-    }
-
-    @Override
     public Always visit(final Always always) {
         return null;
     }
