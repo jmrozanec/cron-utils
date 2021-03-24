@@ -27,8 +27,8 @@ public class Issue470Test {
 	    Optional<ZonedDateTime> next = et1.nextExecution(dt);
 	    Optional<ZonedDateTime> last = et1.lastExecution(dt);
 	    System.out.println("Next: " + next + " Last: " + last);
-	    assert(!next.isEmpty());	// Without year in pattern, there is always a next execution date
-	    assert(!last.isEmpty());	// Without year in pattern, there is always a previous execution date
+	    assert(next.isPresent());	// Without year in pattern, there is always a next execution date
+	    assert(last.isPresent());	// Without year in pattern, there is always a previous execution date
 	    assert(et1.isMatch(dt));	// And, we also match this year
 	}
 
@@ -44,8 +44,8 @@ public class Issue470Test {
 	    Optional<ZonedDateTime> next = et1.nextExecution(dt);
 	    Optional<ZonedDateTime> last = et1.lastExecution(dt);
 	    System.out.println("Next: " + next + " Last: " + last);
-	    assert(next.isEmpty());	// We only should match once, on this exact date
-	    assert(last.isEmpty());	// therefore, next and last should be (and are) empty
+	    assert(!next.isPresent());	// We only should match once, on this exact date
+	    assert(!last.isPresent());	// therefore, next and last should be (and are) empty
 	    assert(et1.isMatch(dt));// Fails in 9.1.3
 	}
 
