@@ -13,6 +13,8 @@
 
 package com.cronutils.model.field.expression;
 
+import com.cronutils.model.field.expression.visitor.FieldExpressionVisitor;
+
 /**
  * Represents a question mark (?) value on cron expression field.
  */
@@ -25,6 +27,11 @@ public final class QuestionMark extends FieldExpression {
      * Should be package private and not be instantiated elsewhere. Class should become package private too.
      */
     private QuestionMark() {
+    }
+
+    @Override
+    public FieldExpression accept(FieldExpressionVisitor visitor) {
+        return visitor.visit(this);
     }
 
     @Override

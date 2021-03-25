@@ -13,6 +13,7 @@
 
 package com.cronutils.model.field.expression;
 
+import com.cronutils.model.field.expression.visitor.FieldExpressionVisitor;
 import com.cronutils.model.field.value.IntegerFieldValue;
 import com.cronutils.model.field.value.SpecialChar;
 import com.cronutils.model.field.value.SpecialCharFieldValue;
@@ -62,6 +63,11 @@ public class On extends FieldExpression {
 
     public SpecialCharFieldValue getSpecialChar() {
         return specialChar;
+    }
+
+    @Override
+    public FieldExpression accept(FieldExpressionVisitor visitor) {
+        return visitor.visit(this);
     }
 
     @Override

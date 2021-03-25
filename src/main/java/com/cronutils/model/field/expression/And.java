@@ -14,6 +14,8 @@
 
 package com.cronutils.model.field.expression;
 
+import com.cronutils.model.field.expression.visitor.FieldExpressionVisitor;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -34,6 +36,11 @@ public class And extends FieldExpression {
     public And and(final FieldExpression exp) {
         expressions.add(exp);
         return this;
+    }
+
+    @Override
+    public FieldExpression accept(FieldExpressionVisitor visitor) {
+        return visitor.visit(this);
     }
 
     @Override
