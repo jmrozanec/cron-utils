@@ -50,7 +50,9 @@ public class And extends FieldExpression {
             builder.append(expressions.get(j).asString());
             builder.append(",");
         }
-        builder.append(expressions.get(expressions.size() - 1).asString());
+        if(expressions.size()>0){
+            builder.append(expressions.get(expressions.size() - 1).asString());
+        }
         return builder.toString();
     }
 

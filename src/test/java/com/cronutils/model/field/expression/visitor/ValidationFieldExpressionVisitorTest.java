@@ -388,8 +388,11 @@ public class ValidationFieldExpressionVisitorTest {
         b1.accept(verify(strictSpy, times(1)));
         b2.accept(verify(strictSpy, times(2)));
         on.accept(verify(strictSpy, times(1)));
+    }
 
-        and = new And();
+    @Test
+    public void testVisitEmptyAnd(){
+        And and = new And();
         assertEquals(and, and.accept(visitor));
         assertEquals(and, and.accept(strictVisitor));
     }
