@@ -41,10 +41,7 @@ public abstract class FieldExpression implements Serializable {
      * @param visitor - FieldExpressionVisitor instance, never null
      * @return FieldExpression copied instance with visitor action performed.
      */
-    public final FieldExpression accept(final FieldExpressionVisitor visitor) {
-        Preconditions.checkNotNull(visitor, "FieldExpressionVisitor must not be null");
-        return visitor.visit(this);
-    }
+    public abstract FieldExpression accept(final FieldExpressionVisitor visitor);
 
     public static FieldExpression always() {
         return Always.INSTANCE;

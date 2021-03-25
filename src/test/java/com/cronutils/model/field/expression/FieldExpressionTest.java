@@ -13,6 +13,8 @@
 
 package com.cronutils.model.field.expression;
 
+import com.cronutils.model.field.expression.visitor.*;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -38,6 +40,11 @@ public class FieldExpressionTest {
     class TestFieldExpression extends FieldExpression {
 
         private static final long serialVersionUID = 8101930390397976027L;
+
+        @Override
+        public FieldExpression accept(final FieldExpressionVisitor visitor) {
+            return null;
+        }
 
         @Override
         public String asString() {
