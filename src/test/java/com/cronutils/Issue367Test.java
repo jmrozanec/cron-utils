@@ -18,6 +18,7 @@ import com.cronutils.model.CronType;
 import com.cronutils.model.definition.CronDefinitionBuilder;
 import com.cronutils.parser.CronParser;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.text.ParseException;
@@ -32,6 +33,7 @@ import static org.junit.Assert.assertTrue;
 /**
  * Provide an example on how convert a cron expression to ISO8601
  */
+@Ignore
 public class Issue367Test {
 
 	private CronParser parser;
