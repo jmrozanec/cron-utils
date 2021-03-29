@@ -34,7 +34,6 @@ public class Issue470Test {
 	}
 
 	@Test
-	@Ignore
 	public void testWithYearInPattern() {
 		ZonedDateTime dt = ZonedDateTime.of(2021, 3, 23, 0, 0, 0, 0, ZoneId.of("UTC"));
 		CronDefinition cd = CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ);

@@ -598,6 +598,12 @@ public class SingleExecutionTime implements ExecutionTime {
                 }
                 return everythingInRange;
             }
+        } else {
+            try {
+                return dateValuesInExpectedRanges(nextClosestMatch(date.minusSeconds(1)), date);
+            } catch (final NoSuchValueException ignored) {
+                // Why is this ignored?
+            }
         }
         return false;
     }
