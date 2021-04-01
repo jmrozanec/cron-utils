@@ -125,7 +125,7 @@ public class CronDefinitionBuilder {
 
     /**
      * Adds a cron validation.
-     *
+     * @param validation - constraint validation
      * @return this CronDefinitionBuilder instance
      */
     public CronDefinitionBuilder withCronValidation(final CronConstraint validation) {

@@ -227,8 +227,8 @@ public class StringUtils {
      * StringUtils.join([null, "", "a"], ',')   = "null,,a"
      * </pre>
      *
-     * @param array     the array of values to join together, may be null
-     * @param separator the separator character to use, null treated as ""
+     * @param parts - the array of values to join together, may be null
+     * @param separator - the separator character to use, null treated as ""
      * @return the joined String, {@code null} if null array input
      */
     public static String join(final Object[] parts, final String separator) {
