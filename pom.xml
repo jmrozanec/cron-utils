@@ -10,7 +10,7 @@
 
     <groupId>com.cronutils</groupId>
     <artifactId>cron-utils</artifactId>
-    <version>9.1.4</version>
+    <version>9.1.5</version>
 
     <name>cron-utils</name>
     <description>A Java library to parse, migrate and validate crons as well as describe them in human readable
