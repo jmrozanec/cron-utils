@@ -18,12 +18,12 @@ addons:
 script:
    - > 
      if [ "$TRAVIS_PULL_REQUEST" != "false" ];then 
-        mvn jacoco:prepare-agent install jacoco:report package --settings target/travis/settings.xml -Dsettings.security=target/travis/settings-security.xml;
+        mvn jacoco:prepare-agent install jacoco:report package --settings target/travis/settings.xml -Dsettings.security=target/travis/settings-security.xml -Dmaven.javadoc.skip=true;
         sonar-scanner
      fi
    - > 
      if [ "$TRAVIS_PULL_REQUEST" = "false" ];then 
-        mvn jacoco:prepare-agent install jacoco:report package;
+        mvn jacoco:prepare-agent install jacoco:report package -Dmaven.javadoc.skip=true;
         sonar-scanner
      fi
 
@@ -32,6 +32,3 @@ cache:
     - '$HOME/.m2/repository'
     - '$HOME/.sonar/cache'
 
-after_success:
-  - mvn cobertura:cobertura coveralls:cobertura
-  - bash <(curl -s https://codecov.io/bash)
