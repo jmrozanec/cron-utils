@@ -6,10 +6,8 @@ cron-utils is a Java library to define, parse, validate, migrate crons as well a
 
 [![Gitter Chat](http://img.shields.io/badge/chat-online-brightgreen.svg)](https://gitter.im/jmrozanec/cron-utils)
 [![Build Status](https://travis-ci.org/jmrozanec/cron-utils.png?branch=master)](https://travis-ci.org/jmrozanec/cron-utils)
+[![Quality Gate](https://sonarcloud.io/api/project_badges/measure?project=cron-utils&metric=coverage)](https://sonarcloud.io/dashboard/index/cron-utils)
 
-<!---
-[![Quality Gate](https://sonarcloud.io/api/badges/gate?key=cron-utils)](https://sonarcloud.io/dashboard/index/cron-utils)
---->
 
 **Download**
 
