@@ -30,6 +30,8 @@ If using ScheduleExpression from Java EE, this should be provided as a runtime d
 
 **Current development**
 
+*We are currently working to update the codebase towards JDK 16, to ensure will be fully compatible with JDK 17 when released.* 
+
 Now we are developing a new generation of cron-descriptors using neural-translation! Any kind of contributions are welcome: from help with dataset generation to machine learning models training and utilities to load them! If interested, please follow issue [#3](https://github.com/jmrozanec/cron-utils/issues/3)
 
 **Features**
