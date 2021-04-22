@@ -19,6 +19,7 @@ import com.cronutils.model.field.constraint.FieldConstraints;
 import com.cronutils.model.field.expression.FieldExpression;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Matchers;
@@ -31,6 +32,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.util.UUID;
 
+@Ignore
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ CronParserField.class, CronParser.class })
 public class CronParserFieldTest {
