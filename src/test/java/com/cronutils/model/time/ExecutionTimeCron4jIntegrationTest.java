@@ -63,8 +63,8 @@ public class ExecutionTimeCron4jIntegrationTest {
                 log.info(LOG_LAST_RUN, lastRun);
                 log.info(LOG_NEXT_RUN, nextRun);
 
-                assertNotEquals(6, nextRun.getDayOfWeek());
-                assertNotEquals(7, nextRun.getDayOfWeek());
+                assertNotEquals(DayOfWeek.SATURDAY, nextRun.getDayOfWeek());
+                assertNotEquals(DayOfWeek.SUNDAY, nextRun.getDayOfWeek());
                 assertTrue(lastRun.isBefore(nextRun));
                 lastRun = lastRun.plusDays(1);
             } else {
