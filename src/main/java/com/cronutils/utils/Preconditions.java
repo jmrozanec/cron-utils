@@ -17,6 +17,9 @@ package com.cronutils.utils;
 import java.util.Collection;
 
 /**
+ *
+ * <h2></h2> Due to: https://bugs.openjdk.java.net/browse/JDK-8219801
+ *
  * Static convenience methods that help a method or constructor check whether it was invoked.
  * correctly (whether its <i>preconditions</i> have been met). These methods generally accept a
  * {@code boolean} expression which is expected to be {@code true} (or in the case of {@code

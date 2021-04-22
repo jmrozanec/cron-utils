@@ -19,7 +19,7 @@ import java.io.Serializable;
  * Encapsulates a field value, allowing us to.
  * manipulate different types of values in a homogeneous way
  *
- * @param <T>
+ * @param <T> - field value type
  */
 public abstract class FieldValue<T extends Serializable> implements Serializable {
 

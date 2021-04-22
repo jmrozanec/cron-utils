@@ -25,6 +25,9 @@ import java.util.regex.Pattern;
 
 import static com.cronutils.model.field.value.SpecialChar.*;
 
+/**
+ * Utility class for string validations.
+ */
 public class StringValidations {
     private static final String ESCAPED_END = ")\\b";
     private static final String ESCAPED_START = "\\b(";
