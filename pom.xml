@@ -241,6 +241,9 @@
                             <addClasspath>true</addClasspath>
                             <!--mainClass>com.cronutils.cli.CronUtilsCLI</mainClass-->
                         </manifest>
+                        <manifestEntries>
+                            <Automatic-Module-Name>com.cronutils</Automatic-Module-Name>
+                        </manifestEntries>
                     </archive>
                 </configuration>
             </plugin>
