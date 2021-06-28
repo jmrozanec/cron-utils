@@ -78,7 +78,7 @@ public class Issue480Test {
         if (!next.isPresent()) {
             fail();
         }
-        System.out.println("Calculated next run at " + next.get());
+        LOGGER.info("Calculated next run at {}", next.get());
         return next.get();
     }
 
