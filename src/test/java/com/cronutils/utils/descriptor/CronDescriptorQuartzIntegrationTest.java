@@ -87,7 +87,7 @@ public class CronDescriptorQuartzIntegrationTest {
 
     @Test
     public void testEveryMinuteBetween14and15EveryDay() {
-        assertExpression("0 * 14 * * ?", "at 14 hour");
+        assertExpression("0 * 14 * * ?", "every minute at 14 hour");
     }
 
     @Test
@@ -113,7 +113,7 @@ public class CronDescriptorQuartzIntegrationTest {
      */
     @Test
     public void testDescriptionDayOfWeek() {
-        assertExpression("* 0/1 * ? * TUE", "every minute at Tuesday day");
+        assertExpression("* 0/1 * ? * TUE", "every second every minute at Tuesday day");
     }
 
     /**
