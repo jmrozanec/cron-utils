@@ -91,15 +91,21 @@ class TimeDescriptionStrategy extends DescriptionStrategy {
 		}
 		String secondsDesc = "";
 		String minutesDesc = "";
-		final String hoursDesc = addTimeExpressions(describe(hours), bundle.getString(HOUR),
-				bundle.getString("hours"));
+		String hoursDesc = "";
+		if (!(hours instanceof Always)) {
+			hoursDesc = addTimeExpressions(describe(hours), bundle.getString(HOUR), bundle.getString("hours"));
+		}
+		if (!(minutes instanceof On && isDefault((On) minutes)) && !((minutes instanceof Always) && (hours instanceof Always))) {
+			minutesDesc = addTimeExpressions(describe(minutes), bundle.getString(MINUTE), bundle.getString("minutes"));
+		}
 		if (!(seconds instanceof On && isDefault((On) seconds))) {
 			secondsDesc = addTimeExpressions(describe(seconds), bundle.getString(SECOND), bundle.getString("seconds"));
 		}
-		if (!(minutes instanceof On && isDefault((On) minutes))) {
-			minutesDesc = addTimeExpressions(describe(minutes), bundle.getString(MINUTE), bundle.getString("minutes"));
-		}
 		return String.format("%s %s %s", secondsDesc, minutesDesc, hoursDesc);
+	}
+
+	protected String describe(final Always always, final boolean and) {
+		return describe(new Every(new IntegerFieldValue(1)), and);
 	}
 
 	private String addTimeExpressions(final String description, final String singular, final String plural) {
