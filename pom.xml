@@ -60,7 +60,7 @@
 
     <properties>
         <slf4j.version>1.7.30</slf4j.version>
-        <junit.version>5.8.0-M1</junit.version>
+        <junit.version>5.8.1</junit.version>
         <mockito.version>3.9.0</mockito.version>
         <powermock.version>2.0.9</powermock.version>
 
@@ -176,8 +176,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.1</version>
                 <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
+                    <source>16</source>
+                    <target>16</target>
                     <compilerArgs>
                         <arg>-J--add-opens=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED</arg>
                         <arg>-J--add-opens=jdk.compiler/com.sun.tools.javac.comp=ALL-UNNAMED</arg>
