@@ -14,6 +14,8 @@
 
 package com.cronutils.model.field.expression;
 
+import com.cronutils.model.field.expression.visitor.FieldExpressionVisitor;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -37,13 +39,20 @@ public class And extends FieldExpression {
     }
 
     @Override
+    public FieldExpression accept(FieldExpressionVisitor visitor) {
+        return visitor.visit(this);
+    }
+
+    @Override
     public String asString() {
         final StringBuilder builder = new StringBuilder();
         for (int j = 0; j < expressions.size() - 1; j++) {
             builder.append(expressions.get(j).asString());
             builder.append(",");
         }
-        builder.append(expressions.get(expressions.size() - 1).asString());
+        if(expressions.size()>0){
+            builder.append(expressions.get(expressions.size() - 1).asString());
+        }
         return builder.toString();
     }
 

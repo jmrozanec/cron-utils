@@ -13,10 +13,13 @@
 
 package com.cronutils.parser;
 
-import java.util.UUID;
-
+import com.cronutils.model.field.CronField;
+import com.cronutils.model.field.CronFieldName;
+import com.cronutils.model.field.constraint.FieldConstraints;
+import com.cronutils.model.field.expression.FieldExpression;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Matchers;
@@ -27,11 +30,9 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import com.cronutils.model.field.CronField;
-import com.cronutils.model.field.CronFieldName;
-import com.cronutils.model.field.constraint.FieldConstraints;
-import com.cronutils.model.field.expression.FieldExpression;
+import java.util.UUID;
 
+@Ignore
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ CronParserField.class, CronParser.class })
 public class CronParserFieldTest {

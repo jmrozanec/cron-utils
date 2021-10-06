@@ -13,12 +13,6 @@
 
 package com.cronutils.model.definition;
 
-import java.util.Collections;
-import java.util.Set;
-
-import org.junit.Before;
-import org.junit.Test;
-
 import com.cronutils.builder.CronBuilder;
 import com.cronutils.model.Cron;
 import com.cronutils.model.CronType;
@@ -27,11 +21,13 @@ import com.cronutils.model.field.constraint.FieldConstraints;
 import com.cronutils.model.field.definition.FieldDefinition;
 import com.cronutils.model.field.expression.Weekdays;
 import com.cronutils.parser.CronParser;
+import org.junit.Before;
+import org.junit.Test;
 
-import static com.cronutils.model.field.expression.FieldExpressionFactory.always;
-import static com.cronutils.model.field.expression.FieldExpressionFactory.every;
-import static com.cronutils.model.field.expression.FieldExpressionFactory.on;
-import static com.cronutils.model.field.expression.FieldExpressionFactory.questionMark;
+import java.util.Collections;
+import java.util.Set;
+
+import static com.cronutils.model.field.expression.FieldExpressionFactory.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 

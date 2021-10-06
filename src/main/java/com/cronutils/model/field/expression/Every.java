@@ -13,6 +13,7 @@
 
 package com.cronutils.model.field.expression;
 
+import com.cronutils.model.field.expression.visitor.FieldExpressionVisitor;
 import com.cronutils.model.field.value.IntegerFieldValue;
 import com.cronutils.utils.Preconditions;
 
@@ -42,6 +43,11 @@ public class Every extends FieldExpression {
 
     public FieldExpression getExpression() {
         return expression;
+    }
+
+    @Override
+    public FieldExpression accept(FieldExpressionVisitor visitor) {
+        return visitor.visit(this);
     }
 
     @Override

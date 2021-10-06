@@ -13,12 +13,12 @@
 
 package com.cronutils.model.field.definition;
 
-import java.io.Serializable;
-import java.util.Comparator;
-
 import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.field.constraint.FieldConstraints;
 import com.cronutils.utils.Preconditions;
+
+import java.io.Serializable;
+import java.util.Comparator;
 
 /**
  * Represents a definition of allowed values for a cron field.

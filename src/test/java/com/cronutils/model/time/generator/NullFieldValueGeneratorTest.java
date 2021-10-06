@@ -13,17 +13,14 @@
 
 package com.cronutils.model.time.generator;
 
-import java.util.Random;
-
+import com.cronutils.model.field.CronField;
+import com.cronutils.model.field.expression.FieldExpression;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.cronutils.model.field.CronField;
-import com.cronutils.model.field.expression.FieldExpression;
+import java.util.Random;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
 
 public class NullFieldValueGeneratorTest {

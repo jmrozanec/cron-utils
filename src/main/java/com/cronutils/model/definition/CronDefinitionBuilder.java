@@ -13,20 +13,11 @@
 
 package com.cronutils.model.definition;
 
-import java.util.ArrayList;
-import java.util.EnumMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import com.cronutils.model.CronType;
 import com.cronutils.model.field.CronFieldName;
-import com.cronutils.model.field.definition.FieldDayOfWeekDefinitionBuilder;
-import com.cronutils.model.field.definition.FieldDefinition;
-import com.cronutils.model.field.definition.FieldDefinitionBuilder;
-import com.cronutils.model.field.definition.FieldQuestionMarkDefinitionBuilder;
-import com.cronutils.model.field.definition.FieldSpecialCharsDefinitionBuilder;
+import com.cronutils.model.field.definition.*;
+
+import java.util.*;
 
 /**
  * Builder that allows to define and create CronDefinition instances.
@@ -134,7 +125,7 @@ public class CronDefinitionBuilder {
 
     /**
      * Adds a cron validation.
-     *
+     * @param validation - constraint validation
      * @return this CronDefinitionBuilder instance
      */
     public CronDefinitionBuilder withCronValidation(final CronConstraint validation) {
@@ -335,7 +326,8 @@ public class CronDefinitionBuilder {
                 .withHours().withValidRange(0, 23).withStrictRange().and()
                 .withDayOfMonth().withValidRange(1, 31).supportsQuestionMark().and()
                 .withMonth().withValidRange(1, 12).and()
-                .withDayOfWeek().withValidRange(0, 7).withMondayDoWValue(1).withIntMapping(7,0).supportsQuestionMark().and()
+                .withDayOfWeek().withValidRange(0, 7).withMondayDoWValue(1).withIntMapping(7,0)
+                    .supportsHash().supportsQuestionMark().and()
                 .instance();
     }
 

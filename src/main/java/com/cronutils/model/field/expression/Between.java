@@ -2,10 +2,8 @@
 
 package com.cronutils.model.field.expression;
 
+import com.cronutils.model.field.expression.visitor.FieldExpressionVisitor;
 import com.cronutils.model.field.value.FieldValue;
-import com.cronutils.model.field.value.IntegerFieldValue;
-import com.cronutils.model.field.value.SpecialChar;
-import com.cronutils.model.field.value.SpecialCharFieldValue;
 
 /**
  * Represents a range in a cron expression.
@@ -31,6 +29,11 @@ public class Between extends FieldExpression {
 
     public FieldValue<?> getTo() {
         return to;
+    }
+
+    @Override
+    public FieldExpression accept(FieldExpressionVisitor visitor) {
+        return visitor.visit(this);
     }
 
     @Override

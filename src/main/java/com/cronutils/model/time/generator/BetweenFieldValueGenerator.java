@@ -13,14 +13,14 @@
 
 package com.cronutils.model.time.generator;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.cronutils.model.field.CronField;
 import com.cronutils.model.field.expression.Between;
 import com.cronutils.model.field.expression.FieldExpression;
 import com.cronutils.model.field.value.FieldValue;
 import com.cronutils.model.field.value.IntegerFieldValue;
+
+import java.util.ArrayList;
+import java.util.List;
 
 class BetweenFieldValueGenerator extends FieldValueGenerator {
 

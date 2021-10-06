@@ -13,15 +13,14 @@
 
 package com.cronutils.utils.descriptor;
 
-import java.util.Locale;
-
-import org.junit.Before;
-import org.junit.Test;
-
 import com.cronutils.descriptor.CronDescriptor;
 import com.cronutils.model.CronType;
 import com.cronutils.model.definition.CronDefinitionBuilder;
 import com.cronutils.parser.CronParser;
+import org.junit.Before;
+import org.junit.Test;
+
+import java.util.Locale;
 
 import static org.junit.Assert.assertEquals;
 
@@ -88,7 +87,7 @@ public class CronDescriptorQuartzIntegrationTest {
 
     @Test
     public void testEveryMinuteBetween14and15EveryDay() {
-        assertExpression("0 * 14 * * ?", "at 14 hour");
+        assertExpression("0 * 14 * * ?", "every minute at 14 hour");
     }
 
     @Test
@@ -114,7 +113,7 @@ public class CronDescriptorQuartzIntegrationTest {
      */
     @Test
     public void testDescriptionDayOfWeek() {
-        assertExpression("* 0/1 * ? * TUE", "every minute at Tuesday day");
+        assertExpression("* 0/1 * ? * TUE", "every second every minute at Tuesday day");
     }
 
     /**

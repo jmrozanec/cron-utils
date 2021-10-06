@@ -14,6 +14,8 @@
 
 package com.cronutils.model.field.expression;
 
+import com.cronutils.model.field.expression.visitor.FieldExpressionVisitor;
+
 /**
  * Represents a star (*) value on cron expression field.
  */
@@ -27,6 +29,11 @@ public class Always extends FieldExpression {
      * Class should become package private too.
      */
     private Always() {
+    }
+
+    @Override
+    public FieldExpression accept(FieldExpressionVisitor visitor) {
+        return visitor.visit(this);
     }
 
     @Override

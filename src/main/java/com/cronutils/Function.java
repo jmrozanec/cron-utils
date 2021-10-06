@@ -17,7 +17,12 @@ package com.cronutils;
 /**
  * Created by kiran on 19/3/17.
  */
-
 public interface Function<T, R> {
+
+    /**
+     *
+     * @param t - some parameter
+     * @return R - result
+     */
     R apply(T t);
 }

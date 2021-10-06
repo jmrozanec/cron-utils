@@ -15,13 +15,7 @@ package com.cronutils.model.field.expression.visitor;
 
 import com.cronutils.StringValidations;
 import com.cronutils.model.field.constraint.FieldConstraints;
-import com.cronutils.model.field.expression.Always;
-import com.cronutils.model.field.expression.And;
-import com.cronutils.model.field.expression.Between;
-import com.cronutils.model.field.expression.Every;
-import com.cronutils.model.field.expression.FieldExpression;
-import com.cronutils.model.field.expression.On;
-import com.cronutils.model.field.expression.QuestionMark;
+import com.cronutils.model.field.expression.*;
 import com.cronutils.model.field.value.FieldValue;
 import com.cronutils.model.field.value.IntegerFieldValue;
 import com.cronutils.model.field.value.SpecialChar;
@@ -30,7 +24,6 @@ import com.cronutils.utils.VisibleForTesting;
 
 public class ValidationFieldExpressionVisitor implements FieldExpressionVisitor {
     private static final String OORANGE = "Value %s not in range [%s, %s]";
-    private static final String EMPTY_STRING = "";
 
     private final FieldConstraints constraints;
     private final StringValidations stringValidations;
@@ -45,29 +38,10 @@ public class ValidationFieldExpressionVisitor implements FieldExpressionVisitor 
         stringValidations = stringValidation;
     }
 
-    @Override
-    public FieldExpression visit(final FieldExpression expression) {
+    private void checkUnsupportedChars(final FieldExpression expression) {
         final String unsupportedChars = stringValidations.removeValidChars(expression.asString());
-        if (EMPTY_STRING.equals(unsupportedChars)) {
-            if (expression instanceof Always) {
-                return visit((Always) expression);
-            }
-            if (expression instanceof And) {
-                return visit((And) expression);
-            }
-            if (expression instanceof Between) {
-                return visit((Between) expression);
-            }
-            if (expression instanceof Every) {
-                return visit((Every) expression);
-            }
-            if (expression instanceof On) {
-                return visit((On) expression);
-            }
-            if (expression instanceof QuestionMark) {
-                return visit((QuestionMark) expression);
-            }
-        }
+        if (unsupportedChars.isEmpty())
+            return;
         throw new IllegalArgumentException(
                 String.format("Invalid chars in expression! Expression: %s Invalid chars: %s",
                         expression.asString(), unsupportedChars)
@@ -76,19 +50,22 @@ public class ValidationFieldExpressionVisitor implements FieldExpressionVisitor 
 
     @Override
     public Always visit(final Always always) {
+        this.checkUnsupportedChars(always);
         return always;
     }
 
     @Override
     public And visit(final And and) {
+        this.checkUnsupportedChars(and);
         for (final FieldExpression expression : and.getExpressions()) {
-            visit(expression);
+            expression.accept(this);
         }
         return and;
     }
 
     @Override
     public Between visit(final Between between) {
+        this.checkUnsupportedChars(between);
         preConditions(between);
 
         if ((constraints.isStrictRange()) && between.getFrom() instanceof IntegerFieldValue && between.getTo() instanceof IntegerFieldValue) {
@@ -104,18 +81,16 @@ public class ValidationFieldExpressionVisitor implements FieldExpressionVisitor 
 
     @Override
     public Every visit(final Every every) {
-        if (every.getExpression() instanceof Between) {
-            visit((Between) every.getExpression());
-        }
-        if (every.getExpression() instanceof On) {
-            visit((On) every.getExpression());
-        }
+        this.checkUnsupportedChars(every);
+        if (every.getExpression() != null)
+            every.getExpression().accept(this);
         isPeriodInRange(every.getPeriod());
         return every;
     }
 
     @Override
     public On visit(final On on) {
+        this.checkUnsupportedChars(on);
         if (!isDefault(on.getTime())) {
             isInRange(on.getTime());
         }
@@ -127,6 +102,7 @@ public class ValidationFieldExpressionVisitor implements FieldExpressionVisitor 
 
     @Override
     public QuestionMark visit(final QuestionMark questionMark) {
+        this.checkUnsupportedChars(questionMark);
         return questionMark;
     }
 

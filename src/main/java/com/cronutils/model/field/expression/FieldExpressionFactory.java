@@ -13,11 +13,12 @@
 
 package com.cronutils.model.field.expression;
 
-import java.util.List;
-
 import com.cronutils.model.field.value.IntegerFieldValue;
 import com.cronutils.model.field.value.SpecialChar;
 import com.cronutils.model.field.value.SpecialCharFieldValue;
+import com.cronutils.utils.Preconditions;
+
+import java.util.List;
 
 public class FieldExpressionFactory {
     private FieldExpressionFactory() {
@@ -48,6 +49,7 @@ public class FieldExpressionFactory {
     }
 
     public static On on(int time) {
+        Preconditions.checkPositive(time, "Time must not be negative");
         return new On(new IntegerFieldValue(time));
     }
 

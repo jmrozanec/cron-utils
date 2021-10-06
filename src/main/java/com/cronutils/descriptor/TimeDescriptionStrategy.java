@@ -13,17 +13,17 @@
 
 package com.cronutils.descriptor;
 
-import static com.cronutils.model.field.expression.FieldExpression.always;
-
-import java.util.HashSet;
-import java.util.ResourceBundle;
-import java.util.Set;
-
 import com.cronutils.Function;
 import com.cronutils.model.field.expression.*;
 import com.cronutils.model.field.value.IntegerFieldValue;
 import com.cronutils.utils.Preconditions;
 import com.cronutils.utils.StringUtils;
+
+import java.util.HashSet;
+import java.util.ResourceBundle;
+import java.util.Set;
+
+import static com.cronutils.model.field.expression.FieldExpression.always;
 
 /**
  * Strategy to provide a human readable description to hh:mm:ss variations.
@@ -39,6 +39,7 @@ class TimeDescriptionStrategy extends DescriptionStrategy {
 	private static final String EVERY = "every";
 	private static final String SECOND = "second";
 	private static final String MINUTE = "minute";
+	private static final String HOUR = "hour";
 	private static final String EVERY_MINUTE_FORMAT = "%s %s ";
 
 	/**
@@ -90,15 +91,21 @@ class TimeDescriptionStrategy extends DescriptionStrategy {
 		}
 		String secondsDesc = "";
 		String minutesDesc = "";
-		final String hoursDesc = addTimeExpressions(describe(hours), bundle.getString("hour"),
-				bundle.getString("hours"));
+		String hoursDesc = "";
+		if (!(hours instanceof Always)) {
+			hoursDesc = addTimeExpressions(describe(hours), bundle.getString(HOUR), bundle.getString("hours"));
+		}
+		if (!(minutes instanceof On && isDefault((On) minutes)) && !((minutes instanceof Always) && (hours instanceof Always))) {
+			minutesDesc = addTimeExpressions(describe(minutes), bundle.getString(MINUTE), bundle.getString("minutes"));
+		}
 		if (!(seconds instanceof On && isDefault((On) seconds))) {
 			secondsDesc = addTimeExpressions(describe(seconds), bundle.getString(SECOND), bundle.getString("seconds"));
 		}
-		if (!(minutes instanceof On && isDefault((On) minutes))) {
-			minutesDesc = addTimeExpressions(describe(minutes), bundle.getString(MINUTE), bundle.getString("minutes"));
-		}
 		return String.format("%s %s %s", secondsDesc, minutesDesc, hoursDesc);
+	}
+
+	protected String describe(final Always always, final boolean and) {
+		return describe(new Every(new IntegerFieldValue(1)), and);
 	}
 
 	private String addTimeExpressions(final String description, final String singular, final String plural) {
@@ -135,13 +142,13 @@ class TimeDescriptionStrategy extends DescriptionStrategy {
 					&& timeFields.seconds instanceof On) {
 				if (TimeDescriptionStrategy.this.isDefault((On) timeFields.seconds)) {
 					if (TimeDescriptionStrategy.this.isDefault((On) timeFields.minutes)) {
-						return String.format(EVERY_MINUTE_FORMAT, bundle.getString(EVERY), bundle.getString("hour"));
+						return String.format(EVERY_MINUTE_FORMAT, bundle.getString(EVERY), bundle.getString(HOUR));
 					}
-					return String.format("%s %s %s %s %s", bundle.getString(EVERY), bundle.getString("hour"),
+					return String.format("%s %s %s %s %s", bundle.getString(EVERY), bundle.getString(HOUR),
 							bundle.getString("at"), bundle.getString(MINUTE),
 							((On) timeFields.minutes).getTime().getValue());
 				} else {
-					return String.format("%s %s %s %s %s %s %s %s", bundle.getString(EVERY), bundle.getString("hour"),
+					return String.format("%s %s %s %s %s %s %s %s", bundle.getString(EVERY), bundle.getString(HOUR),
 							bundle.getString("at"), bundle.getString(MINUTE),
 							((On) timeFields.minutes).getTime().getValue(), bundle.getString("and"),
 							bundle.getString(SECOND), ((On) timeFields.seconds).getTime().getValue());
@@ -239,7 +246,7 @@ class TimeDescriptionStrategy extends DescriptionStrategy {
 						&& ((On) timeFields.seconds).getTime().getValue() == 0) {
 					final Integer period = ((Every) timeFields.hours).getPeriod().getValue();
 					if (period == null || period == 1) {
-						return String.format(EVERY_MINUTE_FORMAT, bundle.getString(EVERY), bundle.getString("hour"));
+						return String.format(EVERY_MINUTE_FORMAT, bundle.getString(EVERY), bundle.getString(HOUR));
 					}
 				}
 				final String result = String.format("%s %s %s %s %s %s ", bundle.getString(EVERY),
@@ -286,7 +293,7 @@ class TimeDescriptionStrategy extends DescriptionStrategy {
 			if (timeFields.hours instanceof And && timeFields.minutes instanceof Always && timeFields.seconds instanceof Always) {
 				// Every
 				String hoursDesc = addTimeExpressions(describe(timeFields.hours),
-							bundle.getString("hour"), bundle.getString("hours"));
+							bundle.getString(HOUR), bundle.getString("hours"));
 					return String.format("%s %s %s", bundle.getString(EVERY), bundle.getString(SECOND), hoursDesc);
 			}
 			return StringUtils.EMPTY;

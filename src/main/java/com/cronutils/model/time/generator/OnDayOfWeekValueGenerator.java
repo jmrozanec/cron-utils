@@ -13,9 +13,6 @@
 
 package com.cronutils.model.time.generator;
 
-import java.time.DayOfWeek;
-import java.time.LocalDate;
-
 import com.cronutils.mapper.ConstantsMapper;
 import com.cronutils.mapper.WeekDay;
 import com.cronutils.model.field.CronField;
@@ -24,6 +21,9 @@ import com.cronutils.model.field.expression.FieldExpression;
 import com.cronutils.model.field.expression.On;
 import com.cronutils.model.field.value.IntegerFieldValue;
 import com.cronutils.utils.Preconditions;
+
+import java.time.DayOfWeek;
+import java.time.LocalDate;
 
 class OnDayOfWeekValueGenerator extends OnDayOfCalendarValueGenerator {
 

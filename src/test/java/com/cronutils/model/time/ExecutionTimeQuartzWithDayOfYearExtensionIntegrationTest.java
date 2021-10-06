@@ -11,17 +11,16 @@
 
 package com.cronutils.model.time;
 
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.util.Optional;
-
-import org.junit.Before;
-import org.junit.Test;
-
 import com.cronutils.model.CronType;
 import com.cronutils.model.definition.CronDefinitionBuilder;
 import com.cronutils.model.definition.TestCronDefinitionsFactory;
 import com.cronutils.parser.CronParser;
+import org.junit.Before;
+import org.junit.Test;
+
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.util.Optional;
 
 import static java.time.ZoneOffset.UTC;
 import static org.junit.Assert.assertEquals;

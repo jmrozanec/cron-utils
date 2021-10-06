@@ -16,7 +16,8 @@ import java.time.ZonedDateTime;
 import java.util.Arrays;
 import java.util.Locale;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 @Ignore
 public class Issue423Test {
     private static final LocalDate saturday = LocalDate.of(2020, 4, 25);

@@ -13,12 +13,12 @@
 
 package com.cronutils.model.time.generator;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.cronutils.model.field.CronField;
 import com.cronutils.model.field.expression.FieldExpression;
 import com.cronutils.model.field.expression.On;
+
+import java.util.ArrayList;
+import java.util.List;
 
 class OnFieldValueGenerator extends FieldValueGenerator {
     public OnFieldValueGenerator(final CronField cronField) {

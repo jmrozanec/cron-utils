@@ -13,28 +13,27 @@
 
 package com.cronutils.converter;
 
-import static org.mockito.Mockito.spy;
-
-import java.util.Arrays;
-import java.util.Collection;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
+import java.time.ZoneId;
+import java.util.Arrays;
+import java.util.Collection;
+
+import static org.mockito.Mockito.spy;
+
 @RunWith(Parameterized.class)
 public class CronConverterTest {
 
-	CronConverter cronConverter = spy(new CronConverter());
-
 	private String timezone;
-
 	private String inputCronExpression;
-
 	private String expectedCronExpression;
+	private CronConverter cronConverter = spy(new CronConverter(
+			new CronToCalendarTransformer(),
+			new CalendarToCronTransformer()
+	));
 
 	public CronConverterTest(String timezone, String inputCronExpression, String expectedCronExpression) {
 		this.timezone = timezone;
@@ -56,8 +55,6 @@ public class CronConverterTest {
 
 	@Test
 	public void testCronConverterBuilder() {
-		cronConverter.setToCalendarConverter(new CronToCalendarTransformer());
-		cronConverter.setToCronConverter(new CalendarToCronTransformer());
 		Assert.assertEquals(expectedCronExpression,
 				cronConverter.using(inputCronExpression)
 						.from(ZoneId.of(timezone)).to(ZoneId.of("UTC"))

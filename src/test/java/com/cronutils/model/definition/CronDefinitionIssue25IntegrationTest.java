@@ -13,13 +13,12 @@
 
 package com.cronutils.model.definition;
 
-import org.junit.Before;
-import org.junit.Test;
-
 import com.cronutils.model.Cron;
 import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.time.ExecutionTime;
 import com.cronutils.parser.CronParser;
+import org.junit.Before;
+import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 

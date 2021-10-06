@@ -12,15 +12,14 @@
  */
 
 package com.cronutils.model;
-import java.io.Serializable;
-import java.util.Collections;
-import java.util.Map;
 
 import com.cronutils.mapper.CronMapper;
 import com.cronutils.model.definition.CronDefinition;
 import com.cronutils.model.field.CronField;
 import com.cronutils.model.field.CronFieldName;
-import com.cronutils.utils.Preconditions;
+
+import java.io.Serializable;
+import java.util.Map;
 
 /**
  * Represents a cron expression.

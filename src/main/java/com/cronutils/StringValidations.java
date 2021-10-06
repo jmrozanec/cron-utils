@@ -13,20 +13,21 @@
 
 package com.cronutils;
 
+import com.cronutils.model.field.constraint.FieldConstraints;
+import com.cronutils.model.field.value.SpecialChar;
+import com.cronutils.utils.VisibleForTesting;
+
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.cronutils.model.field.constraint.FieldConstraints;
-import com.cronutils.model.field.value.SpecialChar;
-import com.cronutils.utils.VisibleForTesting;
+import static com.cronutils.model.field.value.SpecialChar.*;
 
-import static com.cronutils.model.field.value.SpecialChar.L;
-import static com.cronutils.model.field.value.SpecialChar.LW;
-import static com.cronutils.model.field.value.SpecialChar.W;
-
+/**
+ * Utility class for string validations.
+ */
 public class StringValidations {
     private static final String ESCAPED_END = ")\\b";
     private static final String ESCAPED_START = "\\b(";

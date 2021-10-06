@@ -14,13 +14,7 @@
 package com.cronutils.model.field.expression.visitor;
 
 import com.cronutils.Function;
-import com.cronutils.model.field.expression.Always;
-import com.cronutils.model.field.expression.And;
-import com.cronutils.model.field.expression.Between;
-import com.cronutils.model.field.expression.Every;
-import com.cronutils.model.field.expression.FieldExpression;
-import com.cronutils.model.field.expression.On;
-import com.cronutils.model.field.expression.QuestionMark;
+import com.cronutils.model.field.expression.*;
 import com.cronutils.model.field.value.FieldValue;
 import com.cronutils.model.field.value.IntegerFieldValue;
 
@@ -47,7 +41,7 @@ public class ValueMappingFieldExpressionVisitor implements FieldExpressionVisito
     public FieldExpression visit(final And and) {
         final And clone = new And();
         for (final FieldExpression expression : and.getExpressions()) {
-            clone.and(visit(expression));
+            clone.and(expression.accept(this));
         }
         return clone;
     }
@@ -72,29 +66,6 @@ public class ValueMappingFieldExpressionVisitor implements FieldExpressionVisito
     @Override
     public FieldExpression visit(final QuestionMark questionMark) {
         return questionMark();
-    }
-
-    @Override
-    public FieldExpression visit(final FieldExpression expression) {
-        if (expression instanceof Always) {
-            return visit((Always) expression);
-        }
-        if (expression instanceof And) {
-            return visit((And) expression);
-        }
-        if (expression instanceof Between) {
-            return visit((Between) expression);
-        }
-        if (expression instanceof Every) {
-            return visit((Every) expression);
-        }
-        if (expression instanceof On) {
-            return visit((On) expression);
-        }
-        if (expression instanceof QuestionMark) {
-            return visit((QuestionMark) expression);
-        }
-        return expression;
     }
 }
 

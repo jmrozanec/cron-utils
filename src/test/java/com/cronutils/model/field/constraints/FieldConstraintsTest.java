@@ -13,15 +13,14 @@
 
 package com.cronutils.model.field.constraints;
 
-import java.util.Collections;
-import java.util.Map;
-import java.util.Set;
-
+import com.cronutils.model.field.constraint.FieldConstraints;
+import com.cronutils.model.field.value.SpecialChar;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.cronutils.model.field.constraint.FieldConstraints;
-import com.cronutils.model.field.value.SpecialChar;
+import java.util.Collections;
+import java.util.Map;
+import java.util.Set;
 
 public class FieldConstraintsTest {
 

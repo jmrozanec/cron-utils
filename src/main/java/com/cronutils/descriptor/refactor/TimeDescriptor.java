@@ -1,13 +1,5 @@
 package com.cronutils.descriptor.refactor;
 
-import java.text.ChoiceFormat;
-import java.text.Format;
-import java.text.MessageFormat;
-import java.text.NumberFormat;
-import java.util.Locale;
-import java.util.Map;
-import java.util.ResourceBundle;
-
 import com.cronutils.model.Cron;
 import com.cronutils.model.field.CronField;
 import com.cronutils.model.field.CronFieldName;
@@ -16,6 +8,14 @@ import com.cronutils.model.field.expression.Every;
 import com.cronutils.model.field.expression.On;
 import com.cronutils.utils.Preconditions;
 import com.cronutils.utils.StringUtils;
+
+import java.text.ChoiceFormat;
+import java.text.Format;
+import java.text.MessageFormat;
+import java.text.NumberFormat;
+import java.util.Locale;
+import java.util.Map;
+import java.util.ResourceBundle;
 
 public class TimeDescriptor {
 

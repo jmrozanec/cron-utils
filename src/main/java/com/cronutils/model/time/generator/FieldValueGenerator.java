@@ -13,14 +13,14 @@
 
 package com.cronutils.model.time.generator;
 
+import com.cronutils.model.field.CronField;
+import com.cronutils.model.field.expression.FieldExpression;
+import com.cronutils.utils.Preconditions;
+
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-
-import com.cronutils.model.field.CronField;
-import com.cronutils.model.field.expression.FieldExpression;
-import com.cronutils.utils.Preconditions;
 
 /**
  * Provides a strategy to generate values. Strategy is valid for 0+ numbers

@@ -13,28 +13,18 @@
 
 package com.cronutils.model.field.expression.visitor;
 
-import com.cronutils.model.field.expression.Always;
-import com.cronutils.model.field.expression.And;
-import com.cronutils.model.field.expression.Between;
-import com.cronutils.model.field.expression.Every;
-import com.cronutils.model.field.expression.FieldExpression;
-import com.cronutils.model.field.expression.On;
-import com.cronutils.model.field.expression.QuestionMark;
+import com.cronutils.model.field.expression.*;
 
 /**
  * Visitor for custom actions performed on FieldExpression instances.
+ *
+ * <p>
+ * If a method needs to modify some value, it should return a new instance.
+ * This way we ensure immutability is preserved.
+ *
+ * @see FieldExpressionVisitorAdaptor
  */
 public interface FieldExpressionVisitor {
-    /**
-     * Performs an action using given FieldExpression instance.
-     * If requires to modify some value,
-     * should return a new instance with those values.
-     * This way we ensure immutability is preserved.
-     *
-     * @param expression - FieldExpression, never null
-     * @return FieldExpression instance, never null
-     */
-    FieldExpression visit(FieldExpression expression);
 
     /**
      * Performs action on Always instance.

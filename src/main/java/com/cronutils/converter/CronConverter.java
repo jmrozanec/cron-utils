@@ -13,38 +13,33 @@
 
 package com.cronutils.converter;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.time.ZoneId;
 import java.util.Calendar;
 import java.util.TimeZone;
 
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import lombok.Setter;
+import com.cronutils.utils.StringUtils;
 
 public class CronConverter {
 
-	private static final Logger LOGGER = LoggerFactory
-			.getLogger(CronConverter.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(CronConverter.class);
 
 	private static final String CRON_FIELDS_SEPARATOR = " ";
-
 	private String[] cronParts;
-
 	private Calendar fromCalendar;
-
 	private String sourceCron;
-
 	private ZoneId sourceZoneId;
-
 	private ZoneId targetZoneId;
 
-	@Setter
-	CronToCalendarTransformer toCalendarConverter = new CronToCalendarTransformer();
+	private CronToCalendarTransformer toCalendarConverter;
+	private CalendarToCronTransformer toCronConverter;
 
-	@Setter
-	CalendarToCronTransformer toCronConverter = new CalendarToCronTransformer();
+	public CronConverter(CronToCalendarTransformer toCalendarConverter, CalendarToCronTransformer toCronConverter){
+		this.toCalendarConverter = toCalendarConverter;
+		this.toCronConverter = toCronConverter;
+	}
 
 	public CronConverter using(String cronExpression) {
 		this.sourceCron = cronExpression;

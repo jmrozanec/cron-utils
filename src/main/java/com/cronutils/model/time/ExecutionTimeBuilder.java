@@ -14,7 +14,6 @@
 package com.cronutils.model.time;
 
 import com.cronutils.model.Cron;
-import com.cronutils.model.definition.CronDefinition;
 import com.cronutils.model.field.CronField;
 import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.field.constraint.FieldConstraints;

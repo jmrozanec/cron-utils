@@ -13,10 +13,10 @@
 
 package com.cronutils.model.time.generator;
 
+import com.cronutils.model.field.CronField;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import com.cronutils.model.field.CronField;
 
 abstract class OnDayOfCalendarValueGenerator extends FieldValueGenerator {
     protected int year;

@@ -1,17 +1,13 @@
-cron-utils
-===========
-A Java library to parse, validate, migrate crons as well as get human readable descriptions for them. The project follows the [Semantic Versioning Convention](http://semver.org/), provides OSGi metadata and uses Apache 2.0 license.
+# cron-utils
+_We define crons. And support them._
+
+
+cron-utils is a Java library to define, parse, validate, migrate crons as well as get human readable descriptions for them. The project follows the [Semantic Versioning Convention](http://semver.org/), provides OSGi metadata and uses Apache 2.0 license.
 
 [![Gitter Chat](http://img.shields.io/badge/chat-online-brightgreen.svg)](https://gitter.im/jmrozanec/cron-utils)
 [![Build Status](https://travis-ci.org/jmrozanec/cron-utils.png?branch=master)](https://travis-ci.org/jmrozanec/cron-utils)
-[![Coverage Status](https://coveralls.io/repos/jmrozanec/cron-utils/badge.png)](https://coveralls.io/r/jmrozanec/cron-utils)
+[![Quality Gate](https://sonarcloud.io/api/project_badges/measure?project=cron-utils&metric=coverage)](https://sonarcloud.io/dashboard/index/cron-utils)
 
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/35b1b558473d42c4980432a3ecf84f6c)](https://www.codacy.com/app/jmrozanec/cron-utils?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=jmrozanec/cron-utils&amp;utm_campaign=Badge_Grade)
-[![Project stats by OpenHub](https://www.openhub.net/p/cron-utils/widgets/project_thin_badge.gif)](https://www.openhub.net/p/cron-utils/)
-
-<!---
-[![Quality Gate](https://sonarcloud.io/api/badges/gate?key=cron-utils)](https://sonarcloud.io/dashboard/index/cron-utils)
---->
 
 **Download**
 
@@ -20,13 +16,15 @@ cron-utils is available on [Maven central](http://search.maven.org/#search%7Cga%
     <dependency>
         <groupId>com.cronutils</groupId>
         <artifactId>cron-utils</artifactId>
-        <version>9.1.1</version>
+        <version>9.1.5</version>
     </dependency>
 
 For Android developers, cron-utils 7.0.0 assumes Android 26+. For earlier Android versions consider using cron-utils 6.0.6.
 If using ScheduleExpression from Java EE, this should be provided as a runtime dependency.
 
 **Current development**
+
+*We are currently working to update the codebase towards JDK 16, to ensure will be fully compatible with JDK 17 when released.* 
 
 Now we are developing a new generation of cron-descriptors using neural-translation! Any kind of contributions are welcome: from help with dataset generation to machine learning models training and utilities to load them! If interested, please follow issue [#3](https://github.com/jmrozanec/cron-utils/issues/3)
 
@@ -49,7 +47,7 @@ Now we are developing a new generation of cron-descriptors using neural-translat
     * [Unix](http://www.unix.com/man-page/linux/5/crontab/)
     * [Cron4j](http://www.sauronsoftware.it/projects/cron4j/)
     * [Quartz](http://quartz-scheduler.org/)
-    * [Spring](https://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/scheduling/support/CronSequenceGenerator.html)
+    * [Spring](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/scheduling/support/CronExpression.html)
  * Obtain last/next execution time as well as time from last execution/time to next execution.
  * Obtain weekdays count between two dates, considering different weekend policies as well as holidays.
  * Need to map constants between different cron/time libraries? Use ConstantsMapper.

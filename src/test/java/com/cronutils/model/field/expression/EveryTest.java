@@ -13,9 +13,8 @@
 
 package com.cronutils.model.field.expression;
 
-import org.junit.Test;
-
 import com.cronutils.model.field.value.IntegerFieldValue;
+import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 

@@ -13,22 +13,19 @@
 
 package com.cronutils.model.definition;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
+import com.cronutils.model.field.CronFieldName;
+import com.cronutils.model.field.definition.FieldDefinition;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import com.cronutils.model.field.CronFieldName;
-import com.cronutils.model.field.definition.FieldDefinition;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.when;
 
 public class CronDefinitionTest {

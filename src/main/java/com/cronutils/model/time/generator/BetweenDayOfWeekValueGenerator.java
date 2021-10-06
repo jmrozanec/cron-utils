@@ -13,14 +13,6 @@
 
 package com.cronutils.model.time.generator;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.IntStream;
-
 import com.cronutils.mapper.WeekDay;
 import com.cronutils.model.field.CronField;
 import com.cronutils.model.field.CronFieldName;
@@ -29,6 +21,10 @@ import com.cronutils.model.field.expression.Between;
 import com.cronutils.model.field.expression.FieldExpression;
 import com.cronutils.parser.CronParserField;
 import com.cronutils.utils.Preconditions;
+
+import java.time.LocalDate;
+import java.util.*;
+import java.util.stream.IntStream;
 
 /**
  * This class generates the actual days of month matching the "days of week" specification if the.

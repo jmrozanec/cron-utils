@@ -13,11 +13,6 @@
 
 package com.cronutils.mapper;
 
-import java.util.ArrayList;
-import java.util.EnumMap;
-import java.util.List;
-import java.util.Map;
-
 import com.cronutils.Function;
 import com.cronutils.model.Cron;
 import com.cronutils.model.CronType;
@@ -39,6 +34,11 @@ import com.cronutils.model.field.value.IntegerFieldValue;
 import com.cronutils.model.field.value.SpecialChar;
 import com.cronutils.utils.Preconditions;
 import com.cronutils.utils.VisibleForTesting;
+
+import java.util.ArrayList;
+import java.util.EnumMap;
+import java.util.List;
+import java.util.Map;
 
 import static com.cronutils.model.field.expression.FieldExpression.always;
 import static com.cronutils.model.field.expression.FieldExpression.questionMark;
@@ -126,6 +126,14 @@ public class CronMapper {
         return new CronMapper(
                 CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ),
                 CronDefinitionBuilder.instanceDefinitionFor(CronType.SPRING),
+                setQuestionMark()
+        );
+    }
+
+    public static CronMapper fromSpringToQuartz() {
+        return new CronMapper(
+                CronDefinitionBuilder.instanceDefinitionFor(CronType.SPRING),
+                CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ),
                 setQuestionMark()
         );
     }

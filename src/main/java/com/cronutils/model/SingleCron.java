@@ -1,11 +1,5 @@
 package com.cronutils.model;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.EnumMap;
-import java.util.List;
-import java.util.Map;
-
 import com.cronutils.mapper.CronMapper;
 import com.cronutils.model.definition.CronConstraint;
 import com.cronutils.model.definition.CronDefinition;
@@ -13,6 +7,8 @@ import com.cronutils.model.field.CronField;
 import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.field.expression.visitor.ValidationFieldExpressionVisitor;
 import com.cronutils.utils.Preconditions;
+
+import java.util.*;
 
 public class SingleCron implements Cron {
     private static final long serialVersionUID = 7487370826825439098L;

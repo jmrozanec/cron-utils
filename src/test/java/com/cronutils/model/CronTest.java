@@ -13,22 +13,6 @@
 
 package com.cronutils.model;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.util.Collections;
-import java.util.List;
-import java.util.Locale;
-
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-
-import com.cronutils.descriptor.CronDescriptor;
 import com.cronutils.mapper.CronMapper;
 import com.cronutils.model.definition.CronDefinition;
 import com.cronutils.model.definition.CronDefinitionBuilder;
@@ -36,11 +20,16 @@ import com.cronutils.model.field.CronField;
 import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.field.expression.FieldExpression;
 import com.cronutils.parser.CronParser;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import java.io.*;
+import java.util.Collections;
+import java.util.List;
+
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -149,16 +138,4 @@ public class CronTest {
         }
     }
 
-    @Ignore
-    @Test
-    public void testIssue308(){
-        CronDefinition cronDefinition = CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ);
-        CronParser parser = new CronParser(cronDefinition);
-        Cron quartzCron = parser.parse("0 0 11 L-2 * ?");
-        CronDescriptor descriptor = CronDescriptor.instance(Locale.ENGLISH);
-        String description = descriptor.describe(quartzCron);
-
-        // not sure what the exact string 'should' be ..
-        assertEquals( "at 11:00 two days before the last day of month", description);
-    }
 }

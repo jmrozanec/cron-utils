@@ -13,12 +13,6 @@
 
 package com.cronutils.model.time.generator;
 
-import java.time.LocalDate;
-import java.util.List;
-
-import org.junit.Before;
-import org.junit.Test;
-
 import com.cronutils.model.field.CronField;
 import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.field.constraint.FieldConstraints;
@@ -26,10 +20,13 @@ import com.cronutils.model.field.constraint.FieldConstraintsBuilder;
 import com.cronutils.model.field.expression.On;
 import com.cronutils.model.field.value.SpecialChar;
 import com.cronutils.model.field.value.SpecialCharFieldValue;
+import org.junit.Before;
+import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import java.time.LocalDate;
+import java.util.List;
+
+import static org.junit.Assert.*;
 
 public class OnDayOfMonthValueGeneratorLTest {
     private OnDayOfMonthValueGenerator fieldValueGenerator;

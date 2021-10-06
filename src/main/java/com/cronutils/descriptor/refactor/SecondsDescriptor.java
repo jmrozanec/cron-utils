@@ -1,23 +1,17 @@
 package com.cronutils.descriptor.refactor;
 
-import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ResourceBundle;
-
-import com.cronutils.model.field.expression.Always;
-import com.cronutils.model.field.expression.And;
-import com.cronutils.model.field.expression.Between;
-import com.cronutils.model.field.expression.Every;
-import com.cronutils.model.field.expression.FieldExpression;
-import com.cronutils.model.field.expression.On;
-import com.cronutils.model.field.expression.QuestionMark;
+import com.cronutils.model.field.expression.*;
 import com.cronutils.model.field.expression.visitor.FieldExpressionVisitor;
 import com.cronutils.model.field.value.FieldValue;
 import com.cronutils.model.field.value.IntegerFieldValue;
 import com.cronutils.utils.Preconditions;
 import com.cronutils.utils.StringUtils;
 import com.cronutils.utils.VisibleForTesting;
+
+import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.ResourceBundle;
 
 class SecondsDescriptor implements FieldExpressionVisitor {
 
@@ -175,11 +169,6 @@ class SecondsDescriptor implements FieldExpressionVisitor {
         builder.append(String.format(" %s ", bundle.getString("and")));
         builder.append(describe(expressions.get(expressions.size() - 1), true));
         return builder;
-    }
-
-    @Override
-    public FieldExpression visit(final FieldExpression expression) {
-        return null;
     }
 
     @Override

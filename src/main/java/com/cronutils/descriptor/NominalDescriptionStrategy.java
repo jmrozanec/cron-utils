@@ -13,12 +13,12 @@
 
 package com.cronutils.descriptor;
 
+import com.cronutils.Function;
+import com.cronutils.model.field.expression.FieldExpression;
+
 import java.util.HashSet;
 import java.util.ResourceBundle;
 import java.util.Set;
-
-import com.cronutils.Function;
-import com.cronutils.model.field.expression.FieldExpression;
 
 import static com.cronutils.model.field.expression.FieldExpression.always;
 

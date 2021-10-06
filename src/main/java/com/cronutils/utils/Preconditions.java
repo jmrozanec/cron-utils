@@ -17,6 +17,9 @@ package com.cronutils.utils;
 import java.util.Collection;
 
 /**
+ *
+ * <h2></h2> Due to: https://bugs.openjdk.java.net/browse/JDK-8219801
+ *
  * Static convenience methods that help a method or constructor check whether it was invoked.
  * correctly (whether its <i>preconditions</i> have been met). These methods generally accept a
  * {@code boolean} expression which is expected to be {@code true} (or in the case of {@code
@@ -92,8 +95,7 @@ import java.util.Collection;
  * @since 2.0 (imported from Google Collections Library)
  */
 public class Preconditions {
-    private Preconditions() {
-    }
+    private Preconditions() {}
 
     /**
      * Ensures the truth of an expression involving one or more parameters to the calling method.
@@ -105,6 +107,12 @@ public class Preconditions {
      */
     public static void checkArgument(final boolean expression, final Object errorMessage) {
         if (!expression) {
+            throw new IllegalArgumentException(String.valueOf(errorMessage));
+        }
+    }
+
+    public static void checkPositive(final int value, final Object errorMessage) {
+        if (value < 0) {
             throw new IllegalArgumentException(String.valueOf(errorMessage));
         }
     }

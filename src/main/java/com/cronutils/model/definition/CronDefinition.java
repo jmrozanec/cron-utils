@@ -13,17 +13,12 @@
 
 package com.cronutils.model.definition;
 
-import java.io.Serializable;
-import java.util.Collections;
-import java.util.EnumMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.field.definition.FieldDefinition;
 import com.cronutils.utils.Preconditions;
+
+import java.io.Serializable;
+import java.util.*;
 
 /**
  * Defines fields and conditions over each field for a cron.

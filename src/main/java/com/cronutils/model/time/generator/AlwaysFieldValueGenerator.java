@@ -13,13 +13,13 @@
 
 package com.cronutils.model.time.generator;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.cronutils.model.field.CronField;
 import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.field.expression.Always;
 import com.cronutils.model.field.expression.FieldExpression;
+
+import java.util.ArrayList;
+import java.util.List;
 
 class AlwaysFieldValueGenerator extends FieldValueGenerator {
     public AlwaysFieldValueGenerator(final CronField cronField) {

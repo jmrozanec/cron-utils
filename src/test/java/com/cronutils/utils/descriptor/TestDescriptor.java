@@ -1,11 +1,5 @@
 package com.cronutils.utils.descriptor;
 
-import java.util.Locale;
-import java.util.ResourceBundle;
-
-import org.junit.Ignore;
-import org.junit.Test;
-
 import com.cronutils.descriptor.CronDescriptor;
 import com.cronutils.descriptor.refactor.TimeDescriptor;
 import com.cronutils.model.Cron;
@@ -13,6 +7,11 @@ import com.cronutils.model.CronType;
 import com.cronutils.model.definition.CronDefinition;
 import com.cronutils.model.definition.CronDefinitionBuilder;
 import com.cronutils.parser.CronParser;
+import org.junit.Ignore;
+import org.junit.Test;
+
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 import static org.junit.Assert.assertEquals;
 
@@ -361,7 +360,27 @@ public class TestDescriptor {
         assertEquals("at 16:00:00pm, every Monday, Thursday and Saturday of the month, in January, May and December", descriptor.describe(cron));
     }
 
+    @Test
+    public void testTwoDaysBeforeLastDayOfMonth(){
+        CronDefinition cronDefinition = CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ);
+        CronParser parser = new CronParser(cronDefinition);
+        Cron quartzCron = parser.parse("0 0 11 L-2 * ?");
+        CronDescriptor descriptor = CronDescriptor.instance(Locale.ENGLISH);
+        String description = descriptor.describe(quartzCron);
 
+        assertEquals( "at 11:00 2 days before the last day of the month", description);
+    }
+
+    @Test
+    public void testOneDayBeforeLastDayOfMonth(){
+        CronDefinition cronDefinition = CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ);
+        CronParser parser = new CronParser(cronDefinition);
+        Cron quartzCron = parser.parse("0 0 11 L-1 * ?");
+        CronDescriptor descriptor = CronDescriptor.instance(Locale.ENGLISH);
+        String description = descriptor.describe(quartzCron);
+
+        assertEquals( "at 11:00 one day before the last day of the month", description);
+    }
 
 
 }

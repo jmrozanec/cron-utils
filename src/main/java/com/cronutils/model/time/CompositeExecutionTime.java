@@ -1,12 +1,12 @@
 package com.cronutils.model.time;
 
+import com.cronutils.utils.Preconditions;
+
 import java.time.Duration;
 import java.time.ZonedDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-
-import com.cronutils.utils.Preconditions;
 
 public class CompositeExecutionTime implements ExecutionTime {
     private List<ExecutionTime> executionTimes;
