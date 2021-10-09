@@ -13,7 +13,6 @@ import org.junit.Test;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 
-@Ignore
 public class Issue430Test {
     @Test
     public void test() {
@@ -22,7 +21,8 @@ public class Issue430Test {
         Cron cron = parser.parse("0 0 12 30 6 ? 2020/10");
         ExecutionTime execution = ExecutionTime.forCron(cron);
         ZonedDateTime dateTime = ZonedDateTime.of(2020, 6, 30, 12, 0, 0, 0, ZoneOffset.UTC);
-        Assert.assertEquals(dateTime.minusYears(10), execution.lastExecution(dateTime).orElse(null));
+        // The cron starts from 2020, so no last execution date should be returned.
+        Assert.assertNull(execution.lastExecution(dateTime).orElse(null));
         Assert.assertEquals(dateTime.plusYears(10), execution.nextExecution(dateTime).orElse(null));
     }
 }
