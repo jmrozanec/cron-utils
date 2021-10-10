@@ -42,24 +42,21 @@ public class Issue462Test {
     /**
      * Faulty describe that includes a proposal for the fixed output.
      */
-    @Ignore
     @Test
-    public void testCaseEverySecondOnEvery30Minutes() throws ParseException {
+    public void testCaseEverySecondOnEvery30Minutes() {
         final String cronExpression = "* /30 * * * *";
         final Cron cron = parser.parse(cronExpression);
         // create the *** BY NOW ** wrong describe
         final String describe = descriptor.describe(cron);
         // ** will fail by now ** this is a just proposal how the describe may look like
-        assertEquals("every second, every 30 minutes", describe);
-        // this will pass by now but should ** NOT **
-        // assertEquals("every 30 minutes", describe);
+        assertEquals("every second every 30 minutes", describe);
     }
 
     /**
      * Correct describe for showing that the same output is generated.
      */
     @Test
-    public void testCaseOnceEvery30Minutes() throws ParseException {
+    public void testCaseOnceEvery30Minutes() {
         final String cronExpression = "0 /30 * * * *";
         final Cron cron = parser.parse(cronExpression);
         // create the correct describe
