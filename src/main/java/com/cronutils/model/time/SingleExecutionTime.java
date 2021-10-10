@@ -28,7 +28,6 @@ import com.cronutils.utils.Preconditions;
 import com.cronutils.utils.VisibleForTesting;
 
 import java.time.*;
-import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoField;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalField;
@@ -52,7 +51,6 @@ import static java.time.temporal.TemporalAdjusters.lastDayOfMonth;
  * Calculates execution time given a cron pattern.
  */
 public class SingleExecutionTime implements ExecutionTime {
-    private static DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
     private static final int MAX_ITERATIONS = 100_000;
 
     private static final LocalTime MAX_SECONDS = LocalTime.MAX.truncatedTo(SECONDS);
@@ -107,8 +105,15 @@ public class SingleExecutionTime implements ExecutionTime {
             if (nextMatch.equals(date)) {
                 nextMatch = nextClosestMatch(date.plusSeconds(1));
 
-                if(nextMatch.format(DATE_TIME_FORMATTER).equals(date.format(DATE_TIME_FORMATTER))){ // daylight saving case: issue #446
-                    nextMatch = nextClosestMatch(date.plusSeconds(1).plusHours(1));
+                if (nextMatch.getOffset().compareTo(date.getOffset()) > 0) {
+                    // daylight saving time overlap case: issue #446
+                    ZonedDateTime nextNextExecution = nextClosestMatch(nextMatch.plusSeconds(1));
+
+                    boolean lessFrequentThan1Hour = (Duration.between(nextMatch, nextNextExecution).toHours() > 1);
+                    if (lessFrequentThan1Hour) {
+                        // Avoid duplicate execution during DST overlap
+                        nextMatch = nextClosestMatch(date.plusSeconds(1).plusHours(1));
+                    }
                 }
             }
             return Optional.of(nextMatch);
