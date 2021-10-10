@@ -29,7 +29,7 @@ public class Issue480Test {
     private static final CronDefinition definition = CronDefinitionBuilder.defineCron()
             .withMinutes().and()
             .withHours().and()
-            .withDayOfWeek().supportsQuestionMark().and()
+            .withDayOfWeek().withValidRange(1, 7).withMondayDoWValue(1).supportsQuestionMark().and()
             .withDayOfMonth().supportsL().supportsQuestionMark().and()
             .withDayOfYear().supportsQuestionMark().and()
             .withMonth().and()
@@ -40,7 +40,6 @@ public class Issue480Test {
             .instance();
 
     @Test
-    @Ignore // TODO broken??
     public void testIntervalsEvery5thMonthsSinceASpecificMonth() {
         LocalDateTime sunday = LocalDateTime.of(2021, 6, 27, 0, 0);
         Assert.assertEquals(sunday.getDayOfWeek(), DayOfWeek.SUNDAY);
@@ -65,8 +64,8 @@ public class Issue480Test {
         return CronBuilder.cron(definition)
                 .withMinute(on(now.getMinute()))
                 .withHour(on(now.getHour()))
-                .withDoW(on(now.getDayOfWeek().ordinal())) // ordinal -- 0 to 6
-//              .withDoW(on(now.getDayOfWeek().getValue())) // value -- 1 to 7
+//                .withDoW(on(now.getDayOfWeek().ordinal())) // ordinal -- 0 to 6, This is a wrong way of mapping
+                .withDoW(on(now.getDayOfWeek().getValue())) // value -- 1 to 7
                 .withDoM(questionMark())
                 .withDoY(questionMark())
                 .withMonth(always())
