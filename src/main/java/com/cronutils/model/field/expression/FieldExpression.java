@@ -14,40 +14,40 @@
 
 package com.cronutils.model.field.expression;
 
-import com.cronutils.model.field.expression.visitor.FieldExpressionVisitor;
-import com.cronutils.utils.Preconditions;
-
 import java.io.Serializable;
+
+import com.cronutils.model.field.expression.visitor.FieldExpressionVisitor;
 
 public abstract class FieldExpression implements Serializable {
 
-    private static final long serialVersionUID = 5138279438874391617L;
+	private static final long serialVersionUID = 5138279438874391617L;
 
-    public And and(final FieldExpression exp) {
-        return new And().and(this).and(exp);
-    }
+	public And and(final FieldExpression exp) {
+		return new And().and(this).and(exp);
+	}
 
-    /**
-     * Represents FieldExpression as string.
-     *
-     * @return String representation, never null.
-     */
-    public abstract String asString();
+	/**
+	 * Represents FieldExpression as string.
+	 *
+	 * @return String representation, never null.
+	 */
+	public abstract String asString();
 
-    /**
-     * Accept a visitor to perform some action on the instance. Current instance is cloned, so that we ensure immutability. Clone of this
-     * instance is returned after visitor.visit(clone) was invoked.
-     *
-     * @param visitor - FieldExpressionVisitor instance, never null
-     * @return FieldExpression copied instance with visitor action performed.
-     */
-    public abstract FieldExpression accept(final FieldExpressionVisitor visitor);
+	/**
+	 * Accept a visitor to perform some action on the instance. Current instance is
+	 * cloned, so that we ensure immutability. Clone of this instance is returned
+	 * after visitor.visit(clone) was invoked.
+	 *
+	 * @param visitor - FieldExpressionVisitor instance, never null
+	 * @return FieldExpression copied instance with visitor action performed.
+	 */
+	public abstract FieldExpression accept(final FieldExpressionVisitor visitor);
 
-    public static FieldExpression always() {
-        return Always.INSTANCE;
-    }
+	public static FieldExpression always() {
+		return Always.INSTANCE;
+	}
 
-    public static FieldExpression questionMark() {
-        return QuestionMark.INSTANCE;
-    }
+	public static FieldExpression questionMark() {
+		return QuestionMark.INSTANCE;
+	}
 }
