@@ -4,6 +4,8 @@ import com.cronutils.model.CronType;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
@@ -15,6 +17,8 @@ import static org.junit.Assert.assertTrue;
 
 @RunWith(Parameterized.class)
 public class CronValidatorTest {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(CronValidatorTest.class);
 
     private final Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
 
@@ -38,7 +42,9 @@ public class CronValidatorTest {
                 {"0 0 0 25 12 ?", true},
                 {"0 0 0 L 12 ?", false},
                 {"1,2, * * * * *", false},
-                {"1- * * * * *", false}
+                {"1- * * * * *", false},
+                // Verification for RCE security vulnerability fix: https://github.com/jmrozanec/cron-utils/issues/461
+                {"java.lang.Runtime.getRuntime().exec('touch /tmp/pwned'); // 4 5 [${''.getClass().forName('javax.script.ScriptEngineManager').newInstance().getEngineByName('js').eval(validatedValue)}]", false}
         };
     }
 
@@ -46,6 +52,7 @@ public class CronValidatorTest {
     public void validateExamples() {
         TestPojo testPojo = new TestPojo(expression);
         Set<ConstraintViolation<TestPojo>> violations = validator.validate(testPojo);
+        violations.stream().map(ConstraintViolation::getMessage).forEach(LOGGER::info);
 
         if (valid) {
             assertTrue(violations.isEmpty());

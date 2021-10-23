@@ -20,9 +20,11 @@ import com.cronutils.model.CronType;
 import com.cronutils.model.definition.CronDefinitionBuilder;
 import com.cronutils.model.field.expression.FieldExpressionFactory;
 import com.cronutils.model.time.ExecutionTime;
+import org.hamcrest.core.StringEndsWith;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.internal.matchers.ThrowableMessageMatcher;
 import org.junit.rules.ExpectedException;
 
 import java.time.ZonedDateTime;
@@ -30,6 +32,7 @@ import java.util.Locale;
 import java.util.Optional;
 
 import static org.junit.Assert.*;
+import static org.junit.internal.matchers.ThrowableMessageMatcher.hasMessage;
 
 public class CronParserQuartzIntegrationTest {
 
@@ -248,9 +251,7 @@ public class CronParserQuartzIntegrationTest {
     public void testMissingExpressionAndInvalidCharsInErrorMessage() {
         thrown.expect(IllegalArgumentException.class);
         final String cronexpression = "* * -1 * * ?";
-        thrown.expectMessage(
-                String.format("Failed to parse '%s'. Invalid expression! Expression: -1 does not describe a range. Negative numbers are not allowed.",
-                        cronexpression));
+        thrown.expect(hasMessage(StringEndsWith.endsWith("Invalid expression! Expression: -1 does not describe a range. Negative numbers are not allowed.")));
         assertNotNull(ExecutionTime.forCron(parser.parse(cronexpression)));
     }
 
