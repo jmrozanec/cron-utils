@@ -25,11 +25,10 @@ import com.cronutils.model.field.constraint.FieldConstraints;
 import com.cronutils.model.field.constraint.FieldConstraintsBuilder;
 import com.cronutils.model.field.definition.DayOfWeekFieldDefinition;
 import com.cronutils.model.field.definition.FieldDefinition;
-import com.cronutils.model.field.expression.Always;
-import com.cronutils.model.field.expression.FieldExpression;
-import com.cronutils.model.field.expression.On;
-import com.cronutils.model.field.expression.QuestionMark;
+import com.cronutils.model.field.expression.*;
+import com.cronutils.model.field.expression.visitor.FieldExpressionVisitorAdaptor;
 import com.cronutils.model.field.expression.visitor.ValueMappingFieldExpressionVisitor;
+import com.cronutils.model.field.value.FieldValue;
 import com.cronutils.model.field.value.IntegerFieldValue;
 import com.cronutils.model.field.value.SpecialChar;
 import com.cronutils.utils.Preconditions;
@@ -261,27 +260,45 @@ public class CronMapper {
         return field -> new CronField(name, always(), FieldConstraintsBuilder.instance().forField(name).createConstraintsInstance());
     }
 
+    private static IntegerFieldValue mapDayOfWeek(DayOfWeekFieldDefinition sourceDef, DayOfWeekFieldDefinition targetDef, IntegerFieldValue fieldValue) {
+        return new IntegerFieldValue(ConstantsMapper.weekDayMapping(sourceDef.getMondayDoWValue(), targetDef.getMondayDoWValue(), fieldValue.getValue()));
+    }
+
+    private static FieldValue<?> mapDayOfWeek(DayOfWeekFieldDefinition sourceDef, DayOfWeekFieldDefinition targetDef, FieldValue<?> fieldValue) {
+        if (fieldValue instanceof IntegerFieldValue) {
+            return mapDayOfWeek(sourceDef, targetDef, (IntegerFieldValue) fieldValue);
+        }
+        return fieldValue;
+    }
+
     @VisibleForTesting
     static Function<CronField, CronField> dayOfWeekMapping(final DayOfWeekFieldDefinition sourceDef, final DayOfWeekFieldDefinition targetDef) {
         return field -> {
             final FieldExpression expression = field.getExpression();
             FieldExpression dest = null;
-            dest = expression.accept(
-                    new ValueMappingFieldExpressionVisitor(
-                            fieldValue -> {
-                                if (fieldValue instanceof IntegerFieldValue) {
-                                    return new IntegerFieldValue(
-                                            ConstantsMapper.weekDayMapping(
-                                                    sourceDef.getMondayDoWValue(),
-                                                    targetDef.getMondayDoWValue(),
-                                                    ((IntegerFieldValue) fieldValue).getValue()
-                                            )
-                                    );
-                                }
-                                return fieldValue;
-                            }
-                    )
-            );
+            dest = expression.accept(new FieldExpressionVisitorAdaptor() {
+                public FieldExpression visit(Every every) {
+                    return new Every(every.getExpression().accept(this), every.getPeriod());
+                }
+
+                public FieldExpression visit(On on) {
+                    return new On(mapDayOfWeek(sourceDef, targetDef, on.getTime()), on.getSpecialChar());
+                }
+
+                @Override
+                public FieldExpression visit(Between between) {
+                    return new Between(mapDayOfWeek(sourceDef, targetDef, between.getFrom()), mapDayOfWeek(sourceDef, targetDef, between.getTo()));
+                }
+
+                @Override
+                public FieldExpression visit(And and) {
+                    And newAnd = new And();
+                    for (FieldExpression expr : and.getExpressions()) {
+                        newAnd.and(expr.accept(this));
+                    }
+                    return newAnd;
+                }
+            });
 
             if (expression instanceof QuestionMark && !targetDef.getConstraints().getSpecialChars().contains(SpecialChar.QUESTION_MARK)) {
                 dest = always();

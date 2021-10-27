@@ -120,7 +120,7 @@ public class FieldParser {
         if (ASTERISK.equals(trimmedStart) || EMPTY_STRING.equals(start.trim())) {
             return new Every(new IntegerFieldValue(Integer.parseInt(value)));
         } else {
-            return new Every(new On(new IntegerFieldValue(Integer.parseInt(start))), new IntegerFieldValue(Integer.parseInt(value)));
+            return new Every(new On(mapToIntegerFieldValue(start)), new IntegerFieldValue(Integer.parseInt(value)));
         }
     }
 
