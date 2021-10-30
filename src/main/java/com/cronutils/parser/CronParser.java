@@ -128,7 +128,7 @@ public class CronParser {
                 }
                 return new SingleCron(cronDefinition, results).validate();
             } catch (final IllegalArgumentException e) {
-                throw new IllegalArgumentException(String.format("Failed to parse '%s'. %s", expression, e.getMessage()), e);
+                throw new IllegalArgumentException(String.format("Failed to parse cron expression. %s", e.getMessage()), e);
             }
         }
     }
