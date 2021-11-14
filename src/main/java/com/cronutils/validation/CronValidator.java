@@ -30,7 +30,7 @@ public class CronValidator implements ConstraintValidator<Cron, String> {
             return true;
         } catch (IllegalArgumentException e) {
             context.disableDefaultConstraintViolation();
-            context.buildConstraintViolationWithTemplate("Error parsing the Cron expression").addConstraintViolation();
+            context.buildConstraintViolationWithTemplate(e.getMessage()).addConstraintViolation();
             return false;
         }
     }
