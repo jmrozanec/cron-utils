@@ -1,16 +1,34 @@
 language: java
+jobs:
+  fast_finish: true
 
 branches:
   only:
     - master
 
 jdk:
-  - oraclejdk8
+  - oraclejdk11
+  - openjdk11
 
 before_install: "git clone -b travis `git config --get remote.origin.url` target/travis"
 
-script: "mvn deploy --settings target/travis/settings.xml -Dsettings.security=target/travis/settings-security.xml -Dmaven.javadoc.skip=true"
+addons:
+  sonarcloud:
+    organization: "jmrozanec-github"
+script:
+   - > 
+     if [ "$TRAVIS_PULL_REQUEST" != "false" ];then 
+        mvn jacoco:prepare-agent install jacoco:report package --settings target/travis/settings.xml -Dsettings.security=target/travis/settings-security.xml -Dmaven.javadoc.skip=true;
+        sonar-scanner
+     fi
+   - > 
+     if [ "$TRAVIS_PULL_REQUEST" = "false" ];then 
+        mvn jacoco:prepare-agent install jacoco:report package -Dmaven.javadoc.skip=true;
+        sonar-scanner
+     fi
 
-after_success:
-  - mvn cobertura:cobertura coveralls:cobertura
-  - bash <(curl -s https://codecov.io/bash)
+cache:
+  directories:
+    - '$HOME/.m2/repository'
+    - '$HOME/.sonar/cache'
+

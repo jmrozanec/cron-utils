@@ -10,16 +10,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cronutils.model.definition;
 
-import java.io.Serializable;
+package com.cronutils.model.definition;
 
 import com.cronutils.model.Cron;
 
-public abstract class CronConstraint implements Serializable {
-    private String description;
+import java.io.Serializable;
 
-    public CronConstraint(String description){
+public abstract class CronConstraint implements Serializable {
+
+    private static final long serialVersionUID = 6866660085991775528L;
+    private final String description;
+
+    public CronConstraint(final String description) {
         this.description = description;
     }
 

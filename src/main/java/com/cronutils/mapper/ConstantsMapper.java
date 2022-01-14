@@ -1,4 +1,3 @@
-package com.cronutils.mapper;
 /*
  * Copyright 2015 jmrozanec
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -11,21 +10,25 @@ package com.cronutils.mapper;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-public class ConstantsMapper {
-    private ConstantsMapper() {}
 
+package com.cronutils.mapper;
+
+public class ConstantsMapper {
     public static final WeekDay QUARTZ_WEEK_DAY = new WeekDay(2, false);
     public static final WeekDay JAVA8 = new WeekDay(1, false);
     public static final WeekDay CRONTAB_WEEK_DAY = new WeekDay(1, true);
 
+    private ConstantsMapper() {}
+
     /**
      * Performs weekday mapping between two weekday definitions.
-     * @param source - source
-     * @param target - target weekday definition
+     *
+     * @param source  - source
+     * @param target  - target weekday definition
      * @param weekday - value in source range.
      * @return int - mapped value
      */
-    public static int weekDayMapping(WeekDay source, WeekDay target, int weekday){
+    public static int weekDayMapping(final WeekDay source, final WeekDay target, final int weekday) {
         return source.mapTo(weekday, target);
     }
 }

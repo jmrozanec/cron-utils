@@ -1,21 +1,3 @@
-package com.cronutils.model.definition;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.when;
-
-import java.util.*;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-
-import com.cronutils.model.field.CronFieldName;
-import com.cronutils.model.field.definition.FieldDefinition;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
 /*
  * Copyright 2015 jmrozanec
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -28,12 +10,27 @@ import com.google.common.collect.Sets;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+package com.cronutils.model.definition;
+
+import com.cronutils.model.field.CronFieldName;
+import com.cronutils.model.field.definition.FieldDefinition;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.when;
+
 public class CronDefinitionTest {
     private boolean enforceStrictRange;
     private boolean matchDayOfWeekAndDayOfMonth;
-    private CronFieldName testFieldName1;
-    private CronFieldName testFieldName2;
-    private CronFieldName testFieldName3;
     @Mock
     private FieldDefinition mockFieldDefinition1;
     @Mock
@@ -42,61 +39,59 @@ public class CronDefinitionTest {
     private FieldDefinition mockFieldDefinition3optional;
 
     @Before
-    public void setUp(){
-        testFieldName1 = CronFieldName.SECOND;
-        testFieldName2 = CronFieldName.MINUTE;
-        testFieldName3 = CronFieldName.HOUR;
+    public void setUp() {
+        final CronFieldName testFieldName1 = CronFieldName.SECOND;
+        final CronFieldName testFieldName2 = CronFieldName.MINUTE;
+        final CronFieldName testFieldName3 = CronFieldName.HOUR;
         MockitoAnnotations.initMocks(this);
         when(mockFieldDefinition1.getFieldName()).thenReturn(testFieldName1);
         when(mockFieldDefinition2.getFieldName()).thenReturn(testFieldName2);
         when(mockFieldDefinition3optional.getFieldName()).thenReturn(testFieldName3);
         when(mockFieldDefinition3optional.isOptional()).thenReturn(Boolean.TRUE);
 
-        enforceStrictRange = false;
         matchDayOfWeekAndDayOfMonth = false;
     }
 
-
     @Test(expected = NullPointerException.class)
-    public void testConstructorNullFieldsParameter() throws Exception {
-        new CronDefinition(null, new HashSet<CronConstraint>(), enforceStrictRange, matchDayOfWeekAndDayOfMonth);
+    public void testConstructorNullFieldsParameter() {
+        new CronDefinition(null, new HashSet<>(), matchDayOfWeekAndDayOfMonth);
     }
 
     @Test(expected = NullPointerException.class)
-    public void testConstructorNullConstraintsParameter() throws Exception {
-        new CronDefinition(new ArrayList<FieldDefinition>(), null, enforceStrictRange, matchDayOfWeekAndDayOfMonth);
+    public void testConstructorNullConstraintsParameter() {
+        new CronDefinition(new ArrayList<>(), null, matchDayOfWeekAndDayOfMonth);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testConstructorEmptyFieldsParameter() throws Exception {
-        new CronDefinition(new ArrayList<FieldDefinition>(), new HashSet<CronConstraint>(), enforceStrictRange, matchDayOfWeekAndDayOfMonth);
+    public void testConstructorEmptyFieldsParameter() {
+        new CronDefinition(new ArrayList<>(), new HashSet<>(), matchDayOfWeekAndDayOfMonth);
     }
 
     @Test
-    public void testLastFieldOptionalTrueWhenSet() throws Exception {
-        List<FieldDefinition> fields = Lists.newArrayList();
+    public void testLastFieldOptionalTrueWhenSet() {
+        final List<FieldDefinition> fields = new ArrayList<>();
         fields.add(mockFieldDefinition1);
         fields.add(mockFieldDefinition2);
         fields.add(mockFieldDefinition3optional);
-        Set<FieldDefinition> fieldDefinitions = new CronDefinition(fields, new HashSet<CronConstraint>(), enforceStrictRange, matchDayOfWeekAndDayOfMonth)
-            .getFieldDefinitions();
-        List<FieldDefinition> sortedFieldDefinitions = new ArrayList<>(fieldDefinitions);
-        Collections.sort(sortedFieldDefinitions, FieldDefinition.createFieldDefinitionComparator());
-        assertTrue(sortedFieldDefinitions.get(fields.size()-1).isOptional());
+        final Set<FieldDefinition> fieldDefinitions = new CronDefinition(fields, new HashSet<>(), matchDayOfWeekAndDayOfMonth)
+                .getFieldDefinitions();
+        final List<FieldDefinition> sortedFieldDefinitions = new ArrayList<>(fieldDefinitions);
+        sortedFieldDefinitions.sort(FieldDefinition.createFieldDefinitionComparator());
+        assertTrue(sortedFieldDefinitions.get(fields.size() - 1).isOptional());
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testLastFieldOptionalNotAllowedOnSingleFieldDefinition() throws Exception {
-        List<FieldDefinition> fields = Lists.newArrayList();
+    public void testLastFieldOptionalNotAllowedOnSingleFieldDefinition() {
+        final List<FieldDefinition> fields = new ArrayList<>();
         fields.add(mockFieldDefinition3optional);
-        new CronDefinition(fields, new HashSet<CronConstraint>(), enforceStrictRange, matchDayOfWeekAndDayOfMonth);
+        new CronDefinition(fields, new HashSet<>(), matchDayOfWeekAndDayOfMonth);
     }
 
     @Test
-    public void testGetFieldDefinitions() throws Exception {
-        List<FieldDefinition> fields = Lists.newArrayList();
+    public void testGetFieldDefinitions() {
+        final List<FieldDefinition> fields = new ArrayList<>();
         fields.add(mockFieldDefinition1);
-        CronDefinition cronDefinition = new CronDefinition(fields, new HashSet<CronConstraint>(), enforceStrictRange, matchDayOfWeekAndDayOfMonth);
+        final CronDefinition cronDefinition = new CronDefinition(fields, new HashSet<>(), matchDayOfWeekAndDayOfMonth);
         assertNotNull(cronDefinition.getFieldDefinitions());
         assertEquals(1, cronDefinition.getFieldDefinitions().size());
         assertTrue(cronDefinition.getFieldDefinitions().contains(mockFieldDefinition1));

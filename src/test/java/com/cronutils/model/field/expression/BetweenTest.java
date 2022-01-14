@@ -1,13 +1,3 @@
-package com.cronutils.model.field.expression;
-
-import static org.junit.Assert.assertEquals;
-
-import org.junit.Before;
-import org.junit.Test;
-
-import com.cronutils.model.field.value.IntegerFieldValue;
-import com.cronutils.model.field.value.SpecialChar;
-import com.cronutils.model.field.value.SpecialCharFieldValue;
 /*
  * Copyright 2015 jmrozanec
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,6 +10,17 @@ import com.cronutils.model.field.value.SpecialCharFieldValue;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+package com.cronutils.model.field.expression;
+
+import com.cronutils.model.field.value.IntegerFieldValue;
+import com.cronutils.model.field.value.SpecialChar;
+import com.cronutils.model.field.value.SpecialCharFieldValue;
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
+
 public class BetweenTest {
     private int from;
     private int to;
@@ -31,19 +32,19 @@ public class BetweenTest {
     }
 
     @Test
-    public void testGetFrom() throws Exception {
+    public void testGetFrom() {
         assertEquals(from, new Between(new IntegerFieldValue(from), new IntegerFieldValue(to)).getFrom().getValue());
     }
 
     @Test
-    public void testGetTo() throws Exception {
+    public void testGetTo() {
         assertEquals(to, new Between(new IntegerFieldValue(from), new IntegerFieldValue(to)).getTo().getValue());
     }
 
     @Test
-    public void testNonNumericRangeSupported() throws Exception {
-        SpecialChar specialChar = SpecialChar.L;
-        Between between = new Between(new SpecialCharFieldValue(specialChar), new IntegerFieldValue(to));
+    public void testNonNumericRangeSupported() {
+        final SpecialChar specialChar = SpecialChar.L;
+        final Between between = new Between(new SpecialCharFieldValue(specialChar), new IntegerFieldValue(to));
         assertEquals(specialChar, between.getFrom().getValue());
         assertEquals(to, between.getTo().getValue());
         assertEquals(String.format("%s-%s", specialChar, to), between.asString());

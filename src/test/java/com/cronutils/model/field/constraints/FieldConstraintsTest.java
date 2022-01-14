@@ -1,15 +1,3 @@
-package com.cronutils.model.field.constraints;
-
-import java.util.Map;
-import java.util.Set;
-
-import org.junit.Before;
-import org.junit.Test;
-
-import com.cronutils.model.field.constraint.FieldConstraints;
-import com.cronutils.model.field.value.SpecialChar;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 /*
  * Copyright 2015 jmrozanec
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,6 +10,18 @@ import com.google.common.collect.Sets;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+package com.cronutils.model.field.constraints;
+
+import com.cronutils.model.field.constraint.FieldConstraints;
+import com.cronutils.model.field.value.SpecialChar;
+import org.junit.Before;
+import org.junit.Test;
+
+import java.util.Collections;
+import java.util.Map;
+import java.util.Set;
+
 public class FieldConstraintsTest {
 
     private Map<String, Integer> stringMapping;
@@ -29,28 +29,30 @@ public class FieldConstraintsTest {
     private Set<SpecialChar> specialCharSet;
     private int startRange;
     private int endRange;
+    private boolean strictRange;
 
     @Before
-    public void setUp() throws Exception {
-        intMapping = Maps.newHashMap();
-        stringMapping = Maps.newHashMap();
-        specialCharSet = Sets.newHashSet();
+    public void setUp() {
+        intMapping = Collections.emptyMap();
+        stringMapping = Collections.emptyMap();
+        specialCharSet = Collections.emptySet();
         startRange = 0;
         endRange = 59;
+        strictRange = true;
     }
 
     @Test(expected = NullPointerException.class)
-    public void testConstructorStringMappingNull() throws Exception {
-        new FieldConstraints(null, intMapping, specialCharSet, startRange, endRange);
+    public void testConstructorStringMappingNull() {
+        new FieldConstraints(null, intMapping, specialCharSet, startRange, endRange, strictRange);
     }
 
     @Test(expected = NullPointerException.class)
-    public void testConstructorIntMappingNull() throws Exception {
-        new FieldConstraints(stringMapping, null, specialCharSet, startRange, endRange);
+    public void testConstructorIntMappingNull() {
+        new FieldConstraints(stringMapping, null, specialCharSet, startRange, endRange, strictRange);
     }
 
     @Test(expected = NullPointerException.class)
-    public void testSpecialCharsSetNull() throws Exception {
-        new FieldConstraints(stringMapping, intMapping, null, startRange, endRange);
+    public void testSpecialCharsSetNull() {
+        new FieldConstraints(stringMapping, intMapping, null, startRange, endRange, strictRange);
     }
 }

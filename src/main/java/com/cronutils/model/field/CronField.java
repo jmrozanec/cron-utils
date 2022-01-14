@@ -1,13 +1,3 @@
-package com.cronutils.model.field;
-
-import java.io.Serializable;
-import java.util.Comparator;
-
-import com.cronutils.model.field.constraint.FieldConstraints;
-import com.cronutils.model.field.expression.FieldExpression;
-import com.cronutils.utils.Preconditions;
-import com.google.common.base.MoreObjects;
-
 /*
  * Copyright 2014 jmrozanec
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,12 +10,24 @@ import com.google.common.base.MoreObjects;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-public class CronField implements Serializable {
-    private CronFieldName field;
-    private FieldExpression expression;
-    private FieldConstraints constraints;
 
-    public CronField(CronFieldName field, FieldExpression expression, FieldConstraints constraints) {
+package com.cronutils.model.field;
+
+import com.cronutils.model.field.constraint.FieldConstraints;
+import com.cronutils.model.field.expression.FieldExpression;
+import com.cronutils.utils.Preconditions;
+
+import java.io.Serializable;
+import java.util.Comparator;
+
+public class CronField implements Serializable {
+
+    private static final long serialVersionUID = -4042499846855256325L;
+    private final CronFieldName field;
+    private final FieldExpression expression;
+    private final FieldConstraints constraints;
+
+    public CronField(final CronFieldName field, final FieldExpression expression, final FieldConstraints constraints) {
         this.field = field;
         this.expression = Preconditions.checkNotNull(expression, "FieldExpression must not be null");
         this.constraints = Preconditions.checkNotNull(constraints, "FieldConstraints must not be null");
@@ -44,17 +46,12 @@ public class CronField implements Serializable {
     }
 
     public static Comparator<CronField> createFieldComparator() {
-        return new Comparator<CronField>() {
-            @Override
-            public int compare(CronField o1, CronField o2) {
-                return o1.getField().getOrder() - o2.getField().getOrder();
-            }
-        };
+        return Comparator.comparingInt(o -> o.getField().getOrder());
     }
-    
+
     @Override
     public String toString() {
-        return MoreObjects.toStringHelper(this).add("field", field).toString();
+        return "CronField{" + "field=" + field + '}';
     }
 }
 

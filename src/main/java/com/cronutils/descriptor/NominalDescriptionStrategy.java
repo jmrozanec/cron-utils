@@ -1,13 +1,3 @@
-package com.cronutils.descriptor;
-
-import java.util.HashSet;
-import java.util.ResourceBundle;
-import java.util.Set;
-
-import com.cronutils.Function;
-import com.cronutils.model.field.expression.Always;
-import com.cronutils.model.field.expression.FieldExpression;
-
 /*
  * Copyright 2014 jmrozanec
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,23 +11,35 @@ import com.cronutils.model.field.expression.FieldExpression;
  * limitations under the License.
  */
 
+package com.cronutils.descriptor;
+
+import com.cronutils.Function;
+import com.cronutils.model.field.expression.FieldExpression;
+
+import java.util.HashSet;
+import java.util.ResourceBundle;
+import java.util.Set;
+
+import static com.cronutils.model.field.expression.FieldExpression.always;
+
 /**
  * Description strategy where a cron field number can be mapped to a name.
  * Ex.: days of week or months
  */
 class NominalDescriptionStrategy extends DescriptionStrategy {
     private FieldExpression expression;
-    private Set<Function<FieldExpression, String>> descriptions;
+    private final Set<Function<FieldExpression, String>> descriptions;
 
     /**
-     * Constructor
-     * @param bundle - locale in which description should be given
+     * Constructor.
+     *
+     * @param bundle               - locale in which description should be given
      * @param nominalValueFunction - function that maps Integer to String.
      *                             The function should return "" if does not match criteria,
      *                             or the description otherwise.
-     * @param expression - CronFieldExpression instance, the expression to be described.
+     * @param expression           - CronFieldExpression instance, the expression to be described.
      */
-    public NominalDescriptionStrategy(ResourceBundle bundle, Function<Integer, String> nominalValueFunction, FieldExpression expression) {
+    public NominalDescriptionStrategy(final ResourceBundle bundle, final Function<Integer, String> nominalValueFunction, final FieldExpression expression) {
         super(bundle);
         descriptions = new HashSet<>();
         if (nominalValueFunction != null) {
@@ -46,13 +48,13 @@ class NominalDescriptionStrategy extends DescriptionStrategy {
         if (expression != null) {
             this.expression = expression;
         } else {
-            this.expression = new Always();
+            this.expression = always();
         }
     }
 
     @Override
     public String describe() {
-        for (Function<FieldExpression, String> function : descriptions) {
+        for (final Function<FieldExpression, String> function : descriptions) {
             if (!"".equals(function.apply(expression))) {
                 return function.apply(expression);
             }
@@ -61,14 +63,14 @@ class NominalDescriptionStrategy extends DescriptionStrategy {
     }
 
     /**
-     * Allows to provide a specific description to handle a CronFieldExpression instance
+     * Allows to provide a specific description to handle a CronFieldExpression instance.
      *
      * @param desc - function that maps CronFieldExpression to String.
      *             The function should return "" if does not match criteria,
      *             or the description otherwise.
      * @return NominalDescriptionStrategy, this instance
      */
-    public NominalDescriptionStrategy addDescription(Function<FieldExpression, String> desc) {
+    public NominalDescriptionStrategy addDescription(final Function<FieldExpression, String> desc) {
         descriptions.add(desc);
         return this;
     }

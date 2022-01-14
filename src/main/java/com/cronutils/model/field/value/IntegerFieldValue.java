@@ -1,5 +1,3 @@
-package com.cronutils.model.field.value;
-
 /*
  * Copyright 2015 jmrozanec
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,11 +10,16 @@ package com.cronutils.model.field.value;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-public class IntegerFieldValue extends FieldValue<Integer> {
-    private int value;
 
-    public IntegerFieldValue(int value){
-        this.value=value;
+package com.cronutils.model.field.value;
+
+public class IntegerFieldValue extends FieldValue<Integer> {
+
+    private static final long serialVersionUID = -1305795676868267699L;
+    private final int value;
+
+    public IntegerFieldValue(final int value) {
+        this.value = value;
     }
 
     @Override

@@ -1,9 +1,3 @@
-package com.cronutils.mapper;
-
-import static org.junit.Assert.assertEquals;
-
-import org.junit.Before;
-import org.junit.Test;
 /*
  * Copyright 2015 jmrozanec
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,49 +10,58 @@ import org.junit.Test;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+package com.cronutils.mapper;
+
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
+
+
 public class WeekDayTest {
     private WeekDay source;
-    private int mondayDoWValue = 1;
-    private boolean firstDayIsZero = false;
+    private static final int MONDAY_DOW_VALUE = 1;
+    private static final boolean IS_FIRST_DAY_ZERO = false;
 
     @Before
-    public void setUp(){
-        this.source = new WeekDay(mondayDoWValue, firstDayIsZero);
+    public void setUp() {
+        source = new WeekDay(MONDAY_DOW_VALUE, IS_FIRST_DAY_ZERO);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testConstructorFailsIfMondayDoWNegative() throws Exception {
-        new WeekDay(-1, firstDayIsZero);
+    public void testConstructorFailsIfMondayDoWNegative() {
+        new WeekDay(-1, IS_FIRST_DAY_ZERO);
     }
 
     @Test
-    public void testGetMondayDoWValue() throws Exception {
-        assertEquals(mondayDoWValue, source.getMondayDoWValue());
+    public void testGetMondayDoWValue() {
+        assertEquals(MONDAY_DOW_VALUE, source.getMondayDoWValue());
     }
 
     @Test
-    public void testMapIntervalWithZeroNotStartingMonday() throws Exception {
-        WeekDay target = new WeekDay(1, true);
+    public void testMapIntervalWithZeroNotStartingMonday() {
+        final WeekDay target = new WeekDay(1, true);
         assertEquals(0, source.mapTo(7, target));
     }
 
     @Test
-    public void testMapIntervalWithZeroStartingMonday() throws Exception {
-        WeekDay target = new WeekDay(0, true);
+    public void testMapIntervalWithZeroStartingMonday() {
+        final WeekDay target = new WeekDay(0, true);
         assertEquals(0, source.mapTo(1, target));
     }
 
     @Test
-    public void testMapIntervalWithoutZeroStartingMonday() throws Exception {
-        int value = 7;
-        WeekDay target = new WeekDay(1, false);
+    public void testMapIntervalWithoutZeroStartingMonday() {
+        final int value = 7;
+        final WeekDay target = new WeekDay(1, false);
         assertEquals(value, source.mapTo(value, target));
     }
 
     @Test
-    public void testMapIntervalWithoutZeroStartingSunday() throws Exception {
-        int value = 7;
-        WeekDay target = new WeekDay(2, false);
+    public void testMapIntervalWithoutZeroStartingSunday() {
+        final int value = 7;
+        final WeekDay target = new WeekDay(2, false);
         assertEquals(1, source.mapTo(value, target));
     }
 }

@@ -1,4 +1,3 @@
-package com.cronutils.model.definition;
 /*
  * Copyright 2017 jmrozanec
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -11,18 +10,22 @@ package com.cronutils.model.definition;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+package com.cronutils.model.definition;
+
+//FIXME this is not a test
 public class TestCronDefinitionsFactory {
     private static final int LEAP_YEAR_DAY_COUNT = 366;
 
     /**
      * Provides a <code>CronDefinition</code> that extends the Quartz Cron definition by an optional DoY field at the end.
-     * <p>
-     * The cron expression is expected to be a string comprised of 6, 7 or 8
+     *
+     * <p>The cron expression is expected to be a string comprised of 6, 7 or 8
      * fields separated by white space. Fields can contain any of the allowed
      * values, along with various combinations of the allowed special characters
      * for that field. The fields are as follows:
-     * <p>
-     * <table style="width:100%">
+     *
+     * <p><table style="width:100%">
      * <tr>
      * <th>Field Name</th>
      * <th>Mandatory</th>
@@ -78,14 +81,14 @@ public class TestCronDefinitionsFactory {
      * <td>* ? , - /</td>
      * </tr>
      * </table>
-     * <P>
-     * Thus in general cron expressions are as follows:
-     * <p>
-     * S M H DoM M DoW [Y [DoY]]
+     *
+     * <P>Thus in general cron expressions are as follows:
+     *
+     * <p>S M H DoM M DoW [Y [DoY]]
      *
      * @return the newly created <code>CronDefinition</code>.
      */
-    public static CronDefinition withDayOfYearDefinitionWhereYearAndDoYOptionals(){
+    public static CronDefinition withDayOfYearDefinitionWhereYearAndDoYOptionals() {
         return CronDefinitionBuilder.defineCron()
                 .withSeconds().and()
                 .withMinutes().and()
@@ -97,6 +100,31 @@ public class TestCronDefinitionsFactory {
                 .withDayOfYear().supportsQuestionMark().withValidRange(1, LEAP_YEAR_DAY_COUNT).optional().and()
                 .withCronValidation(CronConstraintsFactory.ensureEitherDayOfYearOrMonth())
                 .withCronValidation(CronConstraintsFactory.ensureEitherDayOfWeekOrDayOfMonth())
+                .instance();
+    }
+
+    public static CronDefinition withDayOfYearDefinitionWhereNoQuestionMarkSupported() {
+        return CronDefinitionBuilder.defineCron()
+                .withSeconds().and()
+                .withMinutes().and()
+                .withHours().and()
+                .withDayOfMonth().supportsL().supportsW().supportsLW().and()
+                .withMonth().and()
+                .withDayOfWeek().withValidRange(1, 7).withMondayDoWValue(2).supportsHash().supportsL().and()
+                .withYear().withValidRange(1970, 2099).and()
+                .withDayOfYear().withValidRange(1, LEAP_YEAR_DAY_COUNT).and()
+                .instance();
+    }
+
+    public static CronDefinition quartzNoDoWAndDoMRestrictionBothSameTime() {
+        return CronDefinitionBuilder.defineCron()
+                .withSeconds().and()
+                .withMinutes().and()
+                .withHours().and()
+                .withDayOfMonth().supportsL().supportsW().supportsLW().supportsQuestionMark().and()
+                .withMonth().and()
+                .withDayOfWeek().withValidRange(1, 7).withMondayDoWValue(2).supportsHash().supportsL().supportsQuestionMark().and()
+                .withYear().withValidRange(1970, 2099).optional().and()
                 .instance();
     }
 }

@@ -1,10 +1,3 @@
-package com.cronutils.model.time.generator;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import com.cronutils.model.field.CronField;
-import com.cronutils.model.field.expression.FieldExpression;
 /*
  * Copyright 2015 jmrozanec
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,33 +10,42 @@ import com.cronutils.model.field.expression.FieldExpression;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+package com.cronutils.model.time.generator;
+
+import com.cronutils.model.field.CronField;
+import com.cronutils.model.field.expression.FieldExpression;
+
+import java.util.ArrayList;
+import java.util.List;
+
 class NullFieldValueGenerator extends FieldValueGenerator {
-    public NullFieldValueGenerator(CronField cronField) {
+    public NullFieldValueGenerator(final CronField cronField) {
         super(cronField);
     }
 
     @Override
-    public int generateNextValue(int reference) throws NoSuchValueException {
+    public int generateNextValue(final int reference) throws NoSuchValueException {
         throw new NoSuchValueException();
     }
 
     @Override
-    public int generatePreviousValue(int reference) throws NoSuchValueException {
+    public int generatePreviousValue(final int reference) throws NoSuchValueException {
         throw new NoSuchValueException();
     }
 
     @Override
-    protected List<Integer> generateCandidatesNotIncludingIntervalExtremes(int start, int end) {
+    protected List<Integer> generateCandidatesNotIncludingIntervalExtremes(final int start, final int end) {
         return new ArrayList<>();
     }
 
     @Override
-    public boolean isMatch(int value) {
+    public boolean isMatch(final int value) {
         return false;
     }
 
     @Override
-    protected boolean matchesFieldExpressionClass(FieldExpression fieldExpression) {
+    protected boolean matchesFieldExpressionClass(final FieldExpression fieldExpression) {
         return true;
     }
 }

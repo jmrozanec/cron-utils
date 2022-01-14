@@ -1,10 +1,3 @@
-package com.cronutils.model.field.expression;
-
-import static org.junit.Assert.assertEquals;
-
-import org.junit.Test;
-
-import com.cronutils.model.field.value.IntegerFieldValue;
 /*
  * Copyright 2015 jmrozanec
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,20 +10,28 @@ import com.cronutils.model.field.value.IntegerFieldValue;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+package com.cronutils.model.field.expression;
+
+import com.cronutils.model.field.value.IntegerFieldValue;
+import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
+
 public class EveryTest {
     @Test
-    public void testGetTime() throws Exception {
-        int every = 5;
-        assertEquals(every, (int)new Every(new IntegerFieldValue(every)).getPeriod().getValue());
+    public void testGetTime() {
+        final int every = 5;
+        assertEquals(every, (int) new Every(new IntegerFieldValue(every)).getPeriod().getValue());
     }
 
     @Test
-    public void testGetTimeNull() throws Exception {
-        assertEquals(1, (int)new Every(null).getPeriod().getValue());
+    public void testGetTimeNull() {
+        assertEquals(1, (int) new Every(null).getPeriod().getValue());
     }
 
     @Test //issue #180
-    public void testAsString() throws Exception {
+    public void testAsString() {
         assertEquals("0/1", new Every(new On(new IntegerFieldValue(0)), new IntegerFieldValue(1)).asString());
     }
 }

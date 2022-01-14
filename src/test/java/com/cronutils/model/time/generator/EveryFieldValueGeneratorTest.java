@@ -1,22 +1,3 @@
-package com.cronutils.model.time.generator;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
-
-import java.util.List;
-
-import org.junit.Before;
-import org.junit.Test;
-
-import com.cronutils.model.field.CronField;
-import com.cronutils.model.field.CronFieldName;
-import com.cronutils.model.field.constraint.FieldConstraints;
-import com.cronutils.model.field.constraint.FieldConstraintsBuilder;
-import com.cronutils.model.field.expression.Every;
-import com.cronutils.model.field.expression.FieldExpression;
-import com.cronutils.model.field.value.IntegerFieldValue;
 /*
  * Copyright 2015 jmrozanec
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -29,55 +10,76 @@ import com.cronutils.model.field.value.IntegerFieldValue;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+package com.cronutils.model.time.generator;
+
+import com.cronutils.model.field.CronField;
+import com.cronutils.model.field.CronFieldName;
+import com.cronutils.model.field.constraint.FieldConstraints;
+import com.cronutils.model.field.constraint.FieldConstraintsBuilder;
+import com.cronutils.model.field.expression.Every;
+import com.cronutils.model.field.expression.FieldExpression;
+import com.cronutils.model.field.value.IntegerFieldValue;
+import org.junit.Before;
+import org.junit.Test;
+
+import java.util.List;
+import java.util.Random;
+
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.mock;
+
 public class EveryFieldValueGeneratorTest {
     private FieldConstraints constraints;
     private EveryFieldValueGenerator fieldValueGenerator;
 
-    private int time = 7;
+    private static final int TIME = 7;
 
     @Before
-    public void setUp(){
+    public void setUp() {
         constraints = FieldConstraintsBuilder.instance().createConstraintsInstance();
-        fieldValueGenerator = new EveryFieldValueGenerator(new CronField(CronFieldName.HOUR, new Every(new IntegerFieldValue(time)), constraints));
+        fieldValueGenerator = new EveryFieldValueGenerator(new CronField(CronFieldName.HOUR, new Every(new IntegerFieldValue(TIME)), constraints));
     }
 
     @Test
-    public void testGenerateNextValue() throws Exception {
-        for(int j=1; j<=10; j++){
-            int value = time*j-(1+((int)(2*Math.random())));
-            assertEquals(j*time, fieldValueGenerator.generateNextValue(value));
+    public void testGenerateNextValue() throws NoSuchValueException {
+        final Random random = new Random();
+        for (int j = 1; j <= 10; j++) {
+            final int value = TIME * j - (1 + (random.nextInt(3)));
+            assertEquals(j * (long)TIME, fieldValueGenerator.generateNextValue(value));
         }
     }
 
     @Test
-    public void testGeneratePreviousValue() throws Exception {
-        for(int j=0; j<10; j++){
-            int value = time*j+1+((int)(2*Math.random()));
-            assertEquals(j*time, fieldValueGenerator.generatePreviousValue(value));
+    public void testGeneratePreviousValue() throws NoSuchValueException {
+        final Random random = new Random();
+        for (int j = 0; j < 10; j++) {
+            final int value = TIME * j + 1 + random.nextInt(3);
+            assertEquals(j * (long)TIME, fieldValueGenerator.generatePreviousValue(value));
         }
     }
 
     @Test
-    public void testGenerateCandidatesNotIncludingIntervalExtremes() throws Exception {
-        int candidatesQty = 7;
-        List<Integer> candidates = fieldValueGenerator.generateCandidatesNotIncludingIntervalExtremes(0, time*candidatesQty);
-        assertEquals(candidatesQty-1, candidates.size());
+    public void testGenerateCandidatesNotIncludingIntervalExtremes() {
+        final int candidatesQty = 7;
+        final List<Integer> candidates = fieldValueGenerator.generateCandidatesNotIncludingIntervalExtremes(0, TIME * candidatesQty);
+        assertEquals(candidatesQty - 1L, candidates.size());
     }
 
     @Test
-    public void testIsMatch() throws Exception {
-        assertTrue(fieldValueGenerator.isMatch(time));
-        assertFalse(fieldValueGenerator.isMatch(time + 1));
+    public void testIsMatch() {
+        assertTrue(fieldValueGenerator.isMatch(TIME));
+        assertFalse(fieldValueGenerator.isMatch(TIME + 1));
     }
 
     @Test
-    public void testMatchesFieldExpressionClass() throws Exception {
+    public void testMatchesFieldExpressionClass() {
         assertTrue(fieldValueGenerator.matchesFieldExpressionClass(mock(Every.class)));
         assertFalse(fieldValueGenerator.matchesFieldExpressionClass(mock(FieldExpression.class)));
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testConstructorNotMatchesEvery() throws Exception {
+    public void testConstructorNotMatchesEvery() {
         new EveryFieldValueGenerator(new CronField(CronFieldName.HOUR, mock(FieldExpression.class), constraints));
     }
 }

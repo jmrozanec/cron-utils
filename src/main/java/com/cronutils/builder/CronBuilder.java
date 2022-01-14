@@ -10,81 +10,87 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.cronutils.builder;
 
-import static com.cronutils.model.field.CronFieldName.*;
-import static com.cronutils.utils.Preconditions.checkState;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-
 import com.cronutils.model.Cron;
+import com.cronutils.model.SingleCron;
 import com.cronutils.model.definition.CronDefinition;
 import com.cronutils.model.field.CronField;
 import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.field.constraint.FieldConstraints;
+import com.cronutils.model.field.definition.FieldDefinition;
 import com.cronutils.model.field.expression.FieldExpression;
 import com.cronutils.model.field.expression.visitor.ValidationFieldExpressionVisitor;
 import com.cronutils.utils.VisibleForTesting;
 
+import java.util.ArrayList;
+import java.util.EnumMap;
+import java.util.Map;
+
+import static com.cronutils.model.field.CronFieldName.*;
+import static com.cronutils.utils.Preconditions.checkState;
+
 public class CronBuilder {
 
-	private final Map<CronFieldName, CronField> fields = new HashMap<>();
-	private CronDefinition definition;
+    private final Map<CronFieldName, CronField> fields = new EnumMap<>(CronFieldName.class);
+    private final CronDefinition definition;
 
-	private CronBuilder(CronDefinition definition) {
-		this.definition = definition;
-	}
+    private CronBuilder(final CronDefinition definition) {
+        this.definition = definition;
+    }
 
-	public static CronBuilder cron(CronDefinition definition) {
-		return new CronBuilder(definition);
-	}
-	
-	public CronBuilder withDoY(FieldExpression expression) {
-	    return addField(DAY_OF_YEAR, expression);
-	}
+    public static CronBuilder cron(final CronDefinition definition) {
+        return new CronBuilder(definition);
+    }
 
-	public CronBuilder withYear(FieldExpression expression) {
-		return addField(YEAR, expression);
-	}
+    public CronBuilder withDoY(final FieldExpression expression) {
+        return addField(DAY_OF_YEAR, expression);
+    }
 
-	public CronBuilder withDoM(FieldExpression expression) {
-		return addField(DAY_OF_MONTH, expression);
-	}
+    public CronBuilder withYear(final FieldExpression expression) {
+        return addField(YEAR, expression);
+    }
 
-	public CronBuilder withMonth(FieldExpression expression) {
-		return addField(MONTH, expression);
-	}
+    public CronBuilder withDoM(final FieldExpression expression) {
+        return addField(DAY_OF_MONTH, expression);
+    }
 
-	public CronBuilder withDoW(FieldExpression expression) {
-		return addField(DAY_OF_WEEK, expression);
-	}
+    public CronBuilder withMonth(final FieldExpression expression) {
+        return addField(MONTH, expression);
+    }
 
-	public CronBuilder withHour(FieldExpression expression) {
-		return addField(HOUR, expression);
-	}
+    public CronBuilder withDoW(final FieldExpression expression) {
+        return addField(DAY_OF_WEEK, expression);
+    }
 
-	public CronBuilder withMinute(FieldExpression expression) {
-		return addField(MINUTE, expression);
-	}
+    public CronBuilder withHour(final FieldExpression expression) {
+        return addField(HOUR, expression);
+    }
 
-	public CronBuilder withSecond(FieldExpression expression) {
-		return addField(SECOND, expression);
-	}
+    public CronBuilder withMinute(final FieldExpression expression) {
+        return addField(MINUTE, expression);
+    }
 
-	public Cron instance() {
-		return new Cron(definition, new ArrayList<>(fields.values())).validate();
-	}
+    public CronBuilder withSecond(final FieldExpression expression) {
+        return addField(SECOND, expression);
+    }
 
-	@VisibleForTesting
-	CronBuilder addField(CronFieldName name, FieldExpression expression) {
-		checkState(definition != null, "CronBuilder not initialized.");
+    public Cron instance() {
+        return new SingleCron(definition, new ArrayList<>(fields.values())).validate();
+    }
 
-		FieldConstraints constraints = definition.getFieldDefinition(name).getConstraints();
-		expression.accept(new ValidationFieldExpressionVisitor(constraints, definition.isStrictRanges()));
-		fields.put(name, new CronField(name, expression, constraints));
+    @VisibleForTesting
+    CronBuilder addField(final CronFieldName name, final FieldExpression expression) {
+        checkState(definition != null, "CronBuilder not initialized.");
 
-		return this;
-	}
+        final FieldDefinition fieldDefinition = definition.getFieldDefinition(name);
+        checkState(fieldDefinition != null, "Cron field definition does not exist: %s", name);
+
+        final FieldConstraints constraints = fieldDefinition.getConstraints();
+        expression.accept(new ValidationFieldExpressionVisitor(constraints));
+        fields.put(name, new CronField(name, expression, constraints));
+
+        return this;
+    }
 }

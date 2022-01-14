@@ -1,11 +1,3 @@
-package com.cronutils.model.time.generator;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import com.cronutils.model.field.CronField;
-import com.cronutils.model.field.expression.FieldExpression;
-import com.cronutils.model.field.expression.On;
 /*
  * Copyright 2015 jmrozanec
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,46 +10,56 @@ import com.cronutils.model.field.expression.On;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+package com.cronutils.model.time.generator;
+
+import com.cronutils.model.field.CronField;
+import com.cronutils.model.field.expression.FieldExpression;
+import com.cronutils.model.field.expression.On;
+
+import java.util.ArrayList;
+import java.util.List;
+
 class OnFieldValueGenerator extends FieldValueGenerator {
-    public OnFieldValueGenerator(CronField cronField) {
+    public OnFieldValueGenerator(final CronField cronField) {
         super(cronField);
     }
 
     @Override
-    public int generateNextValue(int reference) throws NoSuchValueException {
-        int time = ((On) cronField.getExpression()).getTime().getValue();
-        if(time<=reference){
+    public int generateNextValue(final int reference) throws NoSuchValueException {
+        final int time = ((On) cronField.getExpression()).getTime().getValue();
+        if (time <= reference) {
             throw new NoSuchValueException();
         }
         return time;
     }
 
     @Override
-    public int generatePreviousValue(int reference) throws NoSuchValueException {
-        int time = ((On) cronField.getExpression()).getTime().getValue();
-        if(time>=reference){
+    public int generatePreviousValue(final int reference) throws NoSuchValueException {
+        final int time = ((On) cronField.getExpression()).getTime().getValue();
+        if (time >= reference) {
             throw new NoSuchValueException();
         }
         return time;
     }
 
     @Override
-    protected List<Integer> generateCandidatesNotIncludingIntervalExtremes(int start, int end) {
-        List<Integer> values = new ArrayList<>();
-        int time = ((On) cronField.getExpression()).getTime().getValue();
-        if(time>start && time<end){
+    protected List<Integer> generateCandidatesNotIncludingIntervalExtremes(final int start, final int end) {
+        final List<Integer> values = new ArrayList<>();
+        final int time = ((On) cronField.getExpression()).getTime().getValue();
+        if (time > start && time < end) {
             values.add(time);
         }
         return values;
     }
 
     @Override
-    public boolean isMatch(int value) {
-        return ((On) cronField.getExpression()).getTime().getValue()==value;
+    public boolean isMatch(final int value) {
+        return ((On) cronField.getExpression()).getTime().getValue() == value;
     }
 
     @Override
-    protected boolean matchesFieldExpressionClass(FieldExpression fieldExpression) {
+    protected boolean matchesFieldExpressionClass(final FieldExpression fieldExpression) {
         return fieldExpression instanceof On;
     }
 }

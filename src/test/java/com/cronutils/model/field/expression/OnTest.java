@@ -1,13 +1,3 @@
-package com.cronutils.model.field.expression;
-
-import static org.junit.Assert.assertEquals;
-
-import org.junit.Before;
-import org.junit.Test;
-
-import com.cronutils.model.field.value.IntegerFieldValue;
-import com.cronutils.model.field.value.SpecialChar;
-import com.cronutils.model.field.value.SpecialCharFieldValue;
 /*
  * Copyright 2015 jmrozanec
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,6 +10,17 @@ import com.cronutils.model.field.value.SpecialCharFieldValue;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+package com.cronutils.model.field.expression;
+
+import com.cronutils.model.field.value.IntegerFieldValue;
+import com.cronutils.model.field.value.SpecialChar;
+import com.cronutils.model.field.value.SpecialCharFieldValue;
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
+
 public class OnTest {
     private int time;
     private int nth;
@@ -31,43 +32,50 @@ public class OnTest {
     }
 
     @Test
-    public void testGetTime() throws Exception {
-        assertEquals(time, (int)new On(new IntegerFieldValue(time)).getTime().getValue());
+    public void testGetTime() {
+        assertEquals(time, (int) new On(new IntegerFieldValue(time)).getTime().getValue());
     }
 
     @Test
-    public void testGetNth() throws Exception {
-        assertEquals(nth, (int)new On(new IntegerFieldValue(time), new SpecialCharFieldValue(SpecialChar.HASH), new IntegerFieldValue(nth)).getNth().getValue());
+    public void testGetNth() {
+        assertEquals(nth,
+                (int) new On(new IntegerFieldValue(time), new SpecialCharFieldValue(SpecialChar.HASH), new IntegerFieldValue(nth)).getNth().getValue());
     }
 
     @Test(expected = RuntimeException.class)
-    public void testOnlyNthFails() throws Exception {
+    public void testOnlyNthFails() {
         new On(null, new SpecialCharFieldValue(SpecialChar.HASH), new IntegerFieldValue(nth));
     }
 
     @Test
-    public void testAsStringJustNumber(){
-        int expression = 3;
+    public void testAsStringJustNumber() {
+        final int expression = 3;
         assertEquals(String.format("%s", expression), new On(new IntegerFieldValue(expression)).asString());
     }
 
     @Test
-    public void testAsStringSpecialCharW(){
-        String expression = "1W";
+    public void testAsStringSpecialCharW() {
+        final String expression = "1W";
         assertEquals(expression, new On(new IntegerFieldValue(1), new SpecialCharFieldValue(SpecialChar.W)).asString());
     }
 
     @Test
-    public void testAsStringSpecialCharL(){
-        String expression = "L";
+    public void testAsStringSpecialCharL() {
+        final String expression = "L";
         assertEquals(expression, new On(new SpecialCharFieldValue(SpecialChar.L)).asString());
     }
 
     @Test
-    public void testAsStringWithNth(){
-        int first = 3;
-        int second = 4;
-        String expression = String.format("%s#%s", first, second);
+    public void testAsStringSpecialCharLWithNth() {
+        final String expression = "L-3";
+        assertEquals(expression, new On(new IntegerFieldValue(-1), new SpecialCharFieldValue(SpecialChar.L), new IntegerFieldValue(3)).asString());
+    }
+
+    @Test
+    public void testAsStringWithNth() {
+        final int first = 3;
+        final int second = 4;
+        final String expression = String.format("%s#%s", first, second);
         assertEquals(expression,
                 new On(new IntegerFieldValue(first), new SpecialCharFieldValue(SpecialChar.HASH), new IntegerFieldValue(second)).asString());
     }

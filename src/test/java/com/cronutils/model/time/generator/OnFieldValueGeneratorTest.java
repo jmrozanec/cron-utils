@@ -1,21 +1,3 @@
-package com.cronutils.model.time.generator;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
-
-import java.util.List;
-
-import org.junit.Before;
-import org.junit.Test;
-
-import com.cronutils.model.field.CronField;
-import com.cronutils.model.field.CronFieldName;
-import com.cronutils.model.field.constraint.FieldConstraintsBuilder;
-import com.cronutils.model.field.expression.FieldExpression;
-import com.cronutils.model.field.expression.On;
-import com.cronutils.model.field.value.IntegerFieldValue;
 /*
  * Copyright 2015 jmrozanec
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -28,12 +10,29 @@ import com.cronutils.model.field.value.IntegerFieldValue;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+package com.cronutils.model.time.generator;
+
+import com.cronutils.model.field.CronField;
+import com.cronutils.model.field.CronFieldName;
+import com.cronutils.model.field.constraint.FieldConstraintsBuilder;
+import com.cronutils.model.field.expression.FieldExpression;
+import com.cronutils.model.field.expression.On;
+import com.cronutils.model.field.value.IntegerFieldValue;
+import org.junit.Before;
+import org.junit.Test;
+
+import java.util.List;
+
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.mock;
+
 public class OnFieldValueGeneratorTest {
     private OnFieldValueGenerator fieldValueGenerator;
-    private int day = 3;
+    private static final int DAY = 3;
 
     @Before
-    public void setUp(){
+    public void setUp() {
         fieldValueGenerator =
                 new OnFieldValueGenerator(
                         new CronField(
@@ -45,38 +44,38 @@ public class OnFieldValueGeneratorTest {
     }
 
     @Test(expected = NoSuchValueException.class)
-    public void testGenerateNextValue() throws Exception {
-        assertEquals(day, fieldValueGenerator.generateNextValue(1));
-        fieldValueGenerator.generateNextValue(day);
+    public void testGenerateNextValue() throws NoSuchValueException {
+        assertEquals(DAY, fieldValueGenerator.generateNextValue(1));
+        fieldValueGenerator.generateNextValue(DAY);
     }
 
     @Test(expected = NoSuchValueException.class)
-    public void testGeneratePreviousValue() throws Exception {
-        assertEquals(day, fieldValueGenerator.generatePreviousValue(day+1));
-        fieldValueGenerator.generatePreviousValue(day);
+    public void testGeneratePreviousValue() throws NoSuchValueException {
+        assertEquals(DAY, fieldValueGenerator.generatePreviousValue(DAY + 1));
+        fieldValueGenerator.generatePreviousValue(DAY);
     }
 
     @Test
-    public void testGenerateCandidatesNotIncludingIntervalExtremes() throws Exception {
-        List<Integer> candidates = fieldValueGenerator.generateCandidatesNotIncludingIntervalExtremes(1,32);
+    public void testGenerateCandidatesNotIncludingIntervalExtremes() {
+        final List<Integer> candidates = fieldValueGenerator.generateCandidatesNotIncludingIntervalExtremes(1, 32);
         assertEquals(1, candidates.size());
-        assertEquals(day, candidates.get(0), 0);
+        assertEquals(DAY, candidates.get(0), 0);
     }
 
     @Test
-    public void testIsMatch() throws Exception {
-        assertTrue(fieldValueGenerator.isMatch(day));
-        assertFalse(fieldValueGenerator.isMatch(day-1));
+    public void testIsMatch() {
+        assertTrue(fieldValueGenerator.isMatch(DAY));
+        assertFalse(fieldValueGenerator.isMatch(DAY - 1));
     }
 
     @Test
-    public void testMatchesFieldExpressionClass() throws Exception {
+    public void testMatchesFieldExpressionClass() {
         assertTrue(fieldValueGenerator.matchesFieldExpressionClass(mock(On.class)));
         assertFalse(fieldValueGenerator.matchesFieldExpressionClass(mock(FieldExpression.class)));
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testConstructorNotMatchesOn() throws Exception {
+    public void testConstructorNotMatchesOn() {
         new OnFieldValueGenerator(mock(CronField.class));
     }
 }

@@ -1,20 +1,3 @@
-package com.cronutils.mapper;
-
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-
-import com.cronutils.Function;
-import com.cronutils.model.Cron;
-import com.cronutils.model.definition.CronDefinition;
-import com.cronutils.model.field.CronField;
-import com.cronutils.model.field.CronFieldName;
-import com.cronutils.model.field.expression.Always;
-import com.cronutils.model.field.expression.On;
 /*
  * Copyright 2015 jmrozanec
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -27,46 +10,62 @@ import com.cronutils.model.field.expression.On;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+package com.cronutils.mapper;
+
+import com.cronutils.Function;
+import com.cronutils.model.definition.CronDefinition;
+import com.cronutils.model.field.CronField;
+import com.cronutils.model.field.CronFieldName;
+import com.cronutils.model.field.expression.Always;
+import com.cronutils.model.field.expression.On;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
+
 public class CronMapperTest {
     private CronFieldName testCronFieldName;
     @Mock
     private CronField mockCronField;
-    private Function<Cron, Cron> cronMapping=null;
 
     @Before
-    public void setUp(){
+    public void setUp() {
         MockitoAnnotations.initMocks(this);
-        this.testCronFieldName = CronFieldName.SECOND;
+        testCronFieldName = CronFieldName.SECOND;
     }
 
     @Test(expected = NullPointerException.class)
-    public void testConstructorSourceDefinitionNull() throws Exception {
-        new CronMapper(mock(CronDefinition.class), null, cronMapping);
+    public void testConstructorSourceDefinitionNull() {
+        new CronMapper(mock(CronDefinition.class), null, null);
     }
 
     @Test(expected = NullPointerException.class)
-    public void testConstructorTargetDefinitionNull() throws Exception {
-        new CronMapper(null, mock(CronDefinition.class), cronMapping);
+    public void testConstructorTargetDefinitionNull() {
+        new CronMapper(null, mock(CronDefinition.class), null);
     }
 
     @Test
-    public void testReturnSameExpression() throws Exception {
-        Function<CronField, CronField> function = CronMapper.returnSameExpression();
+    public void testReturnSameExpression() {
+        final Function<CronField, CronField> function = CronMapper.returnSameExpression();
         assertEquals(mockCronField, function.apply(mockCronField));
     }
 
     @Test
-    public void testReturnOnZeroExpression() throws Exception {
-        Function<CronField, CronField> function = CronMapper.returnOnZeroExpression(testCronFieldName);
+    public void testReturnOnZeroExpression() {
+        final Function<CronField, CronField> function = CronMapper.returnOnZeroExpression(testCronFieldName);
 
         assertEquals(testCronFieldName, function.apply(mockCronField).getField());
-        On result = (On)function.apply(mockCronField).getExpression();
-        assertEquals(0, (int)result.getTime().getValue());
+        final On result = (On) function.apply(mockCronField).getExpression();
+        assertEquals(0, (int) result.getTime().getValue());
     }
 
     @Test
-    public void testReturnAlwaysExpression() throws Exception {
-        Function<CronField, CronField> function = CronMapper.returnAlwaysExpression(testCronFieldName);
+    public void testReturnAlwaysExpression() {
+        final Function<CronField, CronField> function = CronMapper.returnAlwaysExpression(testCronFieldName);
 
         assertEquals(testCronFieldName, function.apply(mockCronField).getField());
         assertEquals(Always.class, function.apply(mockCronField).getExpression().getClass());

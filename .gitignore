@@ -2,7 +2,8 @@ target/
 .settings/
 .classpath
 .project
-*.idea
+.idea/
+!.idea/codeStyleSettings.xml
 *.iml
 nbbuild
 nb-build.xml
@@ -14,3 +15,7 @@ build/
 local.properties
 bin/
 /.metadata/
+*.log
+.DS_Store
+.idea
+notes.md

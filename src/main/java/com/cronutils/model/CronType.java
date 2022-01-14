@@ -1,5 +1,3 @@
-package com.cronutils.model;
-
 /*
  * Copyright 2014 jmrozanec
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,9 +11,11 @@ package com.cronutils.model;
  * limitations under the License.
  */
 
+package com.cronutils.model;
+
 /**
- * Enumerates names of cron implementations
+ * Enumerates names of cron implementations.
  */
 public enum CronType {
-    CRON4J, QUARTZ, UNIX;
+    CRON4J, QUARTZ, UNIX, SPRING
 }

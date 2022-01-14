@@ -10,18 +10,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.cronutils.model.field.expression.visitor;
 
 import com.cronutils.Function;
-import com.cronutils.model.field.expression.Always;
-import com.cronutils.model.field.expression.And;
-import com.cronutils.model.field.expression.Between;
-import com.cronutils.model.field.expression.Every;
-import com.cronutils.model.field.expression.FieldExpression;
-import com.cronutils.model.field.expression.On;
-import com.cronutils.model.field.expression.QuestionMark;
+import com.cronutils.model.field.expression.*;
 import com.cronutils.model.field.value.FieldValue;
 import com.cronutils.model.field.value.IntegerFieldValue;
+
+import static com.cronutils.model.field.expression.FieldExpression.questionMark;
 
 /**
  * Performs a transformation on FieldExpression values.
@@ -29,69 +26,46 @@ import com.cronutils.model.field.value.IntegerFieldValue;
  * in new FieldExpression instance constraints.
  */
 public class ValueMappingFieldExpressionVisitor implements FieldExpressionVisitor {
-    private Function<FieldValue, FieldValue> transform;
+    private final Function<FieldValue<?>, FieldValue<?>> transform;
 
-    public ValueMappingFieldExpressionVisitor(Function<FieldValue, FieldValue> transform){
+    public ValueMappingFieldExpressionVisitor(final Function<FieldValue<?>, FieldValue<?>> transform) {
         this.transform = transform;
     }
 
     @Override
-    public FieldExpression visit(Always always) {
+    public FieldExpression visit(final Always always) {
         return always;
     }
 
     @Override
-    public FieldExpression visit(And and) {
-        And clone = new And();
-        for(FieldExpression expression : and.getExpressions()){
-            clone.and(visit(expression));
+    public FieldExpression visit(final And and) {
+        final And clone = new And();
+        for (final FieldExpression expression : and.getExpressions()) {
+            clone.and(expression.accept(this));
         }
         return clone;
     }
 
     @Override
-    public FieldExpression visit(Between between) {
-        FieldValue from = transform.apply(between.getFrom());
-        FieldValue to = transform.apply(between.getTo());
+    public FieldExpression visit(final Between between) {
+        final FieldValue<?> from = transform.apply(between.getFrom());
+        final FieldValue<?> to = transform.apply(between.getTo());
         return new Between(from, to);
     }
 
     @Override
-    public FieldExpression visit(Every every) {
-        return new Every((IntegerFieldValue)transform.apply(every.getPeriod()));
+    public FieldExpression visit(final Every every) {
+        return new Every((IntegerFieldValue) transform.apply(every.getPeriod()));
     }
 
     @Override
-    public FieldExpression visit(On on) {
-        return new On((IntegerFieldValue)transform.apply(on.getTime()), on.getSpecialChar(), on.getNth());
+    public FieldExpression visit(final On on) {
+        return new On((IntegerFieldValue) transform.apply(on.getTime()), on.getSpecialChar(), on.getNth());
     }
 
     @Override
-    public FieldExpression visit(QuestionMark questionMark) {
-        return new QuestionMark();
-    }
-
-    @Override
-    public FieldExpression visit(FieldExpression expression) {
-        if(expression instanceof Always){
-            return visit((Always)expression);
-        }
-        if(expression instanceof And){
-            return visit((And)expression);
-        }
-        if(expression instanceof Between){
-            return visit((Between)expression);
-        }
-        if(expression instanceof Every){
-            return visit((Every)expression);
-        }
-        if(expression instanceof On){
-            return visit((On)expression);
-        }
-        if(expression instanceof QuestionMark){
-            return visit((QuestionMark)expression);
-        }
-        return expression;
+    public FieldExpression visit(final QuestionMark questionMark) {
+        return questionMark();
     }
 }
 

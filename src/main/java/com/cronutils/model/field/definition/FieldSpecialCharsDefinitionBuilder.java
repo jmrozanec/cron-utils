@@ -1,5 +1,3 @@
-package com.cronutils.model.field.definition;
-
 /*
  * Copyright 2014 jmrozanec
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,77 +11,88 @@ package com.cronutils.model.field.definition;
  * limitations under the License.
  */
 
+package com.cronutils.model.field.definition;
+
 import com.cronutils.model.definition.CronDefinitionBuilder;
 import com.cronutils.model.field.CronFieldName;
 
 /**
- * Builder that allows to specify properties for a cron field supporting non-standard characters
+ * Builder that allows to specify properties for a cron field supporting non-standard characters.
  */
 public class FieldSpecialCharsDefinitionBuilder extends FieldQuestionMarkDefinitionBuilder {
 
     /**
-     * Constructor
+     * Constructor.
+     *
      * @param parserBuilder - ParserDefinitionBuilder
-     * @param fieldName - CronFieldName
+     * @param fieldName     - CronFieldName
      */
-    public FieldSpecialCharsDefinitionBuilder(CronDefinitionBuilder parserBuilder, CronFieldName fieldName){
+    public FieldSpecialCharsDefinitionBuilder(final CronDefinitionBuilder parserBuilder, final CronFieldName fieldName) {
         super(parserBuilder, fieldName);
     }
 
     /**
-     * Registers the field supports the hash (#) special char
+     * Registers the field supports the hash (#) special char.
+     *
      * @return this FieldSpecialCharsDefinitionBuilder instance
      */
-    public FieldSpecialCharsDefinitionBuilder supportsHash(){
+    public FieldSpecialCharsDefinitionBuilder supportsHash() {
         constraints.addHashSupport();
         return this;
     }
 
     /**
-     * Registers the field supports the L (L) special char
+     * Registers the field supports the L (L) special char.
+     *
      * @return this FieldSpecialCharsDefinitionBuilder instance
      */
-    public FieldSpecialCharsDefinitionBuilder supportsL(){
+    public FieldSpecialCharsDefinitionBuilder supportsL() {
         constraints.addLSupport();
         return this;
     }
 
     /**
-     * Registers the field supports the W (W) special char
+     * Registers the field supports the W (W) special char.
+     *
      * @return this FieldSpecialCharsDefinitionBuilder instance
      */
-    public FieldSpecialCharsDefinitionBuilder supportsW(){
+    public FieldSpecialCharsDefinitionBuilder supportsW() {
         constraints.addWSupport();
         return this;
     }
 
     /**
-     * Registers the field supports the LW (LW) special char
+     * Registers the field supports the LW (LW) special char.
+     *
      * @return this FieldSpecialCharsDefinitionBuilder instance
      */
-    public FieldSpecialCharsDefinitionBuilder supportsLW(){
+    public FieldSpecialCharsDefinitionBuilder supportsLW() {
         constraints.addLWSupport();
         return this;
     }
 
     /**
-     * Defines mapping between integer values with equivalent meaning
+     * Defines mapping between integer values with equivalent meaning.
+     *
      * @param source - higher value
-     * @param dest - lower value with equivalent meaning to source
+     * @param dest   - lower value with equivalent meaning to source
      * @return this FieldSpecialCharsDefinitionBuilder instance
      */
-    public FieldSpecialCharsDefinitionBuilder withIntMapping(int source, int dest){
+    @Override
+    public FieldSpecialCharsDefinitionBuilder withIntMapping(final int source, final int dest) {
         super.withIntMapping(source, dest);
         return this;
     }
 
     /**
      * Allows to set a range of valid values for field.
+     *
      * @param startRange - start range value
-     * @param endRange - end range value
+     * @param endRange   - end range value
      * @return same FieldSpecialCharsDefinitionBuilder instance
      */
-    public FieldSpecialCharsDefinitionBuilder withValidRange(int startRange, int endRange){
+    @Override
+    public FieldSpecialCharsDefinitionBuilder withValidRange(final int startRange, final int endRange) {
         super.withValidRange(startRange, endRange);
         return this;
     }

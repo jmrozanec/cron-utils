@@ -1,10 +1,6 @@
-package com.cronutils.model.field.expression;
-
-import com.google.common.base.MoreObjects;
-
 /*
  * Copyright 2014 jmrozanec
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -16,29 +12,37 @@ import com.google.common.base.MoreObjects;
  * limitations under the License.
  */
 
+package com.cronutils.model.field.expression;
+
+import com.cronutils.model.field.expression.visitor.FieldExpressionVisitor;
+
 /**
- * Represents a star (*) value on cron expression field
+ * Represents a star (*) value on cron expression field.
  */
 public class Always extends FieldExpression {
 
+    private static final long serialVersionUID = -1221923855248365713L;
     static final Always INSTANCE = new Always();
 
     /**
-     * Should be package private and not be instantiated elsewhere. Class should become package private too.
-     * @deprecated rather use {@link FieldExpression#always()}
+     * Should be package private and not be instantiated elsewhere.
+     * Class should become package private too.
      */
-    @Deprecated
-	public Always(){}
-    
+    private Always() {
+    }
 
-	@Override
-	public String asString() {
-		return "*";
-	}
-	
-	 
+    @Override
+    public FieldExpression accept(FieldExpressionVisitor visitor) {
+        return visitor.visit(this);
+    }
+
+    @Override
+    public String asString() {
+        return "*";
+    }
+
     @Override
     public String toString() {
-        return MoreObjects.toStringHelper(this).toString();
+        return "Always{}";
     }
 }

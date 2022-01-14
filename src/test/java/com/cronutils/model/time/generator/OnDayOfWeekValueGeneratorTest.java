@@ -1,21 +1,3 @@
-package com.cronutils.model.time.generator;
-
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
-
-import org.junit.Before;
-import org.junit.Test;
-
-import com.cronutils.mapper.WeekDay;
-import com.cronutils.model.field.CronField;
-import com.cronutils.model.field.CronFieldName;
-import com.cronutils.model.field.constraint.FieldConstraints;
-import com.cronutils.model.field.constraint.FieldConstraintsBuilder;
-import com.cronutils.model.field.expression.FieldExpression;
-import com.cronutils.model.field.expression.On;
-import com.cronutils.model.field.value.IntegerFieldValue;
-
 /*
  * Copyright 2015 jmrozanec
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -28,28 +10,47 @@ import com.cronutils.model.field.value.IntegerFieldValue;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+package com.cronutils.model.time.generator;
+
+import com.cronutils.mapper.WeekDay;
+import com.cronutils.model.field.CronField;
+import com.cronutils.model.field.CronFieldName;
+import com.cronutils.model.field.constraint.FieldConstraints;
+import com.cronutils.model.field.constraint.FieldConstraintsBuilder;
+import com.cronutils.model.field.expression.FieldExpression;
+import com.cronutils.model.field.expression.On;
+import com.cronutils.model.field.value.IntegerFieldValue;
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+
 public class OnDayOfWeekValueGeneratorTest {
     private OnDayOfWeekValueGenerator fieldValueGenerator;
     private FieldConstraints constraints;
     private WeekDay mondayDoWValue;
-    private int year = 2015;
-    private int month = 2;
+    private static final int YEAR = 2015;
+    private static final int MONTH = 2;
 
     @Before
-    public void setUp(){
+    public void setUp() {
         constraints = FieldConstraintsBuilder.instance().createConstraintsInstance();
         mondayDoWValue = new WeekDay(1, false);
-        fieldValueGenerator = new OnDayOfWeekValueGenerator(new CronField(CronFieldName.DAY_OF_WEEK, new On(new IntegerFieldValue(3)), constraints), year, month, mondayDoWValue);
+        fieldValueGenerator = new OnDayOfWeekValueGenerator(new CronField(CronFieldName.DAY_OF_WEEK, new On(new IntegerFieldValue(3)), constraints), YEAR,
+                MONTH, mondayDoWValue);
     }
 
     @Test
-    public void testMatchesFieldExpressionClass() throws Exception {
+    public void testMatchesFieldExpressionClass() {
         assertTrue(fieldValueGenerator.matchesFieldExpressionClass(mock(On.class)));
         assertFalse(fieldValueGenerator.matchesFieldExpressionClass(mock(FieldExpression.class)));
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testConstructorNotMatchesOnDayOfWeekValueGenerator() throws Exception {
-        new OnDayOfWeekValueGenerator(new CronField(CronFieldName.YEAR, mock(FieldExpression.class), constraints), year, month, mondayDoWValue);
+    public void testConstructorNotMatchesOnDayOfWeekValueGenerator() {
+        new OnDayOfWeekValueGenerator(new CronField(CronFieldName.YEAR, mock(FieldExpression.class), constraints), YEAR, MONTH, mondayDoWValue);
     }
 }

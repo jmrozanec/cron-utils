@@ -1,14 +1,3 @@
-package com.cronutils.model.field.constraint;
-
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-
-import com.cronutils.model.field.CronFieldName;
-import com.cronutils.model.field.value.SpecialChar;
-
 /*
  * Copyright 2014 jmrozanec
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,34 +11,48 @@ import com.cronutils.model.field.value.SpecialChar;
  * limitations under the License.
  */
 
+package com.cronutils.model.field.constraint;
+
+import com.cronutils.model.field.CronFieldName;
+import com.cronutils.model.field.value.SpecialChar;
+
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+
 /**
  * FieldConstraints builder.
  */
 public class FieldConstraintsBuilder {
     private Map<String, Integer> stringMapping;
-    private Map<Integer, Integer> intMapping;
+    private final Map<Integer, Integer> intMapping;
     private int startRange;
     private int endRange;
-    private Set<SpecialChar> specialChars;
+    private boolean strictRange;
+    private final Set<SpecialChar> specialChars;
 
     /**
-     * Constructor
+     * Constructor.
      */
     private FieldConstraintsBuilder() {
         stringMapping = new HashMap<>();
         intMapping = new HashMap<>();
         startRange = 0;//no negatives!
         endRange = Integer.MAX_VALUE;
+        strictRange = false;
         specialChars = new HashSet<>();
         specialChars.add(SpecialChar.NONE);
     }
 
     /**
-     * Creates range constraints according to CronFieldName parameter
+     * Creates range constraints according to CronFieldName parameter.
+     *
      * @param field - CronFieldName
      * @return FieldConstraintsBuilder instance
      */
-    public FieldConstraintsBuilder forField(CronFieldName field) {
+    public FieldConstraintsBuilder forField(final CronFieldName field) {
         switch (field) {
             case SECOND:
             case MINUTE:
@@ -81,7 +84,8 @@ public class FieldConstraintsBuilder {
     }
 
     /**
-     * Adds hash support
+     * Adds hash support.
+     *
      * @return same FieldConstraintsBuilder instance
      */
     public FieldConstraintsBuilder addHashSupport() {
@@ -90,7 +94,8 @@ public class FieldConstraintsBuilder {
     }
 
     /**
-     * Adds L support
+     * Adds L support.
+     *
      * @return same FieldConstraintsBuilder instance
      */
     public FieldConstraintsBuilder addLSupport() {
@@ -99,7 +104,8 @@ public class FieldConstraintsBuilder {
     }
 
     /**
-     * Adds W support
+     * Adds W support.
+     *
      * @return same FieldConstraintsBuilder instance
      */
     public FieldConstraintsBuilder addWSupport() {
@@ -108,7 +114,8 @@ public class FieldConstraintsBuilder {
     }
 
     /**
-     * Adds LW support
+     * Adds LW support.
+     *
      * @return same FieldConstraintsBuilder instance
      */
     public FieldConstraintsBuilder addLWSupport() {
@@ -117,7 +124,8 @@ public class FieldConstraintsBuilder {
     }
 
     /**
-     * Adds question mark (?) support
+     * Adds question mark (?) support.
+     *
      * @return same FieldConstraintsBuilder instance
      */
     public FieldConstraintsBuilder addQuestionMarkSupport() {
@@ -127,63 +135,77 @@ public class FieldConstraintsBuilder {
 
     /**
      * Adds integer to integer mapping. Source should be greater than destination;
+     *
      * @param source - some int
-     * @param dest - some int
+     * @param dest   - some int
      * @return same FieldConstraintsBuilder instance
      */
-    public FieldConstraintsBuilder withIntValueMapping(int source, int dest){
+    public FieldConstraintsBuilder withIntValueMapping(final int source, final int dest) {
         intMapping.put(source, dest);
         return this;
     }
 
     /**
      * Allows to set a range of valid values for field.
+     *
      * @param startRange - start range value
-     * @param endRange - end range value
+     * @param endRange   - end range value
      * @return same FieldConstraintsBuilder instance
      */
-    public FieldConstraintsBuilder withValidRange(int startRange, int endRange){
+    public FieldConstraintsBuilder withValidRange(final int startRange, final int endRange) {
         this.startRange = startRange;
         this.endRange = endRange;
         return this;
     }
 
     /**
-     * Shifts integer representation of weekday/month names
-     * @param shiftSize - size of the shift
+     * With strict range.
+     *
      * @return same FieldConstraintsBuilder instance
      */
-    public FieldConstraintsBuilder withShiftedStringMapping(int shiftSize){
-        if (shiftSize > 0 || endRange < stringMapping.size())
-            for(Entry<String, Integer> entry : stringMapping.entrySet()) {
-                int value = entry.getValue().intValue();
-                value += shiftSize;
-                if(value > endRange) {
-                    value -= stringMapping.size();
-                }
-                else if(value < startRange) {
-                    value += (startRange - endRange);
-                }
-                stringMapping.put(entry.getKey(), Integer.valueOf(value));
-            }
+    public FieldConstraintsBuilder withStrictRange() {
+        this.strictRange = true;
         return this;
     }
 
     /**
-     * Creates FieldConstraints instance based on previously built parameters
-     * @return new FieldConstraints instance
+     * Shifts integer representation of weekday/month names.
+     *
+     * @param shiftSize - size of the shift
+     * @return same FieldConstraintsBuilder instance
      */
-    public FieldConstraints createConstraintsInstance(){
-        return new FieldConstraints(stringMapping, intMapping, specialChars, startRange, endRange);
+    public FieldConstraintsBuilder withShiftedStringMapping(final int shiftSize) {
+        if (shiftSize > 0 || endRange < stringMapping.size()) {
+            for (final Entry<String, Integer> entry : stringMapping.entrySet()) {
+                int value = entry.getValue();
+                value += shiftSize;
+                if (value > endRange) {
+                    value -= stringMapping.size();
+                } else if (value < startRange) {
+                    value += (startRange - endRange);
+                }
+                stringMapping.put(entry.getKey(), value);
+            }
+        }
+        return this;
     }
 
     /**
-     * Creates days of week mapping
-     * @return Map<String, Integer> where strings are weekday names in EEE format,
-     * and integers correspond to their 1-7 mappings
+     * Creates FieldConstraints instance based on previously built parameters.
+     *
+     * @return new FieldConstraints instance
+     */
+    public FieldConstraints createConstraintsInstance() {
+        return new FieldConstraints(stringMapping, intMapping, specialChars, startRange, endRange, strictRange);
+    }
+
+    /**
+     * Creates days of week mapping.
+     *
+     * @return Map where strings are weekday names in EEE format and integers correspond to their 1-7 mappings
      */
     private static Map<String, Integer> daysOfWeekMapping() {
-        Map<String, Integer> stringMapping = new HashMap<>();
+        final Map<String, Integer> stringMapping = new HashMap<>();
         stringMapping.put("MON", 1);
         stringMapping.put("TUE", 2);
         stringMapping.put("WED", 3);
@@ -195,12 +217,12 @@ public class FieldConstraintsBuilder {
     }
 
     /**
-     * Creates months mapping
-     * @return Map<String, Integer> where strings month names in EEE format,
-     * and integers correspond to their 1-12 mappings
+     * Creates months mapping.
+     *
+     * @return Map where strings month names in EEE format, and integers correspond to their 1-12 mappings
      */
     private static Map<String, Integer> monthsMapping() {
-        Map<String, Integer> stringMapping = new HashMap<>();
+        final Map<String, Integer> stringMapping = new HashMap<>();
         stringMapping.put("JAN", 1);
         stringMapping.put("FEB", 2);
         stringMapping.put("MAR", 3);
@@ -217,10 +239,11 @@ public class FieldConstraintsBuilder {
     }
 
     /**
-     * Creates a FieldConstraintsBuilder instance;
+     * Creates a FieldConstraintsBuilder instance.
+     *
      * @return new FieldConstraintsBuilder instance
      */
-    public static FieldConstraintsBuilder instance(){
+    public static FieldConstraintsBuilder instance() {
         return new FieldConstraintsBuilder();
     }
 }

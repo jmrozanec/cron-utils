@@ -1,7 +1,3 @@
-package com.cronutils.model.field.value;
-
-import com.cronutils.utils.Preconditions;
-
 /*
  * Copyright 2015 jmrozanec
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,10 +10,17 @@ import com.cronutils.utils.Preconditions;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+package com.cronutils.model.field.value;
+
+import com.cronutils.utils.Preconditions;
+
 public class SpecialCharFieldValue extends FieldValue<SpecialChar> {
+
+    private static final long serialVersionUID = -2177180413324528746L;
     private SpecialChar specialChar = SpecialChar.NONE;
 
-    public SpecialCharFieldValue(SpecialChar specialChar){
+    public SpecialCharFieldValue(final SpecialChar specialChar) {
         Preconditions.checkNotNull(specialChar, "special char must not be null");
         this.specialChar = specialChar;
     }

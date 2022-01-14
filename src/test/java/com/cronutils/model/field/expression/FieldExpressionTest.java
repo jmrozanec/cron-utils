@@ -1,10 +1,3 @@
-package com.cronutils.model.field.expression;
-
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
-
-import org.junit.Before;
-import org.junit.Test;
 /*
  * Copyright 2015 jmrozanec
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,23 +10,41 @@ import org.junit.Test;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+package com.cronutils.model.field.expression;
+
+import com.cronutils.model.field.expression.visitor.*;
+
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+
 public class FieldExpressionTest {
     private TestFieldExpression testCronFieldExpression;
 
     @Before
-    public void setUp() throws Exception {
-        this.testCronFieldExpression = new TestFieldExpression();
+    public void setUp() {
+        testCronFieldExpression = new TestFieldExpression();
     }
 
     @Test
-    public void testAnd() throws Exception {
-        FieldExpression mockExpression = mock(FieldExpression.class);
-        And and = testCronFieldExpression.and(mockExpression);
+    public void testAnd() {
+        final FieldExpression mockExpression = mock(FieldExpression.class);
+        final And and = testCronFieldExpression.and(mockExpression);
         assertTrue(and.getExpressions().contains(mockExpression));
         assertTrue(and.getExpressions().contains(testCronFieldExpression));
     }
 
     class TestFieldExpression extends FieldExpression {
+
+        private static final long serialVersionUID = 8101930390397976027L;
+
+        @Override
+        public FieldExpression accept(final FieldExpressionVisitor visitor) {
+            return null;
+        }
 
         @Override
         public String asString() {

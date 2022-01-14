@@ -1,4 +1,3 @@
-package com.cronutils.model.time;
 /*
  * Copyright 2015 jmrozanec
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -11,11 +10,14 @@ package com.cronutils.model.time;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class NearestValue {
-    private int shifts;
-    private int value;
 
-    public NearestValue(int value, int shifts) {
+package com.cronutils.model.time;
+
+class NearestValue {
+    private final int shifts;
+    private final int value;
+
+    public NearestValue(final int value, final int shifts) {
         this.shifts = shifts;
         this.value = value;
     }

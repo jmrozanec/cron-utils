@@ -1,16 +1,3 @@
-package com.cronutils.utils.descriptor;
-
-import static org.junit.Assert.assertEquals;
-
-import java.util.Locale;
-
-import org.junit.Before;
-import org.junit.Test;
-
-import com.cronutils.descriptor.CronDescriptor;
-import com.cronutils.model.CronType;
-import com.cronutils.model.definition.CronDefinitionBuilder;
-import com.cronutils.parser.CronParser;
 /*
  * Copyright 2015 jmrozanec
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,30 +10,44 @@ import com.cronutils.parser.CronParser;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+package com.cronutils.utils.descriptor;
+
+import com.cronutils.descriptor.CronDescriptor;
+import com.cronutils.model.CronType;
+import com.cronutils.model.definition.CronDefinitionBuilder;
+import com.cronutils.parser.CronParser;
+import org.junit.Before;
+import org.junit.Test;
+
+import java.util.Locale;
+
+import static org.junit.Assert.assertEquals;
+
 public class CronDescriptorQuartzIntegrationTest {
     private CronDescriptor descriptor;
     private CronParser parser;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         descriptor = CronDescriptor.instance(Locale.UK);
         parser = new CronParser(CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ));
     }
 
     @Test
-    public void testCronWithAndHours(){
-        assertExpression("* * 1,2,3,4 * * ? *", "at 1, 2, 3 and 4 hours");
+    public void testCronWithAndHours() {
+        assertExpression("* * 1,2,3,4 * * ? *", "every second at 1, 2, 3 and 4 hours");
     }
 
     @Test
-    public void testCronAndWithRangeHours(){
-        assertExpression("* * 1,2,3,4,6-9 * * ? *", "at 1, 2, 3 and 4 hours and every hour between 6 and 9");
+    public void testCronAndWithRangeHours() {
+        assertExpression("* * 1,2,3,4,6-9 * * ? *", "every second at 1, 2, 3 and 4 hours and every hour between 6 and 9");
     }
 
     @Test
-    public void testCronAndWithRangesAndEveryExpressions(){
-        assertExpression("0 2-59/3 1,9,22 11-26 1-6 ?", "every 3 minutes between 2 and 59 at 1, 9 " +
-                "and 22 hours every day between 11 and 26 every month between January and June");
+    public void testCronAndWithRangesAndEveryExpressions() {
+        assertExpression("0 2-59/3 1,9,22 11-26 1-6 ?", "every 3 minutes between 2 and 59 at 1, 9 "
+                                                         + "and 22 hours every day between 11 and 26 every month between January and June");
     }
 
     @Test
@@ -55,76 +56,80 @@ public class CronDescriptorQuartzIntegrationTest {
     }
 
     @Test
-    public void testEvery45Seconds(){
+    public void testEvery45Seconds() {
         assertExpression("*/45 * * * * ?", "every 45 seconds");
     }
 
     @Test
-    public void testEveryHour(){
+    public void testEveryHour() {
         assertExpression("0 0 * * * ?", "every hour");
         assertExpression("0 0 0/1 * * ?", "every hour");
     }
 
     /* Examples exposed at cron documentations */
     @Test
-    public void testEveryDayFireAtNoon() throws Exception {
+    public void testEveryDayFireAtNoon() {
         assertExpression("0 0 12 * * ?", "at 12:00");
     }
 
     @Test
-    public void testEveryDayFireAtTenFifteen() throws Exception {
-        String description = "at 10:15";
+    public void testEveryDayFireAtTenFifteen() {
+        final String description = "at 10:15";
         assertExpression("0 15 10 ? * *", description);
         assertExpression("0 15 10 * * ?", description);
         assertExpression("0 15 10 * * ? *", description);
     }
 
     @Test
-    public void testEveryDayFireAtTenFifteenYear2005() throws Exception {
+    public void testEveryDayFireAtTenFifteenYear2005() {
         assertExpression("0 15 10 * * ? 2005", "at 10:15 at 2005 year");
     }
 
     @Test
-    public void testEveryMinuteBetween14and15EveryDay() throws Exception {
-        assertExpression("0 * 14 * * ?", "at 14 hour");
+    public void testEveryMinuteBetween14and15EveryDay() {
+        assertExpression("0 * 14 * * ?", "every minute at 14 hour");
     }
 
     @Test
-    public void testEveryFiveMinutesBetween14and15EveryDay() throws Exception {
+    public void testEveryFiveMinutesBetween14and15EveryDay() {
         assertExpression("0 0/5 14 * * ?", "every 5 minutes at 14 hour");
     }
 
     @Test
-    public void testEveryFiveMinutesBetween14and15AndBetween18And19EveryDay() throws Exception {
+    public void testEveryFiveMinutesBetween14and15AndBetween18And19EveryDay() {
         assertExpression("0 0/5 14,18 * * ?", "every 5 minutes at 14 and 18 hours");
     }
 
     /**
-     * Issue #43: getting bad description for expression
-     * @throws Exception
+     * Issue #43: getting bad description for expression.
      */
     @Test
-    public void testEveryDayEveryFourHoursFromHour2() throws Exception {
+    public void testEveryDayEveryFourHoursFromHour2() {
         assertExpression("0 0 2/4 * * ?", "every 4 hours at minute 0");
     }
-    
+
     /*
      * Issue #103
      */
-    //TODO enable
+    @Test
     public void testDescriptionDayOfWeek() {
-        assertExpression("* 0/1 * ? * TUE", "every minute at Tuesday day");
+        assertExpression("* 0/1 * ? * TUE", "every second every minute at Tuesday day");
     }
 
     /**
-     * Issue #105
+     * Issue #105.
      */
     @Test
     public void testDoWRange() {
         assertExpression("0 0 0 ? * MON-FRI *", "at 00:00 every day between Monday and Friday");
     }
 
-    private void assertExpression(String cron, String description){
+    @Test
+    public void testEveryTwoYears() {
+        assertExpression("*/4 */6 */8 */2 * ? */2", "every 4 seconds every 6 minutes every 8 hours every 2 days every 2 years");
+    }
+
+    private void assertExpression(final String cron, final String description) {
         assertEquals(description, descriptor.describe(parser.parse(cron)));
     }
 }

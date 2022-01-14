@@ -1,23 +1,3 @@
-package com.cronutils.model.time.generator;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
-import java.util.List;
-
-import org.junit.Test;
-
-import com.cronutils.mapper.ConstantsMapper;
-import com.cronutils.mapper.WeekDay;
-import com.cronutils.model.field.CronField;
-import com.cronutils.model.field.CronFieldName;
-import com.cronutils.model.field.constraint.FieldConstraints;
-import com.cronutils.model.field.constraint.FieldConstraintsBuilder;
-import com.cronutils.model.field.expression.On;
-import com.cronutils.model.field.value.IntegerFieldValue;
-import com.cronutils.model.field.value.SpecialChar;
-import com.cronutils.model.field.value.SpecialCharFieldValue;
 /*
  * Copyright 2015 jmrozanec
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -30,120 +10,145 @@ import com.cronutils.model.field.value.SpecialCharFieldValue;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+package com.cronutils.model.time.generator;
+
+import com.cronutils.mapper.ConstantsMapper;
+import com.cronutils.mapper.WeekDay;
+import com.cronutils.model.field.CronField;
+import com.cronutils.model.field.CronFieldName;
+import com.cronutils.model.field.constraint.FieldConstraints;
+import com.cronutils.model.field.constraint.FieldConstraintsBuilder;
+import com.cronutils.model.field.expression.On;
+import com.cronutils.model.field.value.IntegerFieldValue;
+import com.cronutils.model.field.value.SpecialChar;
+import com.cronutils.model.field.value.SpecialCharFieldValue;
+import org.junit.Test;
+
+import java.util.List;
+
+import static org.junit.Assert.*;
+
 public class OnDayOfWeekValueGeneratorLTest {
-    private FieldConstraints constraints = FieldConstraintsBuilder.instance().addLSupport().createConstraintsInstance();
+    private final FieldConstraints constraints = FieldConstraintsBuilder.instance().addLSupport().createConstraintsInstance();
     private OnDayOfWeekValueGenerator fieldValueGenerator;
-    private WeekDay mondayDoWValue = ConstantsMapper.QUARTZ_WEEK_DAY;
-    private int year = 2015;
+    private static final WeekDay mondayDoWValue = ConstantsMapper.QUARTZ_WEEK_DAY;
+    private static final int YEAR = 2015;
 
-    private int lastDayDoWGreaterThanRequestedDoW_Month = 2;
-    private int lastDayDoWGreaterThanRequestedDoW_Value = 6;
-    private int lastDayDoWGreaterThanRequestedDoW_Day = 27;//last Friday of month (6L) is 27
+    private static final int LAST_DAY_DOW_GREATER_THAN_REQUESTED_DOW_MONTH = 2;
+    private static final int LAST_DAY_DOW_GREATER_THAN_REQUESTED_DOW_VALUE = 6;
+    private static final int LAST_DAY_DOW_GREATER_THAN_REQUESTED_DOW_DAY = 27;//last Friday of month (6L) is 27
 
-    private int lastDayDoWLessThanRequestedDoW_Month = 3;
-    private int lastDayDoWLessThanRequestedDoW_Value = 6;
-    private int lastDayDoWLessThanRequestedDoW_Day = 27;
+    private static final int LAST_DAY_DOW_LESS_THAN_REQUESTED_DOW_MONTH = 3;
+    private static final int LAST_DAY_DOW_LESS_THAN_REQUESTED_DOW_VALUE = 6;
+    private static final int LAST_DAY_DOW_LESS_THAN_REQUESTED_DOW_DAY = 27;
 
-    private int lastDayDoWEqualToRequestedDoW_Month = 7;
-    private int lastDayDoWEqualToRequestedDoW_Value = 6;
-    private int lastDayDoWEqualToRequestedDoW_Day = 31;
+    private static final int LAST_DAY_DOW_EQUALTO_REQUESTED_DOW_MONTH = 7;
+    private static final int LAST_DAY_DOW_EQUALTO_REQUESTED_DOW_VALUE = 6;
+    private static final int LAST_DAY_DOW_EQUALTO_REQUESTED_DOW_DAY = 31;
 
     @Test(expected = NoSuchValueException.class)
-    public void testGenerateNextValueLastDayDoWGreaterThanRequestedDoW() throws Exception {
+    public void testGenerateNextValueLastDayDoWGreaterThanRequestedDoW() throws NoSuchValueException {
         fieldValueGenerator = createFieldValueGeneratorInstanceLastDayDoWGreaterThanRequestedDoW();
-        assertEquals(lastDayDoWGreaterThanRequestedDoW_Day, fieldValueGenerator.generateNextValue(1));
-        fieldValueGenerator.generateNextValue(lastDayDoWGreaterThanRequestedDoW_Day);
+        assertEquals(LAST_DAY_DOW_GREATER_THAN_REQUESTED_DOW_DAY, fieldValueGenerator.generateNextValue(1));
+        fieldValueGenerator.generateNextValue(LAST_DAY_DOW_GREATER_THAN_REQUESTED_DOW_DAY);
     }
 
     @Test(expected = NoSuchValueException.class)
-    public void testGenerateNextValueLastDayDoWLessThanRequestedDoW() throws Exception {
+    public void testGenerateNextValueLastDayDoWLessThanRequestedDoW() throws NoSuchValueException {
         fieldValueGenerator = createFieldValueGeneratorInstanceLastDayDoWLessThanRequestedDoW();
-        assertEquals(lastDayDoWLessThanRequestedDoW_Day, fieldValueGenerator.generateNextValue(1));
-        fieldValueGenerator.generateNextValue(lastDayDoWLessThanRequestedDoW_Day);
+        assertEquals(LAST_DAY_DOW_LESS_THAN_REQUESTED_DOW_DAY, fieldValueGenerator.generateNextValue(1));
+        fieldValueGenerator.generateNextValue(LAST_DAY_DOW_LESS_THAN_REQUESTED_DOW_DAY);
     }
 
     @Test(expected = NoSuchValueException.class)
-    public void testGenerateNextValueLastDayDoWEqualToRequestedDoW() throws Exception {
+    public void testGenerateNextValueLastDayDoWEqualToRequestedDoW() throws NoSuchValueException {
         fieldValueGenerator = createFieldValueGeneratorInstanceLastDayDoWEqualToRequestedDoW();
-        assertEquals(lastDayDoWEqualToRequestedDoW_Day, fieldValueGenerator.generateNextValue(1));
-        fieldValueGenerator.generateNextValue(lastDayDoWEqualToRequestedDoW_Day);
+        assertEquals(LAST_DAY_DOW_EQUALTO_REQUESTED_DOW_DAY, fieldValueGenerator.generateNextValue(1));
+        fieldValueGenerator.generateNextValue(LAST_DAY_DOW_EQUALTO_REQUESTED_DOW_DAY);
     }
 
     @Test(expected = NoSuchValueException.class)
-    public void testGeneratePreviousValueLastDayDoWGreaterThanRequestedDoW() throws Exception {
+    public void testGeneratePreviousValueLastDayDoWGreaterThanRequestedDoW() throws NoSuchValueException {
         fieldValueGenerator = createFieldValueGeneratorInstanceLastDayDoWGreaterThanRequestedDoW();
-        assertEquals(lastDayDoWGreaterThanRequestedDoW_Day, fieldValueGenerator.generatePreviousValue(lastDayDoWGreaterThanRequestedDoW_Day + 1));
-        fieldValueGenerator.generatePreviousValue(lastDayDoWGreaterThanRequestedDoW_Day);
+        assertEquals(LAST_DAY_DOW_GREATER_THAN_REQUESTED_DOW_DAY, fieldValueGenerator.generatePreviousValue(LAST_DAY_DOW_GREATER_THAN_REQUESTED_DOW_DAY + 1));
+        fieldValueGenerator.generatePreviousValue(LAST_DAY_DOW_GREATER_THAN_REQUESTED_DOW_DAY);
     }
 
     @Test(expected = NoSuchValueException.class)
-    public void testGeneratePreviousValueLastDayDoWLessThanRequestedDoW() throws Exception {
+    public void testGeneratePreviousValueLastDayDoWLessThanRequestedDoW() throws NoSuchValueException {
         fieldValueGenerator = createFieldValueGeneratorInstanceLastDayDoWLessThanRequestedDoW();
-        assertEquals(lastDayDoWLessThanRequestedDoW_Day, fieldValueGenerator.generatePreviousValue(lastDayDoWLessThanRequestedDoW_Day + 1));
-        fieldValueGenerator.generatePreviousValue(lastDayDoWLessThanRequestedDoW_Day);
+        assertEquals(LAST_DAY_DOW_LESS_THAN_REQUESTED_DOW_DAY, fieldValueGenerator.generatePreviousValue(LAST_DAY_DOW_LESS_THAN_REQUESTED_DOW_DAY + 1));
+        fieldValueGenerator.generatePreviousValue(LAST_DAY_DOW_LESS_THAN_REQUESTED_DOW_DAY);
     }
 
     @Test(expected = NoSuchValueException.class)
-    public void testGeneratePreviousValueLastDayDoWEqualToRequestedDoW() throws Exception {
+    public void testGeneratePreviousValueLastDayDoWEqualToRequestedDoW() throws NoSuchValueException {
         fieldValueGenerator = createFieldValueGeneratorInstanceLastDayDoWEqualToRequestedDoW();
-        assertEquals(lastDayDoWEqualToRequestedDoW_Day, fieldValueGenerator.generatePreviousValue(lastDayDoWEqualToRequestedDoW_Day + 1));
-        fieldValueGenerator.generatePreviousValue(lastDayDoWEqualToRequestedDoW_Day);
+        assertEquals(LAST_DAY_DOW_EQUALTO_REQUESTED_DOW_DAY, fieldValueGenerator.generatePreviousValue(LAST_DAY_DOW_EQUALTO_REQUESTED_DOW_DAY + 1));
+        fieldValueGenerator.generatePreviousValue(LAST_DAY_DOW_EQUALTO_REQUESTED_DOW_DAY);
     }
 
     @Test
-    public void testGenerateCandidatesNotIncludingIntervalExtremesLastDayDoWGreaterThanRequestedDoW() throws Exception {
+    public void testGenerateCandidatesNotIncludingIntervalExtremesLastDayDoWGreaterThanRequestedDoW() {
         fieldValueGenerator = createFieldValueGeneratorInstanceLastDayDoWGreaterThanRequestedDoW();
-        List<Integer> values = fieldValueGenerator.generateCandidatesNotIncludingIntervalExtremes(1, lastDayDoWGreaterThanRequestedDoW_Day+1);
+        final List<Integer> values = fieldValueGenerator.generateCandidatesNotIncludingIntervalExtremes(1, LAST_DAY_DOW_GREATER_THAN_REQUESTED_DOW_DAY + 1);
         assertFalse(values.isEmpty());
-        assertEquals(lastDayDoWGreaterThanRequestedDoW_Day, values.get(0), 0);
+        assertEquals(LAST_DAY_DOW_GREATER_THAN_REQUESTED_DOW_DAY, values.get(0), 0);
     }
 
     @Test
-    public void testGenerateCandidatesNotIncludingIntervalExtremesLastDayDoWLessThanRequestedDoW() throws Exception {
+    public void testGenerateCandidatesNotIncludingIntervalExtremesLastDayDoWLessThanRequestedDoW() {
         fieldValueGenerator = createFieldValueGeneratorInstanceLastDayDoWLessThanRequestedDoW();
-        List<Integer> values = fieldValueGenerator.generateCandidatesNotIncludingIntervalExtremes(1, lastDayDoWLessThanRequestedDoW_Day+1);
+        final List<Integer> values = fieldValueGenerator.generateCandidatesNotIncludingIntervalExtremes(1, LAST_DAY_DOW_LESS_THAN_REQUESTED_DOW_DAY + 1);
         assertFalse(values.isEmpty());
-        assertEquals(lastDayDoWLessThanRequestedDoW_Day, values.get(0), 0);
+        assertEquals(LAST_DAY_DOW_LESS_THAN_REQUESTED_DOW_DAY, values.get(0), 0);
     }
 
     @Test
-    public void testGenerateCandidatesNotIncludingIntervalExtremesLastDayDoWEqualToRequestedDoW() throws Exception {
+    public void testGenerateCandidatesNotIncludingIntervalExtremesLastDayDoWEqualToRequestedDoW() {
         fieldValueGenerator = createFieldValueGeneratorInstanceLastDayDoWEqualToRequestedDoW();
-        List<Integer> values = fieldValueGenerator.generateCandidatesNotIncludingIntervalExtremes(1, lastDayDoWEqualToRequestedDoW_Day+1);
+        final List<Integer> values = fieldValueGenerator.generateCandidatesNotIncludingIntervalExtremes(1, LAST_DAY_DOW_EQUALTO_REQUESTED_DOW_DAY + 1);
         assertFalse(values.isEmpty());
-        assertEquals(lastDayDoWEqualToRequestedDoW_Day, values.get(0), 0);
+        assertEquals(LAST_DAY_DOW_EQUALTO_REQUESTED_DOW_DAY, values.get(0), 0);
     }
 
     @Test
-    public void testIsMatchLastDayDoWGreaterThanRequestedDoW() throws Exception {
+    public void testIsMatchLastDayDoWGreaterThanRequestedDoW() {
         fieldValueGenerator = createFieldValueGeneratorInstanceLastDayDoWGreaterThanRequestedDoW();
-        assertTrue(fieldValueGenerator.isMatch(lastDayDoWGreaterThanRequestedDoW_Day));
-        assertFalse(fieldValueGenerator.isMatch(lastDayDoWGreaterThanRequestedDoW_Day + 1));
+        assertTrue(fieldValueGenerator.isMatch(LAST_DAY_DOW_GREATER_THAN_REQUESTED_DOW_DAY));
+        assertFalse(fieldValueGenerator.isMatch(LAST_DAY_DOW_GREATER_THAN_REQUESTED_DOW_DAY + 1));
     }
 
     @Test
-    public void testIsMatchLastDayDoWLessThanRequestedDoW() throws Exception {
+    public void testIsMatchLastDayDoWLessThanRequestedDoW() {
         fieldValueGenerator = createFieldValueGeneratorInstanceLastDayDoWLessThanRequestedDoW();
-        assertTrue(fieldValueGenerator.isMatch(lastDayDoWLessThanRequestedDoW_Day));
-        assertFalse(fieldValueGenerator.isMatch(lastDayDoWLessThanRequestedDoW_Day + 1));
+        assertTrue(fieldValueGenerator.isMatch(LAST_DAY_DOW_LESS_THAN_REQUESTED_DOW_DAY));
+        assertFalse(fieldValueGenerator.isMatch(LAST_DAY_DOW_LESS_THAN_REQUESTED_DOW_DAY + 1));
     }
 
     @Test
-    public void testIsMatchLastDayDoWEqualToRequestedDoW() throws Exception {
+    public void testIsMatchLastDayDoWEqualToRequestedDoW() {
         fieldValueGenerator = createFieldValueGeneratorInstanceLastDayDoWEqualToRequestedDoW();
-        assertTrue(fieldValueGenerator.isMatch(lastDayDoWEqualToRequestedDoW_Day));
-        assertFalse(fieldValueGenerator.isMatch(lastDayDoWEqualToRequestedDoW_Day + 1));
+        assertTrue(fieldValueGenerator.isMatch(LAST_DAY_DOW_EQUALTO_REQUESTED_DOW_DAY));
+        assertFalse(fieldValueGenerator.isMatch(LAST_DAY_DOW_EQUALTO_REQUESTED_DOW_DAY + 1));
     }
 
     private OnDayOfWeekValueGenerator createFieldValueGeneratorInstanceLastDayDoWGreaterThanRequestedDoW() {
-        return new OnDayOfWeekValueGenerator(new CronField(CronFieldName.DAY_OF_WEEK, new On(new IntegerFieldValue(lastDayDoWGreaterThanRequestedDoW_Value), new SpecialCharFieldValue(SpecialChar.L)), constraints), year, lastDayDoWGreaterThanRequestedDoW_Month, mondayDoWValue);
+        return new OnDayOfWeekValueGenerator(new CronField(CronFieldName.DAY_OF_WEEK,
+                new On(new IntegerFieldValue(LAST_DAY_DOW_GREATER_THAN_REQUESTED_DOW_VALUE), new SpecialCharFieldValue(SpecialChar.L)), constraints), YEAR,
+                LAST_DAY_DOW_GREATER_THAN_REQUESTED_DOW_MONTH, mondayDoWValue);
     }
 
     private OnDayOfWeekValueGenerator createFieldValueGeneratorInstanceLastDayDoWLessThanRequestedDoW() {
-        return new OnDayOfWeekValueGenerator(new CronField(CronFieldName.DAY_OF_WEEK, new On(new IntegerFieldValue(lastDayDoWLessThanRequestedDoW_Value), new SpecialCharFieldValue(SpecialChar.L)), constraints), year, lastDayDoWLessThanRequestedDoW_Month, mondayDoWValue);
+        return new OnDayOfWeekValueGenerator(new CronField(CronFieldName.DAY_OF_WEEK,
+                new On(new IntegerFieldValue(LAST_DAY_DOW_LESS_THAN_REQUESTED_DOW_VALUE), new SpecialCharFieldValue(SpecialChar.L)), constraints), YEAR,
+                LAST_DAY_DOW_LESS_THAN_REQUESTED_DOW_MONTH, mondayDoWValue);
     }
 
     private OnDayOfWeekValueGenerator createFieldValueGeneratorInstanceLastDayDoWEqualToRequestedDoW() {
-        return new OnDayOfWeekValueGenerator(new CronField(CronFieldName.DAY_OF_WEEK, new On(new IntegerFieldValue(lastDayDoWEqualToRequestedDoW_Value), new SpecialCharFieldValue(SpecialChar.L)), constraints), year, lastDayDoWEqualToRequestedDoW_Month, mondayDoWValue);
+        return new OnDayOfWeekValueGenerator(new CronField(CronFieldName.DAY_OF_WEEK,
+                new On(new IntegerFieldValue(LAST_DAY_DOW_EQUALTO_REQUESTED_DOW_VALUE), new SpecialCharFieldValue(SpecialChar.L)), constraints), YEAR,
+                LAST_DAY_DOW_EQUALTO_REQUESTED_DOW_MONTH, mondayDoWValue);
     }
 }
