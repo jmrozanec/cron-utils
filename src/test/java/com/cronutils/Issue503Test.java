@@ -59,7 +59,6 @@ class Issue503Test {
 
 
     @Test
-    //@Disabled("broken since cronUtils version 9.1.6")
     void testCustomQuarterlyScheduleForDesignatedYear2017() {
         final String customQuaterlyStartingWithDay47OfYear = "0 0 0 ? * ? 2017 47/91";
         final LocalDateTime[] expectedExecutionTimes = IntStream.range(0, 4).mapToObj(i -> LocalDateTime.of(2017, 1, 1, 0, 0).withDayOfYear(47 + i * 91)).toArray(LocalDateTime[]::new);
