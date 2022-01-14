@@ -107,17 +107,24 @@ public class SingleExecutionTime implements ExecutionTime {
 
                 if (nextMatch.getOffset().compareTo(date.getOffset()) > 0) {
                     // daylight saving time overlap case: issue #446
-                    ZonedDateTime nextNextExecution = nextClosestMatch(nextMatch.plusSeconds(1));
+                    Optional<ZonedDateTime> nextNextExecution = Optional.empty();
+                    try {
+                        nextNextExecution = Optional.of(nextClosestMatch(nextMatch.plusSeconds(1)));
+                    }
+                    catch (final NoSuchValueException canBeIgnored) {}
 
-                    boolean lessFrequentThan1Hour = (Duration.between(nextMatch, nextNextExecution).toHours() > 1);
-                    if (lessFrequentThan1Hour) {
-                        // Avoid duplicate execution during DST overlap
-                        nextMatch = nextClosestMatch(date.plusSeconds(1).plusHours(1));
+                    if (nextNextExecution.isPresent()) {
+                        final boolean lessFrequentThan1Hour = (Duration.between(nextMatch, nextNextExecution.get()).toHours() > 1);
+                        if (lessFrequentThan1Hour) {
+                            // Avoid duplicate execution during DST overlap
+                            nextMatch = nextClosestMatch(date.plusSeconds(1).plusHours(1));
+                        }
                     }
                 }
             }
             return Optional.of(nextMatch);
-        } catch (final NoSuchValueException e) {
+        }
+        catch (final NoSuchValueException e) {
             return Optional.empty();
         }
     }
