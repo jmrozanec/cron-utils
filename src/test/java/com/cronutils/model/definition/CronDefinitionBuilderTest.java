@@ -186,6 +186,28 @@ public class CronDefinitionBuilderTest {
         assertEquals("0 0 12 ? * 6 *", result);
     }
 
+    /**
+     * Test for issue https://github.com/jmrozanec/cron-utils/issues/508
+     * DoW as Sunday using QUARTZ definition was going out of range [1,7]
+     */
+    @Test
+    public void testDoWProperWeekdayOffsetForSunday(){
+        CronDefinition cronDefinition = CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ);
+        CronBuilder builder = CronBuilder.cron(cronDefinition)
+                .withYear(always())
+                .withMonth(always())
+                .withDoW(on(Weekdays.SUNDAY.getWeekday(cronDefinition)))
+                .withDoM(questionMark())
+                .withHour(on(12))
+                .withMinute(on(0))
+                .withSecond(on(0));
+
+        Cron cron = builder.instance();
+        String result = cron.asString();
+
+        assertEquals("0 0 12 ? * 1 *", result);
+    }
+
     @Test
     public void testSpringSchedule(){
         CronDefinition cronDefinition = CronDefinitionBuilder.instanceDefinitionFor(CronType.SPRING);

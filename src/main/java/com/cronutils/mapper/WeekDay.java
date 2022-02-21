@@ -61,7 +61,7 @@ public class WeekDay implements Serializable {
             return mapTo(dayOfWeek, new WeekDay(targetWeekDayDefinition.getMondayDoWValue() + 1, false)) - 1;
         } else {
             //my range is 0-6. I normalize ranges, get the "one" mapping and turn result into original scale
-            return mapTo(dayOfWeek, new WeekDay(targetWeekDayDefinition.getMondayDoWValue() - 1, true)) + 1;
+            return (mapTo(dayOfWeek, new WeekDay(targetWeekDayDefinition.getMondayDoWValue() - 1, true))) % 7 + 1;
         }
     }
 
