@@ -21,7 +21,9 @@ import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.field.constraint.FieldConstraints;
 import com.cronutils.model.field.definition.FieldDefinition;
 import com.cronutils.model.field.expression.FieldExpression;
+import com.cronutils.model.field.expression.On;
 import com.cronutils.model.field.expression.visitor.ValidationFieldExpressionVisitor;
+import com.cronutils.model.field.value.IntegerFieldValue;
 import com.cronutils.utils.VisibleForTesting;
 
 import java.util.ArrayList;
@@ -78,6 +80,134 @@ public class CronBuilder {
 
     public Cron instance() {
         return new SingleCron(definition, new ArrayList<>(fields.values())).validate();
+    }
+
+
+
+
+
+    
+    public static Cron yearly(final CronDefinition definition){
+        CronBuilder builder = new CronBuilder(definition);
+        if(definition.containsFieldDefinition(SECOND)){
+            builder = builder.withSecond(new On(new IntegerFieldValue(0)));
+        }
+        if(definition.containsFieldDefinition(MINUTE)){
+            builder = builder.withMinute(new On(new IntegerFieldValue(0)));
+        }
+        if(definition.containsFieldDefinition(HOUR)){
+            builder = builder.withHour(new On(new IntegerFieldValue(0)));
+        }
+        if(definition.containsFieldDefinition(DAY_OF_MONTH)){
+            builder = builder.withDoM(new On(new IntegerFieldValue(1)));
+        }
+        if(definition.containsFieldDefinition(MONTH)){
+            builder = builder.withMonth(new On(new IntegerFieldValue(1)));
+        }
+        if(definition.containsFieldDefinition(DAY_OF_WEEK)){
+            builder = builder.withDoW(FieldExpression.always());
+        }
+        return builder.instance();
+    }
+
+    public static Cron annually(final CronDefinition definition){
+        return yearly(definition);
+    }
+
+    public static Cron monthly(final CronDefinition definition){
+        CronBuilder builder = new CronBuilder(definition);
+        if(definition.containsFieldDefinition(SECOND)){
+            builder = builder.withSecond(new On(new IntegerFieldValue(0)));
+        }
+        if(definition.containsFieldDefinition(MINUTE)){
+            builder = builder.withMinute(new On(new IntegerFieldValue(0)));
+        }
+        if(definition.containsFieldDefinition(HOUR)){
+            builder = builder.withHour(new On(new IntegerFieldValue(0)));
+        }
+        if(definition.containsFieldDefinition(DAY_OF_MONTH)){
+            builder = builder.withDoM(new On(new IntegerFieldValue(1)));
+        }
+        if(definition.containsFieldDefinition(MONTH)){
+            builder = builder.withMonth(FieldExpression.always());
+        }
+        if(definition.containsFieldDefinition(DAY_OF_WEEK)){
+            builder = builder.withDoW(FieldExpression.always());
+        }
+        return builder.instance();
+    }
+
+    public static Cron weekly(final CronDefinition definition){
+        CronBuilder builder = new CronBuilder(definition);
+        if(definition.containsFieldDefinition(SECOND)){
+            builder = builder.withSecond(new On(new IntegerFieldValue(0)));
+        }
+        if(definition.containsFieldDefinition(MINUTE)){
+            builder = builder.withMinute(new On(new IntegerFieldValue(0)));
+        }
+        if(definition.containsFieldDefinition(HOUR)){
+            builder = builder.withHour(new On(new IntegerFieldValue(0)));
+        }
+        if(definition.containsFieldDefinition(DAY_OF_MONTH)){
+            builder = builder.withDoM(FieldExpression.always());
+        }
+        if(definition.containsFieldDefinition(MONTH)){
+            builder = builder.withMonth(FieldExpression.always());
+        }
+        if(definition.containsFieldDefinition(DAY_OF_WEEK)){
+            builder = builder.withDoW(new On(new IntegerFieldValue(0)));
+        }
+        return builder.instance();
+    }
+
+    public static Cron daily(final CronDefinition definition){
+        CronBuilder builder = new CronBuilder(definition);
+        if(definition.containsFieldDefinition(SECOND)){
+            builder = builder.withSecond(new On(new IntegerFieldValue(0)));
+        }
+        if(definition.containsFieldDefinition(MINUTE)){
+            builder = builder.withMinute(new On(new IntegerFieldValue(0)));
+        }
+        if(definition.containsFieldDefinition(HOUR)){
+            builder = builder.withHour(new On(new IntegerFieldValue(0)));
+        }
+        if(definition.containsFieldDefinition(DAY_OF_MONTH)){
+            builder = builder.withDoM(FieldExpression.always());
+        }
+        if(definition.containsFieldDefinition(MONTH)){
+            builder = builder.withMonth(FieldExpression.always());
+        }
+        if(definition.containsFieldDefinition(DAY_OF_WEEK)){
+            builder = builder.withDoW(FieldExpression.always());
+        }
+        return builder.instance();
+    }
+
+    public static Cron midnight(final CronDefinition definition){
+        return daily(definition);
+    }
+
+    public static Cron hourly(final CronDefinition definition){
+        CronBuilder builder = new CronBuilder(definition);
+        if(definition.containsFieldDefinition(SECOND)){
+            builder = builder.withSecond(new On(new IntegerFieldValue(0)));
+        }
+        if(definition.containsFieldDefinition(MINUTE)){
+            builder = builder.withMinute(new On(new IntegerFieldValue(0)));
+        }
+        if(definition.containsFieldDefinition(HOUR)){
+            builder = builder.withHour(FieldExpression.always());
+        }
+        if(definition.containsFieldDefinition(DAY_OF_MONTH)){
+            builder = builder.withDoM(FieldExpression.always());
+        }
+        if(definition.containsFieldDefinition(MONTH)){
+            builder = builder.withMonth(FieldExpression.always());
+        }
+        if(definition.containsFieldDefinition(DAY_OF_WEEK)){
+            builder = builder.withDoW(FieldExpression.always());
+        }
+        return builder.instance();
     }
 
     @VisibleForTesting
