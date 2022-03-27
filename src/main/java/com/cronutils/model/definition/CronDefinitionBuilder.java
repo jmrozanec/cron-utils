@@ -25,6 +25,7 @@ import java.util.*;
 public class CronDefinitionBuilder {
     private final Map<CronFieldName, FieldDefinition> fields = new EnumMap<>(CronFieldName.class);
     private final Set<CronConstraint> cronConstraints = new HashSet<>();
+    private final Set<CronNicknames> cronNicknames = new HashSet<>();
     private boolean matchDayOfWeekAndDayOfMonth;
 
     /**
@@ -124,6 +125,76 @@ public class CronDefinitionBuilder {
     }
 
     /**
+     * Supports cron nickname @yearly
+     *
+     * @return this CronDefinitionBuilder instance
+     */
+    public CronDefinitionBuilder withSupportedNicknameYearly() {
+        cronNicknames.add(CronNicknames.YEARLY);
+        return this;
+    }
+
+    /**
+     * Supports cron nickname @annually
+     *
+     * @return this CronDefinitionBuilder instance
+     */
+    public CronDefinitionBuilder withSupportedNicknameAnnually() {
+        cronNicknames.add(CronNicknames.ANNUALLY);
+        return this;
+    }
+
+    /**
+     * Supports cron nickname @monthly
+     *
+     * @return this CronDefinitionBuilder instance
+     */
+    public CronDefinitionBuilder withSupportedNicknameMonthly() {
+        cronNicknames.add(CronNicknames.MONTHLY);
+        return this;
+    }
+
+    /**
+     * Supports cron nickname @weekly
+     *
+     * @return this CronDefinitionBuilder instance
+     */
+    public CronDefinitionBuilder withSupportedNicknameWeekly() {
+        cronNicknames.add(CronNicknames.WEEKLY);
+        return this;
+    }
+
+    /**
+     * Supports cron nickname @daily
+     *
+     * @return this CronDefinitionBuilder instance
+     */
+    public CronDefinitionBuilder withSupportedNicknameDaily() {
+        cronNicknames.add(CronNicknames.DAILY);
+        return this;
+    }
+
+    /**
+     * Supports cron nickname @midnight
+     *
+     * @return this CronDefinitionBuilder instance
+     */
+    public CronDefinitionBuilder withSupportedNicknameMidnight() {
+        cronNicknames.add(CronNicknames.MIDNIGHT);
+        return this;
+    }
+
+    /**
+     * Supports cron nickname @hourly
+     *
+     * @return this CronDefinitionBuilder instance
+     */
+    public CronDefinitionBuilder withSupportedNicknameHourly() {
+        cronNicknames.add(CronNicknames.HOURLY);
+        return this;
+    }
+
+    /**
      * Adds a cron validation.
      * @param validation - constraint validation
      * @return this CronDefinitionBuilder instance
@@ -163,7 +234,7 @@ public class CronDefinitionBuilder {
         validations.addAll(cronConstraints);
         final List<FieldDefinition> values = new ArrayList<>(fields.values());
         values.sort(FieldDefinition.createFieldDefinitionComparator());
-        return new CronDefinition(values, validations, matchDayOfWeekAndDayOfMonth);
+        return new CronDefinition(values, validations, cronNicknames, matchDayOfWeekAndDayOfMonth);
     }
 
     /**

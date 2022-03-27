@@ -14,10 +14,12 @@
 
 package com.cronutils.parser;
 
+import com.cronutils.builder.CronBuilder;
 import com.cronutils.model.CompositeCron;
 import com.cronutils.model.Cron;
 import com.cronutils.model.SingleCron;
 import com.cronutils.model.definition.CronDefinition;
+import com.cronutils.model.definition.CronNicknames;
 import com.cronutils.model.field.CronField;
 import com.cronutils.model.field.definition.FieldDefinition;
 import com.cronutils.utils.Preconditions;
@@ -74,6 +76,13 @@ public class CronParser {
         return !fields.isEmpty() && fields.get(fields.size() - 1).isOptional();
     }
 
+    private Cron validateAndReturnSupportedCronNickname(String nickname, Set<CronNicknames> cronNicknames, CronNicknames cronNickname, Cron cron){
+        if(cronNicknames.contains(cronNickname)){
+            return cron;
+        }
+        throw new IllegalArgumentException(String.format("Nickname %s not supported!", nickname));
+    }
+
     /**
      * Parse string with cron expression.
      *
@@ -86,6 +95,27 @@ public class CronParser {
         final String replaced = expression.replaceAll("\\s+", " ").trim();
         if (StringUtils.isEmpty(replaced)) {
             throw new IllegalArgumentException("Empty expression!");
+        }
+
+        Set<CronNicknames> cronNicknames = cronDefinition.getCronNicknames();
+        if(expression.startsWith("@")){
+            if(cronNicknames.isEmpty()){
+                throw new IllegalArgumentException("Nicknames not supported!");
+            }
+            switch (expression){
+                case "@yearly":
+                    return validateAndReturnSupportedCronNickname(expression, cronNicknames, CronNicknames.YEARLY, CronBuilder.yearly(cronDefinition));
+                case "@annually":
+                    return validateAndReturnSupportedCronNickname(expression, cronNicknames, CronNicknames.ANNUALLY, CronBuilder.annually(cronDefinition));
+                case "@weekly":
+                    return validateAndReturnSupportedCronNickname(expression, cronNicknames, CronNicknames.WEEKLY, CronBuilder.weekly(cronDefinition));
+                case "@daily":
+                    return validateAndReturnSupportedCronNickname(expression, cronNicknames, CronNicknames.DAILY, CronBuilder.daily(cronDefinition));
+                case "@midnight":
+                    return validateAndReturnSupportedCronNickname(expression, cronNicknames, CronNicknames.MIDNIGHT, CronBuilder.midnight(cronDefinition));
+                case "@hourly":
+                    return validateAndReturnSupportedCronNickname(expression, cronNicknames, CronNicknames.HOURLY, CronBuilder.hourly(cronDefinition));
+            }
         }
 
         if(expression.contains("||")) {
@@ -120,7 +150,6 @@ public class CronParser {
                         String.format("Cron expression contains %s parts but we expect one of %s", expressionLength, expressions.keySet()));
             }
             try {
-
                 final int size = expressionParts.length;
                 final List<CronField> results = new ArrayList<>(size + 1);
                 for (int j = 0; j < size; j++) {

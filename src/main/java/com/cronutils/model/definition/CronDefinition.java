@@ -28,6 +28,7 @@ public class CronDefinition implements Serializable {
     private static final long serialVersionUID = 7067112327461432170L;
     private final Map<CronFieldName, FieldDefinition> fieldDefinitions;
     private final Set<CronConstraint> cronConstraints;
+    private final Set<CronNicknames> cronNicknames;
     private final boolean matchDayOfWeekAndDayOfMonth;
 
     /**
@@ -37,9 +38,10 @@ public class CronDefinition implements Serializable {
      *                         Throws a NullPointerException if a null values is received
      *                         Throws an IllegalArgumentException if an empty list is received
      */
-    public CronDefinition(final List<FieldDefinition> fieldDefinitions, final Set<CronConstraint> cronConstraints, final boolean matchDayOfWeekAndDayOfMonth) {
+    public CronDefinition(final List<FieldDefinition> fieldDefinitions, final Set<CronConstraint> cronConstraints, Set<CronNicknames> cronNicknames, final boolean matchDayOfWeekAndDayOfMonth) {
         Preconditions.checkNotNull(fieldDefinitions, "Field definitions must not be null");
         Preconditions.checkNotNull(cronConstraints, "Cron validations must not be null");
+        Preconditions.checkNotNull(cronNicknames, "Cron nicknames must not be null");
         Preconditions.checkNotNullNorEmpty(fieldDefinitions, "Field definitions must not be empty");
         Preconditions.checkArgument(!fieldDefinitions.get(0).isOptional(), "The first field must not be optional");
         this.fieldDefinitions = new EnumMap<>(CronFieldName.class);
@@ -47,6 +49,7 @@ public class CronDefinition implements Serializable {
             this.fieldDefinitions.put(field.getFieldName(), field);
         }
         this.cronConstraints = Collections.unmodifiableSet(cronConstraints);
+        this.cronNicknames = Collections.unmodifiableSet(cronNicknames);
         this.matchDayOfWeekAndDayOfMonth = matchDayOfWeekAndDayOfMonth;
     }
 
@@ -99,6 +102,10 @@ public class CronDefinition implements Serializable {
 
     public Set<CronConstraint> getCronConstraints() {
         return cronConstraints;
+    }
+
+    public Set<CronNicknames> getCronNicknames() {
+        return cronNicknames;
     }
 }
 
