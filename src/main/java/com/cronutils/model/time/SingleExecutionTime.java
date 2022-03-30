@@ -477,7 +477,7 @@ public class SingleExecutionTime implements ExecutionTime {
             return generateDaysDoWAndDoMSupported(cronDefinition, date);
         }
         if (cronDefinition.getFieldDefinition(DAY_OF_WEEK) == null) {
-            return Optional.of(generateDayCandidatesUsingDoM(date));
+            return generateDayCandidatesUsingDoM(date);
         }
         return Optional
                 .of(generateDayCandidatesUsingDoW(date, ((DayOfWeekFieldDefinition) cronDefinition.getFieldDefinition(DAY_OF_WEEK)).getMondayDoWValue()));
@@ -710,14 +710,14 @@ public class SingleExecutionTime implements ExecutionTime {
         }
     }
 
-    private TimeNode generateDayCandidatesUsingDoM(final ZonedDateTime reference) {
+    private Optional<TimeNode> generateDayCandidatesUsingDoM(final ZonedDateTime reference) {
         final LocalDate date = LocalDate.of(reference.getYear(), reference.getMonthValue(), 1);
         final int lengthOfMonth = date.lengthOfMonth();
         final List<Integer> candidates = createDayOfMonthValueGeneratorInstance(daysOfMonthCronField, reference.getYear(), reference.getMonthValue())
                 .generateCandidates(1, lengthOfMonth)
                 .stream().distinct().sorted()
                 .collect(Collectors.toList());
-        return new TimeNode(candidates);
+        return candidates.isEmpty() ? Optional.empty() : Optional.of(new TimeNode(candidates));
     }
 
     private TimeNode generateDayCandidatesUsingDoW(final ZonedDateTime reference, final WeekDay mondayDoWValue) {
