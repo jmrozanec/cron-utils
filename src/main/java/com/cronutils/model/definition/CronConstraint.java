@@ -16,6 +16,7 @@ package com.cronutils.model.definition;
 import com.cronutils.model.Cron;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 public abstract class CronConstraint implements Serializable {
 
@@ -30,5 +31,22 @@ public abstract class CronConstraint implements Serializable {
 
     public String getDescription() {
         return description;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        CronConstraint that = (CronConstraint) o;
+        return Objects.equals(description, that.description);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(description);
     }
 }
