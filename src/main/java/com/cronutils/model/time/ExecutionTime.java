@@ -88,7 +88,7 @@ public interface ExecutionTime {
 
     /**
      * Provide nearest time for next execution.
-     * <p>
+     *
      * Due to the question #468 we clarify: crons execute on local instance time.
      * See: https://serverfault.com/questions/791713/what-time-zone-is-a-cron-job-using
      * We ask for a ZonedDateTime for two reasons:
@@ -102,7 +102,7 @@ public interface ExecutionTime {
 
     /**
      * Provide nearest date for last execution.
-     * <p>
+     *
      * Due to the question #468 we clarify: crons execute on local instance time.
      * See: https://serverfault.com/questions/791713/what-time-zone-is-a-cron-job-using
      * We ask for a ZonedDateTime for two reasons:
