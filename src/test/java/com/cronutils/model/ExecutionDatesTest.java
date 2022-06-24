@@ -11,8 +11,9 @@ import java.time.ZonedDateTime;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class ExecutionCountTest {
+public class ExecutionDatesTest {
     private CronParser cron4jCronParser;
 
     @Before
@@ -55,5 +56,24 @@ public class ExecutionCountTest {
             ZonedDateTime actualDate = dates.get(i - 1);
             assertEquals(expectedDate, actualDate);
         }
+    }
+
+    @Test
+    public void throwExceptionWhenEndDateIsBeforeStartDate() {
+        ZonedDateTime startDate = ZonedDateTime.of(2022, 1, 1, 0, 0, 0, 0, ZoneId.systemDefault());
+        ZonedDateTime endDate = startDate.minusDays(1);
+
+        ExecutionTime executionTime = ExecutionTime.forCron(cron4jCronParser.parse("0 * * * *"));
+        assertThrows(IllegalArgumentException.class, () -> executionTime.getExecutionDates(startDate, endDate));
+    }
+
+    @Test
+    public void throwExceptionWhenEndDateEqualsStarDate() {
+        ZonedDateTime startDate = ZonedDateTime.of(2022, 1, 1, 0, 0, 0, 0, ZoneId.systemDefault());
+        ZonedDateTime endDate = ZonedDateTime.of(2022, 1, 1, 0, 0, 0, 0, ZoneId.systemDefault());
+
+        ExecutionTime executionTime = ExecutionTime.forCron(cron4jCronParser.parse("0 * * * *"));
+        assertThrows(IllegalArgumentException.class, () -> executionTime.getExecutionDates(startDate, endDate));
+
     }
 }

@@ -142,13 +142,18 @@ public interface ExecutionTime {
     }
 
     /**
-     * Provide date times when cron expression would execute between given start and end dates
+     * Provide date times when cron expression would execute between given start and end dates.
+     * End date should be after start date. Otherwise, IllegalArgumentException is raised
      *
      * @param startDate - Start date. If null, a NullPointerException will be raised.
      * @param endDate - End date. If null, a NullPointerException will be raised.
      * @return list of date times
      */
     default List<ZonedDateTime> getExecutionDates(ZonedDateTime startDate, ZonedDateTime endDate) {
+        if (endDate.equals(startDate) || endDate.isBefore(startDate)) {
+            throw new IllegalArgumentException("End date should be after start date");
+        }
+
         List<ZonedDateTime> executions = new ArrayList<>();
         ZonedDateTime nextExecutionDate = nextExecution(startDate).orElse(null);
 
