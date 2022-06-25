@@ -22,6 +22,7 @@ import java.util.*;
 
 /**
  * Defines fields and conditions over each field for a cron.
+ * The class is thread safe.
  */
 public class CronDefinition implements Serializable {
 

@@ -30,6 +30,7 @@ import java.util.stream.Collectors;
 
 /**
  * Parser for cron expressions.
+ * The class is thread safe.
  */
 public class CronParser {
 
