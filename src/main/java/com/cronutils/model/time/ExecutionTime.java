@@ -21,8 +21,7 @@ import com.cronutils.model.field.CronFieldName;
 
 import java.time.Duration;
 import java.time.ZonedDateTime;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -37,7 +36,7 @@ public interface ExecutionTime {
      * @return ExecutionTime instance
      */
     public static ExecutionTime forCron(final Cron cron) {
-        if(cron instanceof SingleCron){
+        if (cron instanceof SingleCron) {
             final Map<CronFieldName, CronField> fields = cron.retrieveFieldsAsMap();
             final ExecutionTimeBuilder executionTimeBuilder = new ExecutionTimeBuilder(cron);
             for (final CronFieldName name : CronFieldName.values()) {
@@ -73,8 +72,8 @@ public interface ExecutionTime {
                 }
             }
             return executionTimeBuilder.build();
-        }else{
-            return new CompositeExecutionTime(((CompositeCron)cron).getCrons().parallelStream().map(ExecutionTime::forCron).collect(Collectors.toList()));
+        } else {
+            return new CompositeExecutionTime(((CompositeCron) cron).getCrons().parallelStream().map(ExecutionTime::forCron).collect(Collectors.toList()));
         }
 
     }
@@ -93,8 +92,8 @@ public interface ExecutionTime {
      * Due to the question #468 we clarify: crons execute on local instance time.
      * See: https://serverfault.com/questions/791713/what-time-zone-is-a-cron-job-using
      * We ask for a ZonedDateTime for two reasons:
-     *  (i) to provide flexibility on which timezone the cron is being executed
-     *  (ii) to be able to reproduce issues regardless of our own local time (e.g.: daylight savings, etc.)
+     * (i) to provide flexibility on which timezone the cron is being executed
+     * (ii) to be able to reproduce issues regardless of our own local time (e.g.: daylight savings, etc.)
      *
      * @param date - ZonedDateTime instance. If null, a NullPointerException will be raised.
      * @return Duration instance, never null. Time to next execution.
@@ -109,7 +108,7 @@ public interface ExecutionTime {
      * We ask for a ZonedDateTime for two reasons:
      * (i) to provide flexibility on which timezone the cron is being executed
      * (ii) to be able to reproduce issues regardless of our own local time (e.g.: daylight savings, etc.)
-     * 
+     *
      * @param date - ZonedDateTime instance. If null, a NullPointerException will be raised.
      * @return Optional ZonedDateTime instance, never null. Last execution time or empty.
      */
@@ -130,4 +129,43 @@ public interface ExecutionTime {
      * @return true if date matches cron expression requirements, false otherwise.
      */
     boolean isMatch(ZonedDateTime date);
+
+    /**
+     * Provide count of times cron expression would execute between given start and end dates
+     *
+     * @param startDate - Start date. If null, a NullPointerException will be raised.
+     * @param endDate - End date. If null, a NullPointerException will be raised.
+     * @return count of executions
+     */
+    default int countExecutions(ZonedDateTime startDate, ZonedDateTime endDate) {
+        return getExecutionDates(startDate, endDate).size();
+    }
+
+    /**
+     * Provide date times when cron expression would execute between given start and end dates.
+     * End date should be after start date. Otherwise, IllegalArgumentException is raised
+     *
+     * @param startDate - Start date. If null, a NullPointerException will be raised.
+     * @param endDate - End date. If null, a NullPointerException will be raised.
+     * @return list of date times
+     */
+    default List<ZonedDateTime> getExecutionDates(ZonedDateTime startDate, ZonedDateTime endDate) {
+        if (endDate.equals(startDate) || endDate.isBefore(startDate)) {
+            throw new IllegalArgumentException("End date should be after start date");
+        }
+
+        List<ZonedDateTime> executions = new ArrayList<>();
+        ZonedDateTime nextExecutionDate = nextExecution(startDate).orElse(null);
+
+        if (nextExecutionDate == null) return Collections.emptyList();
+        executions.add(nextExecutionDate);
+
+        while (nextExecutionDate.isBefore(endDate)) {
+            nextExecutionDate = nextExecution(nextExecutionDate).orElse(null);
+
+            if (nextExecutionDate == null) break;
+            executions.add(nextExecutionDate);
+        }
+        return executions;
+    }
 }

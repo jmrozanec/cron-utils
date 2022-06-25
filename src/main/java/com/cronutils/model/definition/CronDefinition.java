@@ -108,5 +108,26 @@ public class CronDefinition implements Serializable {
     public Set<CronNicknames> getCronNicknames() {
         return cronNicknames;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        CronDefinition that = (CronDefinition) o;
+        return matchDayOfWeekAndDayOfMonth == that.matchDayOfWeekAndDayOfMonth
+            && fieldDefinitions.equals(that.fieldDefinitions)
+            && cronConstraints.equals(that.cronConstraints)
+            && cronNicknames.equals(that.cronNicknames);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(
+            fieldDefinitions, cronConstraints, cronNicknames, matchDayOfWeekAndDayOfMonth);
+    }
 }
 
