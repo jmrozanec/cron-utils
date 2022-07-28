@@ -48,7 +48,7 @@ Now we are developing a new generation of cron-descriptors using neural-translat
     * [Unix](http://www.unix.com/man-page/linux/5/crontab/)
     * [Cron4j](http://www.sauronsoftware.it/projects/cron4j/)
     * [Quartz](http://quartz-scheduler.org/)
-    * [Spring](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/scheduling/support/CronExpression.html)
+    * [Spring](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/scheduling/support/CronExpression.html). We support two definitions: prior to v5.3 and [from v5.3 onwards](https://spring.io/blog/2020/11/10/new-in-spring-5-3-improved-cron-expressions).
  * Obtain last/next execution time as well as time from last execution/time to next execution.
  * Obtain weekdays count between two dates, considering different weekend policies as well as holidays.
  * Need to map constants between different cron/time libraries? Use ConstantsMapper.
