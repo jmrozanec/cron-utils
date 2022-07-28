@@ -332,7 +332,7 @@ public class CronDefinitionBuilder {
     }
 
     /**
-     * Creates CronDefinition instance matching Spring specification.
+     * Creates CronDefinition instance matching Spring (v5.2 and below) specification.
      *
      * <p>The cron expression is expected to be a string comprised of 6
      * fields separated by white space. Fields can contain any of the allowed
@@ -384,7 +384,7 @@ public class CronDefinitionBuilder {
      * </tr>
      * </table>
      *
-     * <p>Thus in general Spring cron expressions are as follows:
+     * <p>Thus in general Spring cron expressions are as follows (up to version 5.2):
      *
      * <p>S M H DoM M DoW
      *
@@ -399,6 +399,83 @@ public class CronDefinitionBuilder {
                 .withMonth().withValidRange(1, 12).and()
                 .withDayOfWeek().withValidRange(0, 7).withMondayDoWValue(1).withIntMapping(7,0)
                     .supportsHash().supportsQuestionMark().and()
+                .instance();
+    }
+
+    /**
+     * Creates CronDefinition instance matching Spring (v5.2 onwards) specification.
+     * https://spring.io/blog/2020/11/10/new-in-spring-5-3-improved-cron-expressions
+     *
+     * <p>The cron expression is expected to be a string comprised of 6
+     * fields separated by white space. Fields can contain any of the allowed
+     * values, along with various combinations of the allowed special characters
+     * for that field. The fields are as follows:
+     *
+     * <table style="width:100%">
+     * <tr>
+     * <th>Field Name</th>
+     * <th>Mandatory</th>
+     * <th>Allowed Values</th>
+     * <th>Allowed Special Characters</th>
+     * </tr>
+     * <tr>
+     * <td>Seconds</td>
+     * <td>YES</td>
+     * <td>0-59</td>
+     * <td>* , - /</td>
+     * </tr>
+     * <tr>
+     * <td>Minutes</td>
+     * <td>YES</td>
+     * <td>0-59</td>
+     * <td>* , - /</td>
+     * </tr>
+     * <tr>
+     * <td>Hours</td>
+     * <td>YES</td>
+     * <td>0-23</td>
+     * <td>* , - /</td>
+     * </tr>
+     * <tr>
+     * <td>Day of month</td>
+     * <td>YES</td>
+     * <td>1-31</td>
+     * <td>* ? , - / L W</td>
+     * </tr>
+     * <tr>
+     * <td>Month</td>
+     * <td>YES</td>
+     * <td>1-12 or JAN-DEC</td>
+     * <td>* , -</td>
+     * </tr>
+     * <tr>
+     * <td>Day of week</td>
+     * <td>YES</td>
+     * <td>0-7 or SUN-SAT</td>
+     * <td>* ? , - / L #</td>
+     * </tr>
+     * </table>
+     *
+     * <p>Thus in general Spring cron expressions are as follows (from version 5.3 onwards):
+     *
+     * <p>S M H DoM M DoW
+     *
+     * @return {@link CronDefinition} instance, never {@code null}
+     */
+    private static CronDefinition spring53() {
+        return CronDefinitionBuilder.defineCron()
+                .withSeconds().withValidRange(0, 59).withStrictRange().and()
+                .withMinutes().withValidRange(0, 59).withStrictRange().and()
+                .withHours().withValidRange(0, 23).withStrictRange().and()
+                .withDayOfMonth().withValidRange(1, 31).supportsL().supportsW().supportsLW().supportsQuestionMark().and()
+                .withMonth().withValidRange(1, 12).and()
+                .withDayOfWeek().withValidRange(0, 7).withMondayDoWValue(1).withIntMapping(7,0)
+                .supportsHash().supportsL().supportsQuestionMark().and()
+                .withSupportedNicknameYearly().withSupportedNicknameAnnually()
+                .withSupportedNicknameMonthly()
+                .withSupportedNicknameWeekly()
+                .withSupportedNicknameDaily().withSupportedNicknameMidnight()
+                .withSupportedNicknameHourly()
                 .instance();
     }
 
