@@ -55,7 +55,6 @@ public class CronConverterTest {
 	}
 
 	@Test
-	@Ignore //TODO: fix
 	public void testCronConverterBuilder() {
 		Assert.assertEquals(expectedCronExpression,
 				cronConverter.using(inputCronExpression)
