@@ -81,6 +81,8 @@ public class On extends FieldExpression {
                 return isDefault(getTime()) ? "W" : String.format("%sW", getTime());
             case L:
                 return isDefault(getTime()) ? "L" + getNthStringRepresentation() : String.format("%sL", getTime());
+            case QUESTION_MARK:
+                return "?";
             default:
                 return specialChar.toString();
         }

@@ -20,6 +20,7 @@ import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.field.constraint.FieldConstraints;
 import com.cronutils.model.field.definition.FieldDefinition;
 import com.cronutils.model.field.expression.Weekdays;
+import com.cronutils.model.field.value.SpecialChar;
 import com.cronutils.parser.CronParser;
 import org.junit.Before;
 import org.junit.Test;
@@ -212,8 +213,8 @@ public class CronDefinitionBuilderTest {
     public void testSpringSchedule(){
         CronDefinition cronDefinition = CronDefinitionBuilder.instanceDefinitionFor(CronType.SPRING);
         CronBuilder builder = CronBuilder.cron(cronDefinition)
-                .withMonth(always())
                 .withDoW(questionMark())
+                .withMonth(always())
                 .withDoM(always())
                 .withHour(always())
                 .withMinute(every(on(0), 5))
@@ -223,5 +224,196 @@ public class CronDefinitionBuilderTest {
         String result = cron.asString();
 
         assertEquals("* 0/5 * * * ?", result);
+    }
+
+    @Test
+    public void testSpring53ScheduleExample1(){
+        CronDefinition cronDefinition = CronDefinitionBuilder.instanceDefinitionFor(CronType.SPRING53);
+        CronBuilder builder = CronBuilder.cron(cronDefinition)
+                .withDoW(always())
+                .withMonth(always())
+                .withDoM(on(SpecialChar.L))
+                .withHour(on(0))
+                .withMinute(on(0))
+                .withSecond(on(0));
+
+        Cron cron = builder.instance();
+        String result = cron.asString();
+
+        assertEquals("0 0 0 L * *", result);
+    }
+
+    @Test
+    public void testSpring53ScheduleExample2(){
+        CronDefinition cronDefinition = CronDefinitionBuilder.instanceDefinitionFor(CronType.SPRING53);
+        CronBuilder builder = CronBuilder.cron(cronDefinition)
+                .withDoW(always())
+                .withMonth(always())
+                .withDoM(between(SpecialChar.L, 3))
+                .withHour(on(0))
+                .withMinute(on(0))
+                .withSecond(on(0));
+
+        Cron cron = builder.instance();
+        String result = cron.asString();
+
+        assertEquals("0 0 0 L-3 * *", result);
+    }
+
+    @Test
+    public void testSpring53ScheduleExample3(){
+        CronDefinition cronDefinition = CronDefinitionBuilder.instanceDefinitionFor(CronType.SPRING53);
+        CronBuilder builder = CronBuilder.cron(cronDefinition)
+                .withDoW(on(5, SpecialChar.L))
+                .withMonth(always())
+                .withDoM(always())
+                .withHour(on(0))
+                .withMinute(on(0))
+                .withSecond(on(0));
+
+        Cron cron = builder.instance();
+        String result = cron.asString();
+
+        assertEquals("0 0 0 * * 5L", result);
+    }
+
+    @Test
+    public void testSpring53ScheduleExample4(){
+        CronDefinition cronDefinition = CronDefinitionBuilder.instanceDefinitionFor(CronType.SPRING53);
+        CronBuilder builder = CronBuilder.cron(cronDefinition)
+                .withDoW(on(4, SpecialChar.L))
+                .withMonth(always())
+                .withDoM(always())
+                .withHour(on(0))
+                .withMinute(on(0))
+                .withSecond(on(0));
+
+        Cron cron = builder.instance();
+        CronParser parser = new CronParser(cronDefinition);
+        Cron parsedCron = parser.parse("0 0 0 * * THUL");
+
+        assertEquals(cron.asString(), parsedCron.asString());
+    }
+
+    @Test
+    public void testSpring53ScheduleExample5(){
+        CronDefinition cronDefinition = CronDefinitionBuilder.instanceDefinitionFor(CronType.SPRING53);
+        CronBuilder builder = CronBuilder.cron(cronDefinition)
+                .withDoW(always())
+                .withMonth(always())
+                .withDoM(on(1, SpecialChar.W))
+                .withHour(on(0))
+                .withMinute(on(0))
+                .withSecond(on(0));
+
+        Cron cron = builder.instance();
+        String result = cron.asString();
+
+        assertEquals("0 0 0 1W * *", result);
+    }
+
+    @Test
+    public void testSpring53ScheduleExample6(){
+        CronDefinition cronDefinition = CronDefinitionBuilder.instanceDefinitionFor(CronType.SPRING53);
+        CronBuilder builder = CronBuilder.cron(cronDefinition)
+                .withDoW(always())
+                .withMonth(always())
+                .withDoM(on( SpecialChar.LW))
+                .withHour(on(0))
+                .withMinute(on(0))
+                .withSecond(on(0));
+
+        Cron cron = builder.instance();
+        String result = cron.asString();
+
+        assertEquals("0 0 0 LW * *", result);
+    }
+
+    @Test
+    public void testSpring53ScheduleExample7(){
+        CronDefinition cronDefinition = CronDefinitionBuilder.instanceDefinitionFor(CronType.SPRING53);
+        CronBuilder builder = CronBuilder.cron(cronDefinition)
+                .withDoW(on(5, SpecialChar.HASH, 2))
+                .withMonth(always())
+                .withDoM(on(SpecialChar.QUESTION_MARK))
+                .withHour(on(0))
+                .withMinute(on(0))
+                .withSecond(on(0));
+
+        Cron cron = builder.instance();
+        String result = cron.asString();
+
+        assertEquals("0 0 0 ? * 5#2", result);
+    }
+
+    /**
+     * Corresponds to issue #527
+     * https://github.com/jmrozanec/cron-utils/issues/527
+     */
+    @Test
+    public void testSpring53ScheduleExample8(){
+        CronDefinition cronDefinition = CronDefinitionBuilder.instanceDefinitionFor(CronType.SPRING53);
+        CronBuilder builder = CronBuilder.cron(cronDefinition)
+                .withDoW(on(1, SpecialChar.HASH, 1))
+                .withMonth(always())
+                .withDoM(on(SpecialChar.QUESTION_MARK))
+                .withHour(on(0))
+                .withMinute(on(0))
+                .withSecond(on(0));
+
+        Cron cron = builder.instance();
+        CronParser parser = new CronParser(cronDefinition);
+        Cron parsedCron = parser.parse("0 0 0 ? * MON#1");
+
+        assertEquals(cron.asString(), parsedCron.asString());
+    }
+
+    @Test
+    public void testSpring53ScheduleYearly(){
+        CronDefinition cronDefinition = CronDefinitionBuilder.instanceDefinitionFor(CronType.SPRING53);
+        CronParser parser = new CronParser(cronDefinition);
+        parser.parse("@yearly");
+    }
+
+    @Test
+    public void testSpring53ScheduleAnnually(){
+        CronDefinition cronDefinition = CronDefinitionBuilder.instanceDefinitionFor(CronType.SPRING53);
+        CronParser parser = new CronParser(cronDefinition);
+        parser.parse("@annually");
+    }
+
+    @Test
+    public void testSpring53ScheduleMonthly(){
+        CronDefinition cronDefinition = CronDefinitionBuilder.instanceDefinitionFor(CronType.SPRING53);
+        CronParser parser = new CronParser(cronDefinition);
+        parser.parse("@monthly");
+    }
+
+    @Test
+    public void testSpring53ScheduleWeekly(){
+        CronDefinition cronDefinition = CronDefinitionBuilder.instanceDefinitionFor(CronType.SPRING53);
+        CronParser parser = new CronParser(cronDefinition);
+        parser.parse("@weekly");
+    }
+
+    @Test
+    public void testSpring53ScheduleDaily(){
+        CronDefinition cronDefinition = CronDefinitionBuilder.instanceDefinitionFor(CronType.SPRING53);
+        CronParser parser = new CronParser(cronDefinition);
+        parser.parse("@daily");
+    }
+
+    @Test
+    public void testSpring53ScheduleMidnight(){
+        CronDefinition cronDefinition = CronDefinitionBuilder.instanceDefinitionFor(CronType.SPRING53);
+        CronParser parser = new CronParser(cronDefinition);
+        parser.parse("@midnight");
+    }
+
+    @Test
+    public void testSpring53ScheduleHourly(){
+        CronDefinition cronDefinition = CronDefinitionBuilder.instanceDefinitionFor(CronType.SPRING53);
+        CronParser parser = new CronParser(cronDefinition);
+        parser.parse("@hourly");
     }
 }

@@ -510,6 +510,8 @@ public class CronDefinitionBuilder {
                 return unixCrontab();
             case SPRING:
                 return spring();
+            case SPRING53:
+                return spring53();
             default:
                 throw new IllegalArgumentException(String.format("No cron definition found for %s", cronType));
         }

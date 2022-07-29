@@ -17,5 +17,5 @@ package com.cronutils.model;
  * Enumerates names of cron implementations.
  */
 public enum CronType {
-    CRON4J, QUARTZ, UNIX, SPRING
+    CRON4J, QUARTZ, UNIX, SPRING, SPRING53
 }
