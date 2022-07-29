@@ -10,24 +10,16 @@ import com.cronutils.utils.Preconditions;
 
 import java.util.*;
 
-public class SingleCron implements Cron {
-    private static final long serialVersionUID = 7487370826825439098L;
+public class RebootCron implements Cron {
+    private static final long serialVersionUID = 7487370826825439099L;
     private final CronDefinition cronDefinition;
-    private final Map<CronFieldName, CronField> fields;
-    private String asString;
 
     /**
      * Creates a Cron with the given cron definition and the given fields.
      * @param cronDefinition the definition to use for this Cron
-     * @param fields the fields that should be used
      */
-    public SingleCron(final CronDefinition cronDefinition, final List<CronField> fields) {
+    public RebootCron(final CronDefinition cronDefinition) {
         this.cronDefinition = Preconditions.checkNotNull(cronDefinition, "CronDefinition must not be null");
-        Preconditions.checkNotNull(fields, "CronFields cannot be null");
-        this.fields = new EnumMap<>(CronFieldName.class);
-        for (final CronField field : fields) {
-            this.fields.put(field.getField(), field);
-        }
     }
 
     /**
@@ -38,7 +30,8 @@ public class SingleCron implements Cron {
      * @return CronField that corresponds to given CronFieldName
      */
     public CronField retrieve(final CronFieldName name) {
-        return fields.get(Preconditions.checkNotNull(name, "CronFieldName must not be null"));
+        Preconditions.checkNotNull(name, "CronFieldName must not be null");
+        return null;
     }
 
     /**
@@ -47,20 +40,11 @@ public class SingleCron implements Cron {
      * @return unmodifiable Map with key CronFieldName and values CronField, never null
      */
     public Map<CronFieldName, CronField> retrieveFieldsAsMap() {
-        return Collections.unmodifiableMap(fields);
+        return Collections.unmodifiableMap(new HashMap<>());
     }
 
     public String asString() {
-        if (asString == null) {
-            final ArrayList<CronField> temporaryFields = new ArrayList<>(fields.values());
-            temporaryFields.sort(CronField.createFieldComparator());
-            final StringBuilder builder = new StringBuilder();
-            for (final CronField field : temporaryFields) {
-                builder.append(String.format("%s ", field.getExpression().asString()));
-            }
-            asString = builder.toString().trim();
-        }
-        return asString;
+        return "@reboot";
     }
 
     public CronDefinition getCronDefinition() {

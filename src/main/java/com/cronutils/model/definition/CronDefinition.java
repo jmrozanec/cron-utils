@@ -40,11 +40,13 @@ public class CronDefinition implements Serializable {
      *                         Throws an IllegalArgumentException if an empty list is received
      */
     public CronDefinition(final List<FieldDefinition> fieldDefinitions, final Set<CronConstraint> cronConstraints, Set<CronNicknames> cronNicknames, final boolean matchDayOfWeekAndDayOfMonth) {
-        Preconditions.checkNotNull(fieldDefinitions, "Field definitions must not be null");
-        Preconditions.checkNotNull(cronConstraints, "Cron validations must not be null");
         Preconditions.checkNotNull(cronNicknames, "Cron nicknames must not be null");
-        Preconditions.checkNotNullNorEmpty(fieldDefinitions, "Field definitions must not be empty");
-        Preconditions.checkArgument(!fieldDefinitions.get(0).isOptional(), "The first field must not be optional");
+        if(!cronNicknames.contains(CronNicknames.REBOOT)){
+            Preconditions.checkNotNull(fieldDefinitions, "Field definitions must not be null");
+            Preconditions.checkNotNull(cronConstraints, "Cron validations must not be null");
+            Preconditions.checkNotNullNorEmpty(fieldDefinitions, "Field definitions must not be empty");
+            Preconditions.checkArgument(!fieldDefinitions.get(0).isOptional(), "The first field must not be optional");
+        }
         this.fieldDefinitions = new EnumMap<>(CronFieldName.class);
         for (final FieldDefinition field : fieldDefinitions) {
             this.fieldDefinitions.put(field.getFieldName(), field);

@@ -195,6 +195,16 @@ public class CronDefinitionBuilder {
     }
 
     /**
+     * Supports cron nickname @reboot
+     *
+     * @return this CronDefinitionBuilder instance
+     */
+    public CronDefinitionBuilder withSupportedNicknameReboot() {
+        cronNicknames.add(CronNicknames.REBOOT);
+        return this;
+    }
+
+    /**
      * Adds a cron validation.
      * @param validation - constraint validation
      * @return this CronDefinitionBuilder instance

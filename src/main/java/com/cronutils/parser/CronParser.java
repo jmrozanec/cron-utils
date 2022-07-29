@@ -118,6 +118,8 @@ public class CronParser {
                     return validateAndReturnSupportedCronNickname(expression, cronNicknames, CronNicknames.MIDNIGHT, CronBuilder.midnight(cronDefinition));
                 case "@hourly":
                     return validateAndReturnSupportedCronNickname(expression, cronNicknames, CronNicknames.HOURLY, CronBuilder.hourly(cronDefinition));
+                case "@reboot":
+                    return validateAndReturnSupportedCronNickname(expression, cronNicknames, CronNicknames.REBOOT, CronBuilder.reboot(cronDefinition));
             }
         }
 

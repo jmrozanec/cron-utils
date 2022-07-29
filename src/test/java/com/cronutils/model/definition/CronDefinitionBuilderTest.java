@@ -416,4 +416,11 @@ public class CronDefinitionBuilderTest {
         CronParser parser = new CronParser(cronDefinition);
         parser.parse("@hourly");
     }
+
+    @Test
+    public void testScheduleReboot(){
+        CronDefinition cronDefinition = builder.withSupportedNicknameReboot().instance();
+        CronParser parser = new CronParser(cronDefinition);
+        parser.parse("@reboot");
+    }
 }

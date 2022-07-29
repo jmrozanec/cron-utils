@@ -14,6 +14,7 @@
 package com.cronutils.builder;
 
 import com.cronutils.model.Cron;
+import com.cronutils.model.RebootCron;
 import com.cronutils.model.SingleCron;
 import com.cronutils.model.definition.CronDefinition;
 import com.cronutils.model.field.CronField;
@@ -208,6 +209,10 @@ public class CronBuilder {
             builder = builder.withDoW(FieldExpression.always());
         }
         return builder.instance();
+    }
+
+    public static Cron reboot(final CronDefinition definition){
+        return new RebootCron(definition);
     }
 
     @VisibleForTesting
