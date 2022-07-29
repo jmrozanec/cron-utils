@@ -34,7 +34,7 @@ Now we are developing a new generation of cron-descriptors using neural-translat
  * You can flag last field as optional!
  * Supports all cron special characters: * / , -
     * Non-standard characters L, W, LW, '?' and # are supported as well!
- * Supports cron extensions / nicknames: @yearly, @annually, @monthly, @weekly, @daily, @midnight, @hourly
+ * Supports cron extensions / nicknames: @yearly, @annually, @monthly, @weekly, @daily, @midnight, @hourly, @reboot
  * Print to locale specific human readable format (Chinese, English, German, Greek, Indonesian, Japanese, Korean, Polish, Romanian, Spanish, Swahili, and Turkish are fully supported. Dutch, French, Italian, Portuguese and Russian have basic support).
  * Parse and Description process are decoupled: parse once and operate with the result!
  * Build cron expressions using CronBuilder: 
