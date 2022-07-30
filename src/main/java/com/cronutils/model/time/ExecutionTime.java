@@ -178,20 +178,15 @@ public interface ExecutionTime {
      */
     default List<ZonedDateTime> getExecutionDates(ZonedDateTime startDate, ZonedDateTime endDate) {
         if (endDate.equals(startDate) || endDate.isBefore(startDate)) {
-            throw new IllegalArgumentException("End date should be after start date");
+            throw new IllegalArgumentException("endDate should take place later in time than startDate");
         }
-
         List<ZonedDateTime> executions = new ArrayList<>();
         ZonedDateTime nextExecutionDate = nextExecution(startDate).orElse(null);
 
         if (nextExecutionDate == null) return Collections.emptyList();
-        executions.add(nextExecutionDate);
-
-        while (nextExecutionDate.isBefore(endDate)) {
-            nextExecutionDate = nextExecution(nextExecutionDate).orElse(null);
-
-            if (nextExecutionDate == null) break;
+        while(nextExecutionDate != null && nextExecutionDate.isBefore(endDate)){
             executions.add(nextExecutionDate);
+            nextExecutionDate = nextExecution(nextExecutionDate).orElse(null);
         }
         return executions;
     }
