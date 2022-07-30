@@ -30,7 +30,7 @@ import java.util.ResourceBundle;
 public class CronDescriptor {
 
     public static final Locale DEFAULT_LOCALE = Locale.UK;
-    private static final String BUNDLE = "CronUtilsI18N";
+    private static final String BUNDLE = "com.cronutils.CronUtilsI18N";
     private final ResourceBundle resourceBundle;
 
     /**
