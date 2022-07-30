@@ -72,10 +72,37 @@ public interface ExecutionTime {
                 }
             }
             return executionTimeBuilder.build();
-        } else {
+        }
+        if (cron instanceof CompositeCron) {
             return new CompositeExecutionTime(((CompositeCron) cron).getCrons().parallelStream().map(ExecutionTime::forCron).collect(Collectors.toList()));
         }
 
+        return new ExecutionTime() {
+            @Override
+            public Optional<ZonedDateTime> nextExecution(ZonedDateTime date) {
+                return Optional.empty();
+            }
+
+            @Override
+            public Optional<Duration> timeToNextExecution(ZonedDateTime date) {
+                return Optional.empty();
+            }
+
+            @Override
+            public Optional<ZonedDateTime> lastExecution(ZonedDateTime date) {
+                return Optional.empty();
+            }
+
+            @Override
+            public Optional<Duration> timeFromLastExecution(ZonedDateTime date) {
+                return Optional.empty();
+            }
+
+            @Override
+            public boolean isMatch(ZonedDateTime date) {
+                return false;
+            }
+        };
     }
 
     /**
