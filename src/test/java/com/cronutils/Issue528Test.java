@@ -7,21 +7,20 @@ import com.cronutils.model.definition.CronDefinition;
 import com.cronutils.model.definition.CronDefinitionBuilder;
 import com.cronutils.model.time.ExecutionTime;
 import com.cronutils.parser.CronParser;
+import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
 
 import java.time.ZonedDateTime;
 import java.util.Locale;
 import java.util.Optional;
 
-class Issue528Test {
-
-    static final CronDefinition REBOOT_CRON_DEFINITION = CronDefinitionBuilder.defineCron()
+public class Issue528Test {
+    private static final CronDefinition REBOOT_CRON_DEFINITION = CronDefinitionBuilder.defineCron()
             .withSupportedNicknameReboot()
             .instance();
 
     @Test
-    void testRebootExecutionTime() {
+    public void testRebootExecutionTime() {
         Cron cron = new CronParser(REBOOT_CRON_DEFINITION).parse("@reboot");
         ExecutionTime executionTime = ExecutionTime.forCron(cron);
         Assertions.assertEquals(Optional.empty(), executionTime.nextExecution(ZonedDateTime.now()));
@@ -29,15 +28,14 @@ class Issue528Test {
     }
 
     @Test
-    void testCronDescriptor() {
+    public void testCronDescriptor() {
         Cron cron = new CronParser(REBOOT_CRON_DEFINITION).parse("@reboot");
         String description = CronDescriptor.instance(Locale.UK).describe(cron);
         Assertions.assertEquals("on reboot", description);
     }
 
-
     @Test
-    void testCronMapper() {
+    public void testCronMapperRebootSupportedOnTarget() {
         Cron cron = new CronParser(REBOOT_CRON_DEFINITION).parse("@reboot");
         CronDefinition unix = CronDefinitionBuilder.defineCron()
                 .withMinutes().withValidRange(0, 59).withStrictRange().and()
@@ -46,6 +44,20 @@ class Issue528Test {
                 .withMonth().withValidRange(1, 12).withStrictRange().and()
                 .withDayOfWeek().withValidRange(0, 7).withMondayDoWValue(1).withIntMapping(7, 0).withStrictRange().and()
                 .withSupportedNicknameReboot()
+                .instance();
+        Cron mapped = CronMapper.sameCron(unix).map(cron);
+        Assertions.assertEquals(cron.asString(), mapped.asString());
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testCronMapperRebootNotSupportedOnTarget() {
+        Cron cron = new CronParser(REBOOT_CRON_DEFINITION).parse("@reboot");
+        CronDefinition unix = CronDefinitionBuilder.defineCron()
+                .withMinutes().withValidRange(0, 59).withStrictRange().and()
+                .withHours().withValidRange(0, 23).withStrictRange().and()
+                .withDayOfMonth().withValidRange(1, 31).withStrictRange().and()
+                .withMonth().withValidRange(1, 12).withStrictRange().and()
+                .withDayOfWeek().withValidRange(0, 7).withMondayDoWValue(1).withIntMapping(7, 0).withStrictRange().and()
                 .instance();
         Cron mapped = CronMapper.sameCron(unix).map(cron);
         Assertions.assertEquals(cron.asString(), mapped.asString());

@@ -16,9 +16,11 @@ package com.cronutils.mapper;
 import com.cronutils.Function;
 import com.cronutils.model.Cron;
 import com.cronutils.model.CronType;
+import com.cronutils.model.RebootCron;
 import com.cronutils.model.SingleCron;
 import com.cronutils.model.definition.CronDefinition;
 import com.cronutils.model.definition.CronDefinitionBuilder;
+import com.cronutils.model.definition.CronNicknames;
 import com.cronutils.model.field.CronField;
 import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.field.constraint.FieldConstraints;
@@ -73,6 +75,13 @@ public class CronMapper {
      */
     public Cron map(final Cron cron) {
         Preconditions.checkNotNull(cron, "Cron must not be null");
+        if(cron instanceof RebootCron){
+            if(this.to.getCronNicknames().contains(CronNicknames.REBOOT)){
+                return new RebootCron(this.to);
+            } else {
+                throw new IllegalArgumentException("The target cron definition does not support @reboot nickname");
+            }
+        }
         final List<CronField> fields = new ArrayList<>();
         for (final CronFieldName name : CronFieldName.values()) {
             if (mappings.containsKey(name)) {

@@ -184,7 +184,7 @@ public interface ExecutionTime {
         ZonedDateTime nextExecutionDate = nextExecution(startDate).orElse(null);
 
         if (nextExecutionDate == null) return Collections.emptyList();
-        while(nextExecutionDate != null && nextExecutionDate.isBefore(endDate)){
+        while(nextExecutionDate != null && (nextExecutionDate.isBefore(endDate) || nextExecutionDate.equals(endDate))){
             executions.add(nextExecutionDate);
             nextExecutionDate = nextExecution(nextExecutionDate).orElse(null);
         }

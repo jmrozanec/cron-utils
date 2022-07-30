@@ -14,6 +14,7 @@
 package com.cronutils.descriptor;
 
 import com.cronutils.model.Cron;
+import com.cronutils.model.RebootCron;
 import com.cronutils.model.field.CronField;
 import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.field.definition.FieldDefinition;
@@ -66,6 +67,9 @@ public class CronDescriptor {
      */
     public String describe(final Cron cron) {
         Preconditions.checkNotNull(cron, "Cron must not be null");
+        if(cron instanceof RebootCron){
+            return resourceBundle.getString("on_reboot");
+        }
         final Map<CronFieldName, CronField> expressions = cron.retrieveFieldsAsMap();
         final Map<CronFieldName, FieldDefinition> fieldDefinitions = cron.getCronDefinition().retrieveFieldDefinitionsAsMap();
 
