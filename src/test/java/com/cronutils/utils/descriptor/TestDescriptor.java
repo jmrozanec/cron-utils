@@ -50,63 +50,63 @@ public class TestDescriptor {
 	@Test
 	public void testEverySecond() {
 		final Cron cron = getCron("* * * * * ? *");
-		final TimeDescriptor t = new TimeDescriptor(ResourceBundle.getBundle("CronUtilsI18N", Locale.UK));
+		final TimeDescriptor t = new TimeDescriptor(ResourceBundle.getBundle("com.cronutils.CronUtilsI18N", Locale.UK));
 		assertEquals("every second", t.describe(cron));
 	}
 
 	@Test
 	public void testEvery1Second() {
 		final Cron cron = getCron("*/1 * * * * ? *");
-		final TimeDescriptor t = new TimeDescriptor(ResourceBundle.getBundle("CronUtilsI18N", Locale.UK));
+		final TimeDescriptor t = new TimeDescriptor(ResourceBundle.getBundle("com.cronutils.CronUtilsI18N", Locale.UK));
 		assertEquals("every second", t.describe(cron));
 	}
 
 	@Test
 	public void testEvery2Seconds() {
 		final Cron cron = getCron("*/2 * * * * ? *");
-		final TimeDescriptor t = new TimeDescriptor(ResourceBundle.getBundle("CronUtilsI18N", Locale.UK));
+		final TimeDescriptor t = new TimeDescriptor(ResourceBundle.getBundle("com.cronutils.CronUtilsI18N", Locale.UK));
 		assertEquals("every 2 seconds", t.describe(cron));
 	}
 
 	@Test
 	public void testEverySecondGerman() {
 		final Cron cron = getCron("* * * * * ? *");
-		final TimeDescriptor t = new TimeDescriptor(ResourceBundle.getBundle("CronUtilsI18N", Locale.GERMAN));
+		final TimeDescriptor t = new TimeDescriptor(ResourceBundle.getBundle("com.cronutils.CronUtilsI18N", Locale.GERMAN));
 		assertEquals("jede sekunde", t.describe(cron));
 	}
 
 	@Test
 	public void testEverySecondItalian() {
 		final Cron cron = getCron("* * * * * ? *");
-		final TimeDescriptor t = new TimeDescriptor(ResourceBundle.getBundle("CronUtilsI18N", Locale.ITALIAN));
+		final TimeDescriptor t = new TimeDescriptor(ResourceBundle.getBundle("com.cronutils.CronUtilsI18N", Locale.ITALIAN));
 		assertEquals("ogni secondo", t.describe(cron));
 	}
 
 	@Test
 	public void testEvery1SecondGerman() {
 		final Cron cron = getCron("*/1 * * * * ? *");
-		final TimeDescriptor t = new TimeDescriptor(ResourceBundle.getBundle("CronUtilsI18N", Locale.GERMAN));
+		final TimeDescriptor t = new TimeDescriptor(ResourceBundle.getBundle("com.cronutils.CronUtilsI18N", Locale.GERMAN));
 		assertEquals("jede sekunde", t.describe(cron));
 	}
 
 	@Test
 	public void testEvery1SecondITalian() {
 		final Cron cron = getCron("*/1 * * * * ? *");
-		final TimeDescriptor t = new TimeDescriptor(ResourceBundle.getBundle("CronUtilsI18N", Locale.ITALIAN));
+		final TimeDescriptor t = new TimeDescriptor(ResourceBundle.getBundle("com.cronutils.CronUtilsI18N", Locale.ITALIAN));
 		assertEquals("ogni secondo", t.describe(cron));
 	}
 
 	@Test
 	public void testEvery2SecondsGerman() {
 		final Cron cron = getCron("*/2 * * * * ? *");
-		final TimeDescriptor t = new TimeDescriptor(ResourceBundle.getBundle("CronUtilsI18N", Locale.GERMAN));
+		final TimeDescriptor t = new TimeDescriptor(ResourceBundle.getBundle("com.cronutils.CronUtilsI18N", Locale.GERMAN));
 		assertEquals("alle 2 sekunden", t.describe(cron));
 	}
 
 	@Test
 	public void testEvery2SecondsItalian() {
 		final Cron cron = getCron("*/2 * * * * ? *");
-		final TimeDescriptor t = new TimeDescriptor(ResourceBundle.getBundle("CronUtilsI18N", Locale.ITALIAN));
+		final TimeDescriptor t = new TimeDescriptor(ResourceBundle.getBundle("com.cronutils.CronUtilsI18N", Locale.ITALIAN));
 		assertEquals("ogni 2 secondi", t.describe(cron));
 	}
 
