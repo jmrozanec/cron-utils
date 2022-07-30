@@ -38,11 +38,11 @@ Now we are developing a new generation of cron-descriptors using neural-translat
  * Print to locale specific human readable format (Chinese, English, German, Greek, Indonesian, Japanese, Korean, Polish, Romanian, Spanish, Swahili, and Turkish are fully supported. Dutch, French, Italian, Portuguese and Russian have basic support).
  * Parse and Description process are decoupled: parse once and operate with the result!
  * Build cron expressions using CronBuilder: 
-    * no need to remember fields and constraints for each cron provider
+    * no need to remember fields and constraints for each cron provider.
     * crons become decoupled from cron provider: anytime you can export to another format.
- * Check if cron expressions are equivalent
+ * Check if cron expressions are equivalent.
  * Squash multiple cron expressions into a single one!
- * Validate if cron string expressions match a cron definition
+ * Validate if cron string expressions match a cron definition.
  * Convert crons between different cron definitions: if you need to migrate expressions, CronMapper may help you!
  * Pre-defined definitions for the following cron libraries are provided:
     * [Unix](http://www.unix.com/man-page/linux/5/crontab/)
@@ -50,7 +50,7 @@ Now we are developing a new generation of cron-descriptors using neural-translat
     * [Quartz](http://quartz-scheduler.org/)
     * [Spring](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/scheduling/support/CronExpression.html). We support two definitions: prior to v5.3 and [from v5.3 onwards](https://spring.io/blog/2020/11/10/new-in-spring-5-3-improved-cron-expressions).
  * Obtain last/next execution time as well as time from last execution/time to next execution.
- * Compute the number of executions between two days, and compare crons based on their execution frequencies
+ * Compute the number of executions between two days, and compare crons based on their execution frequencies.
  * Obtain weekdays count between two dates, considering different weekend policies as well as holidays.
  * Need to map constants between different cron/time libraries? Use ConstantsMapper.
 
@@ -201,7 +201,7 @@ java -jar cron-utils-<version>-jar-with-dependencies.jar com.cronutils.cli.CronU
 **Contribute & Support!**
 
 Contributions are welcome! You can contribute by
- * starring and/or Flattring this repo!
+ * starring this repo!
  * requesting or adding new features. Check our [roadmap](https://github.com/jmrozanec/cron-utils/wiki/Roadmap)!
  * enhancing existing code: ex.: provide more accurate description cases
  * testing
@@ -213,10 +213,6 @@ Contributions are welcome! You can contribute by
 
 
 Check [our page](http://cronutils.com)! For stats about the project, you can visit our [OpenHUB profile](https://www.openhub.net/p/cron-utils).
-
-Support us donating once or by subscription through Flattr!
-
-[![Flattr this!](https://api.flattr.com/button/flattr-badge-large.png)](https://flattr.com/submit/auto?user_id=jmrozanec&url=https://github.com/jmrozanec/cron-utils)
 
 **Other cron-utils projects**
 
