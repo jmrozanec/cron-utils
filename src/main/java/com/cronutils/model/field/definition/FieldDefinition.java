@@ -19,6 +19,7 @@ import com.cronutils.utils.Preconditions;
 
 import java.io.Serializable;
 import java.util.Comparator;
+import java.util.Objects;
 
 /**
  * Represents a definition of allowed values for a cron field.
@@ -91,6 +92,19 @@ public class FieldDefinition implements Serializable {
      */
     public static Comparator<FieldDefinition> createFieldDefinitionComparator() {
         return Comparator.comparingInt(o -> o.getFieldName().getOrder());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        FieldDefinition that = (FieldDefinition) o;
+        return optional == that.optional && fieldName == that.fieldName && constraints.equals(that.constraints);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(fieldName, constraints, optional);
     }
 }
 

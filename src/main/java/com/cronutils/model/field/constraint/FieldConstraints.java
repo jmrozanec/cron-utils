@@ -19,6 +19,7 @@ import com.cronutils.utils.Preconditions;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -99,5 +100,20 @@ public class FieldConstraints implements Serializable {
 
     public boolean isStrictRange() {
         return strictRange;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        FieldConstraints that = (FieldConstraints) o;
+        return strictRange == that.strictRange && stringMapping.equals(that.stringMapping)
+                && intMapping.equals(that.intMapping) && specialChars.equals(that.specialChars)
+                && startRange.equals(that.startRange) && endRange.equals(that.endRange);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(stringMapping, intMapping, specialChars, startRange, endRange, strictRange);
     }
 }
