@@ -13,7 +13,10 @@
 
 package com.cronutils.model.definition;
 
+import com.cronutils.model.CronType;
 import com.cronutils.model.field.CronFieldName;
+import com.cronutils.model.field.constraint.FieldConstraints;
+import com.cronutils.model.field.constraint.FieldConstraintsBuilder;
 import com.cronutils.model.field.definition.FieldDefinition;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
@@ -27,6 +30,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Consumer;
+import java.util.function.UnaryOperator;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.when;
@@ -116,8 +121,15 @@ public class CronDefinitionTest {
     }
 
     @Test
+    public void simpleEqualityTest() {
+        assertEquals(CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ), CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ));
+    }
+
+    @Test
     @Parameters(method = "parametersToTestIfEqual")
     public void testIfDefinitionsAreEqual(
+        List<FieldDefinition> fieldDefinitionsOne,
+        List<FieldDefinition> fieldDefinitionsTwo,
         Set<CronConstraint> cronConstraintsOne,
         Set<CronConstraint> cronConstraintsTwo,
         Set<CronNicknames> cronNicknamesOne,
@@ -127,12 +139,12 @@ public class CronDefinitionTest {
         boolean shouldBeEqual) {
         // given
         CronDefinition definitionOne = new CronDefinition(
-            provideFieldDefinitionListWithSingleDefinition(),
+            fieldDefinitionsOne,
             cronConstraintsOne,
             cronNicknamesOne,
             shouldMatchDayOfWeekAndDayOfMonthOne);
         CronDefinition definitionTwo = new CronDefinition(
-            provideFieldDefinitionListWithSingleDefinition(),
+            fieldDefinitionsTwo,
             cronConstraintsTwo,
             cronNicknamesTwo,
             shouldMatchDayOfWeekAndDayOfMonthTwo);
@@ -152,6 +164,8 @@ public class CronDefinitionTest {
     private Object[] parametersToTestIfEqual() {
         return new Object[] {
             new Object[] {
+                provideSimpleFieldDefinitions(),
+                provideSimpleFieldDefinitions(),
                 provideCronConstraintSetWithTwoConstraints(),
                 provideCronConstraintSetWithTwoConstraints(),
                 provideCronNicknameSetWithTwoNicknames(),
@@ -161,6 +175,19 @@ public class CronDefinitionTest {
                 true
             },
             new Object[] {
+                provideFieldDefinitions(CronFieldName.SECOND, b -> b.withValidRange(0, 59)),
+                provideFieldDefinitions(CronFieldName.SECOND, b -> b.withValidRange(1, 60)),
+                provideCronConstraintSetWithTwoConstraints(),
+                provideCronConstraintSetWithTwoConstraints(),
+                provideCronNicknameSetWithTwoNicknames(),
+                provideCronNicknameSetWithTwoNicknames(),
+                true,
+                true,
+                false
+            },
+            new Object[] {
+                provideSimpleFieldDefinitions(),
+                provideSimpleFieldDefinitions(),
                 provideCronConstraintSetWithOneConstraint(),
                 provideCronConstraintSetWithTwoConstraints(),
                 provideCronNicknameSetWithTwoNicknames(),
@@ -170,6 +197,8 @@ public class CronDefinitionTest {
                 false
             },
             new Object[] {
+                provideSimpleFieldDefinitions(),
+                provideSimpleFieldDefinitions(),
                 provideCronConstraintSetWithTwoConstraints(),
                 provideCronConstraintSetWithTwoConstraints(),
                 provideCronNicknameSetWithOneNickname(),
@@ -179,6 +208,8 @@ public class CronDefinitionTest {
                 false
             },
             new Object[] {
+                provideSimpleFieldDefinitions(),
+                provideSimpleFieldDefinitions(),
                 provideCronConstraintSetWithTwoConstraints(),
                 provideCronConstraintSetWithTwoConstraints(),
                 provideCronNicknameSetWithTwoNicknames(),
@@ -188,6 +219,8 @@ public class CronDefinitionTest {
                 false
             },
             new Object[] {
+                provideSimpleFieldDefinitions(),
+                provideSimpleFieldDefinitions(),
                 provideCronConstraintSetWithTwoConstraints(),
                 provideCronConstraintSetWithOneConstraint(),
                 provideCronNicknameSetWithTwoNicknames(),
@@ -197,6 +230,18 @@ public class CronDefinitionTest {
                 false
             }
         };
+    }
+
+    private List<FieldDefinition> provideFieldDefinitions(CronFieldName cronFieldName, UnaryOperator<FieldConstraintsBuilder> configurator) {
+        List<FieldDefinition> defs = new ArrayList<>();
+        defs.add(new FieldDefinition(cronFieldName, configurator.apply(
+                FieldConstraintsBuilder.instance().forField(cronFieldName)).createConstraintsInstance()));
+
+        return defs;
+    }
+
+    private List<FieldDefinition> provideSimpleFieldDefinitions() {
+        return provideFieldDefinitions(CronFieldName.SECOND, b -> b);
     }
 
     private Set<CronNicknames> provideCronNicknameSetWithTwoNicknames() {
