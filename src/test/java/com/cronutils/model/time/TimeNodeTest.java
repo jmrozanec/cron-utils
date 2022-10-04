@@ -13,15 +13,16 @@
 
 package com.cronutils.model.time;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class TimeNodeTest {
     private static final int LIST_START_VALUE = 2;
@@ -32,7 +33,7 @@ public class TimeNodeTest {
     private List<Integer> values;
     private TimeNode timeNode;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         values = new ArrayList<>();
         values.add(LIST_START_VALUE);
@@ -82,7 +83,7 @@ public class TimeNodeTest {
         final AtomicInteger shift = new AtomicInteger(0);
         final List<Integer> list = Arrays.asList(1, 2, 3, 4);
         final int value = timeNode.getValueFromList(list, index, shift);
-        assertEquals(String.format("Shift was: %s; expected: %s", shift.get(), expectedShifts), expectedShifts, shift.get());
+        assertEquals(expectedShifts, shift.get(), String.format("Shift was: %s; expected: %s", shift.get(), expectedShifts));
         assertEquals((int) list.get(list.size() + index), value);
     }
 
@@ -93,17 +94,17 @@ public class TimeNodeTest {
         final AtomicInteger shift = new AtomicInteger(0);
         final List<Integer> list = Arrays.asList(1, 2, 3, 4);
         final int value = timeNode.getValueFromList(list, index, shift);
-        assertEquals(String.format("Shift was: %s; expected: %s", shift.get(), expectedShifts), expectedShifts, shift.get());
+        assertEquals(expectedShifts, shift.get(), String.format("Shift was: %s; expected: %s", shift.get(), expectedShifts));
         assertEquals((int) list.get(index), value);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testGetValueFromListWithEmptyList() {
-        timeNode.getValueFromList(new ArrayList<>(), 0, new AtomicInteger(0));
+        assertThrows(IllegalArgumentException.class, () -> timeNode.getValueFromList(new ArrayList<>(), 0, new AtomicInteger(0)));
     }
 
     private void assertResult(final int value, final int shift, final NearestValue nearestValue) {
-        assertEquals(String.format("Values do not match! Expected: %s Found: %s", value, nearestValue.getValue()), value, nearestValue.getValue());
-        assertEquals(String.format("Shifts do not match! Expected: %s Found: %s", shift, nearestValue.getShifts()), shift, nearestValue.getShifts());
+        assertEquals(value, nearestValue.getValue(), String.format("Values do not match! Expected: %s Found: %s", value, nearestValue.getValue()));
+        assertEquals(shift, nearestValue.getShifts(), String.format("Shifts do not match! Expected: %s Found: %s", shift, nearestValue.getShifts()));
     }
 }

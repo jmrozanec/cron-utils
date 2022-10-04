@@ -20,13 +20,14 @@ import com.cronutils.model.field.constraint.FieldConstraintsBuilder;
 import com.cronutils.model.field.expression.FieldExpression;
 import com.cronutils.model.field.expression.On;
 import com.cronutils.model.field.value.IntegerFieldValue;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.Random;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 
 public class OnDayOfMonthValueGeneratorTest {
@@ -36,7 +37,7 @@ public class OnDayOfMonthValueGeneratorTest {
     private static final int MONTH = 2;
     private final Random random = new Random();
 
-    @Before
+    @BeforeEach
     public void setUp() {
         constraints = FieldConstraintsBuilder.instance().createConstraintsInstance();
         fieldValueGenerator =
@@ -47,14 +48,14 @@ public class OnDayOfMonthValueGeneratorTest {
                         YEAR, MONTH);
     }
 
-    @Test(expected = NoSuchValueException.class)
-    public void testGenerateNextValue() throws NoSuchValueException {
-        fieldValueGenerator.generateNextValue(randomNumber());
+    @Test
+    public void testGenerateNextValue() {
+        assertThrows(NoSuchValueException.class, () -> fieldValueGenerator.generateNextValue(randomNumber()));
     }
 
-    @Test(expected = NoSuchValueException.class)
-    public void testGeneratePreviousValue() throws NoSuchValueException {
-        fieldValueGenerator.generatePreviousValue(randomNumber());
+    @Test
+    public void testGeneratePreviousValue() {
+        assertThrows(NoSuchValueException.class, () -> fieldValueGenerator.generatePreviousValue(randomNumber()));
     }
 
     @Test
@@ -63,9 +64,9 @@ public class OnDayOfMonthValueGeneratorTest {
         assertFalse(fieldValueGenerator.matchesFieldExpressionClass(mock(FieldExpression.class)));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testConstructorNotMatchesOn() {
-        new OnDayOfMonthValueGenerator(new CronField(CronFieldName.YEAR, mock(FieldExpression.class), constraints), YEAR, MONTH);
+        assertThrows(IllegalArgumentException.class, () -> new OnDayOfMonthValueGenerator(new CronField(CronFieldName.YEAR, mock(FieldExpression.class), constraints), YEAR, MONTH));
     }
 
     private int randomNumber() {

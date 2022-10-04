@@ -1,12 +1,12 @@
 package com.cronutils.utils.descriptor;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Locale;
 import java.util.ResourceBundle;
 
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import com.cronutils.descriptor.CronDescriptor;
 import com.cronutils.descriptor.refactor.TimeDescriptor;
@@ -31,7 +31,7 @@ public class TestDescriptor {
 	// every 2 days starting on the 9th,
 	// every 2 months starting in October,
 	// every 2 years starting in 2017
-	@Ignore
+	@Disabled
 	@Test
 	public void testFull() {
 		final Cron cron = getCron("3/4 5/6 7/8 9/2 10/2 ? 2017");
@@ -132,7 +132,7 @@ public class TestDescriptor {
 		assertEquals(descriptor.describe(cron), descriptor.describe(otherCron));
 	}
 
-	@Ignore
+	@Disabled
 	@Test
 	public void testAtSecondEveryMinute() {
 		final Cron cron = getCron("1 * * * * ? *");
@@ -141,7 +141,7 @@ public class TestDescriptor {
 		assertEquals("at second 15 of every minute", descriptor.describe(otherCron));
 	}
 
-	@Ignore
+	@Disabled
 	@Test
 	public void testAtSecondEveryMinuteWithoutYear() {
 		final Cron cron = getCron("1 * * * * ?");
@@ -150,7 +150,7 @@ public class TestDescriptor {
 		assertEquals("at second 15 of every minute", descriptor.describe(otherCron));
 	}
 
-	@Ignore
+	@Disabled
 	@Test
 	public void testEverySecondDuringMinuteOfEveryHour() {
 		final Cron cron = getCron("* 1 * * * ? *");
@@ -159,7 +159,7 @@ public class TestDescriptor {
 		assertEquals("every second during minute 15 of every hour", descriptor.describe(otherCron));
 	}
 
-	@Ignore
+	@Disabled
 	@Test
 	public void testEverySecondDuringMinuteOfEveryHourWithoutYear() {
 		final Cron cron = getCron("* 1 * * * ?");
@@ -168,7 +168,7 @@ public class TestDescriptor {
 		assertEquals("every second during minute 15 of every hour", descriptor.describe(otherCron));
 	}
 
-	@Ignore
+	@Disabled
 	@Test
 	public void testEverySecondOnTheDayEveryMonth() {
 		final Cron first = getCron("* * * 1 * ? *");
@@ -181,7 +181,7 @@ public class TestDescriptor {
 		assertEquals("every second, on the 15th day, every month", descriptor.describe(otherCron));
 	}
 
-	@Ignore
+	@Disabled
 	@Test
 	public void testEverySecondOnTheDayEveryMonthWithoutYear() {
 		final Cron first = getCron("* * * 1 * ?");
@@ -194,7 +194,7 @@ public class TestDescriptor {
 		assertEquals("every second, on the 15th day, every month", descriptor.describe(otherCron));
 	}
 
-	@Ignore
+	@Disabled
 	@Test
 	public void testEverySecondEveryDayInMonth() {
 		final Cron cron = getCron("* * * * 1 ? *");
@@ -203,7 +203,7 @@ public class TestDescriptor {
 		assertEquals("every second, every day, in December", descriptor.describe(otherCron));
 	}
 
-	@Ignore
+	@Disabled
 	@Test
 	public void testEverySecondEveryDayInMonthWithoutYear() {
 		final Cron cron = getCron("* * * * 1 ?");
@@ -212,7 +212,7 @@ public class TestDescriptor {
 		assertEquals("every second, every day, in December", descriptor.describe(otherCron));
 	}
 
-	@Ignore
+	@Disabled
 	@Test
 	public void testEverySecondEveryDayInYear() {
 		final Cron cron = getCron("* * * * * ? 2017");
@@ -222,63 +222,63 @@ public class TestDescriptor {
 		assertEquals("every second, every day, in 2018", descriptor.describe(otherCron));
 	}
 
-	@Ignore
+	@Disabled
 	@Test
 	public void testAtTimeEveryDay() {
 		final Cron cron = getCron("0 0 0 * * ? *");
 		assertEquals("at 00:00:00am every day", descriptor.describe(cron));
 	}
 
-	@Ignore
+	@Disabled
 	@Test
 	public void testAtTimeEveryDay2() {
 		final Cron cron = getCron("00 00 16 * * ? *");
 		assertEquals("at 16:00:00pm every day", descriptor.describe(cron));
 	}
 
-	@Ignore
+	@Disabled
 	@Test
 	public void testAtMultipleTimesEveryDay() {
 		final Cron cron = getCron("00 00 8,16 * * ? *");
 		assertEquals("at second 00, at minute 00, at 08am and 16pm, of every day", descriptor.describe(cron));
 	}
 
-	@Ignore
+	@Disabled
 	@Test
 	public void testAtTimeOfDayEveryMonth() {
 		final Cron cron = getCron("0 0 16 1 * ? *");
 		assertEquals("at 16:00:00pm, on the first day, every month", descriptor.describe(cron));
 	}
 
-	@Ignore
+	@Disabled
 	@Test
 	public void testAtTimeOfMultipleDaysEveryMonth() {
 		final Cron cron = getCron("0 0 16 1,5,26 * ? *");
 		assertEquals("at 16:00:00pm on the 1st, 5th and 26th day, every month", descriptor.describe(cron));
 	}
 
-	@Ignore
+	@Disabled
 	@Test
 	public void testAtTimeOfEveryDayInMonth() {
 		final Cron cron = getCron("0 0 16 * 3 ? *");
 		assertEquals("at 16:00:00pm, every day, in March", descriptor.describe(cron));
 	}
 
-	@Ignore
+	@Disabled
 	@Test
 	public void testAtTimeOfEveryDayInMultipleMonth() {
 		final Cron cron = getCron("0 0 16 * 1,5,12 ? *");
 		assertEquals("at 16:00:00pm, every day in January, May and December", descriptor.describe(cron));
 	}
 
-	@Ignore
+	@Disabled
 	@Test
 	public void testAtTimeOfEveryDayBetweenMonths() {
 		final Cron cron = getCron("0 0 16 * 3-7 ? *");
 		assertEquals("at 16:00:00pm, every day between March and July", descriptor.describe(cron));
 	}
 
-	@Ignore
+	@Disabled
 	@Test
 	public void testAtTimeOfEveryDayBetweenMultipleMonths() {
 		final Cron cron = getCron("0 0 16 * 3-7,10-12 ? *");
@@ -286,42 +286,42 @@ public class TestDescriptor {
 				descriptor.describe(cron));
 	}
 
-	@Ignore
+	@Disabled
 	@Test
 	public void testAtTimeOfFirstInMultipleMonths() {
 		final Cron cron = getCron("0 0 16 1 3,5,12 ? *");
 		assertEquals("at 16:00:00pm, on the 1st day in March, May and December", descriptor.describe(cron));
 	}
 
-	@Ignore
+	@Disabled
 	@Test
 	public void testAtTimeOfSecondInMultipleMonths() {
 		final Cron cron = getCron("0 0 16 2 3,5,12 ? *");
 		assertEquals("at 16:00:00pm, on the 2nd day in March, May and December", descriptor.describe(cron));
 	}
 
-	@Ignore
+	@Disabled
 	@Test
 	public void testAtTimeOfThirdInMultipleMonths() {
 		final Cron cron = getCron("0 0 16 3 3,5,12 ? *");
 		assertEquals("at 16:00:00pm, on the 3rd day in March, May and December", descriptor.describe(cron));
 	}
 
-	@Ignore
+	@Disabled
 	@Test
 	public void testAtTimeOfSpecificDayInMultipleMonths() {
 		final Cron cron = getCron("0 0 16 15 3,5,12 ? *");
 		assertEquals("at 16:00:00pm, on the 15th day in March, May and December", descriptor.describe(cron));
 	}
 
-	@Ignore
+	@Disabled
 	@Test
 	public void testAtTimeOfSpecificDayBetweenMonths() {
 		final Cron cron = getCron("0 0 16 15 3-7 ? *");
 		assertEquals("at 16:00:00pm, on the 15th day every month between March and July", descriptor.describe(cron));
 	}
 
-	@Ignore
+	@Disabled
 	@Test
 	public void testAtTimeOfSpecificDayBetweenMultipleMonths() {
 		final Cron cron = getCron("0 0 16 15 3-7,10-12 ? *");
@@ -330,56 +330,56 @@ public class TestDescriptor {
 				descriptor.describe(cron));
 	}
 
-	@Ignore
+	@Disabled
 	@Test
 	public void testAtTimeOnLastDayOfMonth() {
 		final Cron cron = getCron("0 0 16 L * ? *");
 		assertEquals("at 16:00:00pm, on the last day of the month, every month", descriptor.describe(cron));
 	}
 
-	@Ignore
+	@Disabled
 	@Test
 	public void testAtTimeOnLastDayOfSpecificMonth() {
 		final Cron cron = getCron("0 0 16 L 3 ? *");
 		assertEquals("at 16:00:00pm, on the last day of the month, in March", descriptor.describe(cron));
 	}
 
-	@Ignore
+	@Disabled
 	@Test
 	public void testAtTimeOnThirdLastDayOfMonth() {
 		final Cron cron = getCron("0 0 16 L-3 * ? *");
 		assertEquals("at 16:00:00pm, 3 days before the end of the month, every month", descriptor.describe(cron));
 	}
 
-	@Ignore
+	@Disabled
 	@Test
 	public void testAtTimeOnNthSpecificWeekdayOfMonth() {
 		final Cron cron = getCron("0 0 16 ? * 5#2 *");
 		assertEquals("at 16:00:00pm, on the 2nd Thursday of the month, every month", descriptor.describe(cron));
 	}
 
-	@Ignore
+	@Disabled
 	@Test
 	public void testAtTimeOnLastSpecificWeekdayOfMonth() {
 		final Cron cron = getCron("0 0 16 ? * 2L *");
 		assertEquals("at 16:00:00pm, on the last Monday of the month, every month", descriptor.describe(cron));
 	}
 
-	@Ignore
+	@Disabled
 	@Test
 	public void testAtTimeEverySpecificWeekdayOfMonth() {
 		final Cron cron = getCron("0 0 16 ? * 2 *");
 		assertEquals("at 16:00:00pm, every Monday of the month, every month", descriptor.describe(cron));
 	}
 
-	@Ignore
+	@Disabled
 	@Test
 	public void testAtTimeEverySpecificWeekdayOfSpecificMonth() {
 		final Cron cron = getCron("0 0 16 ? 5 3 *");
 		assertEquals("at 16:00:00pm, every Tuesday of the month, in May", descriptor.describe(cron));
 	}
 
-	@Ignore
+	@Disabled
 	@Test
 	public void testAtTimeMultipleWeekdaysOfMultipleSpecificMonths() {
 		final Cron cron = getCron("0 0 16 ? 1,5,12 2,5,7 *");

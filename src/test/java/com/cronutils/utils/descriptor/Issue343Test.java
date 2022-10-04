@@ -5,60 +5,56 @@ import com.cronutils.model.CronType;
 import com.cronutils.model.definition.CronDefinition;
 import com.cronutils.model.definition.CronDefinitionBuilder;
 import com.cronutils.parser.CronParser;
-import org.hamcrest.core.IsEqual;
-import org.junit.runners.Parameterized.Parameters;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.Locale;
+import java.util.stream.Stream;
 
-import static org.junit.Assert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 
 /**
  *  Issue 334 - Getting exception {@link IllegalArgumentException} "Both, a day-of-week AND a day-of-month parameter, are not supported."
  *  when trying to get description for valid cron expression with {@link CronDefinition} of {@link CronType#SPRING} type.
  *
  **/
-//@RunWith(Parameterized.class)
 public class Issue343Test {
 
 	/**
 	 * Cron expressions from spring docs <a href="https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/scheduling/support/CronSequenceGenerator.html">Class CronSequenceGenerator</a>
 	 **/
-	@Parameters
-	public static Object[] expressions() {
-		return new Object[] {
+	public static Stream<Expr> expressions() {
+		return Stream.of(
 				new Expr("0 0 * * * *", "every hour"),
 				new Expr("*/10 * * * * *", "every 10 seconds"),
 				new Expr("0 0 8-10 * * *", "every hour between 8 and 10"),
 				new Expr("0 0 6,19 * * *", "at 6 and 19 hours"),
 				new Expr("0 0/30 8-10 * * *", "every 30 minutes every hour between 8 and 10"),
 				new Expr("0 0 9-17 * * MON-FRI", "every hour between 9 and 17 every day between Monday and Friday")
-		};
+		);
 	}
 
-	private Expr expressionToTest;
-
-	public Issue343Test(Expr expressionToTest) {
-		this.expressionToTest = expressionToTest;
-	}
-
-	//@Test
-	public void test() {
+	@ParameterizedTest
+	@MethodSource("expressions")
+	public void test(Expr expressionToTest) {
 		CronParser pareser = new CronParser( CronDefinitionBuilder.instanceDefinitionFor(CronType.SPRING) );
 
 		String actualDescription = CronDescriptor.instance(Locale.ENGLISH)
 				.describe(pareser.parse(expressionToTest.getExpression()));
 
-		assertThat(actualDescription, IsEqual.equalTo(expressionToTest.getExpectedDescription()));
+		assertEquals(expressionToTest.getExpectedDescription(), actualDescription);
 	}
 
-	//@Test
-	public void workaround() {
+	@ParameterizedTest
+	@MethodSource("expressions")
+	public void workaround(Expr expressionToTest) {
 		CronParser pareser = new CronParser( workingSpringCronDefinition() );
 
 		String actualDescription = CronDescriptor.instance(Locale.ENGLISH)
 				.describe(pareser.parse(expressionToTest.getExpression()));
 
-		assertThat(actualDescription, IsEqual.equalTo(expressionToTest.getExpectedDescription()));
+		assertEquals(expressionToTest.getExpectedDescription(), actualDescription);
 	}
 
 	private static CronDefinition workingSpringCronDefinition() {

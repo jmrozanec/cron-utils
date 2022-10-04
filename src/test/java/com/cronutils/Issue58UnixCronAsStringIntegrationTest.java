@@ -18,17 +18,18 @@ import com.cronutils.model.CronType;
 import com.cronutils.model.definition.CronDefinition;
 import com.cronutils.model.definition.CronDefinitionBuilder;
 import com.cronutils.parser.CronParser;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import static org.hamcrest.core.AnyOf.anyOf;
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
+import java.util.Arrays;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class Issue58UnixCronAsStringIntegrationTest {
     private CronParser cronParser;
 
-    @Before
+    @BeforeEach
     public void setup() {
         final CronDefinition cronDefinition = CronDefinitionBuilder.instanceDefinitionFor(CronType.UNIX);
         cronParser = new CronParser(cronDefinition);
@@ -37,24 +38,24 @@ public class Issue58UnixCronAsStringIntegrationTest {
     @Test
     public void everyEvenHourShouldBeParsedCorrectly() {
         final Cron cron = cronParser.parse("0 0/1 * * *");
-        assertThat(cron.asString(), anyOf(is("0 0/1 * * *"), is("0 /1 * * *"), is("0 0 * * *")));
+        assertTrue(Arrays.asList("0 0/1 * * *","0 /1 * * *","0 0 * * *").contains(cron.asString()));
     }
 
     @Test
     public void everyOddHourShouldBeParsedCorrectly() {
         final Cron cron = cronParser.parse("0 1/2 * * *");
-        assertThat(cron.asString(), is("0 1/2 * * *"));
+        assertEquals("0 1/2 * * *", cron.asString());
     }
 
     @Test
     public void everyEvenMinuteShouldBeParsedCorrectly() {
         final Cron cron = cronParser.parse("0/1 * * * *");
-        assertThat(cron.asString(), anyOf(is("0/1 * * * *"), is("/1 * * * *"), is("0 * * * *")));
+        assertTrue(Arrays.asList("0/1 * * * *", "/1 * * * *", "0 * * * *").contains(cron.asString()));
     }
 
     @Test
     public void everyOddMinuteShouldBeParsedCorrectly() {
         final Cron cron = cronParser.parse("1/2 * * * *");
-        assertThat(cron.asString(), is("1/2 * * * *"));
+        assertEquals("1/2 * * * *", cron.asString());
     }
 }

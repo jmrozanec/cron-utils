@@ -20,13 +20,13 @@ import com.cronutils.model.field.constraint.FieldConstraintsBuilder;
 import com.cronutils.model.field.expression.On;
 import com.cronutils.model.field.value.SpecialChar;
 import com.cronutils.model.field.value.SpecialCharFieldValue;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class OnDayOfMonthValueGeneratorLTest {
     private OnDayOfMonthValueGenerator fieldValueGenerator;
@@ -34,23 +34,23 @@ public class OnDayOfMonthValueGeneratorLTest {
     private static final int MONTH = 2;
     private final int lastDayInMonth = LocalDate.of(2015, 2, 1).lengthOfMonth();
 
-    @Before
+    @BeforeEach
     public void setUp() {
         final FieldConstraints constraints = FieldConstraintsBuilder.instance().addLSupport().createConstraintsInstance();
         fieldValueGenerator = new OnDayOfMonthValueGenerator(
                 new CronField(CronFieldName.DAY_OF_MONTH, new On(new SpecialCharFieldValue(SpecialChar.L)), constraints), YEAR, MONTH);
     }
 
-    @Test(expected = NoSuchValueException.class)
+    @Test
     public void testGenerateNextValue() throws NoSuchValueException {
         assertEquals(lastDayInMonth, fieldValueGenerator.generateNextValue(1));
-        fieldValueGenerator.generateNextValue(lastDayInMonth);
+        assertThrows(NoSuchValueException.class, () -> fieldValueGenerator.generateNextValue(lastDayInMonth));
     }
 
-    @Test(expected = NoSuchValueException.class)
+    @Test
     public void testGeneratePreviousValue() throws NoSuchValueException {
         assertEquals(lastDayInMonth, fieldValueGenerator.generatePreviousValue(lastDayInMonth + 1));
-        fieldValueGenerator.generatePreviousValue(lastDayInMonth);
+        assertThrows(NoSuchValueException.class, () -> fieldValueGenerator.generatePreviousValue(lastDayInMonth));
     }
 
     @Test

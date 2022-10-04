@@ -20,12 +20,12 @@ import com.cronutils.model.field.constraint.FieldConstraintsBuilder;
 import com.cronutils.model.field.expression.Between;
 import com.cronutils.model.field.expression.FieldExpression;
 import com.cronutils.model.field.value.IntegerFieldValue;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 
 public class BetweenFieldValueGeneratorTest {
@@ -35,27 +35,27 @@ public class BetweenFieldValueGeneratorTest {
     private static final int TO = 2;
     private static final int OUT_OF_RANGE = 7;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         constraints = FieldConstraintsBuilder.instance().createConstraintsInstance();
         fieldValueGenerator = new BetweenFieldValueGenerator(
                 new CronField(CronFieldName.HOUR, new Between(new IntegerFieldValue(FROM), new IntegerFieldValue(TO)), constraints));
     }
 
-    @Test(expected = NoSuchValueException.class)
+    @Test
     public void testGenerateNextValue() throws NoSuchValueException {
         for (int j = FROM - 1; j < TO; j++) {
             assertEquals(j + 1L, fieldValueGenerator.generateNextValue(j));
         }
-        fieldValueGenerator.generateNextValue(TO);
+        assertThrows(NoSuchValueException.class, () -> fieldValueGenerator.generateNextValue(TO));
     }
 
-    @Test(expected = NoSuchValueException.class)
+    @Test
     public void testGeneratePreviousValue() throws NoSuchValueException {
         for (int j = TO + 1; j > FROM; j--) {
             assertEquals(j - 1L, fieldValueGenerator.generatePreviousValue(j));
         }
-        fieldValueGenerator.generatePreviousValue(FROM);
+        assertThrows(NoSuchValueException.class, () -> fieldValueGenerator.generatePreviousValue(FROM));
     }
 
     @Test
@@ -83,8 +83,8 @@ public class BetweenFieldValueGeneratorTest {
         assertFalse(fieldValueGenerator.matchesFieldExpressionClass(mock(FieldExpression.class)));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testConstructorNotMatchesBetween() {
-        new BetweenFieldValueGenerator(new CronField(CronFieldName.HOUR, mock(FieldExpression.class), constraints));
+        assertThrows(IllegalArgumentException.class, () -> new BetweenFieldValueGenerator(new CronField(CronFieldName.HOUR, mock(FieldExpression.class), constraints)));
     }
 }

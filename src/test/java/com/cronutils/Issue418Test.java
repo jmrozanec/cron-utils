@@ -5,7 +5,7 @@ import com.cronutils.model.definition.CronDefinition;
 import com.cronutils.model.definition.CronDefinitionBuilder;
 import com.cronutils.model.time.ExecutionTime;
 import com.cronutils.parser.CronParser;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -13,8 +13,7 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Optional;
 
-import static org.hamcrest.core.StringEndsWith.endsWith;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class Issue418Test {
 
@@ -59,7 +58,7 @@ public class Issue418Test {
             parser.parse("0 0 2 ? * 0/7 *");
             fail("Expected exception for invalid expression");
         } catch (IllegalArgumentException expected) {
-            assertThat(expected.getMessage(), endsWith("Value 0 not in range [1, 7]"));
+            assertTrue(expected.getMessage().endsWith("Value 0 not in range [1, 7]"));
         }
     }
 
@@ -71,7 +70,7 @@ public class Issue418Test {
             parser.parse("0 0 2 ? * 1/8 *");
             fail("Expected exception for invalid expression");
         } catch (IllegalArgumentException expected) {
-            assertThat(expected.getMessage(), endsWith("Period 8 not in range [1, 7]"));
+            assertTrue(expected.getMessage().endsWith("Period 8 not in range [1, 7]"));
         }
     }
 }

@@ -18,15 +18,15 @@ import com.cronutils.model.definition.CronDefinition;
 import com.cronutils.model.definition.CronDefinitionBuilder;
 import com.cronutils.model.time.ExecutionTime;
 import com.cronutils.parser.CronParser;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * America/Sao_Paulo is only 3 hours behind UTC. Even with less difference, november 3 seems to be
@@ -34,7 +34,7 @@ import static org.junit.Assert.assertEquals;
  */
 public class Issue404Test {
 
-	@Ignore
+	@Disabled
 	@Test
 	public void testNovember3Midnight() {
 		final CronDefinition cronDefinition = CronDefinitionBuilder.defineCron().withMinutes().and().withHours().and()
@@ -51,7 +51,7 @@ public class Issue404Test {
 		assertEquals(1, timeFromLastExecution.getSeconds());
 	}
 
-	@Ignore
+	@Disabled
 	@Test
 	public void testNovember3Noon() {
 		final CronDefinition cronDefinition = CronDefinitionBuilder.defineCron().withMinutes().and().withHours().and()

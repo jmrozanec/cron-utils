@@ -17,16 +17,16 @@ import com.cronutils.model.CronType;
 import com.cronutils.model.definition.CronDefinitionBuilder;
 import com.cronutils.model.time.ExecutionTime;
 import com.cronutils.parser.CronParser;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Optional;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class Issue143Test {
 
@@ -34,7 +34,7 @@ public class Issue143Test {
     private CronParser parser;
     private ZonedDateTime currentDateTime;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         // Make sure that current date is before Dec-31
         currentDateTime = ZonedDateTime.of(LocalDateTime.of(2016, 12, 20, 12, 0),

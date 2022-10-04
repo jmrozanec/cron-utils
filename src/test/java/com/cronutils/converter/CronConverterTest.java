@@ -13,48 +13,41 @@
 
 package com.cronutils.converter;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import java.time.ZoneId;
-import java.util.Arrays;
-import java.util.Collection;
+import java.util.stream.Stream;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.spy;
 
-@RunWith(Parameterized.class)
 public class CronConverterTest {
-
-	private String timezone;
-	private String inputCronExpression;
-	private String expectedCronExpression;
 	private CronConverter cronConverter = spy(new CronConverter(
 			new CronToCalendarTransformer(),
 			new CalendarToCronTransformer()
 	));
 
-	public CronConverterTest(String timezone, String inputCronExpression, String expectedCronExpression) {
-		this.timezone = timezone;
-		this.inputCronExpression = inputCronExpression;
-		this.expectedCronExpression = expectedCronExpression;
+	public static Stream<Arguments> cronExpressions() {
+		return Stream.of(Arguments.of("Pacific/Pago_Pago", "15 * * * *", "15 * * * *"),
+				Arguments.of("Antarctica/Casey", "? * * * *", "? * * * *"),
+				Arguments.of("Antarctica/Troll", "45 * * * *", "45 * * * *"),
+				Arguments.of("Pacific/Chatham", "15 * * * *", "30 * * * *"),
+				Arguments.of("Asia/Colombo", "45 * * ? *", "15 * * ? *"),
+				Arguments.of("Asia/Colombo", "0/45 * * ? *", "0/45 * * ? *"),
+				Arguments.of("Australia/Eucla", "13 * * ? *", "28 * * ? *"),
+				Arguments.of("America/St_Johns", "0 0/15 * * * ?", "30 0/15 * * * ?"),
+				Arguments.of("America/St_Johns", "0 8 * * ?", "30 10 * * ?"),
+				Arguments.of("America/St_Johns", "0 0/1 * * ?", "30 0/1 * * ?"),
+				Arguments.of("America/St_Johns", "20 0 * * ?", "50 2 * * ?"),
+				Arguments.of("Asia/Kolkata", "20 0 * * ?", "50 18 * * ?")
+		);
 	}
 
-	@Parameterized.Parameters
-	public static Collection cronExpressions() {
-		return Arrays.asList(new Object[][] { { "Pacific/Pago_Pago", "15 * * * *", "15 * * * *" },
-				{ "Antarctica/Casey", "? * * * *", "? * * * *" }, { "Antarctica/Troll", "45 * * * *", "45 * * * *" },
-				{ "Pacific/Chatham", "15 * * * *", "30 * * * *" }, { "Asia/Colombo", "45 * * ? *", "15 * * ? *" },
-				{ "Asia/Colombo", "0/45 * * ? *", "0/45 * * ? *" }, { "Australia/Eucla", "13 * * ? *", "28 * * ? *" },
-				{ "America/St_Johns", "0 0/15 * * * ?", "30 0/15 * * * ?" },
-				{ "America/St_Johns", "0 8 * * ?", "30 10 * * ?" },
-				{ "America/St_Johns", "0 0/1 * * ?", "30 0/1 * * ?" },
-				{ "America/St_Johns", "20 0 * * ?", "50 2 * * ?" }, { "Asia/Kolkata", "20 0 * * ?", "50 18 * * ?" }, });
-	}
-
-	@Test
-	public void testCronConverterBuilder() {
+	@ParameterizedTest
+	@MethodSource("cronExpressions")
+	public void testCronConverterBuilder(String timezone, String inputCronExpression, String expectedCronExpression) {
 		assertEquals(expectedCronExpression,
 				cronConverter.using(inputCronExpression)
 						.from(ZoneId.of(timezone)).to(ZoneId.of("UTC"))

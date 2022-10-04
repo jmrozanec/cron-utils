@@ -17,11 +17,11 @@ import com.cronutils.model.CronType;
 import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.field.constraint.FieldConstraintsBuilder;
 import com.cronutils.model.field.definition.FieldDefinition;
-import junitparams.JUnitParamsRunner;
-import junitparams.Parameters;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
@@ -30,11 +30,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.function.UnaryOperator;
+import java.util.stream.Stream;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
-@RunWith(JUnitParamsRunner.class)
 public class CronDefinitionTest {
 
     private boolean matchDayOfWeekAndDayOfMonth;
@@ -45,7 +45,7 @@ public class CronDefinitionTest {
     @Mock
     private FieldDefinition mockFieldDefinition3optional;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         final CronFieldName testFieldName1 = CronFieldName.SECOND;
         final CronFieldName testFieldName2 = CronFieldName.MINUTE;
@@ -59,24 +59,24 @@ public class CronDefinitionTest {
         matchDayOfWeekAndDayOfMonth = false;
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testConstructorNullFieldsParameter() {
-        new CronDefinition(null, new HashSet<>(), new HashSet<>(), matchDayOfWeekAndDayOfMonth);
+        assertThrows(NullPointerException.class, () -> new CronDefinition(null, new HashSet<>(), new HashSet<>(), matchDayOfWeekAndDayOfMonth));
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testConstructorNullConstraintsParameter() {
-        new CronDefinition(new ArrayList<>(), null, new HashSet<>(), matchDayOfWeekAndDayOfMonth);
+        assertThrows(NullPointerException.class, () -> new CronDefinition(new ArrayList<>(), null, new HashSet<>(), matchDayOfWeekAndDayOfMonth));
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testConstructorNullCronNicknamesParameter() {
-        new CronDefinition(new ArrayList<>(), new HashSet<>(), null, matchDayOfWeekAndDayOfMonth);
+        assertThrows(NullPointerException.class, () -> new CronDefinition(new ArrayList<>(), new HashSet<>(), null, matchDayOfWeekAndDayOfMonth));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testConstructorEmptyFieldsParameter() {
-        new CronDefinition(new ArrayList<>(), new HashSet<>(), new HashSet<>(), matchDayOfWeekAndDayOfMonth);
+        assertThrows(IllegalArgumentException.class, () -> new CronDefinition(new ArrayList<>(), new HashSet<>(), new HashSet<>(), matchDayOfWeekAndDayOfMonth));
     }
 
     @Test
@@ -102,11 +102,11 @@ public class CronDefinitionTest {
         return definitions;
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testLastFieldOptionalNotAllowedOnSingleFieldDefinition() {
         final List<FieldDefinition> fields = new ArrayList<>();
         fields.add(mockFieldDefinition3optional);
-        new CronDefinition(fields, new HashSet<>(), new HashSet<>(), matchDayOfWeekAndDayOfMonth);
+        assertThrows(IllegalArgumentException.class, () -> new CronDefinition(fields, new HashSet<>(), new HashSet<>(), matchDayOfWeekAndDayOfMonth));
     }
 
     @Test
@@ -123,8 +123,8 @@ public class CronDefinitionTest {
         assertEquals(CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ), CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ));
     }
 
-    @Test
-    @Parameters(method = "parametersToTestIfEqual")
+    @ParameterizedTest
+    @MethodSource("parametersToTestIfEqual")
     public void testIfDefinitionsAreEqual(
         List<FieldDefinition> fieldDefinitionsOne,
         List<FieldDefinition> fieldDefinitionsTwo,
@@ -159,9 +159,9 @@ public class CronDefinitionTest {
     }
 
     @SuppressWarnings("unused")
-    private Object[] parametersToTestIfEqual() {
-        return new Object[] {
-            new Object[] {
+    private static Stream<Arguments> parametersToTestIfEqual() {
+        return Stream.of(
+            Arguments.of(
                 provideSimpleFieldDefinitions(),
                 provideSimpleFieldDefinitions(),
                 provideCronConstraintSetWithTwoConstraints(),
@@ -171,8 +171,8 @@ public class CronDefinitionTest {
                 true,
                 true,
                 true
-            },
-            new Object[] {
+            ),
+            Arguments.of(
                 provideFieldDefinitions(CronFieldName.SECOND, b -> b.withValidRange(0, 59)),
                 provideFieldDefinitions(CronFieldName.SECOND, b -> b.withValidRange(1, 60)),
                 provideCronConstraintSetWithTwoConstraints(),
@@ -182,8 +182,8 @@ public class CronDefinitionTest {
                 true,
                 true,
                 false
-            },
-            new Object[] {
+            ),
+            Arguments.of(
                 provideSimpleFieldDefinitions(),
                 provideSimpleFieldDefinitions(),
                 provideCronConstraintSetWithOneConstraint(),
@@ -193,8 +193,8 @@ public class CronDefinitionTest {
                 true,
                 true,
                 false
-            },
-            new Object[] {
+            ),
+            Arguments.of(
                 provideSimpleFieldDefinitions(),
                 provideSimpleFieldDefinitions(),
                 provideCronConstraintSetWithTwoConstraints(),
@@ -204,8 +204,8 @@ public class CronDefinitionTest {
                 true,
                 true,
                 false
-            },
-            new Object[] {
+            ),
+            Arguments.of(
                 provideSimpleFieldDefinitions(),
                 provideSimpleFieldDefinitions(),
                 provideCronConstraintSetWithTwoConstraints(),
@@ -215,8 +215,8 @@ public class CronDefinitionTest {
                 false,
                 true,
                 false
-            },
-            new Object[] {
+            ),
+            Arguments.of(
                 provideSimpleFieldDefinitions(),
                 provideSimpleFieldDefinitions(),
                 provideCronConstraintSetWithTwoConstraints(),
@@ -226,11 +226,11 @@ public class CronDefinitionTest {
                 false,
                 true,
                 false
-            }
-        };
+            )
+        );
     }
 
-    private List<FieldDefinition> provideFieldDefinitions(CronFieldName cronFieldName, UnaryOperator<FieldConstraintsBuilder> configurator) {
+    private static List<FieldDefinition> provideFieldDefinitions(CronFieldName cronFieldName, UnaryOperator<FieldConstraintsBuilder> configurator) {
         List<FieldDefinition> defs = new ArrayList<>();
         defs.add(new FieldDefinition(cronFieldName, configurator.apply(
                 FieldConstraintsBuilder.instance().forField(cronFieldName)).createConstraintsInstance()));
@@ -238,29 +238,29 @@ public class CronDefinitionTest {
         return defs;
     }
 
-    private List<FieldDefinition> provideSimpleFieldDefinitions() {
+    private static List<FieldDefinition> provideSimpleFieldDefinitions() {
         return provideFieldDefinitions(CronFieldName.SECOND, b -> b);
     }
 
-    private Set<CronNicknames> provideCronNicknameSetWithTwoNicknames() {
+    private static Set<CronNicknames> provideCronNicknameSetWithTwoNicknames() {
         Set<CronNicknames> constraints = provideCronNicknameSetWithOneNickname();
         constraints.add(CronNicknames.DAILY);
         return constraints;
     }
 
-    private Set<CronNicknames> provideCronNicknameSetWithOneNickname() {
+    private static Set<CronNicknames> provideCronNicknameSetWithOneNickname() {
         Set<CronNicknames> constraints = new HashSet<>();
         constraints.add(CronNicknames.ANNUALLY);
         return constraints;
     }
 
-    private Set<CronConstraint> provideCronConstraintSetWithTwoConstraints() {
+    private static Set<CronConstraint> provideCronConstraintSetWithTwoConstraints() {
         Set<CronConstraint> constraints = provideCronConstraintSetWithOneConstraint();
         constraints.add(CronConstraintsFactory.ensureEitherDayOfYearOrMonth());
         return constraints;
     }
 
-    private Set<CronConstraint> provideCronConstraintSetWithOneConstraint() {
+    private static Set<CronConstraint> provideCronConstraintSetWithOneConstraint() {
         Set<CronConstraint> constraints = new HashSet<>();
         constraints.add(CronConstraintsFactory.ensureEitherDayOfWeekOrDayOfMonth());
         return constraints;

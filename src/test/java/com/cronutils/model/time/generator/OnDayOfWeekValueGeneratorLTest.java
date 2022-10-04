@@ -23,11 +23,11 @@ import com.cronutils.model.field.expression.On;
 import com.cronutils.model.field.value.IntegerFieldValue;
 import com.cronutils.model.field.value.SpecialChar;
 import com.cronutils.model.field.value.SpecialCharFieldValue;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class OnDayOfWeekValueGeneratorLTest {
     private final FieldConstraints constraints = FieldConstraintsBuilder.instance().addLSupport().createConstraintsInstance();
@@ -47,46 +47,46 @@ public class OnDayOfWeekValueGeneratorLTest {
     private static final int LAST_DAY_DOW_EQUALTO_REQUESTED_DOW_VALUE = 6;
     private static final int LAST_DAY_DOW_EQUALTO_REQUESTED_DOW_DAY = 31;
 
-    @Test(expected = NoSuchValueException.class)
+    @Test
     public void testGenerateNextValueLastDayDoWGreaterThanRequestedDoW() throws NoSuchValueException {
         fieldValueGenerator = createFieldValueGeneratorInstanceLastDayDoWGreaterThanRequestedDoW();
         assertEquals(LAST_DAY_DOW_GREATER_THAN_REQUESTED_DOW_DAY, fieldValueGenerator.generateNextValue(1));
-        fieldValueGenerator.generateNextValue(LAST_DAY_DOW_GREATER_THAN_REQUESTED_DOW_DAY);
+        assertThrows(NoSuchValueException.class, () -> fieldValueGenerator.generateNextValue(LAST_DAY_DOW_GREATER_THAN_REQUESTED_DOW_DAY));
     }
 
-    @Test(expected = NoSuchValueException.class)
+    @Test
     public void testGenerateNextValueLastDayDoWLessThanRequestedDoW() throws NoSuchValueException {
         fieldValueGenerator = createFieldValueGeneratorInstanceLastDayDoWLessThanRequestedDoW();
         assertEquals(LAST_DAY_DOW_LESS_THAN_REQUESTED_DOW_DAY, fieldValueGenerator.generateNextValue(1));
-        fieldValueGenerator.generateNextValue(LAST_DAY_DOW_LESS_THAN_REQUESTED_DOW_DAY);
+        assertThrows(NoSuchValueException.class, () -> fieldValueGenerator.generateNextValue(LAST_DAY_DOW_LESS_THAN_REQUESTED_DOW_DAY));
     }
 
-    @Test(expected = NoSuchValueException.class)
+    @Test
     public void testGenerateNextValueLastDayDoWEqualToRequestedDoW() throws NoSuchValueException {
         fieldValueGenerator = createFieldValueGeneratorInstanceLastDayDoWEqualToRequestedDoW();
         assertEquals(LAST_DAY_DOW_EQUALTO_REQUESTED_DOW_DAY, fieldValueGenerator.generateNextValue(1));
-        fieldValueGenerator.generateNextValue(LAST_DAY_DOW_EQUALTO_REQUESTED_DOW_DAY);
+        assertThrows(NoSuchValueException.class, () -> fieldValueGenerator.generateNextValue(LAST_DAY_DOW_EQUALTO_REQUESTED_DOW_DAY));
     }
 
-    @Test(expected = NoSuchValueException.class)
+    @Test
     public void testGeneratePreviousValueLastDayDoWGreaterThanRequestedDoW() throws NoSuchValueException {
         fieldValueGenerator = createFieldValueGeneratorInstanceLastDayDoWGreaterThanRequestedDoW();
         assertEquals(LAST_DAY_DOW_GREATER_THAN_REQUESTED_DOW_DAY, fieldValueGenerator.generatePreviousValue(LAST_DAY_DOW_GREATER_THAN_REQUESTED_DOW_DAY + 1));
-        fieldValueGenerator.generatePreviousValue(LAST_DAY_DOW_GREATER_THAN_REQUESTED_DOW_DAY);
+        assertThrows(NoSuchValueException.class, () -> fieldValueGenerator.generatePreviousValue(LAST_DAY_DOW_GREATER_THAN_REQUESTED_DOW_DAY));
     }
 
-    @Test(expected = NoSuchValueException.class)
+    @Test
     public void testGeneratePreviousValueLastDayDoWLessThanRequestedDoW() throws NoSuchValueException {
         fieldValueGenerator = createFieldValueGeneratorInstanceLastDayDoWLessThanRequestedDoW();
         assertEquals(LAST_DAY_DOW_LESS_THAN_REQUESTED_DOW_DAY, fieldValueGenerator.generatePreviousValue(LAST_DAY_DOW_LESS_THAN_REQUESTED_DOW_DAY + 1));
-        fieldValueGenerator.generatePreviousValue(LAST_DAY_DOW_LESS_THAN_REQUESTED_DOW_DAY);
+        assertThrows(NoSuchValueException.class, () -> fieldValueGenerator.generatePreviousValue(LAST_DAY_DOW_LESS_THAN_REQUESTED_DOW_DAY));
     }
 
-    @Test(expected = NoSuchValueException.class)
+    @Test
     public void testGeneratePreviousValueLastDayDoWEqualToRequestedDoW() throws NoSuchValueException {
         fieldValueGenerator = createFieldValueGeneratorInstanceLastDayDoWEqualToRequestedDoW();
         assertEquals(LAST_DAY_DOW_EQUALTO_REQUESTED_DOW_DAY, fieldValueGenerator.generatePreviousValue(LAST_DAY_DOW_EQUALTO_REQUESTED_DOW_DAY + 1));
-        fieldValueGenerator.generatePreviousValue(LAST_DAY_DOW_EQUALTO_REQUESTED_DOW_DAY);
+        assertThrows(NoSuchValueException.class, () -> fieldValueGenerator.generatePreviousValue(LAST_DAY_DOW_EQUALTO_REQUESTED_DOW_DAY));
     }
 
     @Test

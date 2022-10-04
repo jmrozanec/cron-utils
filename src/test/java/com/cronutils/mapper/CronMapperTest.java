@@ -19,12 +19,13 @@ import com.cronutils.model.field.CronField;
 import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.field.expression.Always;
 import com.cronutils.model.field.expression.On;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 
 public class CronMapperTest {
@@ -32,20 +33,20 @@ public class CronMapperTest {
     @Mock
     private CronField mockCronField;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         MockitoAnnotations.initMocks(this);
         testCronFieldName = CronFieldName.SECOND;
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testConstructorSourceDefinitionNull() {
-        new CronMapper(mock(CronDefinition.class), null, null);
+        assertThrows(NullPointerException.class, () -> new CronMapper(mock(CronDefinition.class), null, null));
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testConstructorTargetDefinitionNull() {
-        new CronMapper(null, mock(CronDefinition.class), null);
+        assertThrows(NullPointerException.class, () -> new CronMapper(null, mock(CronDefinition.class), null));
     }
 
     @Test

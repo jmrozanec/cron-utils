@@ -17,9 +17,9 @@ import com.cronutils.descriptor.CronDescriptor;
 import com.cronutils.model.Cron;
 import com.cronutils.model.definition.CronDefinitionBuilder;
 import com.cronutils.parser.CronParser;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,7 +34,7 @@ import java.util.TimeZone;
 
 import static com.cronutils.model.CronType.QUARTZ;
 import static java.time.ZoneOffset.UTC;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ExecutionTimeQuartzIntegrationTest {
     private CronParser parser;
@@ -46,7 +46,7 @@ public class ExecutionTimeQuartzIntegrationTest {
     private static final String DURATION_NOT_PRESENT_ERROR = "duration was not present";
     private static final String ASSERTED_EXECUTION_NOT_PRESENT = "one of the asserted executions was not present";
 
-    @Before
+    @BeforeEach
     public void setUp() {
         parser = new CronParser(CronDefinitionBuilder.instanceDefinitionFor(QUARTZ));
     }
@@ -323,9 +323,9 @@ public class ExecutionTimeQuartzIntegrationTest {
     /**
      * Issue #70: Illegal question mark value on cron pattern assumed valid.
      */
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testIllegalQuestionMarkValue() {
-        ExecutionTime.forCron(parser.parse("0 0 12 1W ? *"));//s,m,H,DoM,M,DoW
+        assertThrows(IllegalArgumentException.class, () -> ExecutionTime.forCron(parser.parse("0 0 12 1W ? *")));//s,m,H,DoM,M,DoW
     }
 
     /**
@@ -421,23 +421,23 @@ public class ExecutionTimeQuartzIntegrationTest {
         if (nextExecutionBeforeDst.isPresent()) {
             final ZonedDateTime executionTimeBeforeDst = nextExecutionBeforeDst.get();
             // Assert we got 3:00am
-            assertEquals("Incorrect Hour", 3, executionTimeBeforeDst.getHour());
-            assertEquals("Incorrect Minute", 0, executionTimeBeforeDst.getMinute());
+            assertEquals(3, executionTimeBeforeDst.getHour(), "Incorrect Hour");
+            assertEquals(0, executionTimeBeforeDst.getMinute(), "Incorrect Minute");
 
             final Optional<ZonedDateTime> nextExecutionAfterDst = executionTime.nextExecution(executionTimeBeforeDst.plusMinutes(1));
             if (nextExecutionAfterDst.isPresent()) {
                 // SIMULATE SCHEDULE POST DST - simulate a schedule after DST 3:01 with the same cron, expect 3:02
                 final ZonedDateTime executionTimeAfterDst = nextExecutionAfterDst.get();
-                assertEquals("Incorrect Hour", 3, executionTimeAfterDst.getHour());
-                assertEquals("Incorrect Minute", 2, executionTimeAfterDst.getMinute());
+                assertEquals(3, executionTimeAfterDst.getHour(), "Incorrect Hour");
+                assertEquals(2, executionTimeAfterDst.getMinute(), "Incorrect Minute");
 
                 // SIMULATE SCHEDULE NEXT DAY DST - verify after midnight on DST switch things still work as expected
                 final ZonedDateTime oneDayAfterDst = ZonedDateTime.parse("2016-03-14T00:00:59Z");
                 final Optional<ZonedDateTime> nextExecutionOneDayAfterDst = executionTime.nextExecution(oneDayAfterDst);
                 if (nextExecutionOneDayAfterDst.isPresent()) {
                     final ZonedDateTime executionTimeOneDayAfterDst = nextExecutionOneDayAfterDst.get();
-                    assertEquals("incorrect hour", executionTimeOneDayAfterDst.getHour(), 0);
-                    assertEquals("incorrect minute", executionTimeOneDayAfterDst.getMinute(), 2);
+                    assertEquals(executionTimeOneDayAfterDst.getHour(), 0, "incorrect hour");
+                    assertEquals(executionTimeOneDayAfterDst.getMinute(), 2, "incorrect minute");
                     return;
                 }
             }
@@ -489,7 +489,7 @@ public class ExecutionTimeQuartzIntegrationTest {
         final Optional<ZonedDateTime> nextExecution = executionTime.nextExecution(dt);
         if (nextExecution.isPresent()) {
             final ZonedDateTime nextRun = nextExecution.get();
-            assertEquals("incorrect Day", nextRun.getDayOfMonth(), 1); // should be April 1st (Friday)
+            assertEquals(nextRun.getDayOfMonth(), 1, "incorrect Day"); // should be April 1st (Friday)
         } else {
             fail(NEXT_EXECUTION_NOT_PRESENT_ERROR);
         }
@@ -504,8 +504,7 @@ public class ExecutionTimeQuartzIntegrationTest {
         final ZonedDateTime fridayMorning = ZonedDateTime.of(2016, 4, 22, 0, 0, 0, 0, UTC);
         final ExecutionTime numberExec = ExecutionTime.forCron(parser.parse("0 0 12 ? * 2,3,4,5,6 *"));
         final ExecutionTime nameExec = ExecutionTime.forCron(parser.parse("0 0 12 ? * MON,TUE,WED,THU,FRI *"));
-        assertEquals("same generated dates", numberExec.nextExecution(fridayMorning),
-                nameExec.nextExecution(fridayMorning));
+        assertEquals(numberExec.nextExecution(fridayMorning), nameExec.nextExecution(fridayMorning), "same generated dates");
     }
 
     /**
@@ -515,7 +514,7 @@ public class ExecutionTimeQuartzIntegrationTest {
     public void testMinimumInterval() {
         final Duration s1 = Duration.ofSeconds(1);
         assertEquals(getMinimumInterval("* * * * * ?"), s1);
-        assertEquals("Should ignore whitespace", getMinimumInterval("*   *    *  *       * ?"), s1);
+        assertEquals(getMinimumInterval("*   *    *  *       * ?"), s1, "Should ignore whitespace");
         assertEquals(getMinimumInterval("0/1 * * * * ?"), s1);
         assertEquals(getMinimumInterval("*/1 * * * * ?"), s1);
 
@@ -799,15 +798,15 @@ public class ExecutionTimeQuartzIntegrationTest {
     }
 
     //FIXME fix this test
-    @Ignore("bug fix pending")
+    @Disabled("bug fix pending")
     @Test //#192
     public void mustMatchLowerBoundDateMatchingCronExpressionRequirements() {
         final ZonedDateTime start = ZonedDateTime.of(2017, 01, 1, 0, 0, 0, 0, ZoneId.systemDefault());
         final ExecutionTime executionTime = ExecutionTime.forCron(parser.parse("0 0 0 1 * ?")); // every 1st of Month 1970-2099
         final ExecutionTime constraintExecutionTime = ExecutionTime.forCron(parser.parse("0 0 0 1 * ? 2017")); // every 1st of Month for 2017
-        assertEquals("year constraint shouldn't have an impact on next execution", executionTime.nextExecution(start.minusSeconds(1)),
-                constraintExecutionTime.nextExecution(start.minusSeconds(1)));
-        assertEquals("year constraint shouldn't have an impact on match result", executionTime.isMatch(start), constraintExecutionTime.isMatch(start));
+        assertEquals(executionTime.nextExecution(start.minusSeconds(1)), constraintExecutionTime.nextExecution(start.minusSeconds(1)),
+                "year constraint shouldn't have an impact on next execution");
+        assertEquals(executionTime.isMatch(start), constraintExecutionTime.isMatch(start), "year constraint shouldn't have an impact on match result");
     }
 
     /**
@@ -820,12 +819,12 @@ public class ExecutionTimeQuartzIntegrationTest {
         ExecutionTime executionTime = ExecutionTime.forCron(parser.parse("0 0 20 * * ? *"));
         ZonedDateTime time = ZonedDateTime.now();
         Optional<ZonedDateTime> lastExecution = executionTime.lastExecution(time);
-        assertTrue("There was no last execution", lastExecution.isPresent());
-        assertEquals("Last execution did not happen at 20:00 hours", LocalTime.of(20, 0), lastExecution.get().toLocalTime());
+        assertTrue(lastExecution.isPresent(), "There was no last execution");
+        assertEquals(LocalTime.of(20, 0), lastExecution.get().toLocalTime(), "Last execution did not happen at 20:00 hours");
         if (time.toLocalTime().isBefore(LocalTime.of(20, 0))) {
-            assertEquals("The last execution should be on the previous day", lastExecution.get().toLocalDate(), time.toLocalDate().minusDays(1));
+            assertEquals(lastExecution.get().toLocalDate(), time.toLocalDate().minusDays(1), "The last execution should be on the previous day");
         } else {
-            assertEquals("The last execution should be on the same day", lastExecution.get().toLocalDate(), time.toLocalDate());
+            assertEquals(lastExecution.get().toLocalDate(), time.toLocalDate(), "The last execution should be on the same day");
         }
     }
 
@@ -942,7 +941,7 @@ public class ExecutionTimeQuartzIntegrationTest {
             final Optional<ZonedDateTime> nextExecution = executionTime.nextExecution(lastRun);
             if (nextExecution.isPresent()) {
                 final ZonedDateTime nextRun = nextExecution.get();
-                assertEquals(testCaseDescription, expectedNextRun, nextRun);
+                assertEquals(expectedNextRun, nextRun, testCaseDescription);
             } else {
                 fail(NEXT_EXECUTION_NOT_PRESENT_ERROR);
             }

@@ -13,10 +13,11 @@
 
 package com.cronutils.mapper;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 
 public class WeekDayTest {
@@ -24,14 +25,14 @@ public class WeekDayTest {
     private static final int MONDAY_DOW_VALUE = 1;
     private static final boolean IS_FIRST_DAY_ZERO = false;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         source = new WeekDay(MONDAY_DOW_VALUE, IS_FIRST_DAY_ZERO);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testConstructorFailsIfMondayDoWNegative() {
-        new WeekDay(-1, IS_FIRST_DAY_ZERO);
+        assertThrows(IllegalArgumentException.class, () -> new WeekDay(-1, IS_FIRST_DAY_ZERO));
     }
 
     @Test

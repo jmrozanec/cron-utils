@@ -17,10 +17,10 @@ import com.cronutils.model.field.CronField;
 import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.field.constraint.FieldConstraints;
 import com.cronutils.model.field.expression.FieldExpression;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.MockedConstruction;
@@ -29,9 +29,10 @@ import org.mockito.MockitoAnnotations;
 
 import java.util.UUID;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@Ignore
+@Disabled
 public class CronParserFieldTest {
 
     private CronFieldName testFieldName;
@@ -44,7 +45,7 @@ public class CronParserFieldTest {
 
     private CronParserField cronParserField;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
         testFieldName = CronFieldName.SECOND;
@@ -57,7 +58,7 @@ public class CronParserFieldTest {
         cronParserField = new CronParserField(testFieldName, mockConstraints);
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         mockedConstruction.close();
     }
@@ -104,13 +105,13 @@ public class CronParserFieldTest {
         Mockito.verify(mockParser).parse("1L");
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testConstructorNameNull() {
-        new CronParserField(null, Mockito.mock(FieldConstraints.class));
+        assertThrows(NullPointerException.class, () -> new CronParserField(null, Mockito.mock(FieldConstraints.class)));
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testConstructorConstraintsNull() {
-        new CronParserField(testFieldName, null);
+        assertThrows(NullPointerException.class, () -> new CronParserField(testFieldName, null));
     }
 }

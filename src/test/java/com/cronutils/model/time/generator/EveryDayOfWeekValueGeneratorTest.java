@@ -22,8 +22,8 @@ import com.cronutils.model.field.expression.Between;
 import com.cronutils.model.field.expression.Every;
 import com.cronutils.model.field.expression.FieldExpression;
 import com.cronutils.model.field.value.IntegerFieldValue;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -33,7 +33,7 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 
 public class EveryDayOfWeekValueGeneratorTest {
@@ -42,7 +42,7 @@ public class EveryDayOfWeekValueGeneratorTest {
     private int month = 10;
     private Set<DayOfWeek> validDow;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         FieldConstraints constraints = FieldConstraintsBuilder.instance().createConstraintsInstance();
         // every 2 days between 1-5

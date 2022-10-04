@@ -6,15 +6,15 @@ import com.cronutils.model.definition.CronDefinitionBuilder;
 import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.time.ExecutionTime;
 import com.cronutils.parser.CronParser;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 import static java.time.ZoneOffset.UTC;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 
 public class CompositeCronTest {
@@ -22,7 +22,7 @@ public class CompositeCronTest {
     private Cron cron1;
     private Cron cron2;
 
-    @Before
+    @BeforeEach
     public void setUp(){
         definition1 = CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ);
         CronParser parser = new CronParser(definition1);
@@ -40,7 +40,7 @@ public class CompositeCronTest {
         this.cron2 = new CompositeCron(crons2);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void weDoNotSupportCronsWithDifferentDefinitions() throws Exception {
         CronDefinition definition2 = CronDefinitionBuilder.instanceDefinitionFor(CronType.UNIX);
         CronParser parser = new CronParser(definition1);
@@ -51,22 +51,22 @@ public class CompositeCronTest {
         List<Cron> crons = new ArrayList<>();
         crons.add(cron1);
         crons.add(cron2);
-        new CompositeCron(crons);
+        assertThrows(IllegalArgumentException.class, () -> new CompositeCron(crons));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void weDoNotSupportCompositeWithoutCrons() throws Exception {
-        new CompositeCron(new ArrayList<>());
+        assertThrows(IllegalArgumentException.class, () -> new CompositeCron(new ArrayList<>()));
     }
 
-    @Test(expected = UnsupportedOperationException.class)
+    @Test
     public void retrieve() throws Exception {
-        cron1.retrieve(CronFieldName.DAY_OF_WEEK);
+        assertThrows(UnsupportedOperationException.class, () -> cron1.retrieve(CronFieldName.DAY_OF_WEEK));
     }
 
-    @Test(expected = UnsupportedOperationException.class)
+    @Test
     public void retrieveFieldsAsMap() throws Exception {
-        cron1.retrieveFieldsAsMap();
+        assertThrows(UnsupportedOperationException.class, () -> cron1.retrieveFieldsAsMap());
     }
 
     @Test
@@ -84,14 +84,14 @@ public class CompositeCronTest {
         cron1.validate();
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void validateThrowsExceptionEmptyCrons(){
-        new CompositeCron(new ArrayList<>());
+        assertThrows(IllegalArgumentException.class, () -> new CompositeCron(new ArrayList<>()));
     }
 
-    @Test(expected = UnsupportedOperationException.class)
+    @Test
     public void equivalent() throws Exception {
-        cron1.equivalent(CronMapper.fromQuartzToCron4j(), mock(Cron.class));
+        assertThrows(UnsupportedOperationException.class, () -> cron1.equivalent(CronMapper.fromQuartzToCron4j(), mock(Cron.class)));
     }
 
     @Test

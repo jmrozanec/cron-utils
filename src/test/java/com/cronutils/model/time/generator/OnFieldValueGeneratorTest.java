@@ -19,19 +19,19 @@ import com.cronutils.model.field.constraint.FieldConstraintsBuilder;
 import com.cronutils.model.field.expression.FieldExpression;
 import com.cronutils.model.field.expression.On;
 import com.cronutils.model.field.value.IntegerFieldValue;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 
 public class OnFieldValueGeneratorTest {
     private OnFieldValueGenerator fieldValueGenerator;
     private static final int DAY = 3;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         fieldValueGenerator =
                 new OnFieldValueGenerator(
@@ -43,16 +43,16 @@ public class OnFieldValueGeneratorTest {
                 );
     }
 
-    @Test(expected = NoSuchValueException.class)
+    @Test
     public void testGenerateNextValue() throws NoSuchValueException {
         assertEquals(DAY, fieldValueGenerator.generateNextValue(1));
-        fieldValueGenerator.generateNextValue(DAY);
+        assertThrows(NoSuchValueException.class, () -> fieldValueGenerator.generateNextValue(DAY));
     }
 
-    @Test(expected = NoSuchValueException.class)
+    @Test
     public void testGeneratePreviousValue() throws NoSuchValueException {
         assertEquals(DAY, fieldValueGenerator.generatePreviousValue(DAY + 1));
-        fieldValueGenerator.generatePreviousValue(DAY);
+        assertThrows(NoSuchValueException.class, () -> fieldValueGenerator.generatePreviousValue(DAY));
     }
 
     @Test
@@ -74,8 +74,8 @@ public class OnFieldValueGeneratorTest {
         assertFalse(fieldValueGenerator.matchesFieldExpressionClass(mock(FieldExpression.class)));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testConstructorNotMatchesOn() {
-        new OnFieldValueGenerator(mock(CronField.class));
+        assertThrows(IllegalArgumentException.class, () -> new OnFieldValueGenerator(mock(CronField.class)));
     }
 }

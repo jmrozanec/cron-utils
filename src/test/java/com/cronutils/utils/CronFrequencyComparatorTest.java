@@ -5,14 +5,14 @@ import com.cronutils.model.CronType;
 import com.cronutils.model.definition.CronDefinition;
 import com.cronutils.model.definition.CronDefinitionBuilder;
 import com.cronutils.parser.CronParser;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class CronFrequencyComparatorTest {
     private CronFrequencyComparator comparator;
@@ -20,7 +20,7 @@ public class CronFrequencyComparatorTest {
     private Cron cron1;
     private Cron cron2;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         ZonedDateTime date1 = LocalDateTime.of(2018, 11, 5, 0, 0, 0).atZone(ZoneId.of("UTC"));
         ZonedDateTime date2 = LocalDateTime.of(2018, 11, 11, 0, 0, 0).atZone(ZoneId.of("UTC"));

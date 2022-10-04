@@ -18,13 +18,13 @@ import com.cronutils.model.definition.CronDefinition;
 import com.cronutils.model.definition.CronDefinitionBuilder;
 import com.cronutils.model.time.ExecutionTime;
 import com.cronutils.parser.CronParser;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
 import static com.cronutils.model.CronType.QUARTZ;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Created by johnpatrick.manalo on 6/19/17.
@@ -45,7 +45,7 @@ public class Issue200Test {
         final ZonedDateTime zdt = ZonedDateTime.of(1999, 07, 18, 10, 00, 00, 03, ZoneId.systemDefault());
 
         // Must be true
-        assertTrue("Nano seconds must not affect matching of Cron Expressions", ExecutionTime.forCron(quartzCron).isMatch(zdt));
+        assertTrue(ExecutionTime.forCron(quartzCron).isMatch(zdt), "Nano seconds must not affect matching of Cron Expressions");
     }
 
     // Nano second-perfect (passes, no surprises here)
@@ -61,6 +61,6 @@ public class Issue200Test {
 
         final ZonedDateTime zdt = ZonedDateTime.of(1999, 07, 18, 10, 00, 00, 00, ZoneId.systemDefault());
 
-        assertTrue("Nano seconds must not affect matching of Cron Expressions", ExecutionTime.forCron(quartzCron).isMatch(zdt));
+        assertTrue(ExecutionTime.forCron(quartzCron).isMatch(zdt), "Nano seconds must not affect matching of Cron Expressions");
     }
 }

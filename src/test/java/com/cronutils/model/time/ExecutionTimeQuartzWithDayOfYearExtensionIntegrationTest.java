@@ -15,16 +15,16 @@ import com.cronutils.model.CronType;
 import com.cronutils.model.definition.CronDefinitionBuilder;
 import com.cronutils.model.definition.TestCronDefinitionsFactory;
 import com.cronutils.parser.CronParser;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Optional;
 
 import static java.time.ZoneOffset.UTC;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class ExecutionTimeQuartzWithDayOfYearExtensionIntegrationTest {
     private static final String BI_WEEKLY_STARTING_WITH_FIRST_DAY_OF_YEAR = "0 0 0 ? * ? * 1/14";
@@ -39,7 +39,7 @@ public class ExecutionTimeQuartzWithDayOfYearExtensionIntegrationTest {
     private CronParser parser;
     private CronParser quartzParser;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         parser = new CronParser(TestCronDefinitionsFactory.withDayOfYearDefinitionWhereYearAndDoYOptionals());
         quartzParser = new CronParser(CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ));
@@ -63,7 +63,7 @@ public class ExecutionTimeQuartzWithDayOfYearExtensionIntegrationTest {
             final ZonedDateTime expected = now.plusDays(14L - dayOfMostRecentPeriod);
             final Optional<ZonedDateTime> nextExecution = executionTime.nextExecution(now);
             if (nextExecution.isPresent()) {
-                assertEquals("Wrong next time from " + now, expected, nextExecution.get());
+                assertEquals(expected, nextExecution.get(), "Wrong next time from " + now);
             } else {
                 fail(NEXT_EXECUTION_NOT_PRESENT_ERROR);
             }
@@ -80,7 +80,7 @@ public class ExecutionTimeQuartzWithDayOfYearExtensionIntegrationTest {
             final ZonedDateTime expected = now.minusDays(dayOfMostRecentPeriod == 0 ? 14 : dayOfMostRecentPeriod);
             final Optional<ZonedDateTime> lastExecution = executionTime.lastExecution(now);
             if (lastExecution.isPresent()) {
-                assertEquals("Wrong next time from " + now, expected, lastExecution.get());
+                assertEquals(expected, lastExecution.get(), "Wrong next time from " + now);
             } else {
                 fail(LAST_EXECUTION_NOT_PRESENT_ERROR);
             }

@@ -18,20 +18,21 @@ import com.cronutils.model.field.constraint.FieldConstraints;
 import com.cronutils.model.field.constraint.FieldConstraintsBuilder;
 import com.cronutils.model.field.definition.FieldDefinition;
 import com.cronutils.model.field.definition.FieldDefinitionBuilder;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
-@Ignore
+@Disabled
 public class FieldDefinitionBuilderTest {
     private CronFieldName testFieldName;
     @Mock
@@ -43,7 +44,7 @@ public class FieldDefinitionBuilderTest {
 
     private MockedStatic<FieldConstraintsBuilder> mockedFieldConstraintsBuilder;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
         testFieldName = CronFieldName.SECOND;
@@ -54,7 +55,7 @@ public class FieldDefinitionBuilderTest {
         fieldDefinitionBuilder = new FieldDefinitionBuilder(mockParserBuilder, testFieldName);
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         mockedFieldConstraintsBuilder.close();
     }
@@ -82,13 +83,13 @@ public class FieldDefinitionBuilderTest {
         verify(mockConstraintsBuilder).createConstraintsInstance();
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testConstructorNullParserBuilder() {
-        new FieldDefinitionBuilder(null, testFieldName);
+        assertThrows(NullPointerException.class, () -> new FieldDefinitionBuilder(null, testFieldName));
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testConstructorNullTestFieldName() {
-        new FieldDefinitionBuilder(mockParserBuilder, null);
+        assertThrows(NullPointerException.class, () -> new FieldDefinitionBuilder(mockParserBuilder, null));
     }
 }

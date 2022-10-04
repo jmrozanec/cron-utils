@@ -17,16 +17,16 @@ import com.cronutils.model.Cron;
 import com.cronutils.model.CronType;
 import com.cronutils.model.definition.CronDefinition;
 import com.cronutils.model.definition.CronDefinitionBuilder;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class CronParserCron4JIntegrationTest {
     private CronParser cron4jParser;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         final CronDefinition cronDefinition = CronDefinitionBuilder.instanceDefinitionFor(CronType.CRON4J);
         cron4jParser = new CronParser(cronDefinition);
@@ -50,17 +50,17 @@ public class CronParserCron4JIntegrationTest {
         cron4jParser.parse(cronExpr);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testParseStrictRangeEnforced02() {
         final String cronExpr = "* 1 5-2 * 4";
-        cron4jParser.parse(cronExpr);
+        assertThrows(IllegalArgumentException.class, () -> cron4jParser.parse(cronExpr));
     }
 
     @Test
     public void testParseLastDayOfMonth() {
         final String cronExpr = "* * L * *";
         final Cron cron = cron4jParser.parse(cronExpr);
-        assertThat(cron.asString(), is("* * L * *"));
+        assertEquals("* * L * *", cron.asString());
     }
 
     @Test //issue 202

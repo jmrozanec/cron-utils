@@ -16,16 +16,16 @@ package com.cronutils.model.field.expression;
 import com.cronutils.model.field.value.IntegerFieldValue;
 import com.cronutils.model.field.value.SpecialChar;
 import com.cronutils.model.field.value.SpecialCharFieldValue;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class BetweenTest {
     private int from;
     private int to;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         from = 1;
         to = 5;

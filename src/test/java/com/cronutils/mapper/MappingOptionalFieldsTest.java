@@ -17,9 +17,9 @@ import com.cronutils.model.CronType;
 import com.cronutils.model.definition.CronDefinition;
 import com.cronutils.model.definition.CronDefinitionBuilder;
 import com.cronutils.parser.CronParser;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class MappingOptionalFieldsTest {
 
@@ -43,7 +43,7 @@ public class MappingOptionalFieldsTest {
         final String expected = "0 9-18 * * 0-2";
         final String expression = "5 0 9-18 ? * 1-3";
         final String mapping = mapper.map(parser.parse(expression)).asString();
-        assertEquals(String.format("Expected [%s] but got [%s]", expected, mapping), expected, mapping);
+        assertEquals(expected, mapping, String.format("Expected [%s] but got [%s]", expected, mapping));
     }
 
 }
