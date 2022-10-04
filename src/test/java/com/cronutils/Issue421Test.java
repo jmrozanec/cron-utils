@@ -16,7 +16,6 @@ import java.util.Optional;
 import static com.cronutils.model.field.expression.FieldExpression.questionMark;
 import static com.cronutils.model.field.expression.FieldExpressionFactory.every;
 import static com.cronutils.model.field.expression.FieldExpressionFactory.on;
-import static junit.framework.TestCase.fail;
 import static org.junit.Assert.*;
 
 public class Issue421Test {
