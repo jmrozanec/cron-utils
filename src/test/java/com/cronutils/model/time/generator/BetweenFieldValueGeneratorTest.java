@@ -44,7 +44,7 @@ public class BetweenFieldValueGeneratorTest {
 
     @Test(expected = NoSuchValueException.class)
     public void testGenerateNextValue() throws NoSuchValueException {
-        for (int j = FROM - 1; j < (TO + 1); j++) {
+        for (int j = FROM - 1; j < TO; j++) {
             assertEquals(j + 1L, fieldValueGenerator.generateNextValue(j));
         }
         fieldValueGenerator.generateNextValue(TO);
@@ -52,7 +52,7 @@ public class BetweenFieldValueGeneratorTest {
 
     @Test(expected = NoSuchValueException.class)
     public void testGeneratePreviousValue() throws NoSuchValueException {
-        for (int j = TO + 1; j > (FROM - 1); j--) {
+        for (int j = TO + 1; j > FROM; j--) {
             assertEquals(j - 1L, fieldValueGenerator.generatePreviousValue(j));
         }
         fieldValueGenerator.generatePreviousValue(FROM);
