@@ -7,7 +7,6 @@ import com.cronutils.model.definition.CronConstraintsFactory;
 import com.cronutils.model.definition.CronDefinition;
 import com.cronutils.model.definition.CronDefinitionBuilder;
 import com.cronutils.model.time.ExecutionTime;
-import org.junit.Assert;
 import org.junit.Test;
 
 import java.time.*;
@@ -18,6 +17,7 @@ import static com.cronutils.model.field.expression.FieldExpression.questionMark;
 import static com.cronutils.model.field.expression.FieldExpressionFactory.every;
 import static com.cronutils.model.field.expression.FieldExpressionFactory.on;
 import static junit.framework.TestCase.fail;
+import static org.junit.Assert.*;
 
 public class Issue421Test {
 
@@ -44,16 +44,16 @@ public class Issue421Test {
         ZonedDateTime nextRun;
 
         nextRun = nextRun(cron, now); // first run
-        Assert.assertEquals(2020, nextRun.getYear());
-        Assert.assertEquals(7, nextRun.getMonthValue());
+        assertEquals(2020, nextRun.getYear());
+        assertEquals(7, nextRun.getMonthValue());
 
         nextRun = nextRun(cron, nextRun); // first run
-        Assert.assertEquals(2020, nextRun.getYear());
-        Assert.assertEquals(12, nextRun.getMonthValue());
+        assertEquals(2020, nextRun.getYear());
+        assertEquals(12, nextRun.getMonthValue());
 
         nextRun = nextRun(cron, nextRun); // first run
-        Assert.assertEquals(2021, nextRun.getYear());
-        Assert.assertEquals(2, nextRun.getMonthValue());
+        assertEquals(2021, nextRun.getYear());
+        assertEquals(2, nextRun.getMonthValue());
     }
 
     @Test
@@ -67,16 +67,16 @@ public class Issue421Test {
         ZonedDateTime nextRun;
 
         nextRun = nextRun(cron, now); // first run
-        Assert.assertEquals(2020, nextRun.getYear());
-        Assert.assertEquals(6, nextRun.getMonthValue());
+        assertEquals(2020, nextRun.getYear());
+        assertEquals(6, nextRun.getMonthValue());
 
         nextRun = nextRun(cron, nextRun); // first run
-        Assert.assertEquals(2020, nextRun.getYear());
-        Assert.assertEquals(11, nextRun.getMonthValue());
+        assertEquals(2020, nextRun.getYear());
+        assertEquals(11, nextRun.getMonthValue());
 
         nextRun = nextRun(cron, nextRun); // first run
-        Assert.assertEquals(2021, nextRun.getYear());
-        Assert.assertEquals(1, nextRun.getMonthValue());
+        assertEquals(2021, nextRun.getYear());
+        assertEquals(1, nextRun.getMonthValue());
     }
 
     @Test
@@ -85,11 +85,11 @@ public class Issue421Test {
 
         String description = CronDescriptor.instance(Locale.US).describe(getEveryMonth(now, 3).instance());
         System.out.println(description);
-        Assert.assertTrue(description.contains("every 3 months"));
+        assertTrue(description.contains("every 3 months"));
 
         description = CronDescriptor.instance(Locale.US).describe(getEveryMonth(now, 6).instance());
         System.out.println(description);
-        Assert.assertTrue(description.contains("every 6 months"));
+        assertTrue(description.contains("every 6 months"));
     }
 
     public static CronBuilder getEveryMonth(ZonedDateTime now, int every) {

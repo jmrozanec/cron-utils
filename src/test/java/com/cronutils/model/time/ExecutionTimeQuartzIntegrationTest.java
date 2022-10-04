@@ -17,7 +17,6 @@ import com.cronutils.descriptor.CronDescriptor;
 import com.cronutils.model.Cron;
 import com.cronutils.model.definition.CronDefinitionBuilder;
 import com.cronutils.parser.CronParser;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -902,13 +901,13 @@ public class ExecutionTimeQuartzIntegrationTest {
         ZonedDateTime dateTimeBefore1970 = ZonedDateTime.of(1900, 1, 1, 0, 0, 0, 0, ZoneOffset.UTC);
         Optional<ZonedDateTime> next = execution.nextExecution(dateTimeBefore1970);
         assertTrue(next.isPresent());
-        Assert.assertEquals(ZonedDateTime.of(1970, 1, 1, 12, 0, 0, 0, ZoneOffset.UTC), next.get());
+        assertEquals(ZonedDateTime.of(1970, 1, 1, 12, 0, 0, 0, ZoneOffset.UTC), next.get());
 
         // After 2099
         ZonedDateTime dateTimeAfter2099 = ZonedDateTime.of(2150, 1, 1, 0, 0, 0, 0, ZoneOffset.UTC);
         Optional<ZonedDateTime> last = execution.lastExecution(dateTimeAfter2099);
         assertTrue(last.isPresent());
-        Assert.assertEquals(ZonedDateTime.of(2099, 12, 31, 12, 0, 0, 0, ZoneOffset.UTC), last.get());
+        assertEquals(ZonedDateTime.of(2099, 12, 31, 12, 0, 0, 0, ZoneOffset.UTC), last.get());
     }
 
     private Duration getMinimumInterval(final String quartzPattern) {

@@ -18,7 +18,6 @@ import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.field.constraint.FieldConstraints;
 import com.cronutils.model.field.expression.FieldExpression;
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -29,6 +28,8 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 import java.util.UUID;
+
+import static org.junit.Assert.assertEquals;
 
 @Ignore
 public class CronParserFieldTest {
@@ -63,15 +64,15 @@ public class CronParserFieldTest {
 
     @Test
     public void testGetField() {
-        Assert.assertEquals(testFieldName, cronParserField.getField());
+        assertEquals(testFieldName, cronParserField.getField());
     }
 
     @Test
     public void testParse() {
         final String cron = UUID.randomUUID().toString();
         final CronField result = cronParserField.parse(cron);
-        Assert.assertEquals(mockParseResponse, result.getExpression());
-        Assert.assertEquals(testFieldName, result.getField());
+        assertEquals(mockParseResponse, result.getExpression());
+        assertEquals(testFieldName, result.getField());
         Mockito.verify(mockParser).parse(cron);
     }
 
@@ -82,8 +83,8 @@ public class CronParserFieldTest {
         Mockito.when(mockConstraints.getStringMappingValue("1")).thenReturn(null);
 
         final CronField result = cronParserField.parse("1L");
-        Assert.assertEquals(mockParseResponse, result.getExpression());
-        Assert.assertEquals(CronFieldName.DAY_OF_WEEK, result.getField());
+        assertEquals(mockParseResponse, result.getExpression());
+        assertEquals(CronFieldName.DAY_OF_WEEK, result.getField());
 
         Mockito.verify(mockConstraints).getStringMappingValue("1");
         Mockito.verify(mockParser).parse("1L");
@@ -96,8 +97,8 @@ public class CronParserFieldTest {
         Mockito.when(mockConstraints.getStringMappingValue("MON")).thenReturn(1);
 
         final CronField result = cronParserField.parse("MONL");
-        Assert.assertEquals(mockParseResponse, result.getExpression());
-        Assert.assertEquals(CronFieldName.DAY_OF_WEEK, result.getField());
+        assertEquals(mockParseResponse, result.getExpression());
+        assertEquals(CronFieldName.DAY_OF_WEEK, result.getField());
 
         Mockito.verify(mockConstraints).getStringMappingValue("MON");
         Mockito.verify(mockParser).parse("1L");

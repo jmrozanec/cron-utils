@@ -6,7 +6,6 @@ import com.cronutils.model.definition.CronConstraintsFactory;
 import com.cronutils.model.definition.CronDefinition;
 import com.cronutils.model.definition.CronDefinitionBuilder;
 import com.cronutils.model.time.ExecutionTime;
-import org.junit.Assert;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,6 +18,7 @@ import static com.cronutils.model.field.expression.FieldExpression.questionMark;
 import static com.cronutils.model.field.expression.FieldExpressionFactory.every;
 import static com.cronutils.model.field.expression.FieldExpressionFactory.on;
 import static junit.framework.TestCase.fail;
+import static org.junit.Assert.assertEquals;
 
 
 public class Issue446Test {
@@ -44,13 +44,13 @@ public class Issue446Test {
         Cron cron = getEveryMonthFromNow(dayOfAprilInLocalTimezone, 6).instance();
 
         ZonedDateTime nextRun = nextRun(cron, dayOfAprilInLocalTimezone); // first run
-        Assert.assertEquals(2020, nextRun.getYear());
-        Assert.assertEquals(10, nextRun.getMonthValue());
+        assertEquals(2020, nextRun.getYear());
+        assertEquals(10, nextRun.getMonthValue());
 
         nextRun = nextRun(cron, nextRun); // second
         System.out.println(nextRun);
-        Assert.assertEquals(2021, nextRun.getYear());
-        Assert.assertEquals(4, nextRun.getMonthValue());
+        assertEquals(2021, nextRun.getYear());
+        assertEquals(4, nextRun.getMonthValue());
     }
 
     public static CronBuilder getEveryMonthFromNow(ZonedDateTime now, int every) {
@@ -75,30 +75,30 @@ public class Issue446Test {
         Cron cron = getEvery30Minute(daylightSaving2020InLocalTimezone).instance();
 
         ZonedDateTime nextRun = nextRun(cron, daylightSaving2020InLocalTimezone); // first run
-        Assert.assertEquals(40, nextRun.getMinute());
-        Assert.assertEquals(1, nextRun.getHour());
+        assertEquals(40, nextRun.getMinute());
+        assertEquals(1, nextRun.getHour());
         nextRun = nextRun(cron, nextRun); // second
-        Assert.assertEquals(10, nextRun.getMinute());
-        Assert.assertEquals(2, nextRun.getHour());
-        Assert.assertEquals(ZoneOffset.ofHours(2), nextRun.getOffset());
+        assertEquals(10, nextRun.getMinute());
+        assertEquals(2, nextRun.getHour());
+        assertEquals(ZoneOffset.ofHours(2), nextRun.getOffset());
         nextRun = nextRun(cron, nextRun); // second
-        Assert.assertEquals(40, nextRun.getMinute());
-        Assert.assertEquals(2, nextRun.getHour());
-        Assert.assertEquals(ZoneOffset.ofHours(2), nextRun.getOffset());
+        assertEquals(40, nextRun.getMinute());
+        assertEquals(2, nextRun.getHour());
+        assertEquals(ZoneOffset.ofHours(2), nextRun.getOffset());
         nextRun = nextRun(cron, nextRun); // second
-        Assert.assertEquals(10, nextRun.getMinute());
-        Assert.assertEquals(2, nextRun.getHour());
-        Assert.assertEquals(ZoneOffset.ofHours(1), nextRun.getOffset());
+        assertEquals(10, nextRun.getMinute());
+        assertEquals(2, nextRun.getHour());
+        assertEquals(ZoneOffset.ofHours(1), nextRun.getOffset());
         nextRun = nextRun(cron, nextRun); // second
-        Assert.assertEquals(40, nextRun.getMinute());
-        Assert.assertEquals(2, nextRun.getHour());
-        Assert.assertEquals(ZoneOffset.ofHours(1), nextRun.getOffset());
+        assertEquals(40, nextRun.getMinute());
+        assertEquals(2, nextRun.getHour());
+        assertEquals(ZoneOffset.ofHours(1), nextRun.getOffset());
         nextRun = nextRun(cron, nextRun); // second
-        Assert.assertEquals(10, nextRun.getMinute());
-        Assert.assertEquals(3, nextRun.getHour());
+        assertEquals(10, nextRun.getMinute());
+        assertEquals(3, nextRun.getHour());
         nextRun = nextRun(cron, nextRun); // second
-        Assert.assertEquals(40, nextRun.getMinute());
-        Assert.assertEquals(3, nextRun.getHour());
+        assertEquals(40, nextRun.getMinute());
+        assertEquals(3, nextRun.getHour());
 
     }
 
@@ -111,13 +111,13 @@ public class Issue446Test {
         Cron cron = getEveryHour(daylightSaving2020InLocalTimezone).instance();
 
         ZonedDateTime nextRun = nextRun(cron, daylightSaving2020InLocalTimezone);
-        Assert.assertEquals(0, nextRun.getMinute());
-        Assert.assertEquals(2, nextRun.getHour());
-        Assert.assertEquals(ZoneOffset.ofHours(2), nextRun.getOffset());
+        assertEquals(0, nextRun.getMinute());
+        assertEquals(2, nextRun.getHour());
+        assertEquals(ZoneOffset.ofHours(2), nextRun.getOffset());
         nextRun = nextRun(cron, nextRun); // second
-        Assert.assertEquals(0, nextRun.getMinute());
-        Assert.assertEquals(3, nextRun.getHour());
-        Assert.assertEquals(ZoneOffset.ofHours(2), nextRun.getOffset());
+        assertEquals(0, nextRun.getMinute());
+        assertEquals(3, nextRun.getHour());
+        assertEquals(ZoneOffset.ofHours(2), nextRun.getOffset());
 
         startDay = LocalDateTime.of(2020, 10, 25, 1, 0); // Daylight saving
         clock = Clock.fixed(startDay.toInstant(ZoneOffset.ofHours(2)), ZoneId.of("Europe/Rome"));
@@ -126,17 +126,17 @@ public class Issue446Test {
         cron = getEveryHour(daylightSaving2020InLocalTimezone).instance();
 
         nextRun = nextRun(cron, daylightSaving2020InLocalTimezone); // first run
-        Assert.assertEquals(0, nextRun.getMinute());
-        Assert.assertEquals(2, nextRun.getHour());
-        Assert.assertEquals(ZoneOffset.ofHours(2), nextRun.getOffset());
+        assertEquals(0, nextRun.getMinute());
+        assertEquals(2, nextRun.getHour());
+        assertEquals(ZoneOffset.ofHours(2), nextRun.getOffset());
         nextRun = nextRun(cron, nextRun); // second
-        Assert.assertEquals(0, nextRun.getMinute());
-        Assert.assertEquals(2, nextRun.getHour());
-        Assert.assertEquals(ZoneOffset.ofHours(1), nextRun.getOffset());
+        assertEquals(0, nextRun.getMinute());
+        assertEquals(2, nextRun.getHour());
+        assertEquals(ZoneOffset.ofHours(1), nextRun.getOffset());
         nextRun = nextRun(cron, nextRun); // second
-        Assert.assertEquals(0, nextRun.getMinute());
-        Assert.assertEquals(3, nextRun.getHour());
-        Assert.assertEquals(ZoneOffset.ofHours(1), nextRun.getOffset());
+        assertEquals(0, nextRun.getMinute());
+        assertEquals(3, nextRun.getHour());
+        assertEquals(ZoneOffset.ofHours(1), nextRun.getOffset());
 
     }
 

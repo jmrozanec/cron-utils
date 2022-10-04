@@ -18,7 +18,6 @@ import com.cronutils.model.definition.CronDefinition;
 import com.cronutils.model.definition.CronDefinitionBuilder;
 import com.cronutils.model.time.ExecutionTime;
 import com.cronutils.parser.CronParser;
-import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -26,6 +25,8 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * America/Sao_Paulo is only 3 hours behind UTC. Even with less difference, november 3 seems to be
@@ -47,7 +48,7 @@ public class Issue404Test {
 
 		final Duration timeFromLastExecution = executionTime.timeFromLastExecution(time).get();
 
-		Assert.assertEquals(1, timeFromLastExecution.getSeconds());
+		assertEquals(1, timeFromLastExecution.getSeconds());
 	}
 
 	@Ignore
@@ -64,7 +65,7 @@ public class Issue404Test {
 
 		final Duration timeFromLastExecution = executionTime.timeFromLastExecution(time).get();
 
-		Assert.assertEquals(12, timeFromLastExecution.toHours());
+		assertEquals(12, timeFromLastExecution.toHours());
 	}
 
 
@@ -81,7 +82,7 @@ public class Issue404Test {
 
 		final Duration timeFromLastExecution = executionTime.timeFromLastExecution(time).get();
 
-		Assert.assertEquals(1, timeFromLastExecution.getSeconds());
+		assertEquals(1, timeFromLastExecution.getSeconds());
 	}
 
 
@@ -98,6 +99,6 @@ public class Issue404Test {
 
 		final Duration timeFromLastExecution = executionTime.timeFromLastExecution(time).get();
 
-		Assert.assertEquals(16, timeFromLastExecution.toHours());
+		assertEquals(16, timeFromLastExecution.toHours());
 	}
 }

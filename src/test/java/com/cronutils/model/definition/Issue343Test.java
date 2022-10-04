@@ -3,10 +3,11 @@ package com.cronutils.model.definition;
 import com.cronutils.model.Cron;
 import com.cronutils.model.CronType;
 import com.cronutils.parser.CronParser;
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+
+import static org.junit.Assert.*;
 
 @RunWith(Parameterized.class)
 public class Issue343Test {
@@ -37,9 +38,9 @@ public class Issue343Test {
 
         try {
             Cron parsed = parser.parse(expression);
-            Assert.assertNotNull(parsed);
+            assertNotNull(parsed);
         } catch (IllegalArgumentException e) {
-            Assert.fail("This expression should pass: " + expression);
+            fail("This expression should pass: " + expression);
         }
     }
 }

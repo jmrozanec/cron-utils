@@ -6,7 +6,6 @@ import com.cronutils.model.definition.CronConstraintsFactory;
 import com.cronutils.model.definition.CronDefinition;
 import com.cronutils.model.definition.CronDefinitionBuilder;
 import com.cronutils.model.time.ExecutionTime;
-import org.junit.Assert;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,6 +19,7 @@ import static com.cronutils.model.field.expression.FieldExpressionFactory.always
 import static com.cronutils.model.field.expression.FieldExpressionFactory.on;
 import static junit.framework.Assert.assertTrue;
 import static junit.framework.TestCase.fail;
+import static org.junit.Assert.assertEquals;
 
 public class Issue480Test {
 
@@ -41,7 +41,7 @@ public class Issue480Test {
     @Test
     public void testIntervalsEvery5thMonthsSinceASpecificMonth() {
         LocalDateTime sunday = LocalDateTime.of(2021, 6, 27, 0, 0);
-        Assert.assertEquals(sunday.getDayOfWeek(), DayOfWeek.SUNDAY);
+        assertEquals(sunday.getDayOfWeek(), DayOfWeek.SUNDAY);
         Clock clock = Clock.fixed(sunday.toInstant(ZoneOffset.UTC), ZoneId.systemDefault());
         ZonedDateTime now = ZonedDateTime.now(clock);
         LOGGER.info("Now: {}", now);

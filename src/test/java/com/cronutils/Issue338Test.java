@@ -5,10 +5,11 @@ import com.cronutils.model.Cron;
 import com.cronutils.model.CronType;
 import com.cronutils.model.definition.CronDefinitionBuilder;
 import com.cronutils.parser.CronParser;
-import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.Locale;
+
+import static org.junit.Assert.assertEquals;
 
 public class Issue338Test {
 
@@ -18,6 +19,6 @@ public class Issue338Test {
 		String cronString = "* * * * * ? *";
 		Cron cron = cronParser.parse(cronString);
 		String description = CronDescriptor.instance(Locale.FRANCE).describe(cron);
-		Assert.assertEquals("chaque seconde", description);
+		assertEquals("chaque seconde", description);
 	}
 }
