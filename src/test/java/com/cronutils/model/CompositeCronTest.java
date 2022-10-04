@@ -47,7 +47,7 @@ public class CompositeCronTest {
         CronParser parser2 = new CronParser(definition2);
 
         Cron cron1 = parser.parse("0 0 0 15 8 ? 2015/2");
-        Cron cron2 = parser2.parse("0 0 0 * *");
+        Cron cron2 = parser2.parse("0 0 1 * *");
         List<Cron> crons = new ArrayList<>();
         crons.add(cron1);
         crons.add(cron2);
