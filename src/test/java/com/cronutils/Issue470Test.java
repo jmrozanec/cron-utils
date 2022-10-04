@@ -4,7 +4,6 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Optional;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.cronutils.model.Cron;

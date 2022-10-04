@@ -19,10 +19,8 @@ import com.cronutils.model.Cron;
 import com.cronutils.model.CronType;
 import com.cronutils.model.definition.CronDefinitionBuilder;
 import com.cronutils.parser.CronParser;
-import java.text.ParseException;
 import java.util.Locale;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
