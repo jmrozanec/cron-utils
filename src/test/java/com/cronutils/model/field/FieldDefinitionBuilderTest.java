@@ -18,24 +18,21 @@ import com.cronutils.model.field.constraint.FieldConstraints;
 import com.cronutils.model.field.constraint.FieldConstraintsBuilder;
 import com.cronutils.model.field.definition.FieldDefinition;
 import com.cronutils.model.field.definition.FieldDefinitionBuilder;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @Ignore
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({ FieldConstraintsBuilder.class, FieldDefinitionBuilder.class })
 public class FieldDefinitionBuilderTest {
     private CronFieldName testFieldName;
     @Mock
@@ -45,16 +42,22 @@ public class FieldDefinitionBuilderTest {
 
     private FieldDefinitionBuilder fieldDefinitionBuilder;
 
+    private MockedStatic<FieldConstraintsBuilder> mockedFieldConstraintsBuilder;
+
     @Before
     public void setUp() {
         MockitoAnnotations.openMocks(this);
         testFieldName = CronFieldName.SECOND;
 
         when(mockConstraintsBuilder.forField(any(CronFieldName.class))).thenReturn(mockConstraintsBuilder);
-        PowerMockito.mockStatic(FieldConstraintsBuilder.class);
-        PowerMockito.when(FieldConstraintsBuilder.instance()).thenReturn(mockConstraintsBuilder);
-
+        mockedFieldConstraintsBuilder = Mockito.mockStatic(FieldConstraintsBuilder.class);
+        mockedFieldConstraintsBuilder.when(FieldConstraintsBuilder::instance).thenReturn(mockConstraintsBuilder);
         fieldDefinitionBuilder = new FieldDefinitionBuilder(mockParserBuilder, testFieldName);
+    }
+
+    @After
+    public void tearDown() {
+        mockedFieldConstraintsBuilder.close();
     }
 
     @Test

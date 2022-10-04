@@ -17,31 +17,27 @@ import com.cronutils.model.field.CronField;
 import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.field.constraint.FieldConstraints;
 import com.cronutils.model.field.expression.FieldExpression;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Matchers;
 import org.mockito.Mock;
+import org.mockito.MockedConstruction;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.util.UUID;
 
 @Ignore
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({ CronParserField.class, CronParser.class })
 public class CronParserFieldTest {
 
     private CronFieldName testFieldName;
     @Mock
     private FieldConstraints mockConstraints;
-    @Mock
     private FieldParser mockParser;
+    private MockedConstruction<FieldParser> mockedConstruction;
     @Mock
     private FieldExpression mockParseResponse;
 
@@ -52,11 +48,17 @@ public class CronParserFieldTest {
         MockitoAnnotations.initMocks(this);
         testFieldName = CronFieldName.SECOND;
 
-        Mockito.when(mockParser.parse(Matchers.anyString())).thenReturn(mockParseResponse);
-        PowerMockito.whenNew(FieldParser.class)
-                .withArguments(Matchers.any(FieldConstraints.class)).thenReturn(mockParser);
+        mockedConstruction = Mockito.mockConstruction(FieldParser.class, (mock, context) -> {
+            Mockito.when(mock.parse(Matchers.anyString())).thenReturn(mockParseResponse);
+            mockParser = mock;
+        });
 
         cronParserField = new CronParserField(testFieldName, mockConstraints);
+    }
+
+    @After
+    public void tearDown() {
+        mockedConstruction.close();
     }
 
     @Test
