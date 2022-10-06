@@ -18,24 +18,21 @@ import com.cronutils.model.field.constraint.FieldConstraints;
 import com.cronutils.model.field.constraint.FieldConstraintsBuilder;
 import com.cronutils.model.field.definition.FieldDefinition;
 import com.cronutils.model.field.definition.FieldDefinitionBuilder;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
-@Ignore
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({ FieldConstraintsBuilder.class, FieldDefinitionBuilder.class })
+@Disabled
 public class FieldDefinitionBuilderTest {
     private CronFieldName testFieldName;
     @Mock
@@ -45,16 +42,22 @@ public class FieldDefinitionBuilderTest {
 
     private FieldDefinitionBuilder fieldDefinitionBuilder;
 
-    @Before
+    private MockedStatic<FieldConstraintsBuilder> mockedFieldConstraintsBuilder;
+
+    @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
         testFieldName = CronFieldName.SECOND;
 
         when(mockConstraintsBuilder.forField(any(CronFieldName.class))).thenReturn(mockConstraintsBuilder);
-        PowerMockito.mockStatic(FieldConstraintsBuilder.class);
-        PowerMockito.when(FieldConstraintsBuilder.instance()).thenReturn(mockConstraintsBuilder);
-
+        mockedFieldConstraintsBuilder = Mockito.mockStatic(FieldConstraintsBuilder.class);
+        mockedFieldConstraintsBuilder.when(FieldConstraintsBuilder::instance).thenReturn(mockConstraintsBuilder);
         fieldDefinitionBuilder = new FieldDefinitionBuilder(mockParserBuilder, testFieldName);
+    }
+
+    @AfterEach
+    public void tearDown() {
+        mockedFieldConstraintsBuilder.close();
     }
 
     @Test
@@ -80,13 +83,13 @@ public class FieldDefinitionBuilderTest {
         verify(mockConstraintsBuilder).createConstraintsInstance();
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testConstructorNullParserBuilder() {
-        new FieldDefinitionBuilder(null, testFieldName);
+        assertThrows(NullPointerException.class, () -> new FieldDefinitionBuilder(null, testFieldName));
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testConstructorNullTestFieldName() {
-        new FieldDefinitionBuilder(mockParserBuilder, null);
+        assertThrows(NullPointerException.class, () -> new FieldDefinitionBuilder(mockParserBuilder, null));
     }
 }

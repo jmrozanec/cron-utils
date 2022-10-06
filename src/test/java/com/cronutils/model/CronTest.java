@@ -20,8 +20,8 @@ import com.cronutils.model.field.CronField;
 import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.field.expression.FieldExpression;
 import com.cronutils.parser.CronParser;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
@@ -29,7 +29,7 @@ import java.io.*;
 import java.util.Collections;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -40,7 +40,7 @@ public class CronTest {
     @Mock
     private CronField mockField;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         MockitoAnnotations.initMocks(this);
         testName = CronFieldName.SECOND;
@@ -49,14 +49,14 @@ public class CronTest {
         cron = new SingleCron(mock(CronDefinition.class), fields);
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testConstructorNullFieldsParameter() {
-        new SingleCron(mock(CronDefinition.class), null);
+        assertThrows(NullPointerException.class, () -> new SingleCron(mock(CronDefinition.class), null));
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testConstructorNullDefinitionParameter() {
-        new SingleCron(null, fields);
+        assertThrows(NullPointerException.class, () -> new SingleCron(null, fields));
     }
 
     @Test
@@ -64,9 +64,9 @@ public class CronTest {
         assertEquals(mockField, cron.retrieve(testName));
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testRetrieveNullParameter() {
-        cron.retrieve(null);
+        assertThrows(NullPointerException.class, () -> cron.retrieve(null));
     }
 
     @Test

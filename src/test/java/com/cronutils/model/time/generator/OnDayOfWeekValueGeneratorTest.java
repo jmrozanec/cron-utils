@@ -21,11 +21,12 @@ import com.cronutils.model.field.constraint.FieldConstraintsBuilder;
 import com.cronutils.model.field.expression.FieldExpression;
 import com.cronutils.model.field.expression.On;
 import com.cronutils.model.field.value.IntegerFieldValue;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 
 public class OnDayOfWeekValueGeneratorTest {
@@ -35,7 +36,7 @@ public class OnDayOfWeekValueGeneratorTest {
     private static final int YEAR = 2015;
     private static final int MONTH = 2;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         constraints = FieldConstraintsBuilder.instance().createConstraintsInstance();
         mondayDoWValue = new WeekDay(1, false);
@@ -49,8 +50,8 @@ public class OnDayOfWeekValueGeneratorTest {
         assertFalse(fieldValueGenerator.matchesFieldExpressionClass(mock(FieldExpression.class)));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testConstructorNotMatchesOnDayOfWeekValueGenerator() {
-        new OnDayOfWeekValueGenerator(new CronField(CronFieldName.YEAR, mock(FieldExpression.class), constraints), YEAR, MONTH, mondayDoWValue);
+        assertThrows(IllegalArgumentException.class, () -> new OnDayOfWeekValueGenerator(new CronField(CronFieldName.YEAR, mock(FieldExpression.class), constraints), YEAR, MONTH, mondayDoWValue));
     }
 }

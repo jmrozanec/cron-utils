@@ -19,12 +19,12 @@ import com.cronutils.model.definition.CronDefinition;
 import com.cronutils.model.definition.CronDefinitionBuilder;
 import com.cronutils.model.time.ExecutionTime;
 import com.cronutils.parser.CronParser;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.time.*;
 import java.util.*;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ExecutionTimeUnixIntegrationTest {
 

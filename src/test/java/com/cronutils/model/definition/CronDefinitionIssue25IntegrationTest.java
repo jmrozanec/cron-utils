@@ -17,16 +17,16 @@ import com.cronutils.model.Cron;
 import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.time.ExecutionTime;
 import com.cronutils.parser.CronParser;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class CronDefinitionIssue25IntegrationTest {
     private CronDefinition cronDefinition;
     static final String CRON_EXPRESSION = "0 18 1";
 
-    @Before
+    @BeforeEach
     public void setUp() {
         cronDefinition =
                 CronDefinitionBuilder.defineCron()

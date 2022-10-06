@@ -13,10 +13,10 @@
 
 package com.cronutils.model.time;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class NearestValueTest {
     private int value;
@@ -24,7 +24,7 @@ public class NearestValueTest {
 
     private NearestValue nearestValue;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         value = 1;
         shifts = 1;

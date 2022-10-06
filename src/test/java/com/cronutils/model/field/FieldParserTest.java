@@ -16,16 +16,17 @@ import com.cronutils.model.field.expression.*;
 import com.cronutils.model.field.value.IntegerFieldValue;
 import com.cronutils.model.field.value.SpecialChar;
 import com.cronutils.parser.FieldParser;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class FieldParserTest {
     private FieldParser parser;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         parser = new FieldParser(FieldConstraintsBuilder.instance().addHashSupport().createConstraintsInstance());
     }
@@ -59,9 +60,9 @@ public class FieldParserTest {
         assertEquals(SpecialChar.HASH, onExpression.getSpecialChar().getValue());
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testRejectHashIfFieldDoesNotClaimToSupportIt() {
-        new FieldParser(FieldConstraintsBuilder.instance().createConstraintsInstance()).parse("5#3");
+        assertThrows(IllegalArgumentException.class, () -> new FieldParser(FieldConstraintsBuilder.instance().createConstraintsInstance()).parse("5#3"));
     }
 
     @Test
@@ -95,8 +96,8 @@ public class FieldParserTest {
         assertEquals(every, (int) (expression.getPeriod()).getValue());
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testCostructorNullConstraints() {
-        new FieldParser(null);
+        assertThrows(NullPointerException.class, () -> new FieldParser(null));
     }
 }

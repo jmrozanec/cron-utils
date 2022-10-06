@@ -20,12 +20,12 @@ import com.cronutils.model.field.constraint.FieldConstraintsBuilder;
 import com.cronutils.model.field.expression.On;
 import com.cronutils.model.field.value.SpecialChar;
 import com.cronutils.model.field.value.SpecialCharFieldValue;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class OnDayOfMonthValueGeneratorLWTest {
     private FieldConstraints constraints;
@@ -43,39 +43,39 @@ public class OnDayOfMonthValueGeneratorLWTest {
 
     private static final int OUT_OF_SCOPE_VALUE = 31;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         constraints = FieldConstraintsBuilder.instance().addLWSupport().createConstraintsInstance();
     }
 
-    @Test(expected = NoSuchValueException.class)
-    public void testGenerateNextValueSundayValue() throws NoSuchValueException {
-        testGenerateNextValue(SUNDAY_VALUE_MONTH, SUNDAY_VALUE_WEEKDAY);
+    @Test
+    public void testGenerateNextValueSundayValue() {
+        assertThrows(NoSuchValueException.class, () -> testGenerateNextValue(SUNDAY_VALUE_MONTH, SUNDAY_VALUE_WEEKDAY));
     }
 
-    @Test(expected = NoSuchValueException.class)
-    public void testGenerateNextValueSaturdayValue() throws NoSuchValueException {
-        testGenerateNextValue(SATURDAY_VALUE_MONTH, SATURDAY_VALUE_WEEKDAY);
+    @Test
+    public void testGenerateNextValueSaturdayValue() {
+        assertThrows(NoSuchValueException.class, () -> testGenerateNextValue(SATURDAY_VALUE_MONTH, SATURDAY_VALUE_WEEKDAY));
     }
 
-    @Test(expected = NoSuchValueException.class)
-    public void testGenerateNextValueFridayValue() throws NoSuchValueException {
-        testGenerateNextValue(FRIDAY_VALUE_MONTH, FRIDAY_VALUE_WEEKDAY);
+    @Test
+    public void testGenerateNextValueFridayValue() {
+        assertThrows(NoSuchValueException.class, () -> testGenerateNextValue(FRIDAY_VALUE_MONTH, FRIDAY_VALUE_WEEKDAY));
     }
 
-    @Test(expected = NoSuchValueException.class)
-    public void testGeneratePreviousValueSundayValue() throws NoSuchValueException {
-        testGeneratePreviousValue(SUNDAY_VALUE_MONTH, SUNDAY_VALUE_WEEKDAY);
+    @Test
+    public void testGeneratePreviousValueSundayValue() {
+        assertThrows(NoSuchValueException.class, () -> testGeneratePreviousValue(SUNDAY_VALUE_MONTH, SUNDAY_VALUE_WEEKDAY));
     }
 
-    @Test(expected = NoSuchValueException.class)
-    public void testGeneratePreviousValueSaturdayValue() throws NoSuchValueException {
-        testGeneratePreviousValue(SATURDAY_VALUE_MONTH, SATURDAY_VALUE_WEEKDAY);
+    @Test
+    public void testGeneratePreviousValueSaturdayValue() {
+        assertThrows(NoSuchValueException.class, () -> testGeneratePreviousValue(SATURDAY_VALUE_MONTH, SATURDAY_VALUE_WEEKDAY));
     }
 
-    @Test(expected = NoSuchValueException.class)
-    public void testGeneratePreviousValueFridayValue() throws NoSuchValueException {
-        testGeneratePreviousValue(FRIDAY_VALUE_MONTH, FRIDAY_VALUE_WEEKDAY);
+    @Test
+    public void testGeneratePreviousValueFridayValue() {
+        assertThrows(NoSuchValueException.class, () -> testGeneratePreviousValue(FRIDAY_VALUE_MONTH, FRIDAY_VALUE_WEEKDAY));
     }
 
     @Test

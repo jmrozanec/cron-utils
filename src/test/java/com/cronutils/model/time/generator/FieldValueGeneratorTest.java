@@ -17,18 +17,18 @@ import com.cronutils.model.field.CronField;
 import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.field.constraint.FieldConstraints;
 import com.cronutils.model.field.expression.FieldExpression;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 
 public class FieldValueGeneratorTest {
     private FieldValueGenerator fieldValueGenerator;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         fieldValueGenerator = new MockFieldValueGenerator(new CronField(CronFieldName.HOUR, mock(FieldExpression.class), mock(FieldConstraints.class)));
     }

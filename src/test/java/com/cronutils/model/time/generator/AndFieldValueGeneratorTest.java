@@ -21,12 +21,12 @@ import com.cronutils.model.field.expression.And;
 import com.cronutils.model.field.expression.FieldExpression;
 import com.cronutils.model.field.expression.On;
 import com.cronutils.model.field.value.IntegerFieldValue;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 
 public class AndFieldValueGeneratorTest {
@@ -39,7 +39,7 @@ public class AndFieldValueGeneratorTest {
 
     private static final int NOT_CONSIDERED_VALUE = 7;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         constraints = FieldConstraintsBuilder.instance().createConstraintsInstance();
         fieldValueGenerator =
@@ -54,20 +54,20 @@ public class AndFieldValueGeneratorTest {
                 );
     }
 
-    @Test(expected = NoSuchValueException.class)
+    @Test
     public void testGenerateNextValue() throws NoSuchValueException {
         assertEquals(VALUE0, fieldValueGenerator.generateNextValue(VALUE0 - 1));
         assertEquals(VALUE1, fieldValueGenerator.generateNextValue(VALUE1 - 1));
         assertEquals(VALUE2, fieldValueGenerator.generateNextValue(VALUE2 - 1));
-        fieldValueGenerator.generateNextValue(VALUE2);
+        assertThrows(NoSuchValueException.class, () -> fieldValueGenerator.generateNextValue(VALUE2));
     }
 
-    @Test(expected = NoSuchValueException.class)
+    @Test
     public void testGeneratePreviousValue() throws NoSuchValueException {
         assertEquals(VALUE2, fieldValueGenerator.generatePreviousValue(VALUE2 + 1));
         assertEquals(VALUE1, fieldValueGenerator.generatePreviousValue(VALUE1 + 1));
         assertEquals(VALUE0, fieldValueGenerator.generatePreviousValue(VALUE0 + 1));
-        fieldValueGenerator.generatePreviousValue(VALUE0);
+        assertThrows(NoSuchValueException.class, () -> fieldValueGenerator.generatePreviousValue(VALUE0));
     }
 
     @Test
@@ -91,8 +91,8 @@ public class AndFieldValueGeneratorTest {
         assertFalse(fieldValueGenerator.matchesFieldExpressionClass(mock(FieldExpression.class)));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testConstructorNotMatchesAnd() {
-        new AndFieldValueGenerator(new CronField(CronFieldName.HOUR, mock(FieldExpression.class), constraints));
+        assertThrows(IllegalArgumentException.class, () -> new AndFieldValueGenerator(new CronField(CronFieldName.HOUR, mock(FieldExpression.class), constraints)));
     }
 }

@@ -19,11 +19,11 @@ import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.field.constraint.FieldConstraintsBuilder;
 import com.cronutils.model.field.expression.Between;
 import com.cronutils.model.field.value.IntegerFieldValue;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class BetweenDayOfWeekValueGeneratorTest {
 
@@ -44,7 +44,7 @@ public class BetweenDayOfWeekValueGeneratorTest {
 
     private void validateInterval(final int start, final int end, final List<Integer> values) {
         for (int j = start; j < end + 1; j++) {
-            assertTrue(String.format("%s not contained in values", j), values.contains(j));
+            assertTrue(values.contains(j), String.format("%s not contained in values", j));
         }
     }
 }

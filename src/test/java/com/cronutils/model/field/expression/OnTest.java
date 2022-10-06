@@ -16,16 +16,17 @@ package com.cronutils.model.field.expression;
 import com.cronutils.model.field.value.IntegerFieldValue;
 import com.cronutils.model.field.value.SpecialChar;
 import com.cronutils.model.field.value.SpecialCharFieldValue;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class OnTest {
     private int time;
     private int nth;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         time = 5;
         nth = 3;
@@ -42,9 +43,9 @@ public class OnTest {
                 (int) new On(new IntegerFieldValue(time), new SpecialCharFieldValue(SpecialChar.HASH), new IntegerFieldValue(nth)).getNth().getValue());
     }
 
-    @Test(expected = RuntimeException.class)
+    @Test
     public void testOnlyNthFails() {
-        new On(null, new SpecialCharFieldValue(SpecialChar.HASH), new IntegerFieldValue(nth));
+        assertThrows(RuntimeException.class, () -> new On(null, new SpecialCharFieldValue(SpecialChar.HASH), new IntegerFieldValue(nth)));
     }
 
     @Test

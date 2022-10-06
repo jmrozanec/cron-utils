@@ -22,21 +22,22 @@ import com.cronutils.model.field.definition.FieldDefinition;
 import com.cronutils.model.field.expression.Weekdays;
 import com.cronutils.model.field.value.SpecialChar;
 import com.cronutils.parser.CronParser;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
 import java.util.Set;
 
 import static com.cronutils.model.field.expression.FieldExpressionFactory.*;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class CronDefinitionBuilderTest {
 
     private CronDefinitionBuilder builder;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         builder = CronDefinitionBuilder.defineCron();
     }
@@ -141,28 +142,27 @@ public class CronDefinitionBuilderTest {
         assertNotNull(CronDefinitionBuilder.instanceDefinitionFor(CronType.CRON4J));
     }
 
-    @Test(expected = RuntimeException.class)
+    @Test
     public void testInstanceDefinitionForUnknownValue() {
-        assertNotNull(CronDefinitionBuilder.instanceDefinitionFor(null));
+        assertThrows(RuntimeException.class, () -> assertNotNull(CronDefinitionBuilder.instanceDefinitionFor(null)));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testCronDefinitionShouldNotAcceptQuestionmark() {
         final CronDefinition cronDefinition = CronDefinitionBuilder.instanceDefinitionFor(CronType.UNIX);
         final CronParser parser = new CronParser(cronDefinition);
-        final Cron quartzCron = parser.parse("* * * * ?");
-        quartzCron.validate();
+        assertThrows(IllegalArgumentException.class, () -> parser.parse("* * * * ?"));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testCronDefinitionShouldNotAcceptMultipleOptionalFields() {
-        CronDefinitionBuilder.defineCron()
+        assertThrows(IllegalArgumentException.class, () -> CronDefinitionBuilder.defineCron()
                 .withMinutes().and()
                 .withHours().and()
                 .withDayOfMonth().optional().and()
                 .withMonth().optional().and()
                 .withDayOfWeek().withValidRange(0, 7).withMondayDoWValue(1).withIntMapping(7, 0).and()
-                .instance();
+                .instance());
     }
 
     /**

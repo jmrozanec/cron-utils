@@ -7,7 +7,7 @@ import com.cronutils.model.definition.CronDefinition;
 import com.cronutils.model.definition.CronDefinitionBuilder;
 import com.cronutils.model.time.ExecutionTime;
 import com.cronutils.parser.CronParser;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Assertions;
 
 import java.time.ZonedDateTime;
@@ -49,7 +49,7 @@ public class Issue528Test {
         Assertions.assertEquals(cron.asString(), mapped.asString());
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testCronMapperRebootNotSupportedOnTarget() {
         Cron cron = new CronParser(REBOOT_CRON_DEFINITION).parse("@reboot");
         CronDefinition unix = CronDefinitionBuilder.defineCron()
@@ -59,7 +59,6 @@ public class Issue528Test {
                 .withMonth().withValidRange(1, 12).withStrictRange().and()
                 .withDayOfWeek().withValidRange(0, 7).withMondayDoWValue(1).withIntMapping(7, 0).withStrictRange().and()
                 .instance();
-        Cron mapped = CronMapper.sameCron(unix).map(cron);
-        Assertions.assertEquals(cron.asString(), mapped.asString());
+        Assertions.assertThrows(IllegalArgumentException.class, () -> CronMapper.sameCron(unix).map(cron));
     }
 }

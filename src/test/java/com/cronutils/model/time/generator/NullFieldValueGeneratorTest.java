@@ -15,32 +15,32 @@ package com.cronutils.model.time.generator;
 
 import com.cronutils.model.field.CronField;
 import com.cronutils.model.field.expression.FieldExpression;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.Random;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 
 public class NullFieldValueGeneratorTest {
     private NullFieldValueGenerator fieldValueGenerator;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         fieldValueGenerator = new NullFieldValueGenerator(mock(CronField.class));
     }
 
-    @Test(expected = NoSuchValueException.class)
-    public void testGenerateNextValue() throws NoSuchValueException {
+    @Test
+    public void testGenerateNextValue() {
         final Random random = new Random();
-        fieldValueGenerator.generateNextValue(random.nextInt(10));
+        assertThrows(NoSuchValueException.class, () -> fieldValueGenerator.generateNextValue(random.nextInt(10)));
     }
 
-    @Test(expected = NoSuchValueException.class)
-    public void testGeneratePreviousValue() throws NoSuchValueException {
+    @Test
+    public void testGeneratePreviousValue() {
         final Random random = new Random();
-        fieldValueGenerator.generatePreviousValue(random.nextInt(10));
+        assertThrows(NoSuchValueException.class, () -> fieldValueGenerator.generatePreviousValue(random.nextInt(10)));
     }
 
     @Test

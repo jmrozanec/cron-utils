@@ -18,39 +18,40 @@ import com.cronutils.model.CronType;
 import com.cronutils.model.definition.CronDefinition;
 import com.cronutils.model.definition.CronDefinitionBuilder;
 import com.cronutils.parser.CronParser;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class Issue281Test {
 
     @Test
     public void shouldAcceptLastMonth() {
         final Cron cron = buildCron("0 0 0 24 1/12 ?");
-        assertThat("cron is not null", cron != null);
+        assertNotNull(cron, "cron is not null");
     }
 
     @Test
     public void shouldAcceptFirstMonth() {
         final Cron cron = buildCron("0 0 0 24/1 1/12 ?");
-        assertThat("cron is not null", cron != null);
+        assertNotNull(cron, "cron is not null");
     }
 
     @Test
     public void shouldAcceptLastDayOfMonth() {
         final Cron cron = buildCron("0 0 0 1/31 7 ?");
-        assertThat("cron is not null", cron != null);
+        assertNotNull(cron, "cron is not null");
     }
 
     @Test
     public void shouldAcceptFirstDayOfMonth() {
         final Cron cron = buildCron("0 0 0 24/1 1/12 ?");
-        assertThat("cron is not null", cron != null);
+        assertNotNull(cron, "cron is not null");
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void shouldThrowExceptionWhenMonthExceeded() {
-        buildCron("0 0 0 24 1/13 ?");
+        assertThrows(IllegalArgumentException.class, () -> buildCron("0 0 0 24 1/13 ?"));
     }
 
     private Cron buildCron(String expression) {

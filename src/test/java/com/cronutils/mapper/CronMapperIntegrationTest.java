@@ -16,12 +16,12 @@ package com.cronutils.mapper;
 import com.cronutils.model.CronType;
 import com.cronutils.model.definition.CronDefinitionBuilder;
 import com.cronutils.parser.CronParser;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class CronMapperIntegrationTest {
 
@@ -86,8 +86,8 @@ public class CronMapperIntegrationTest {
         final String expected2 = "0 * * ? * * *";
         final String mapping = CronMapper.fromUnixToQuartz().map(unixParser().parse(input)).asString();
         assertTrue(
-                String.format("Expected [%s] or [%s] but got [%s]", expected1, expected2, mapping),
-                Arrays.asList(expected1, expected2).contains(mapping)
+                Arrays.asList(expected1, expected2).contains(mapping),
+                String.format("Expected [%s] or [%s] but got [%s]", expected1, expected2, mapping)
         );
     }
 
@@ -100,7 +100,7 @@ public class CronMapperIntegrationTest {
         final String input = "0 0 * * 1";
         final String expected = "0 0 0 ? * 2 *";
         final String mapping = CronMapper.fromUnixToQuartz().map(unixParser().parse(input)).asString();
-        assertEquals(String.format("Expected [%s] but got [%s]", expected, mapping), expected, mapping);
+        assertEquals(expected, mapping, String.format("Expected [%s] but got [%s]", expected, mapping));
     }
 
     private CronParser cron4jParser() {

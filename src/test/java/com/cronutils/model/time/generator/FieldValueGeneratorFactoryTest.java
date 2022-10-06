@@ -20,18 +20,19 @@ import com.cronutils.model.field.expression.*;
 import com.cronutils.model.field.value.IntegerFieldValue;
 import com.cronutils.model.field.value.SpecialChar;
 import com.cronutils.model.field.value.SpecialCharFieldValue;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public class FieldValueGeneratorFactoryTest {
     private CronField mockCronField;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         mockCronField = mock(CronField.class);
     }
@@ -75,7 +76,7 @@ public class FieldValueGeneratorFactoryTest {
                 } catch (final RuntimeException e) {
                     gotException = true;
                 }
-                assertTrue("Should get exception when asking for OnValueGenerator with special char", gotException);
+                assertTrue(gotException, "Should get exception when asking for OnValueGenerator with special char");
             }
         }
     }
@@ -134,14 +135,14 @@ public class FieldValueGeneratorFactoryTest {
         return FieldValueGeneratorFactory.createDayOfMonthValueGeneratorInstance(mockCronField, 2015, 1);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testCreateDayOfMonthValueGeneratorInstanceBadCronFieldName() {
         when(mockCronField.getField()).thenReturn(CronFieldName.YEAR);
         final On mockOn = mock(On.class);
         when(mockOn.getSpecialChar()).thenReturn(new SpecialCharFieldValue(SpecialChar.L));//any value except NONE
         when(mockCronField.getExpression()).thenReturn(mockOn);
 
-        FieldValueGeneratorFactory.createDayOfMonthValueGeneratorInstance(mockCronField, 2015, 1);
+        assertThrows(IllegalArgumentException.class, () -> FieldValueGeneratorFactory.createDayOfMonthValueGeneratorInstance(mockCronField, 2015, 1));
     }
 
     @Test
@@ -175,10 +176,10 @@ public class FieldValueGeneratorFactoryTest {
         );
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testCreateDayOfWeekValueGeneratorInstanceBadCronFieldName() {
         when(mockCronField.getField()).thenReturn(CronFieldName.YEAR);
         when(mockCronField.getExpression()).thenReturn(mock(On.class));
-        FieldValueGeneratorFactory.createDayOfWeekValueGeneratorInstance(mockCronField, 2015, 1, new WeekDay(1, false));
+        assertThrows(IllegalArgumentException.class, () -> FieldValueGeneratorFactory.createDayOfWeekValueGeneratorInstance(mockCronField, 2015, 1, new WeekDay(1, false)));
     }
 }

@@ -17,18 +17,18 @@ import com.cronutils.descriptor.CronDescriptor;
 import com.cronutils.model.CronType;
 import com.cronutils.model.definition.CronDefinitionBuilder;
 import com.cronutils.parser.CronParser;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.Locale;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class CronDescriptorQuartzIntegrationTest {
     private CronDescriptor descriptor;
     private CronParser parser;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         descriptor = CronDescriptor.instance(Locale.UK);
         parser = new CronParser(CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ));

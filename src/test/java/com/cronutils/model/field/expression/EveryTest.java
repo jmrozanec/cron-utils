@@ -14,9 +14,9 @@
 package com.cronutils.model.field.expression;
 
 import com.cronutils.model.field.value.IntegerFieldValue;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class EveryTest {
     @Test

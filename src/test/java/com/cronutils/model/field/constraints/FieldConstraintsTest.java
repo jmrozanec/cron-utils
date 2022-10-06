@@ -15,12 +15,14 @@ package com.cronutils.model.field.constraints;
 
 import com.cronutils.model.field.constraint.FieldConstraints;
 import com.cronutils.model.field.value.SpecialChar;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class FieldConstraintsTest {
 
@@ -31,7 +33,7 @@ public class FieldConstraintsTest {
     private int endRange;
     private boolean strictRange;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         intMapping = Collections.emptyMap();
         stringMapping = Collections.emptyMap();
@@ -41,18 +43,18 @@ public class FieldConstraintsTest {
         strictRange = true;
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testConstructorStringMappingNull() {
-        new FieldConstraints(null, intMapping, specialCharSet, startRange, endRange, strictRange);
+        assertThrows(NullPointerException.class, () -> new FieldConstraints(null, intMapping, specialCharSet, startRange, endRange, strictRange));
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testConstructorIntMappingNull() {
-        new FieldConstraints(stringMapping, null, specialCharSet, startRange, endRange, strictRange);
+        assertThrows(NullPointerException.class, () -> new FieldConstraints(stringMapping, null, specialCharSet, startRange, endRange, strictRange));
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testSpecialCharsSetNull() {
-        new FieldConstraints(stringMapping, intMapping, null, startRange, endRange, strictRange);
+        assertThrows(NullPointerException.class, () -> new FieldConstraints(stringMapping, intMapping, null, startRange, endRange, strictRange));
     }
 }

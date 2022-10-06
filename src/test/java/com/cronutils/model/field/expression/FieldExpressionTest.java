@@ -15,16 +15,16 @@ package com.cronutils.model.field.expression;
 
 import com.cronutils.model.field.expression.visitor.*;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 
 public class FieldExpressionTest {
     private TestFieldExpression testCronFieldExpression;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         testCronFieldExpression = new TestFieldExpression();
     }

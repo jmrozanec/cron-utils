@@ -20,28 +20,21 @@ import com.cronutils.model.CronType;
 import com.cronutils.model.definition.CronDefinitionBuilder;
 import com.cronutils.model.field.expression.FieldExpressionFactory;
 import com.cronutils.model.time.ExecutionTime;
-import org.hamcrest.core.StringEndsWith;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.time.ZonedDateTime;
 import java.util.Locale;
 import java.util.Optional;
 
-import static org.junit.Assert.*;
-import static org.junit.internal.matchers.ThrowableMessageMatcher.hasMessage;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class CronParserQuartzIntegrationTest {
 
     private static final String LAST_EXECUTION_NOT_PRESENT_ERROR = "last execution was not present";
     private CronParser parser;
 
-    @Rule
-    public ExpectedException thrown = ExpectedException.none();
-
-    @Before
+    @BeforeEach
     public void setUp() {
         parser = new CronParser(CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ));
     }
@@ -54,24 +47,24 @@ public class CronParserQuartzIntegrationTest {
      * we receive: NumberFormatException
      * Expected: throw IllegalArgumentException notifying invalid char was used
      */
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testInvalidCharsDetected() {
-        parser.parse("* * * * $ ?");
+        assertThrows(IllegalArgumentException.class, () -> parser.parse("* * * * $ ?"));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testInvalidCharsDetectedWithSingleSpecialChar() {
-        parser.parse("* * * * $W ?");
+        assertThrows(IllegalArgumentException.class, () -> parser.parse("* * * * $W ?"));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testInvalidCharsDetectedWithHashExpression1() {
-        parser.parse("* * * * $#3 ?");
+        assertThrows(IllegalArgumentException.class, () -> parser.parse("* * * * $#3 ?"));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testInvalidCharsDetectedWithHashExpression2() {
-        parser.parse("* * * * 3#$ ?");
+        assertThrows(IllegalArgumentException.class, () -> parser.parse("* * * * 3#$ ?"));
     }
 
     /**
@@ -85,9 +78,9 @@ public class CronParserQuartzIntegrationTest {
     /**
      * Issue #15: we should support L in range (ex.: L-3), but not other special chars
      */
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testLSupportedInRange() {
-        parser.parse("* * * W-3 * ?");
+        assertThrows(IllegalArgumentException.class, () -> parser.parse("* * * W-3 * ?"));
     }
 
     @Test
@@ -184,9 +177,9 @@ public class CronParserQuartzIntegrationTest {
     /**
      * Issue #63: Parser exception when parsing cron.
      */
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testDoMAndDoWParametersInvalidForQuartz() {
-        parser.parse("0 30 17 4 1 * 2016");
+        assertThrows(IllegalArgumentException.class, () -> parser.parse("0 30 17 4 1 * 2016"));
     }
 
     /**
@@ -226,9 +219,9 @@ public class CronParserQuartzIntegrationTest {
      */
     @Test
     public void testRegressionDifferentMessageForException() {
-        thrown.expect(IllegalArgumentException.class);
-        thrown.expectMessage("Invalid chars in expression! Expression: $ Invalid chars: $");
-        assertNotNull(ExecutionTime.forCron(parser.parse("* * * * $ ?")));
+        IllegalArgumentException e =
+                assertThrows(IllegalArgumentException.class, () -> assertNotNull(ExecutionTime.forCron(parser.parse("* * * * $ ?"))));
+        assertTrue(e.getMessage().contains("Invalid chars in expression! Expression: $ Invalid chars: $"));
     }
 
     /**
@@ -236,10 +229,9 @@ public class CronParserQuartzIntegrationTest {
      */
     @Test
     public void testReportedErrorContainsSameExpressionAsProvided() {
-        thrown.expect(IllegalArgumentException.class);
-        thrown.expectMessage(
-                "Invalid cron expression: 0/1 * * * * *. Both, a day-of-week AND a day-of-month parameter, are not supported.");
-        assertNotNull(ExecutionTime.forCron(parser.parse("0/1 * * * * *")));
+        IllegalArgumentException e =
+                assertThrows(IllegalArgumentException.class, () -> assertNotNull(ExecutionTime.forCron(parser.parse("0/1 * * * * *"))));
+        assertTrue(e.getMessage().contains("Invalid cron expression: 0/1 * * * * *. Both, a day-of-week AND a day-of-month parameter, are not supported."));
     }
 
     /**
@@ -248,10 +240,10 @@ public class CronParserQuartzIntegrationTest {
      */
     @Test
     public void testMissingExpressionAndInvalidCharsInErrorMessage() {
-        thrown.expect(IllegalArgumentException.class);
         final String cronexpression = "* * -1 * * ?";
-        thrown.expect(hasMessage(StringEndsWith.endsWith("Invalid expression! Expression: -1 does not describe a range. Negative numbers are not allowed.")));
-        assertNotNull(ExecutionTime.forCron(parser.parse(cronexpression)));
+        IllegalArgumentException e =
+                assertThrows(IllegalArgumentException.class, () -> ExecutionTime.forCron(parser.parse(cronexpression)));
+        assertTrue(e.getMessage().endsWith("Invalid expression! Expression: -1 does not describe a range. Negative numbers are not allowed."));
     }
 
     /**
@@ -270,8 +262,7 @@ public class CronParserQuartzIntegrationTest {
 
     @Test
     public void testRejectIllegalMonthArgument() {
-        thrown.expect(IllegalArgumentException.class);
-        CronBuilder.cron(CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ)).withMonth(FieldExpressionFactory.on(0));
+        assertThrows(IllegalArgumentException.class, () -> CronBuilder.cron(CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ)).withMonth(FieldExpressionFactory.on(0)));
     }
 
     /**
@@ -313,16 +304,16 @@ public class CronParserQuartzIntegrationTest {
 
     @Test
     public void testErrorAbout2Parts() {
-        thrown.expect(IllegalArgumentException.class);
-        thrown.expectMessage("Cron expression contains 2 parts but we expect one of [6, 7]");
-        assertNotNull(ExecutionTime.forCron(parser.parse("* *")));
+        IllegalArgumentException e =
+                assertThrows(IllegalArgumentException.class, () -> ExecutionTime.forCron(parser.parse("* *")));
+        assertEquals("Cron expression contains 2 parts but we expect one of [6, 7]", e.getMessage());
     }
 
     @Test
     public void testErrorAboutMissingSteps() {
-        thrown.expect(IllegalArgumentException.class);
-        thrown.expectMessage("Missing steps for expression: */");
-        assertNotNull(ExecutionTime.forCron(parser.parse("*/ * * * * ?")));
+        IllegalArgumentException e =
+                assertThrows(IllegalArgumentException.class, () -> ExecutionTime.forCron(parser.parse("*/ * * * * ?")));
+        assertTrue(e.getMessage().contains("Missing steps for expression: */"));
     }
 
     /**

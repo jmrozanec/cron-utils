@@ -16,12 +16,12 @@ package com.cronutils.model.definition;
 import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.field.constraint.FieldConstraints;
 import com.cronutils.model.field.definition.FieldDefinition;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 
 public class FieldDefinitionTest {
@@ -32,21 +32,21 @@ public class FieldDefinitionTest {
 
     private FieldDefinition fieldDefinition;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         MockitoAnnotations.initMocks(this);
         testFieldName = CronFieldName.SECOND;
         fieldDefinition = new FieldDefinition(testFieldName, mockConstraints);
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testConstructorNullFieldName() {
-        new FieldDefinition(null, mockConstraints);
+        assertThrows(NullPointerException.class, () -> new FieldDefinition(null, mockConstraints));
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testConstructorNullConstraints() {
-        new FieldDefinition(testFieldName, null);
+        assertThrows(NullPointerException.class, () -> new FieldDefinition(testFieldName, null));
     }
 
     @Test

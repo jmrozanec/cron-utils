@@ -18,19 +18,19 @@ import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.field.constraint.FieldConstraintsBuilder;
 import com.cronutils.model.field.expression.Always;
 import com.cronutils.model.field.expression.FieldExpression;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 import java.util.Random;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 
 public class AlwaysFieldValueGeneratorTest {
     private AlwaysFieldValueGenerator fieldValueGenerator;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         fieldValueGenerator = new AlwaysFieldValueGenerator(
                 new CronField(CronFieldName.HOUR, FieldExpression.always(), FieldConstraintsBuilder.instance().createConstraintsInstance()));
@@ -71,9 +71,10 @@ public class AlwaysFieldValueGeneratorTest {
         assertFalse(fieldValueGenerator.matchesFieldExpressionClass(mock(FieldExpression.class)));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testConstructorNotMatchesAlways() {
-        new AlwaysFieldValueGenerator(
-                new CronField(CronFieldName.HOUR, mock(FieldExpression.class), FieldConstraintsBuilder.instance().createConstraintsInstance()));
+        assertThrows(IllegalArgumentException.class,
+                () -> new AlwaysFieldValueGenerator(
+                        new CronField(CronFieldName.HOUR, mock(FieldExpression.class), FieldConstraintsBuilder.instance().createConstraintsInstance())));
     }
 }

@@ -13,10 +13,11 @@
 
 package com.cronutils.model.field.expression;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -26,7 +27,7 @@ public class AndTest {
     private FieldExpression expression1;
     private FieldExpression expression2;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         and = new And();
         expression1 = mock(FieldExpression.class);
@@ -41,9 +42,9 @@ public class AndTest {
         assertEquals(expression2, and.getExpressions().get(1));
     }
 
-    @Test(expected = UnsupportedOperationException.class)
+    @Test
     public void testGetExpressionsImmutable() {
-        and.and(expression1).getExpressions().add(expression2);
+        assertThrows(UnsupportedOperationException.class, () -> and.and(expression1).getExpressions().add(expression2));
     }
 
     @Test

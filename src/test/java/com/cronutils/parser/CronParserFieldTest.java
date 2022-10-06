@@ -17,59 +17,63 @@ import com.cronutils.model.field.CronField;
 import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.field.constraint.FieldConstraints;
 import com.cronutils.model.field.expression.FieldExpression;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.mockito.Matchers;
 import org.mockito.Mock;
+import org.mockito.MockedConstruction;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.util.UUID;
 
-@Ignore
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({ CronParserField.class, CronParser.class })
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+@Disabled
 public class CronParserFieldTest {
 
     private CronFieldName testFieldName;
     @Mock
     private FieldConstraints mockConstraints;
-    @Mock
     private FieldParser mockParser;
+    private MockedConstruction<FieldParser> mockedConstruction;
     @Mock
     private FieldExpression mockParseResponse;
 
     private CronParserField cronParserField;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
         testFieldName = CronFieldName.SECOND;
 
-        Mockito.when(mockParser.parse(Matchers.anyString())).thenReturn(mockParseResponse);
-        PowerMockito.whenNew(FieldParser.class)
-                .withArguments(Matchers.any(FieldConstraints.class)).thenReturn(mockParser);
+        mockedConstruction = Mockito.mockConstruction(FieldParser.class, (mock, context) -> {
+            Mockito.when(mock.parse(Matchers.anyString())).thenReturn(mockParseResponse);
+            mockParser = mock;
+        });
 
         cronParserField = new CronParserField(testFieldName, mockConstraints);
     }
 
+    @AfterEach
+    public void tearDown() {
+        mockedConstruction.close();
+    }
+
     @Test
     public void testGetField() {
-        Assert.assertEquals(testFieldName, cronParserField.getField());
+        assertEquals(testFieldName, cronParserField.getField());
     }
 
     @Test
     public void testParse() {
         final String cron = UUID.randomUUID().toString();
         final CronField result = cronParserField.parse(cron);
-        Assert.assertEquals(mockParseResponse, result.getExpression());
-        Assert.assertEquals(testFieldName, result.getField());
+        assertEquals(mockParseResponse, result.getExpression());
+        assertEquals(testFieldName, result.getField());
         Mockito.verify(mockParser).parse(cron);
     }
 
@@ -80,8 +84,8 @@ public class CronParserFieldTest {
         Mockito.when(mockConstraints.getStringMappingValue("1")).thenReturn(null);
 
         final CronField result = cronParserField.parse("1L");
-        Assert.assertEquals(mockParseResponse, result.getExpression());
-        Assert.assertEquals(CronFieldName.DAY_OF_WEEK, result.getField());
+        assertEquals(mockParseResponse, result.getExpression());
+        assertEquals(CronFieldName.DAY_OF_WEEK, result.getField());
 
         Mockito.verify(mockConstraints).getStringMappingValue("1");
         Mockito.verify(mockParser).parse("1L");
@@ -94,20 +98,20 @@ public class CronParserFieldTest {
         Mockito.when(mockConstraints.getStringMappingValue("MON")).thenReturn(1);
 
         final CronField result = cronParserField.parse("MONL");
-        Assert.assertEquals(mockParseResponse, result.getExpression());
-        Assert.assertEquals(CronFieldName.DAY_OF_WEEK, result.getField());
+        assertEquals(mockParseResponse, result.getExpression());
+        assertEquals(CronFieldName.DAY_OF_WEEK, result.getField());
 
         Mockito.verify(mockConstraints).getStringMappingValue("MON");
         Mockito.verify(mockParser).parse("1L");
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testConstructorNameNull() {
-        new CronParserField(null, Mockito.mock(FieldConstraints.class));
+        assertThrows(NullPointerException.class, () -> new CronParserField(null, Mockito.mock(FieldConstraints.class)));
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testConstructorConstraintsNull() {
-        new CronParserField(testFieldName, null);
+        assertThrows(NullPointerException.class, () -> new CronParserField(testFieldName, null));
     }
 }

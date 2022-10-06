@@ -2,13 +2,13 @@ package com.cronutils.parser;
 
 import com.cronutils.model.CronType;
 import com.cronutils.model.definition.CronDefinitionBuilder;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.scheduling.support.CronExpression;
 
 public class CronParserSpringIntegrationTest {
     private CronParser parser;
-    @Before
+    @BeforeEach
     public void setUp() {
         parser = new CronParser(CronDefinitionBuilder.instanceDefinitionFor(CronType.SPRING));
     }

@@ -21,10 +21,8 @@ import com.cronutils.model.definition.TestCronDefinitionsFactory;
 import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.field.constraint.FieldConstraintsBuilder;
 import com.cronutils.model.field.definition.FieldDefinition;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
@@ -32,40 +30,38 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
 public class CronParserTest {
-    @Rule
-    public ExpectedException expectedException = ExpectedException.none();
-
     @Mock
     private CronDefinition definition;
 
     private CronParser parser;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         MockitoAnnotations.initMocks(this);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testParseEmptyExpression() {
         when(definition.getFieldDefinitions()).thenReturn(Collections.emptySet());
         parser = new CronParser(definition);
 
-        parser.parse("");
+        assertThrows(IllegalArgumentException.class, () -> parser.parse(""));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testParseNoMatchingExpression() {
         final Set<FieldDefinition> set =
                 Collections.singleton(new FieldDefinition(CronFieldName.SECOND, FieldConstraintsBuilder.instance().createConstraintsInstance()));
         when(definition.getFieldDefinitions()).thenReturn(set);
         parser = new CronParser(definition);
 
-        parser.parse("* *");
+        assertThrows(IllegalArgumentException.class, () -> parser.parse("* *"));
     }
 
     @Test
@@ -80,29 +76,29 @@ public class CronParserTest {
         parser.parse(expression);
     }
 
-    @Test(expected = IllegalArgumentException.class) // issue #368
+    @Test // issue #368
     public void testTrailingCommaListCron4j(){
-        validateExpression(CronType.CRON4J, "1, * * * *");
+        assertThrows(IllegalArgumentException.class, () -> validateExpression(CronType.CRON4J, "1, * * * *"));
     }
 
-    @Test(expected = IllegalArgumentException.class) // issue #368
+    @Test // issue #368
     public void testTrailingCommaListQuartz(){
-        validateExpression(CronType.QUARTZ, "1, * * * * ?");
+        assertThrows(IllegalArgumentException.class, () -> validateExpression(CronType.QUARTZ, "1, * * * * ?"));
     }
 
-    @Test(expected = IllegalArgumentException.class) // issue #368
+    @Test // issue #368
     public void testTrailingCommaListSpring(){
-        validateExpression(CronType.SPRING, "1,2, * * * * ?");
+        assertThrows(IllegalArgumentException.class, () -> validateExpression(CronType.SPRING, "1,2, * * * * ?"));
     }
 
-    @Test(expected = IllegalArgumentException.class) // issue #368
+    @Test // issue #368
     public void testTrailingCommaListUnix(){
-        validateExpression(CronType.UNIX, "1, * * * *");
+        assertThrows(IllegalArgumentException.class, () -> validateExpression(CronType.UNIX, "1, * * * *"));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testHashListUnix(){
-        validateExpression(CronType.UNIX, "0 0 0 ? * #");
+        assertThrows(IllegalArgumentException.class, () -> validateExpression(CronType.UNIX, "0 0 0 ? * #"));
     }
 
     @Test // issue #369
@@ -121,10 +117,8 @@ public class CronParserTest {
         when(definition.getFieldDefinitions()).thenReturn(set);
         parser = new CronParser(definition);
 
-        expectedException.expect(IllegalArgumentException.class);
-        expectedException.expectMessage(expectedMessage);
-
-        assertNotNull(parser.parse(expression));
+        IllegalArgumentException e = assertThrows(IllegalArgumentException.class, () -> parser.parse(expression));
+        assertTrue(e.getMessage().contains(expectedMessage));
     }
 
     /**
@@ -171,19 +165,19 @@ public class CronParserTest {
         parser.parse("0/59 0/59 0/23 1/30 1/11 ? 2017/3");
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testRejectionOfZeroPeriod() {
         final CronDefinition quartzDefinition = CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ);
         parser = new CronParser(quartzDefinition);
 
-        parser.parse("0/0 0 0 1 1 ? 2017/3");
+        assertThrows(IllegalArgumentException.class, () -> parser.parse("0/0 0 0 1 1 ? 2017/3"));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testRejectionOfPeriodUpperLimitExceedance() {
         final CronDefinition quartzDefinition = CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ);
         parser = new CronParser(quartzDefinition);
-        parser.parse("0/60 0 0 1 1 ? 2017/3");
+        assertThrows(IllegalArgumentException.class, () -> parser.parse("0/60 0 0 1 1 ? 2017/3"));
     }
 
     @Test
@@ -221,9 +215,9 @@ public class CronParserTest {
         assertEquals(multicron, cron.asString());
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testParseQuartzCronWithHash() {
         parser = new CronParser(TestCronDefinitionsFactory.withDayOfYearDefinitionWhereYearAndDoYOptionals());
-        parser.parse("0 0 0 ? * #");
+        assertThrows(IllegalArgumentException.class, () -> parser.parse("0 0 0 ? * #"));
     }
 }
