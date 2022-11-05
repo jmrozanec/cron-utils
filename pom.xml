@@ -61,7 +61,7 @@
     <properties>
         <slf4j.version>1.7.30</slf4j.version>
         <junit.version>5.8.1</junit.version>
-        <mockito.version>3.9.0</mockito.version>
+        <mockito.version>4.8.1</mockito.version>
 
         <github.global.server>github</github.global.server>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
