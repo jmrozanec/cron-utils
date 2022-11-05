@@ -8,8 +8,10 @@ import org.junit.jupiter.api.Test;
 
 import java.time.ZonedDateTime;
 
+import org.junit.jupiter.api.Disabled;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+@Disabled
 public class Issue539Test {
 
     private final CronParser parser = new CronParser(CronDefinitionBuilder.defineCron()
