@@ -59,7 +59,7 @@
     </distributionManagement>
 
     <properties>
-        <slf4j.version>2.0.6</slf4j.version>
+        <slf4j.version>2.0.7</slf4j.version>
         <junit.version>5.8.1</junit.version>
         <mockito.version>5.2.0</mockito.version>
 
