@@ -21,7 +21,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.mockito.Matchers;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.MockedConstruction;
 import org.mockito.Mockito;
@@ -51,7 +51,7 @@ public class CronParserFieldTest {
         testFieldName = CronFieldName.SECOND;
 
         mockedConstruction = Mockito.mockConstruction(FieldParser.class, (mock, context) -> {
-            Mockito.when(mock.parse(Matchers.anyString())).thenReturn(mockParseResponse);
+            Mockito.when(mock.parse(ArgumentMatchers.anyString())).thenReturn(mockParseResponse);
             mockParser = mock;
         });
 
