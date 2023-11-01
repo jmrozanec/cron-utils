@@ -13,6 +13,7 @@
 
 package com.cronutils.parser;
 
+import com.cronutils.model.CompositeCron;
 import com.cronutils.model.Cron;
 import com.cronutils.model.CronType;
 import com.cronutils.model.definition.CronDefinition;
@@ -23,11 +24,14 @@ import com.cronutils.model.field.constraint.FieldConstraintsBuilder;
 import com.cronutils.model.field.definition.FieldDefinition;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -219,5 +223,19 @@ public class CronParserTest {
     public void testParseQuartzCronWithHash() {
         parser = new CronParser(TestCronDefinitionsFactory.withDayOfYearDefinitionWhereYearAndDoYOptionals());
         assertThrows(IllegalArgumentException.class, () -> parser.parse("0 0 0 ? * #"));
+    }
+    
+    @ParameterizedTest
+    @ValueSource(strings = {"2 0 0 1 * ? 2000 ? || 5 0 0 1 * ? 2017 ?", 
+    						"5 3 0 ? * ? 1998 * || 1 0 0 ? * * 2023 ? || 3 3 * * * ? 2015 ?"})
+    public void testParseWithCompositeCron(String expression) {
+    	parser = new CronParser(TestCronDefinitionsFactory.withDayOfYearDefinitionWhereYearAndDoYOptionals());
+    	CompositeCron compositeCron = (CompositeCron) parser.parse(expression);
+    	String[] expectedCrons = expression.split("\\|\\|");
+    	List<Cron> crons = compositeCron.getCrons();
+    	assertEquals(expectedCrons.length, crons.size());
+    	for(int i = 0; i < crons.size(); i++) {
+    		assertEquals(expectedCrons[i].trim(), crons.get(i).asString());
+    	}
     }
 }

@@ -18,6 +18,8 @@ import com.cronutils.model.field.value.SpecialChar;
 import com.cronutils.parser.FieldParser;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -99,5 +101,13 @@ public class FieldParserTest {
     @Test
     public void testCostructorNullConstraints() {
         assertThrows(NullPointerException.class, () -> new FieldParser(null));
+    }
+    
+    @ParameterizedTest
+    @ValueSource(strings = {"abLW", "LWlw", "1LW7"})
+    public void testParseOnWithLWForException(String expression) {
+    	String exceptionMessage = String.format("Expected: LW, found: %s", expression.replace("LW", ""));
+    	Exception exception = assertThrows(IllegalArgumentException.class, () -> parser.parse(expression));
+    	assertEquals(exceptionMessage, exception.getMessage());
     }
 }
