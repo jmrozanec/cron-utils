@@ -225,9 +225,12 @@ public class CronParserTest {
         assertThrows(IllegalArgumentException.class, () -> parser.parse("0 0 0 ? * #"));
     }
     
+    /**
+     * Test parse() method for composite cron expression (i.e. expression containing '||')
+     * @param expression Input parameters for parse() method 
+     */
     @ParameterizedTest
-    @ValueSource(strings = {"2 0 0 1 * ? 2000 ? || 5 0 0 1 * ? 2017 ?", 
-    						"5 3 0 ? * ? 1998 * || 1 0 0 ? * * 2023 ? || 3 3 * * * ? 2015 ?"})
+    @ValueSource(strings = {"2 0 0 1 * ? 2000 ? || 5 0 0 1 * ? 2017 ?", "5 3 0 ? * ? 1998 * || 1 0 0 ? * * 2023 ? || 3 3 * * * ? 2015 ?"})
     public void testParseWithCompositeCron(String expression) {
     	parser = new CronParser(TestCronDefinitionsFactory.withDayOfYearDefinitionWhereYearAndDoYOptionals());
     	CompositeCron compositeCron = (CompositeCron) parser.parse(expression);

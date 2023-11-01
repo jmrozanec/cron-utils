@@ -103,6 +103,10 @@ public class FieldParserTest {
         assertThrows(NullPointerException.class, () -> new FieldParser(null));
     }
     
+    /**
+     * Test parseOnWithLW() method for exception scenario
+     * @param expression Input parameters parse() method
+     */
     @ParameterizedTest
     @ValueSource(strings = {"abLW", "LWlw", "1LW7"})
     public void testParseOnWithLWForException(String expression) {

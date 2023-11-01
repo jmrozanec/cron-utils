@@ -17,6 +17,9 @@ import com.cronutils.model.field.expression.Every;
 import com.cronutils.model.field.expression.On;
 import com.cronutils.model.field.value.IntegerFieldValue;
 
+/**
+ * Test class for SecondsDescriptor.java
+ */
 class SecondsDescriptorTest {
 
 	ResourceBundle resourceBundle;
@@ -28,6 +31,9 @@ class SecondsDescriptorTest {
 		secondsDescriptor = new SecondsDescriptor(resourceBundle);
 	}
 	
+	/**
+	 * Test describe() method for 'And' field expression
+	 */
 	@Test
 	void testDescribeForAndExpression() {
 		String expectedDesc = "at 7  and 3";
@@ -39,6 +45,9 @@ class SecondsDescriptorTest {
 		assertEquals(expectedDesc, description);
 	}
 
+	/**
+	 * Test visit() method for 'Every' field expression
+	 */
 	@Test
 	void testVisitForEvery() {
 		SecondsDescriptor mockedDescriptor = mock(SecondsDescriptor.class);
