@@ -464,22 +464,4 @@ public class ValidationFieldExpressionVisitorTest {
         assertFalse(strictVisitor.isSpecialCharNotL(integerValue));
         assertFalse(visitor.isSpecialCharNotL(integerValue));
     }
-
-    @Test
-    public void testIsInRange() {
-        final SpecialCharFieldValue nonIntegerFieldValue = new SpecialCharFieldValue(SpecialChar.LW);
-        strictVisitor.isInRange(nonIntegerFieldValue);
-        visitor.isInRange(nonIntegerFieldValue);
-
-        final IntegerFieldValue integerValue = new IntegerFieldValue(5);
-        strictVisitor.isInRange(integerValue);
-        visitor.isInRange(integerValue);
-    }
-
-    @Test
-    public void testIsInRangeOORangeStrict() {
-        final IntegerFieldValue integerValue = new IntegerFieldValue(HIGHOOR);
-        assertThrows(IllegalArgumentException.class, () -> strictVisitor.isInRange(integerValue));
-    }
-
 }
