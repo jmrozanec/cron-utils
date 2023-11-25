@@ -21,7 +21,8 @@ public class CompositeCron implements Cron {
         this.crons = Collections.unmodifiableList(crons);
         Preconditions.checkNotNullNorEmpty(crons, "List of Cron cannot be null or empty");
         this.definition = crons.get(0).getCronDefinition();
-        Preconditions.checkArgument(crons.size()==crons.stream().filter(c->c.getCronDefinition().equals(definition)).count(), "All Cron objects must have same definition for CompositeCron");
+        long sameDefCronsCount = crons.stream().filter(c->c.getCronDefinition().equals(definition)).count();
+        Preconditions.checkArgument(crons.size()==sameDefCronsCount, "All Cron objects must have same definition for CompositeCron");
     }
 
     public List<Cron> getCrons() {
