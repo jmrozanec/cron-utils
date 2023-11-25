@@ -33,7 +33,7 @@ public class ValueMappingFieldExpressionVisitorTest {
 
     @Test
     public void testVisitQuestionMark() {
-        final FieldExpression param = FieldExpression.questionMark();
+        final FieldExpression param = QuestionMark.questionMark();
         final QuestionMark questionMark = (QuestionMark) param.accept(valueMappingFieldExpressionVisitor);
         assertTrue(param == questionMark);//always the same cause of singleton pattern
     }

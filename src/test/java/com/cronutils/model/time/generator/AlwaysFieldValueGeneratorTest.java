@@ -33,7 +33,7 @@ public class AlwaysFieldValueGeneratorTest {
     @BeforeEach
     public void setUp() {
         fieldValueGenerator = new AlwaysFieldValueGenerator(
-                new CronField(CronFieldName.HOUR, FieldExpression.always(), FieldConstraintsBuilder.instance().createConstraintsInstance()));
+                new CronField(CronFieldName.HOUR, Always.always(), FieldConstraintsBuilder.instance().createConstraintsInstance()));
     }
 
     @Test

@@ -41,8 +41,8 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.cronutils.model.field.expression.FieldExpression.always;
-import static com.cronutils.model.field.expression.FieldExpression.questionMark;
+import static com.cronutils.model.field.expression.Always.always;
+import static com.cronutils.model.field.expression.QuestionMark.questionMark;
 
 public class CronMapper {
     private final Map<CronFieldName, Function<CronField, CronField>> mappings;
