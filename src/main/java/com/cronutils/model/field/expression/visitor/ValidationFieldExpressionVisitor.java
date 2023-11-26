@@ -66,7 +66,7 @@ public class ValidationFieldExpressionVisitor implements FieldExpressionVisitor 
         this.checkUnsupportedChars(between);
         preConditions(between);
 
-        if ((constraints.isStrictRange()) && between.getFrom() instanceof IntegerFieldValue && between.getTo() instanceof IntegerFieldValue) {
+        if (isIntegerStrictRange(between)) {
             final int from = ((IntegerFieldValue) between.getFrom()).getValue();
             final int to = ((IntegerFieldValue) between.getTo()).getValue();
             if (from > to) {
@@ -119,5 +119,11 @@ public class ValidationFieldExpressionVisitor implements FieldExpressionVisitor 
 
     protected boolean isSpecialCharNotL(final FieldValue<?> fieldValue) {
         return fieldValue instanceof SpecialCharFieldValue && !SpecialChar.L.equals(fieldValue.getValue());
+    }
+    
+    private boolean isIntegerStrictRange(final Between between) {
+    	return constraints.isStrictRange() 
+    			&& between.getFrom() instanceof IntegerFieldValue 
+    			&& between.getTo() instanceof IntegerFieldValue;
     }
 }
