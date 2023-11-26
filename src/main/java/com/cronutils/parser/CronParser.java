@@ -93,8 +93,8 @@ public class CronParser {
      */
     public Cron parse(final String expression) {
         Preconditions.checkNotNull(expression, "Expression must not be null");
-        final String replaced = expression.replaceAll("\\s+", " ").trim();
-        if (StringUtils.isEmpty(replaced)) {
+        final String noExtraSpaceExpression = expression.replaceAll("\\s+", " ").trim();
+        if (StringUtils.isEmpty(noExtraSpaceExpression)) {
             throw new IllegalArgumentException("Empty expression!");
         }
 
@@ -143,7 +143,7 @@ public class CronParser {
             }
             return new CompositeCron(crons.stream().map(this::parse).collect(Collectors.toList()));
         }else{
-            final String[] expressionParts = replaced.toUpperCase().split(" ");
+            final String[] expressionParts = noExtraSpaceExpression.toUpperCase().split(" ");
             final int expressionLength = expressionParts.length;
             String fieldWithTrailingCommas = Arrays.stream(expressionParts).filter(x -> x.endsWith(",")).findAny().orElse(null);
             if(fieldWithTrailingCommas!=null){
