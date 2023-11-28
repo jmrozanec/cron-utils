@@ -20,12 +20,13 @@ import com.cronutils.model.field.constraint.FieldConstraints;
 import com.cronutils.model.field.constraint.FieldConstraintsBuilder;
 import com.cronutils.model.field.expression.FieldExpression;
 import com.cronutils.model.field.expression.On;
+import com.cronutils.model.field.expression.QuestionMark;
 import com.cronutils.model.field.value.IntegerFieldValue;
 import com.cronutils.model.time.generator.FieldValueGenerator;
 import com.cronutils.model.time.generator.FieldValueGeneratorFactory;
 import com.cronutils.utils.Preconditions;
 
-import static com.cronutils.model.field.expression.FieldExpression.always;
+import static com.cronutils.model.field.expression.Always.always;
 
 /**
  * Builds required components to get previous/next execution to certain reference date.
@@ -138,7 +139,7 @@ class ExecutionTimeBuilder {
         }
         if (daysOfYearCronField == null) {
             final FieldConstraints constraints = getConstraint(CronFieldName.DAY_OF_YEAR);
-            daysOfYearCronField = new CronField(CronFieldName.DAY_OF_YEAR, lowestAssigned ? FieldExpression.questionMark() : always(),
+            daysOfYearCronField = new CronField(CronFieldName.DAY_OF_YEAR, lowestAssigned ? QuestionMark.questionMark() : always(),
                     constraints);
         }
 

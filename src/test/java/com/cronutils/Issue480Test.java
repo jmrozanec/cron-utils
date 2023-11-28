@@ -14,7 +14,7 @@ import java.time.*;
 import java.time.temporal.ChronoUnit;
 import java.util.Optional;
 
-import static com.cronutils.model.field.expression.FieldExpression.questionMark;
+import static com.cronutils.model.field.expression.QuestionMark.questionMark;
 import static com.cronutils.model.field.expression.FieldExpressionFactory.always;
 import static com.cronutils.model.field.expression.FieldExpressionFactory.on;
 import static org.junit.jupiter.api.Assertions.*;

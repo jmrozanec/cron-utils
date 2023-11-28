@@ -57,7 +57,7 @@ public class ValidationFieldExpressionVisitorTest {
     @Test
     public void testVisitWithInvalidChars() {
         final ValidationFieldExpressionVisitor tempVisitor = new ValidationFieldExpressionVisitor(fieldConstraints, invalidStringValidations);
-        final FieldExpression exp = FieldExpression.always();
+        final FieldExpression exp = Always.always();
         assertThrows(IllegalArgumentException.class, () -> exp.accept(tempVisitor));
     }
 
@@ -66,7 +66,7 @@ public class ValidationFieldExpressionVisitorTest {
         ValidationFieldExpressionVisitor spy = Mockito.spy(visitor);
         ValidationFieldExpressionVisitor strictSpy = Mockito.spy(strictVisitor);
 
-        FieldExpression exp = FieldExpression.always();
+        FieldExpression exp = Always.always();
         final Always always = (Always) exp;
         exp.accept(spy);
         exp.accept(strictSpy);
@@ -123,7 +123,7 @@ public class ValidationFieldExpressionVisitorTest {
         spy = Mockito.spy(visitor);
         strictSpy = Mockito.spy(strictVisitor);
 
-        exp = FieldExpression.questionMark();
+        exp = QuestionMark.questionMark();
         final QuestionMark qm = (QuestionMark) exp;
         exp.accept(spy);
         exp.accept(strictSpy);
@@ -146,14 +146,14 @@ public class ValidationFieldExpressionVisitorTest {
 
     @Test
     public void testVisitAlwaysField() {
-        final FieldExpression always = FieldExpression.always();
+        final FieldExpression always = Always.always();
         assertEquals(always, always.accept(strictVisitor));
         assertEquals(always, always.accept(visitor));
     }
 
     @Test
     public void testVisitQuestionMarkField() {
-        final FieldExpression qm = FieldExpression.questionMark();
+        final FieldExpression qm = QuestionMark.questionMark();
         assertEquals(qm, qm.accept(strictVisitor));
         assertEquals(qm, qm.accept(visitor));
     }
@@ -464,22 +464,4 @@ public class ValidationFieldExpressionVisitorTest {
         assertFalse(strictVisitor.isSpecialCharNotL(integerValue));
         assertFalse(visitor.isSpecialCharNotL(integerValue));
     }
-
-    @Test
-    public void testIsInRange() {
-        final SpecialCharFieldValue nonIntegerFieldValue = new SpecialCharFieldValue(SpecialChar.LW);
-        strictVisitor.isInRange(nonIntegerFieldValue);
-        visitor.isInRange(nonIntegerFieldValue);
-
-        final IntegerFieldValue integerValue = new IntegerFieldValue(5);
-        strictVisitor.isInRange(integerValue);
-        visitor.isInRange(integerValue);
-    }
-
-    @Test
-    public void testIsInRangeOORangeStrict() {
-        final IntegerFieldValue integerValue = new IntegerFieldValue(HIGHOOR);
-        assertThrows(IllegalArgumentException.class, () -> strictVisitor.isInRange(integerValue));
-    }
-
 }

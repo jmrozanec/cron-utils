@@ -43,4 +43,8 @@ public final class QuestionMark extends FieldExpression {
     public String toString() {
         return "QuestionMark{}";
     }
+    
+    public static FieldExpression questionMark() {
+		return INSTANCE;
+	}
 }

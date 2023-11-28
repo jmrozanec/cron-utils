@@ -45,4 +45,8 @@ public class Always extends FieldExpression {
     public String toString() {
         return "Always{}";
     }
+    
+    public static FieldExpression always() {
+		return INSTANCE;
+	}
 }
