@@ -115,6 +115,12 @@ public class CronParser {
         }
     }
     
+    /**
+     * Parse string with nickname cron expressions
+     * @param expression cron expression, never null
+     * @return Cron instance
+     * @throws java.lang.IllegalArgumentException if expression does not match cron definition
+     */
     private Cron parseNicknameExpression(final String expression) {
     	Set<CronNicknames> cronNicknames = cronDefinition.getCronNicknames();
         if(cronNicknames.isEmpty()){
@@ -142,11 +148,23 @@ public class CronParser {
         }
     }
     
+    /**
+     * Parse string with composite cron expressions 
+     * @param expression cron expression, never null
+     * @return Cron instance
+     * @throws java.lang.IllegalArgumentException if expression does not match cron definition
+     */
     private Cron parseCompositeExpression(final String expression) {
         List<Cron> crons = Arrays.stream(expression.split("\\|\\|")).map(this::parse).collect(Collectors.toList());
         return new CompositeCron(crons);
     }
     
+    /**
+     * Parse string with multiple cron expressions 
+     * @param expression cron expression, never null
+     * @return Cron instance
+     * @throws java.lang.IllegalArgumentException if expression does not match cron definition
+     */
     private Cron parseMultipleExpression(final String expression) {
         List<String> crons = new ArrayList<>();
         int cronscount = Arrays.stream(expression.split("\\s+")).mapToInt(s->s.split("\\|").length).max().orElse(0);
@@ -164,6 +182,12 @@ public class CronParser {
         return new CompositeCron(crons.stream().map(this::parse).collect(Collectors.toList()));
     }
     
+    /**
+     * Parse string with single cron expression 
+     * @param noExtraSpaceExpression cleaned cron expression, never null
+     * @return Cron instance
+     * @throws java.lang.IllegalArgumentException if expression does not match cron definition
+     */
     private Cron parseSingleExpression(final String noExtraSpaceExpression) {
         final String[] expressionParts = noExtraSpaceExpression.toUpperCase().split(" ");
         final int expressionLength = expressionParts.length;
