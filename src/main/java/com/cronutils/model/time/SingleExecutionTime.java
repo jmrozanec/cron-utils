@@ -182,11 +182,15 @@ public class SingleExecutionTime implements ExecutionTime {
         if (!minutes.getValues().contains(date.getMinute())) {
             return getNextPotentialMinute(date);
         }
-        if (!seconds.getValues().contains(date.getSecond())) {
-            return getNextPotentialSecond(date);
+        // Rationale for rounding up the nanos:
+        // If nanos != 0, then the matched seconds field time is already in the past.
+        // Additionally, all other fields return the next match with nanos set to zero
+        ZonedDateTime dateWithRoundedUpNanos = date.getNano() == 0 ? date : date.plusNanos(1_000_000_000 - date.getNano());
+        if (!seconds.getValues().contains(dateWithRoundedUpNanos.getSecond())) {
+            return getNextPotentialSecond(dateWithRoundedUpNanos);
         }
 
-        return new ExecutionTimeResult(date, true);
+        return new ExecutionTimeResult(dateWithRoundedUpNanos, true);
     }
 
     private ExecutionTimeResult getNextPotentialYear(final ZonedDateTime date,
