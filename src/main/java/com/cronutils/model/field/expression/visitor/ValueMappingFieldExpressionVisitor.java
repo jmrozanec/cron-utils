@@ -13,10 +13,11 @@
 
 package com.cronutils.model.field.expression.visitor;
 
-import com.cronutils.Function;
 import com.cronutils.model.field.expression.*;
 import com.cronutils.model.field.value.FieldValue;
 import com.cronutils.model.field.value.IntegerFieldValue;
+
+import java.util.function.Function;
 
 import static com.cronutils.model.field.expression.FieldExpression.questionMark;
 

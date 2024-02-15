@@ -9,15 +9,17 @@ import com.cronutils.model.field.value.SpecialCharFieldValue;
 import com.cronutils.utils.StringUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Collections;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+@ExtendWith(MockitoExtension.class)
 public class ValidationFieldExpressionVisitorTest {
 
     private static final int DEFAULT_INT = -1;
@@ -42,13 +44,12 @@ public class ValidationFieldExpressionVisitorTest {
 
     @BeforeEach
     public void setUp() {
-        MockitoAnnotations.initMocks(this);
         final int startRange = 0;
         final int endRange = 59;
         fieldConstraints = new FieldConstraints(Collections.emptyMap(), Collections.emptyMap(), Collections.emptySet(), startRange, endRange, true);
 
-        when(stringValidations.removeValidChars(any(String.class))).thenReturn(StringUtils.EMPTY);
-        when(invalidStringValidations.removeValidChars(any(String.class))).thenReturn("$$$");
+        lenient().when(stringValidations.removeValidChars(any(String.class))).thenReturn(StringUtils.EMPTY);
+        lenient().when(invalidStringValidations.removeValidChars(any(String.class))).thenReturn("$$$");
 
         strictVisitor = new ValidationFieldExpressionVisitor(fieldConstraints, stringValidations);
         visitor = new ValidationFieldExpressionVisitor(fieldConstraints, stringValidations);

@@ -13,11 +13,11 @@
 
 package com.cronutils.mapper;
 
-import com.cronutils.Function;
 import com.cronutils.utils.Preconditions;
 import com.cronutils.utils.VisibleForTesting;
 
 import java.io.Serializable;
+import java.util.function.Function;
 
 @VisibleForTesting
 public class WeekDay implements Serializable {

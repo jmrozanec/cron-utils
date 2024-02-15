@@ -1,19 +1,18 @@
 package com.cronutils;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import com.cronutils.builder.CronBuilder;
+import com.cronutils.model.definition.CronDefinitionBuilder;
+import com.cronutils.model.field.expression.FieldExpressionFactory;
+import com.cronutils.model.time.ExecutionTime;
+import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Optional;
 
-import org.junit.jupiter.api.Test;
-
-import com.cronutils.builder.CronBuilder;
-import com.cronutils.model.definition.CronDefinitionBuilder;
-import com.cronutils.model.field.expression.FieldExpressionFactory;
-import com.cronutils.model.time.ExecutionTime;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class Issue512Test {
     

@@ -59,8 +59,8 @@
     </distributionManagement>
 
     <properties>
-        <slf4j.version>2.0.7</slf4j.version>
-        <junit.version>5.8.1</junit.version>
+        <slf4j.version>2.0.12</slf4j.version>
+        <junit.version>5.10.2</junit.version>
         <mockito.version>4.11.0</mockito.version>
 
         <github.global.server>github</github.global.server>
@@ -81,6 +81,12 @@
             <version>2.0.1.Final</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>jakarta.validation</groupId>
+            <artifactId>jakarta.validation-api</artifactId>
+            <version>3.0.2</version>
+            <scope>provided</scope>
+        </dependency>
 
         <!--test dependencies-->
         <dependency>
@@ -97,7 +103,7 @@
         </dependency>
         <dependency>
             <groupId>org.mockito</groupId>
-            <artifactId>mockito-inline</artifactId>
+            <artifactId>mockito-junit-jupiter</artifactId>
             <version>${mockito.version}</version>
             <scope>test</scope>
         </dependency>
@@ -119,10 +125,16 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-context</artifactId>
-            <version>5.3.26</version>
+            <version>5.3.31</version>
             <scope>test</scope>
         </dependency>
 
+        <dependency>
+            <groupId>org.hibernate.validator</groupId>
+            <artifactId>hibernate-validator</artifactId>
+            <version>7.0.5.Final</version>
+            <scope>test</scope>
+        </dependency>
 
         <dependency>
             <groupId>javax.el</groupId>

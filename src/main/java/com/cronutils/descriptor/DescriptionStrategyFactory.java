@@ -13,7 +13,6 @@
 
 package com.cronutils.descriptor;
 
-import com.cronutils.Function;
 import com.cronutils.model.field.definition.DayOfWeekFieldDefinition;
 import com.cronutils.model.field.definition.FieldDefinition;
 import com.cronutils.model.field.expression.Every;
@@ -25,6 +24,7 @@ import java.time.DayOfWeek;
 import java.time.Month;
 import java.time.format.TextStyle;
 import java.util.ResourceBundle;
+import java.util.function.Function;
 
 class DescriptionStrategyFactory {
 

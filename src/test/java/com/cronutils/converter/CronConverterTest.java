@@ -18,15 +18,32 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import java.time.ZoneId;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.TimeZone;
+import java.util.function.Function;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.spy;
 
 public class CronConverterTest {
+
+
+	// Fixed date to avoid test issue on summer / winter time
+	Function<ZoneId, Calendar> calendarFactory = (zoneId) -> {
+		Calendar fixedDay = new GregorianCalendar();
+		fixedDay.set(Calendar.DATE, 01);
+		fixedDay.set(Calendar.MONTH, 06);
+		fixedDay.set(Calendar.YEAR, 2020);
+		fixedDay.setTimeZone(TimeZone.getTimeZone(zoneId));
+		return fixedDay;
+	};
+
 	private CronConverter cronConverter = spy(new CronConverter(
 			new CronToCalendarTransformer(),
-			new CalendarToCronTransformer()
+			new CalendarToCronTransformer(),
+			calendarFactory
 	));
 
 	public static Stream<Arguments> cronExpressions() {

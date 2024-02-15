@@ -13,7 +13,6 @@
 
 package com.cronutils.descriptor;
 
-import com.cronutils.Function;
 import com.cronutils.model.field.expression.*;
 import com.cronutils.model.field.value.FieldValue;
 import com.cronutils.model.field.value.IntegerFieldValue;
@@ -24,6 +23,7 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.function.Function;
 
 /**
  * Description strategy to handle cases on how to present cron information in a

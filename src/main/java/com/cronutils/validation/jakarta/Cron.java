@@ -1,14 +1,14 @@
-package com.cronutils.validation;
+package com.cronutils.validation.jakarta;
 
 import com.cronutils.model.CronType;
+import jakarta.validation.Constraint;
+import jakarta.validation.Payload;
 
-import javax.validation.Constraint;
-import javax.validation.Payload;
 import java.lang.annotation.*;
 
 @Target({ElementType.FIELD, ElementType.ANNOTATION_TYPE})
 @Retention(RetentionPolicy.RUNTIME)
-@Constraint(validatedBy = CronValidator.class)
+@Constraint(validatedBy = CronJakartaValidator.class)
 @Inherited
 @Documented
 public @interface Cron {
