@@ -13,7 +13,6 @@
 
 package com.cronutils.mapper;
 
-import com.cronutils.Function;
 import com.cronutils.model.Cron;
 import com.cronutils.model.CronType;
 import com.cronutils.model.RebootCron;
@@ -29,7 +28,6 @@ import com.cronutils.model.field.definition.DayOfWeekFieldDefinition;
 import com.cronutils.model.field.definition.FieldDefinition;
 import com.cronutils.model.field.expression.*;
 import com.cronutils.model.field.expression.visitor.FieldExpressionVisitorAdaptor;
-import com.cronutils.model.field.expression.visitor.ValueMappingFieldExpressionVisitor;
 import com.cronutils.model.field.value.FieldValue;
 import com.cronutils.model.field.value.IntegerFieldValue;
 import com.cronutils.model.field.value.SpecialChar;
@@ -40,6 +38,7 @@ import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
 import static com.cronutils.model.field.expression.FieldExpression.always;
 import static com.cronutils.model.field.expression.FieldExpression.questionMark;
@@ -284,7 +283,7 @@ public class CronMapper {
     static Function<CronField, CronField> dayOfWeekMapping(final DayOfWeekFieldDefinition sourceDef, final DayOfWeekFieldDefinition targetDef) {
         return field -> {
             final FieldExpression expression = field.getExpression();
-            FieldExpression dest = null;
+            FieldExpression dest;
             dest = expression.accept(new FieldExpressionVisitorAdaptor() {
                 public FieldExpression visit(Every every) {
                     return new Every(every.getExpression().accept(this), every.getPeriod());

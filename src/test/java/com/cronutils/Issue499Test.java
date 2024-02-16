@@ -1,12 +1,11 @@
 package com.cronutils;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
 import com.cronutils.model.CronType;
 import com.cronutils.model.definition.CronDefinitionBuilder;
 import com.cronutils.parser.CronParser;
-
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class Issue499Test {
     /**

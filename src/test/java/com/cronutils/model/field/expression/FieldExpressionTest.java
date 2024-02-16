@@ -13,8 +13,7 @@
 
 package com.cronutils.model.field.expression;
 
-import com.cronutils.model.field.expression.visitor.*;
-
+import com.cronutils.model.field.expression.visitor.FieldExpressionVisitor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

@@ -19,11 +19,12 @@ import com.cronutils.model.field.constraint.FieldConstraintsBuilder;
 import com.cronutils.model.field.definition.FieldDefinition;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -33,8 +34,9 @@ import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.lenient;
 
+@ExtendWith(MockitoExtension.class)
 public class CronDefinitionTest {
 
     private boolean matchDayOfWeekAndDayOfMonth;
@@ -50,11 +52,10 @@ public class CronDefinitionTest {
         final CronFieldName testFieldName1 = CronFieldName.SECOND;
         final CronFieldName testFieldName2 = CronFieldName.MINUTE;
         final CronFieldName testFieldName3 = CronFieldName.HOUR;
-        MockitoAnnotations.initMocks(this);
-        when(mockFieldDefinition1.getFieldName()).thenReturn(testFieldName1);
-        when(mockFieldDefinition2.getFieldName()).thenReturn(testFieldName2);
-        when(mockFieldDefinition3optional.getFieldName()).thenReturn(testFieldName3);
-        when(mockFieldDefinition3optional.isOptional()).thenReturn(Boolean.TRUE);
+        lenient().when(mockFieldDefinition1.getFieldName()).thenReturn(testFieldName1);
+        lenient().when(mockFieldDefinition2.getFieldName()).thenReturn(testFieldName2);
+        lenient().when(mockFieldDefinition3optional.getFieldName()).thenReturn(testFieldName3);
+        lenient().when(mockFieldDefinition3optional.isOptional()).thenReturn(Boolean.TRUE);
 
         matchDayOfWeekAndDayOfMonth = false;
     }

@@ -13,7 +13,6 @@
 
 package com.cronutils.mapper;
 
-import com.cronutils.Function;
 import com.cronutils.model.definition.CronDefinition;
 import com.cronutils.model.field.CronField;
 import com.cronutils.model.field.CronFieldName;
@@ -21,13 +20,17 @@ import com.cronutils.model.field.expression.Always;
 import com.cronutils.model.field.expression.On;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.util.function.Function;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 
+@ExtendWith(MockitoExtension.class)
 public class CronMapperTest {
     private CronFieldName testCronFieldName;
     @Mock
@@ -35,7 +38,6 @@ public class CronMapperTest {
 
     @BeforeEach
     public void setUp() {
-        MockitoAnnotations.initMocks(this);
         testCronFieldName = CronFieldName.SECOND;
     }
 

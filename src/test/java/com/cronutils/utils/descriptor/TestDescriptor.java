@@ -1,13 +1,5 @@
 package com.cronutils.utils.descriptor;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import java.util.Locale;
-import java.util.ResourceBundle;
-
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
-
 import com.cronutils.descriptor.CronDescriptor;
 import com.cronutils.descriptor.refactor.TimeDescriptor;
 import com.cronutils.model.Cron;
@@ -15,6 +7,13 @@ import com.cronutils.model.CronType;
 import com.cronutils.model.definition.CronDefinition;
 import com.cronutils.model.definition.CronDefinitionBuilder;
 import com.cronutils.parser.CronParser;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+
+import java.util.Locale;
+import java.util.ResourceBundle;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 //FIXME https://github.com/jmrozanec/cron-utils/issues/3
 

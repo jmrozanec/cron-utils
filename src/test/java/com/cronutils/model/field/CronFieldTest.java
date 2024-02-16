@@ -17,8 +17,9 @@ import com.cronutils.model.field.constraint.FieldConstraintsBuilder;
 import com.cronutils.model.field.expression.FieldExpression;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Comparator;
 
@@ -26,6 +27,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+@ExtendWith(MockitoExtension.class)
 public class CronFieldTest {
 
     private CronField result;
@@ -35,7 +37,6 @@ public class CronFieldTest {
 
     @BeforeEach
     public void setUp() {
-        MockitoAnnotations.initMocks(this);
         cronFieldName = CronFieldName.SECOND;
         result = new CronField(cronFieldName, mockFieldExpression, FieldConstraintsBuilder.instance().createConstraintsInstance());
     }
