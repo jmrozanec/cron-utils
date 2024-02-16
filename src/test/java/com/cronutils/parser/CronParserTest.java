@@ -71,7 +71,7 @@ public class CronParserTest {
     private static void validateExpression(CronType cronType, String expression) {
         CronDefinition cronDefinition = CronDefinitionBuilder.instanceDefinitionFor(cronType);
         CronParser parser = new CronParser(cronDefinition);
-        System.out.println(String.format("Validating expression '%s' using %s definition", expression, cronType));
+        System.out.printf("Validating expression '%s' using %s definition%n", expression, cronType);
         parser.parse(expression);
     }
 

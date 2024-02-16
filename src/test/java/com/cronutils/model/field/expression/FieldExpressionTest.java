@@ -36,7 +36,7 @@ public class FieldExpressionTest {
         assertTrue(and.getExpressions().contains(testCronFieldExpression));
     }
 
-    class TestFieldExpression extends FieldExpression {
+    static class TestFieldExpression extends FieldExpression {
 
         private static final long serialVersionUID = 8101930390397976027L;
 

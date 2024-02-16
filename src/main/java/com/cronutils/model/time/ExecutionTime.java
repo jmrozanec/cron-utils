@@ -35,7 +35,7 @@ public interface ExecutionTime {
      * @param cron - Cron instance
      * @return ExecutionTime instance
      */
-    public static ExecutionTime forCron(final Cron cron) {
+    static ExecutionTime forCron(final Cron cron) {
         if (cron instanceof SingleCron) {
             final Map<CronFieldName, CronField> fields = cron.retrieveFieldsAsMap();
             final ExecutionTimeBuilder executionTimeBuilder = new ExecutionTimeBuilder(cron);

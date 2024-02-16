@@ -31,7 +31,7 @@ public class CronConverterTest {
 
     // Fix the date to prevent test failure during the transition between Standard Time and Daylight Time.
     Function<ZoneId, Calendar> calendarFactory = (zoneId) -> {
-        Calendar fixedDay = new GregorianCalendar(2020, 06, 01);
+        Calendar fixedDay = new GregorianCalendar(2020, Calendar.JULY, 01);
         fixedDay.setTimeZone(TimeZone.getTimeZone(zoneId));
         return fixedDay;
     };

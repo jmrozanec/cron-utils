@@ -303,7 +303,7 @@ class TimeDescriptionStrategy extends DescriptionStrategy {
 	/**
 	 * Contains CronFieldExpression instances for hours, minutes and seconds.
 	 */
-	class TimeFields {
+	static class TimeFields {
 		private final FieldExpression seconds;
 		private final FieldExpression minutes;
 		private final FieldExpression hours;
