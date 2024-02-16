@@ -23,18 +23,18 @@ import com.cronutils.model.field.constraint.FieldConstraintsBuilder;
 import com.cronutils.model.field.definition.FieldDefinition;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
+@ExtendWith(MockitoExtension.class)
 public class CronParserTest {
     @Mock
     private CronDefinition definition;
@@ -43,7 +43,6 @@ public class CronParserTest {
 
     @BeforeEach
     public void setUp() {
-        MockitoAnnotations.initMocks(this);
     }
 
     @Test
@@ -72,7 +71,7 @@ public class CronParserTest {
     private static void validateExpression(CronType cronType, String expression) {
         CronDefinition cronDefinition = CronDefinitionBuilder.instanceDefinitionFor(cronType);
         CronParser parser = new CronParser(cronDefinition);
-        System.out.println(String.format("Validating expression '%s' using %s definition", expression, cronType));
+        System.out.printf("Validating expression '%s' using %s definition%n", expression, cronType);
         parser.parse(expression);
     }
 

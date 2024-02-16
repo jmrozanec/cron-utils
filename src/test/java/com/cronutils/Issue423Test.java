@@ -43,7 +43,7 @@ public class Issue423Test {
         final CronParser parser = new CronParser(CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ));
         final Cron cron = parser.parse("0 0 0-07,17-0 ? * SAT");
         final CronDescriptor cd = CronDescriptor.instance(Locale.UK);
-        assertTrue(cd.describe(cron).length() > 0);
+        assertTrue(!cd.describe(cron).isEmpty());
         // at time of test creation, the descriptor is
         // "every hour between 0 and 7 and every hour between 17 and 0 at Saturday day"
 

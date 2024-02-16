@@ -33,7 +33,7 @@ public class Issue305Test {
             dates.add(nextExecution.get());
             nextExecution = executionTime.nextExecution(nextExecution.get());
         }
-        Set<Integer> years = dates.stream().map(d->d.getYear()).collect(Collectors.toSet());
+        Set<Integer> years = dates.stream().map(ZonedDateTime::getYear).collect(Collectors.toSet());
         Set<Integer> expectedYears = new HashSet<>();
         expectedYears.add(2015);
         expectedYears.add(2017);

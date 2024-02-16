@@ -22,8 +22,9 @@ import com.cronutils.model.field.expression.FieldExpression;
 import com.cronutils.parser.CronParser;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.*;
 import java.util.Collections;
@@ -33,6 +34,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+@ExtendWith(MockitoExtension.class)
 public class CronTest {
     private Cron cron;
     private CronFieldName testName;
@@ -42,7 +44,6 @@ public class CronTest {
 
     @BeforeEach
     public void setUp() {
-        MockitoAnnotations.initMocks(this);
         testName = CronFieldName.SECOND;
         when(mockField.getField()).thenReturn(testName);
         fields = Collections.singletonList(mockField);

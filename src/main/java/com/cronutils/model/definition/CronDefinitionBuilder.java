@@ -240,8 +240,7 @@ public class CronDefinitionBuilder {
      * @return returns CronDefinition instance, never null
      */
     public CronDefinition instance() {
-        final Set<CronConstraint> validations = new HashSet<>();
-        validations.addAll(cronConstraints);
+        final Set<CronConstraint> validations = new HashSet<>(cronConstraints);
         final List<FieldDefinition> values = new ArrayList<>(fields.values());
         values.sort(FieldDefinition.createFieldDefinitionComparator());
         return new CronDefinition(values, validations, cronNicknames, matchDayOfWeekAndDayOfMonth);

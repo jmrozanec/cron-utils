@@ -13,8 +13,7 @@
 
 package com.cronutils.model.field.expression;
 
-import com.cronutils.model.field.expression.visitor.*;
-
+import com.cronutils.model.field.expression.visitor.FieldExpressionVisitor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -37,7 +36,7 @@ public class FieldExpressionTest {
         assertTrue(and.getExpressions().contains(testCronFieldExpression));
     }
 
-    class TestFieldExpression extends FieldExpression {
+    static class TestFieldExpression extends FieldExpression {
 
         private static final long serialVersionUID = 8101930390397976027L;
 

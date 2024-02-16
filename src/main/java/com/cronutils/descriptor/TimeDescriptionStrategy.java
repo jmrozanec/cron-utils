@@ -13,7 +13,6 @@
 
 package com.cronutils.descriptor;
 
-import com.cronutils.Function;
 import com.cronutils.model.field.expression.*;
 import com.cronutils.model.field.value.IntegerFieldValue;
 import com.cronutils.utils.Preconditions;
@@ -22,6 +21,7 @@ import com.cronutils.utils.StringUtils;
 import java.util.HashSet;
 import java.util.ResourceBundle;
 import java.util.Set;
+import java.util.function.Function;
 
 import static com.cronutils.model.field.expression.FieldExpression.always;
 
@@ -303,7 +303,7 @@ class TimeDescriptionStrategy extends DescriptionStrategy {
 	/**
 	 * Contains CronFieldExpression instances for hours, minutes and seconds.
 	 */
-	class TimeFields {
+	static class TimeFields {
 		private final FieldExpression seconds;
 		private final FieldExpression minutes;
 		private final FieldExpression hours;

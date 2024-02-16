@@ -143,7 +143,7 @@ public class CronDescriptor {
         final String description = DescriptionStrategyFactory.daysOfWeekInstance(
                 resourceBundle,
                 fields.containsKey(CronFieldName.DAY_OF_WEEK) ? fields.get(CronFieldName.DAY_OF_WEEK).getExpression() : null,
-                definitions.containsKey(CronFieldName.DAY_OF_WEEK) ? definitions.get(CronFieldName.DAY_OF_WEEK) : null
+                definitions.getOrDefault(CronFieldName.DAY_OF_WEEK, null)
         ).describe();
         return addExpressions(description, resourceBundle.getString("day"), resourceBundle.getString("days"));
     }

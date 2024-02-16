@@ -13,12 +13,13 @@
 
 package com.cronutils.model.field.expression.visitor;
 
-import com.cronutils.Function;
 import com.cronutils.model.field.expression.FieldExpression;
 import com.cronutils.model.field.expression.QuestionMark;
 import com.cronutils.model.field.value.FieldValue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.util.function.Function;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 

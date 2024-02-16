@@ -58,6 +58,6 @@ public class CompositeExecutionTime implements ExecutionTime {
 
     @Override
     public boolean isMatch(ZonedDateTime date) {
-        return executionTimes.parallelStream().map(e->e.isMatch(date)).filter(v-> v).count()>0;
+        return executionTimes.parallelStream().map(e -> e.isMatch(date)).anyMatch(v -> v);
     }
 }

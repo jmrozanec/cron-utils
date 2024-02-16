@@ -23,7 +23,7 @@ public enum CronFieldName {
      * effective bi-, tri- or quad-weekly schedules via proprietary cron expressions.
      */
 
-    private int order;
+    private final int order;
 
     /**
      * Constructor.

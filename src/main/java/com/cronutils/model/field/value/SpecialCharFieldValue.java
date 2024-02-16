@@ -18,7 +18,7 @@ import com.cronutils.utils.Preconditions;
 public class SpecialCharFieldValue extends FieldValue<SpecialChar> {
 
     private static final long serialVersionUID = -2177180413324528746L;
-    private SpecialChar specialChar = SpecialChar.NONE;
+    private SpecialChar specialChar;
 
     public SpecialCharFieldValue(final SpecialChar specialChar) {
         Preconditions.checkNotNull(specialChar, "special char must not be null");

@@ -1,10 +1,10 @@
-package com.cronutils.validation;
+package com.cronutils.validation.jakarta;
 
-import javax.validation.ConstraintValidator;
-import javax.validation.ConstraintValidatorContext;
+import com.cronutils.validation.AbstractCronValidator;
+import jakarta.validation.ConstraintValidator;
+import jakarta.validation.ConstraintValidatorContext;
 
-public class CronValidator extends AbstractCronValidator implements ConstraintValidator<Cron, String> {
-
+public class CronJakartaValidator extends AbstractCronValidator implements ConstraintValidator<Cron, String> {
 
     @Override
     public void initialize(Cron constraintAnnotation) {
