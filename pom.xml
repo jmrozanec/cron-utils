@@ -81,6 +81,12 @@
             <version>2.0.1.Final</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>jakarta.validation</groupId>
+            <artifactId>jakarta.validation-api</artifactId>
+            <version>3.0.2</version>
+            <scope>provided</scope>
+        </dependency>
 
         <!--test dependencies-->
         <dependency>
@@ -120,6 +126,13 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-context</artifactId>
             <version>5.3.26</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.hibernate.validator</groupId>
+            <artifactId>hibernate-validator</artifactId>
+            <version>7.0.5.Final</version>
             <scope>test</scope>
         </dependency>
 
