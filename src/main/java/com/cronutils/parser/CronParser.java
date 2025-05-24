@@ -93,77 +93,122 @@ public class CronParser {
      */
     public Cron parse(final String expression) {
         Preconditions.checkNotNull(expression, "Expression must not be null");
-        final String replaced = expression.replaceAll("\\s+", " ").trim();
-        if (StringUtils.isEmpty(replaced)) {
+        final String noExtraSpaceExpression = expression.replaceAll("\\s+", " ").trim();
+        if (StringUtils.isEmpty(noExtraSpaceExpression)) {
             throw new IllegalArgumentException("Empty expression!");
         }
 
-        Set<CronNicknames> cronNicknames = cronDefinition.getCronNicknames();
         if(expression.startsWith("@")){
-            if(cronNicknames.isEmpty()){
-                throw new IllegalArgumentException("Nicknames not supported!");
-            }
-            switch (expression){
-                case "@yearly":
-                    return validateAndReturnSupportedCronNickname(expression, cronNicknames, CronNicknames.YEARLY, CronBuilder.yearly(cronDefinition));
-                case "@annually":
-                    return validateAndReturnSupportedCronNickname(expression, cronNicknames, CronNicknames.ANNUALLY, CronBuilder.annually(cronDefinition));
-                case "@monthly":
-                    return validateAndReturnSupportedCronNickname(expression, cronNicknames, CronNicknames.MONTHLY, CronBuilder.monthly(cronDefinition));
-                case "@weekly":
-                    return validateAndReturnSupportedCronNickname(expression, cronNicknames, CronNicknames.WEEKLY, CronBuilder.weekly(cronDefinition));
-                case "@daily":
-                    return validateAndReturnSupportedCronNickname(expression, cronNicknames, CronNicknames.DAILY, CronBuilder.daily(cronDefinition));
-                case "@midnight":
-                    return validateAndReturnSupportedCronNickname(expression, cronNicknames, CronNicknames.MIDNIGHT, CronBuilder.midnight(cronDefinition));
-                case "@hourly":
-                    return validateAndReturnSupportedCronNickname(expression, cronNicknames, CronNicknames.HOURLY, CronBuilder.hourly(cronDefinition));
-                case "@reboot":
-                    return validateAndReturnSupportedCronNickname(expression, cronNicknames, CronNicknames.REBOOT, CronBuilder.reboot(cronDefinition));
-            }
+        	Cron cron = parseNicknameExpression(expression);
+        	if(cron != null) {
+        		return cron;
+        	}
         }
 
         if(expression.contains("||")) {
-            List<Cron> crons = Arrays.stream(expression.split("\\|\\|")).map(this::parse).collect(Collectors.toList());
-            return new CompositeCron(crons);
+        	return parseCompositeExpression(expression);
         }
         if(expression.contains("|")){
-            List<String> crons = new ArrayList<>();
-            int cronscount = Arrays.stream(expression.split("\\s+")).mapToInt(s->s.split("\\|").length).max().orElse(0);
-            for(int j=0; j<cronscount; j++){
-                StringBuilder builder = new StringBuilder();
-                for(String s : expression.split("\\s+")){
-                    if(s.contains("|")){
-                        builder.append(String.format("%s ", s.split("\\|")[j]));
-                    }else{
-                        builder.append(String.format("%s ", s));
-                    }
-                }
-                crons.add(builder.toString().trim());
-            }
-            return new CompositeCron(crons.stream().map(this::parse).collect(Collectors.toList()));
+        	return parseMultipleExpression(expression);
         }else{
-            final String[] expressionParts = replaced.toUpperCase().split(" ");
-            final int expressionLength = expressionParts.length;
-            String fieldWithTrailingCommas = Arrays.stream(expressionParts).filter(x -> x.endsWith(",")).findAny().orElse(null);
-            if(fieldWithTrailingCommas!=null){
-                throw new IllegalArgumentException(String.format("Invalid field value! Trailing commas not permitted! '%s'", fieldWithTrailingCommas));
-            }
-            final List<CronParserField> fields = expressions.get(expressionLength);
-            if (fields == null) {
-                throw new IllegalArgumentException(
-                        String.format("Cron expression contains %s parts but we expect one of %s", expressionLength, expressions.keySet()));
-            }
-            try {
-                final int size = expressionParts.length;
-                final List<CronField> results = new ArrayList<>(size + 1);
-                for (int j = 0; j < size; j++) {
-                    results.add(fields.get(j).parse(expressionParts[j]));
+        	return parseSingleExpression(noExtraSpaceExpression);
+        }
+    }
+    
+    /**
+     * Parse string with nickname cron expressions
+     * @param expression cron expression, never null
+     * @return Cron instance
+     * @throws java.lang.IllegalArgumentException if expression does not match cron definition
+     */
+    private Cron parseNicknameExpression(final String expression) {
+    	Set<CronNicknames> cronNicknames = cronDefinition.getCronNicknames();
+        if(cronNicknames.isEmpty()){
+            throw new IllegalArgumentException("Nicknames not supported!");
+        }
+        switch (expression){
+            case "@yearly":
+                return validateAndReturnSupportedCronNickname(expression, cronNicknames, CronNicknames.YEARLY, CronBuilder.yearly(cronDefinition));
+            case "@annually":
+                return validateAndReturnSupportedCronNickname(expression, cronNicknames, CronNicknames.ANNUALLY, CronBuilder.annually(cronDefinition));
+            case "@monthly":
+                return validateAndReturnSupportedCronNickname(expression, cronNicknames, CronNicknames.MONTHLY, CronBuilder.monthly(cronDefinition));
+            case "@weekly":
+                return validateAndReturnSupportedCronNickname(expression, cronNicknames, CronNicknames.WEEKLY, CronBuilder.weekly(cronDefinition));
+            case "@daily":
+                return validateAndReturnSupportedCronNickname(expression, cronNicknames, CronNicknames.DAILY, CronBuilder.daily(cronDefinition));
+            case "@midnight":
+                return validateAndReturnSupportedCronNickname(expression, cronNicknames, CronNicknames.MIDNIGHT, CronBuilder.midnight(cronDefinition));
+            case "@hourly":
+                return validateAndReturnSupportedCronNickname(expression, cronNicknames, CronNicknames.HOURLY, CronBuilder.hourly(cronDefinition));
+            case "@reboot":
+                return validateAndReturnSupportedCronNickname(expression, cronNicknames, CronNicknames.REBOOT, CronBuilder.reboot(cronDefinition));
+            default:
+            	return null;
+        }
+    }
+    
+    /**
+     * Parse string with composite cron expressions 
+     * @param expression cron expression, never null
+     * @return Cron instance
+     * @throws java.lang.IllegalArgumentException if expression does not match cron definition
+     */
+    private Cron parseCompositeExpression(final String expression) {
+        List<Cron> crons = Arrays.stream(expression.split("\\|\\|")).map(this::parse).collect(Collectors.toList());
+        return new CompositeCron(crons);
+    }
+    
+    /**
+     * Parse string with multiple cron expressions 
+     * @param expression cron expression, never null
+     * @return Cron instance
+     * @throws java.lang.IllegalArgumentException if expression does not match cron definition
+     */
+    private Cron parseMultipleExpression(final String expression) {
+        List<String> crons = new ArrayList<>();
+        int cronscount = Arrays.stream(expression.split("\\s+")).mapToInt(s->s.split("\\|").length).max().orElse(0);
+        for(int j=0; j<cronscount; j++){
+            StringBuilder builder = new StringBuilder();
+            for(String s : expression.split("\\s+")){
+                if(s.contains("|")){
+                    builder.append(String.format("%s ", s.split("\\|")[j]));
+                }else{
+                    builder.append(String.format("%s ", s));
                 }
-                return new SingleCron(cronDefinition, results).validate();
-            } catch (final IllegalArgumentException e) {
-                throw new IllegalArgumentException(String.format("Failed to parse cron expression. %s", e.getMessage()), e);
             }
+            crons.add(builder.toString().trim());
+        }
+        return new CompositeCron(crons.stream().map(this::parse).collect(Collectors.toList()));
+    }
+    
+    /**
+     * Parse string with single cron expression 
+     * @param noExtraSpaceExpression cleaned cron expression, never null
+     * @return Cron instance
+     * @throws java.lang.IllegalArgumentException if expression does not match cron definition
+     */
+    private Cron parseSingleExpression(final String noExtraSpaceExpression) {
+        final String[] expressionParts = noExtraSpaceExpression.toUpperCase().split(" ");
+        final int expressionLength = expressionParts.length;
+        String fieldWithTrailingCommas = Arrays.stream(expressionParts).filter(x -> x.endsWith(",")).findAny().orElse(null);
+        if(fieldWithTrailingCommas!=null){
+            throw new IllegalArgumentException(String.format("Invalid field value! Trailing commas not permitted! '%s'", fieldWithTrailingCommas));
+        }
+        final List<CronParserField> fields = expressions.get(expressionLength);
+        if (fields == null) {
+            throw new IllegalArgumentException(
+                    String.format("Cron expression contains %s parts but we expect one of %s", expressionLength, expressions.keySet()));
+        }
+        try {
+            final int size = expressionParts.length;
+            final List<CronField> results = new ArrayList<>(size + 1);
+            for (int j = 0; j < size; j++) {
+                results.add(fields.get(j).parse(expressionParts[j]));
+            }
+            return new SingleCron(cronDefinition, results).validate();
+        } catch (final IllegalArgumentException e) {
+            throw new IllegalArgumentException(String.format("Failed to parse cron expression. %s", e.getMessage()), e);
         }
     }
 }

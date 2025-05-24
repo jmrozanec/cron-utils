@@ -21,6 +21,7 @@ import com.cronutils.model.field.CronField;
 import com.cronutils.model.field.CronFieldName;
 import com.cronutils.model.field.constraint.FieldConstraints;
 import com.cronutils.model.field.definition.FieldDefinition;
+import com.cronutils.model.field.expression.Always;
 import com.cronutils.model.field.expression.FieldExpression;
 import com.cronutils.model.field.expression.On;
 import com.cronutils.model.field.expression.visitor.ValidationFieldExpressionVisitor;
@@ -106,7 +107,7 @@ public class CronBuilder {
             builder = builder.withMonth(new On(new IntegerFieldValue(1)));
         }
         if(definition.containsFieldDefinition(DAY_OF_WEEK)){
-            builder = builder.withDoW(FieldExpression.always());
+            builder = builder.withDoW(Always.always());
         }
         return builder.instance();
     }
@@ -130,10 +131,10 @@ public class CronBuilder {
             builder = builder.withDoM(new On(new IntegerFieldValue(1)));
         }
         if(definition.containsFieldDefinition(MONTH)){
-            builder = builder.withMonth(FieldExpression.always());
+            builder = builder.withMonth(Always.always());
         }
         if(definition.containsFieldDefinition(DAY_OF_WEEK)){
-            builder = builder.withDoW(FieldExpression.always());
+            builder = builder.withDoW(Always.always());
         }
         return builder.instance();
     }
@@ -150,10 +151,10 @@ public class CronBuilder {
             builder = builder.withHour(new On(new IntegerFieldValue(0)));
         }
         if(definition.containsFieldDefinition(DAY_OF_MONTH)){
-            builder = builder.withDoM(FieldExpression.always());
+            builder = builder.withDoM(Always.always());
         }
         if(definition.containsFieldDefinition(MONTH)){
-            builder = builder.withMonth(FieldExpression.always());
+            builder = builder.withMonth(Always.always());
         }
         if(definition.containsFieldDefinition(DAY_OF_WEEK)){
             builder = builder.withDoW(new On(new IntegerFieldValue(0)));
@@ -173,13 +174,13 @@ public class CronBuilder {
             builder = builder.withHour(new On(new IntegerFieldValue(0)));
         }
         if(definition.containsFieldDefinition(DAY_OF_MONTH)){
-            builder = builder.withDoM(FieldExpression.always());
+            builder = builder.withDoM(Always.always());
         }
         if(definition.containsFieldDefinition(MONTH)){
-            builder = builder.withMonth(FieldExpression.always());
+            builder = builder.withMonth(Always.always());
         }
         if(definition.containsFieldDefinition(DAY_OF_WEEK)){
-            builder = builder.withDoW(FieldExpression.always());
+            builder = builder.withDoW(Always.always());
         }
         return builder.instance();
     }
@@ -197,16 +198,16 @@ public class CronBuilder {
             builder = builder.withMinute(new On(new IntegerFieldValue(0)));
         }
         if(definition.containsFieldDefinition(HOUR)){
-            builder = builder.withHour(FieldExpression.always());
+            builder = builder.withHour(Always.always());
         }
         if(definition.containsFieldDefinition(DAY_OF_MONTH)){
-            builder = builder.withDoM(FieldExpression.always());
+            builder = builder.withDoM(Always.always());
         }
         if(definition.containsFieldDefinition(MONTH)){
-            builder = builder.withMonth(FieldExpression.always());
+            builder = builder.withMonth(Always.always());
         }
         if(definition.containsFieldDefinition(DAY_OF_WEEK)){
-            builder = builder.withDoW(FieldExpression.always());
+            builder = builder.withDoW(Always.always());
         }
         return builder.instance();
     }

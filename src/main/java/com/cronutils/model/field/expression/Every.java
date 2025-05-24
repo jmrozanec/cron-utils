@@ -29,7 +29,7 @@ public class Every extends FieldExpression {
     private final IntegerFieldValue period;
 
     public Every(final IntegerFieldValue time) {
-        this(always(), time);
+        this(Always.always(), time);
     }
 
     public Every(final FieldExpression expression, final IntegerFieldValue period) {

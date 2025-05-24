@@ -5,7 +5,7 @@ import com.cronutils.model.definition.CronDefinitionBuilder;
 import org.junit.jupiter.api.Test;
 
 import static com.cronutils.model.CronType.UNIX;
-import static com.cronutils.model.field.expression.FieldExpression.always;
+import static com.cronutils.model.field.expression.Always.always;
 import static com.cronutils.model.field.expression.FieldExpressionFactory.on;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 

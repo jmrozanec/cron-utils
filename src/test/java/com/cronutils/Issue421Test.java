@@ -13,7 +13,7 @@ import java.time.*;
 import java.util.Locale;
 import java.util.Optional;
 
-import static com.cronutils.model.field.expression.FieldExpression.questionMark;
+import static com.cronutils.model.field.expression.QuestionMark.questionMark;
 import static com.cronutils.model.field.expression.FieldExpressionFactory.every;
 import static com.cronutils.model.field.expression.FieldExpressionFactory.on;
 import static org.junit.jupiter.api.Assertions.*;

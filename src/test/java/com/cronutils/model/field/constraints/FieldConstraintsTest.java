@@ -14,7 +14,10 @@
 package com.cronutils.model.field.constraints;
 
 import com.cronutils.model.field.constraint.FieldConstraints;
+import com.cronutils.model.field.value.IntegerFieldValue;
 import com.cronutils.model.field.value.SpecialChar;
+import com.cronutils.model.field.value.SpecialCharFieldValue;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -32,6 +35,7 @@ public class FieldConstraintsTest {
     private int startRange;
     private int endRange;
     private boolean strictRange;
+    private FieldConstraints fieldConstraints;
 
     @BeforeEach
     public void setUp() {
@@ -41,6 +45,7 @@ public class FieldConstraintsTest {
         startRange = 0;
         endRange = 59;
         strictRange = true;
+        fieldConstraints = new FieldConstraints(Collections.emptyMap(), Collections.emptyMap(), Collections.emptySet(), startRange, endRange, true);
     }
 
     @Test
@@ -57,4 +62,20 @@ public class FieldConstraintsTest {
     public void testSpecialCharsSetNull() {
         assertThrows(NullPointerException.class, () -> new FieldConstraints(stringMapping, intMapping, null, startRange, endRange, strictRange));
     }
+    
+    @Test
+    public void testIsInRangeForFieldValue() {
+        final SpecialCharFieldValue nonIntegerFieldValue = new SpecialCharFieldValue(SpecialChar.LW);
+        fieldConstraints.isInRange(nonIntegerFieldValue);
+
+        final IntegerFieldValue integerValue = new IntegerFieldValue(5);
+        fieldConstraints.isInRange(integerValue);
+    }
+
+    @Test
+    public void testIsInRangeForFieldValueOORangeStrict() {
+        final IntegerFieldValue integerValue = new IntegerFieldValue(999);
+        assertThrows(IllegalArgumentException.class, () -> fieldConstraints.isInRange(integerValue));
+    }
+
 }

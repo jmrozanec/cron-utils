@@ -23,8 +23,6 @@ import com.cronutils.model.field.value.SpecialCharFieldValue;
 import com.cronutils.utils.VisibleForTesting;
 
 public class ValidationFieldExpressionVisitor implements FieldExpressionVisitor {
-    private static final String OORANGE = "Value %s not in range [%s, %s]";
-
     private final FieldConstraints constraints;
     private final StringValidations stringValidations;
 
@@ -68,7 +66,7 @@ public class ValidationFieldExpressionVisitor implements FieldExpressionVisitor 
         this.checkUnsupportedChars(between);
         preConditions(between);
 
-        if ((constraints.isStrictRange()) && between.getFrom() instanceof IntegerFieldValue && between.getTo() instanceof IntegerFieldValue) {
+        if (isIntegerStrictRange(between)) {
             final int from = ((IntegerFieldValue) between.getFrom()).getValue();
             final int to = ((IntegerFieldValue) between.getTo()).getValue();
             if (from > to) {
@@ -84,7 +82,7 @@ public class ValidationFieldExpressionVisitor implements FieldExpressionVisitor 
         this.checkUnsupportedChars(every);
         if (every.getExpression() != null)
             every.getExpression().accept(this);
-        isPeriodInRange(every.getPeriod());
+        constraints.isPeriodInRange(every.getPeriod());
         return every;
     }
 
@@ -92,10 +90,10 @@ public class ValidationFieldExpressionVisitor implements FieldExpressionVisitor 
     public On visit(final On on) {
         this.checkUnsupportedChars(on);
         if (!isDefault(on.getTime())) {
-            isInRange(on.getTime());
+        	constraints.isInRange(on.getTime());
         }
         if (!isDefault(on.getNth())) {
-            isInRange(on.getNth());
+        	constraints.isInRange(on.getNth());
         }
         return on;
     }
@@ -107,43 +105,10 @@ public class ValidationFieldExpressionVisitor implements FieldExpressionVisitor 
     }
 
     private void preConditions(final Between between) {
-        isInRange(between.getFrom());
-        isInRange(between.getTo());
+    	constraints.isInRange(between.getFrom());
+    	constraints.isInRange(between.getTo());
         if (isSpecialCharNotL(between.getFrom()) || isSpecialCharNotL(between.getTo())) {
             throw new IllegalArgumentException("No special characters allowed in range, except for 'L'");
-        }
-    }
-
-    /**
-     * Check if given number is greater or equal to start range and minor or equal to end range.
-     *
-     * @param fieldValue - to be validated
-     * @throws IllegalArgumentException - if not in range
-     */
-    @VisibleForTesting
-    protected void isInRange(final FieldValue<?> fieldValue) {
-        if (fieldValue instanceof IntegerFieldValue) {
-            final int value = ((IntegerFieldValue) fieldValue).getValue();
-            if (!constraints.isInRange(value)) {
-                throw new IllegalArgumentException(String.format(OORANGE, value, constraints.getStartRange(), constraints.getEndRange()));
-            }
-        }
-    }
-
-    /**
-     * Check if given period is compatible with range.
-     *
-     * @param fieldValue - to be validated
-     * @throws IllegalArgumentException - if not in range
-     */
-    @VisibleForTesting
-    protected void isPeriodInRange(final FieldValue<?> fieldValue) {
-        if (fieldValue instanceof IntegerFieldValue) {
-            final int value = ((IntegerFieldValue) fieldValue).getValue();
-            if (!constraints.isPeriodInRange(value)) {
-                throw new IllegalArgumentException(
-                        String.format("Period %s not in range [%s, %s]", value, constraints.getStartRange(), constraints.getEndRange()));
-            }
         }
     }
 
@@ -154,5 +119,11 @@ public class ValidationFieldExpressionVisitor implements FieldExpressionVisitor 
 
     protected boolean isSpecialCharNotL(final FieldValue<?> fieldValue) {
         return fieldValue instanceof SpecialCharFieldValue && !SpecialChar.L.equals(fieldValue.getValue());
+    }
+    
+    private boolean isIntegerStrictRange(final Between between) {
+    	return constraints.isStrictRange() 
+    			&& between.getFrom() instanceof IntegerFieldValue 
+    			&& between.getTo() instanceof IntegerFieldValue;
     }
 }

@@ -18,7 +18,7 @@ import com.cronutils.model.field.expression.*;
 import com.cronutils.model.field.value.FieldValue;
 import com.cronutils.model.field.value.IntegerFieldValue;
 
-import static com.cronutils.model.field.expression.FieldExpression.questionMark;
+import static com.cronutils.model.field.expression.QuestionMark.questionMark;
 
 /**
  * Performs a transformation on FieldExpression values.

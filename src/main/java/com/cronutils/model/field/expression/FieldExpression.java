@@ -42,12 +42,4 @@ public abstract class FieldExpression implements Serializable {
 	 * @return FieldExpression copied instance with visitor action performed.
 	 */
 	public abstract FieldExpression accept(final FieldExpressionVisitor visitor);
-
-	public static FieldExpression always() {
-		return Always.INSTANCE;
-	}
-
-	public static FieldExpression questionMark() {
-		return QuestionMark.INSTANCE;
-	}
 }

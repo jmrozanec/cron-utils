@@ -27,8 +27,8 @@ import com.cronutils.utils.VisibleForTesting;
 
 import java.util.regex.Pattern;
 
-import static com.cronutils.model.field.expression.FieldExpression.always;
-import static com.cronutils.model.field.expression.FieldExpression.questionMark;
+import static com.cronutils.model.field.expression.Always.always;
+import static com.cronutils.model.field.expression.QuestionMark.questionMark;
 import static com.cronutils.model.field.value.SpecialChar.*;
 
 /**

@@ -13,8 +13,11 @@
 
 package com.cronutils.model.field.constraint;
 
+import com.cronutils.model.field.value.FieldValue;
+import com.cronutils.model.field.value.IntegerFieldValue;
 import com.cronutils.model.field.value.SpecialChar;
 import com.cronutils.utils.Preconditions;
+import com.cronutils.utils.VisibleForTesting;
 
 import java.io.Serializable;
 import java.util.Collections;
@@ -66,6 +69,22 @@ public class FieldConstraints implements Serializable {
     public Set<SpecialChar> getSpecialChars() {
         return specialChars;
     }
+    
+    /**
+     * Check if given number is greater or equal to start range and minor or equal to end range.
+     *
+     * @param fieldValue - to be validated
+     * @throws IllegalArgumentException - if not in range
+     */
+    @VisibleForTesting
+    public void isInRange(final FieldValue<?> fieldValue) {
+        if (fieldValue instanceof IntegerFieldValue) {
+            final int value = ((IntegerFieldValue) fieldValue).getValue();
+            if (!isInRange(value)) {
+                throw new IllegalArgumentException(String.format("Value %s not in range [%s, %s]", value, getStartRange(), getEndRange()));
+            }
+        }
+    }
 
     /**
      * Check if given number is greater or equal to start range and minor or equal to end range.
@@ -76,6 +95,23 @@ public class FieldConstraints implements Serializable {
         return value >= getStartRange() && value <= getEndRange();
     }
 
+    /**
+     * Check if given period is compatible with range.
+     *
+     * @param fieldValue - to be validated
+     * @throws IllegalArgumentException - if not in range
+     */
+    @VisibleForTesting
+    public void isPeriodInRange(final FieldValue<?> fieldValue) {
+        if (fieldValue instanceof IntegerFieldValue) {
+            final int value = ((IntegerFieldValue) fieldValue).getValue();
+            if (!isPeriodInRange(value)) {
+                throw new IllegalArgumentException(
+                        String.format("Period %s not in range [%s, %s]", value, getStartRange(), getEndRange()));
+            }
+        }
+    }
+    
     /**
      * Check if given period is compatible with the given range.
      *

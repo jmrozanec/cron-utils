@@ -23,7 +23,7 @@ import java.util.HashSet;
 import java.util.ResourceBundle;
 import java.util.Set;
 
-import static com.cronutils.model.field.expression.FieldExpression.always;
+import static com.cronutils.model.field.expression.Always.always;
 
 /**
  * Strategy to provide a human readable description to hh:mm:ss variations.
