@@ -65,4 +65,32 @@ public class WeekDayTest {
         final WeekDay target = new WeekDay(2, false);
         assertEquals(1, source.mapTo(value, target));
     }
+
+    @Test
+    public void testMapSourceWithZeroStartingMonday_TargetWithZeroNotStartingMonday() {
+        final WeekDay source = new WeekDay(0, true);
+        final WeekDay target = new WeekDay(1, true);
+        assertEquals(1, source.mapTo(6, target));
+    }
+
+    @Test
+    public void testMapSourceWithZeroStartingMonday_TargetWithZeroStartingMonday() {
+        final WeekDay source = new WeekDay(0, true);
+        final WeekDay target = new WeekDay(0, true);
+        assertEquals(6, source.mapTo(6, target));
+    }
+
+    @Test
+    public void testMapSourceWithZeroStartingMonday_TargetWithoutZeroStartingMonday() {
+        final WeekDay source = new WeekDay(0, true);
+        final WeekDay target = new WeekDay(1, false);
+        assertEquals(2, source.mapTo(1, target));
+    }
+
+    @Test
+    public void testMapSourceWithZeroStartingMonday_TargetWithoutZeroStartingSunday() {
+        final WeekDay source = new WeekDay(0, true);
+        final WeekDay target = new WeekDay(2, false);
+        assertEquals(2, source.mapTo(6, target));
+    }
 }
