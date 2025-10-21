@@ -80,4 +80,23 @@ public class OnTest {
         assertEquals(expression,
                 new On(new IntegerFieldValue(first), new SpecialCharFieldValue(SpecialChar.HASH), new IntegerFieldValue(second)).asString());
     }
+
+    @Test
+    public void testAsStringSpecialCharQuestionMark() {
+        final String expression = "?";
+        assertEquals(expression, new On(new SpecialCharFieldValue(SpecialChar.QUESTION_MARK)).asString());
+    }
+
+    @Test
+    public void testAsStringSpecialCharLWithTime() {
+        final int dayOfWeek = 5;
+        final String expression = String.format("%sL", dayOfWeek);
+        assertEquals(expression, new On(new IntegerFieldValue(dayOfWeek), new SpecialCharFieldValue(SpecialChar.L)).asString());
+    }
+
+    @Test
+    public void testAsStringSpecialCharWDefault() {
+        final String expression = "W";
+        assertEquals(expression, new On(new IntegerFieldValue(-1), new SpecialCharFieldValue(SpecialChar.W)).asString());
+    }
 }

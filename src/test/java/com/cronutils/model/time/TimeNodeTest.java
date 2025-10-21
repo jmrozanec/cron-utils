@@ -103,6 +103,37 @@ public class TimeNodeTest {
         assertThrows(IllegalArgumentException.class, () -> timeNode.getValueFromList(new ArrayList<>(), 0, new AtomicInteger(0)));
     }
 
+    @Test
+    public void testGetValueFromListWithLargeIndices() {
+        final List<Integer> values = Arrays.asList(2, 8, 14, 20);
+        final AtomicInteger shift = new AtomicInteger(0);
+
+        final int largePositiveIndex = 365 * 6; 
+        int value = timeNode.getValueFromList(values, largePositiveIndex, shift);
+        assertEquals(14, value);
+        assertEquals(547, shift.get());
+
+        shift.set(0);
+        final int largeNegativeIndex = -1000;
+        value = timeNode.getValueFromList(values, largeNegativeIndex, shift);
+        assertEquals(2, value);
+        assertEquals(250, shift.get());
+    }
+
+    @Test
+    public void testGetValueFromListWithDuplicates() {
+        final List<Integer> tradingTimes = Arrays.asList(930, 930, 1130, 1130, 1300, 1500);
+        final AtomicInteger shift = new AtomicInteger(0);
+        int nextSession = timeNode.getValueFromList(tradingTimes, 10, shift);
+        assertEquals(1300, nextSession);
+        assertEquals(1, shift.get());
+
+        shift.set(0);
+        int prevSession = timeNode.getValueFromList(tradingTimes, -5, shift);
+        assertEquals(930, prevSession);
+        assertEquals(1, shift.get());
+    }
+
     private void assertResult(final int value, final int shift, final NearestValue nearestValue) {
         assertEquals(value, nearestValue.getValue(), String.format("Values do not match! Expected: %s Found: %s", value, nearestValue.getValue()));
         assertEquals(shift, nearestValue.getShifts(), String.format("Shifts do not match! Expected: %s Found: %s", shift, nearestValue.getShifts()));
