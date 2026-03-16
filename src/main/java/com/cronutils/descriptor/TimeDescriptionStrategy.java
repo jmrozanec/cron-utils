@@ -249,13 +249,13 @@ class TimeDescriptionStrategy extends DescriptionStrategy {
 						return String.format(EVERY_MINUTE_FORMAT, bundle.getString(EVERY), bundle.getString(HOUR));
 					}
 				}
-				final String result = String.format("%s %s %s %s %s %s ", bundle.getString(EVERY),
+				final String result = String.format("%s %s %s %s %s %s", bundle.getString(EVERY),
 						((Every) hours).getPeriod().getValue(), bundle.getString("hours"), bundle.getString("at"),
 						bundle.getString(MINUTE), ((On) minutes).getTime().getValue());
 				if (TimeDescriptionStrategy.this.isDefault((On) timeFields.seconds)) {
 					return result;
 				} else {
-					return String.format("%s %s %s", bundle.getString("and"), bundle.getString(SECOND),
+					return result + String.format(" %s %s %s", bundle.getString("and"), bundle.getString(SECOND),
 							((On) seconds).getTime().getValue());
 				}
 			}
