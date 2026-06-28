@@ -83,132 +83,75 @@ public class CronBuilder {
         return new SingleCron(definition, new ArrayList<>(fields.values())).validate();
     }
 
+    private CronBuilder applyIfPresent(
+            CronFieldName fieldName,
+            FieldExpression expression) {
 
-
-
-
-    
-    public static Cron yearly(final CronDefinition definition){
-        CronBuilder builder = new CronBuilder(definition);
-        if(definition.containsFieldDefinition(SECOND)){
-            builder = builder.withSecond(new On(new IntegerFieldValue(0)));
+        if (definition.containsFieldDefinition(fieldName)) {
+            addField(fieldName, expression);
         }
-        if(definition.containsFieldDefinition(MINUTE)){
-            builder = builder.withMinute(new On(new IntegerFieldValue(0)));
-        }
-        if(definition.containsFieldDefinition(HOUR)){
-            builder = builder.withHour(new On(new IntegerFieldValue(0)));
-        }
-        if(definition.containsFieldDefinition(DAY_OF_MONTH)){
-            builder = builder.withDoM(new On(new IntegerFieldValue(1)));
-        }
-        if(definition.containsFieldDefinition(MONTH)){
-            builder = builder.withMonth(new On(new IntegerFieldValue(1)));
-        }
-        if(definition.containsFieldDefinition(DAY_OF_WEEK)){
-            builder = builder.withDoW(FieldExpression.always());
-        }
-        return builder.instance();
+        return this;
     }
 
+    public static Cron yearly(final CronDefinition definition) {
+        return new CronBuilder(definition)
+                .applyIfPresent(SECOND,       new On(new IntegerFieldValue(0)))
+                .applyIfPresent(MINUTE,       new On(new IntegerFieldValue(0)))
+                .applyIfPresent(HOUR,         new On(new IntegerFieldValue(0)))
+                .applyIfPresent(DAY_OF_MONTH, new On(new IntegerFieldValue(1)))
+                .applyIfPresent(MONTH,        new On(new IntegerFieldValue(1)))
+                .applyIfPresent(DAY_OF_WEEK,  FieldExpression.always())
+                .instance();
+    }
     public static Cron annually(final CronDefinition definition){
         return yearly(definition);
     }
 
-    public static Cron monthly(final CronDefinition definition){
-        CronBuilder builder = new CronBuilder(definition);
-        if(definition.containsFieldDefinition(SECOND)){
-            builder = builder.withSecond(new On(new IntegerFieldValue(0)));
-        }
-        if(definition.containsFieldDefinition(MINUTE)){
-            builder = builder.withMinute(new On(new IntegerFieldValue(0)));
-        }
-        if(definition.containsFieldDefinition(HOUR)){
-            builder = builder.withHour(new On(new IntegerFieldValue(0)));
-        }
-        if(definition.containsFieldDefinition(DAY_OF_MONTH)){
-            builder = builder.withDoM(new On(new IntegerFieldValue(1)));
-        }
-        if(definition.containsFieldDefinition(MONTH)){
-            builder = builder.withMonth(FieldExpression.always());
-        }
-        if(definition.containsFieldDefinition(DAY_OF_WEEK)){
-            builder = builder.withDoW(FieldExpression.always());
-        }
-        return builder.instance();
+    public static Cron monthly(final CronDefinition definition) {
+        return new CronBuilder(definition)
+                .applyIfPresent(SECOND,       new On(new IntegerFieldValue(0)))
+                .applyIfPresent(MINUTE,       new On(new IntegerFieldValue(0)))
+                .applyIfPresent(HOUR,         new On(new IntegerFieldValue(0)))
+                .applyIfPresent(DAY_OF_MONTH, new On(new IntegerFieldValue(1)))
+                .applyIfPresent(MONTH,        FieldExpression.always())
+                .applyIfPresent(DAY_OF_WEEK,  FieldExpression.always())
+                .instance();
+    }
+    public static Cron weekly(final CronDefinition definition) {
+        return new CronBuilder(definition)
+                .applyIfPresent(SECOND,       new On(new IntegerFieldValue(0)))
+                .applyIfPresent(MINUTE,       new On(new IntegerFieldValue(0)))
+                .applyIfPresent(HOUR,         new On(new IntegerFieldValue(0)))
+                .applyIfPresent(DAY_OF_MONTH, FieldExpression.always())
+                .applyIfPresent(MONTH,        FieldExpression.always())
+                .applyIfPresent(DAY_OF_WEEK,  new On(new IntegerFieldValue(0)))
+                .instance();
     }
 
-    public static Cron weekly(final CronDefinition definition){
-        CronBuilder builder = new CronBuilder(definition);
-        if(definition.containsFieldDefinition(SECOND)){
-            builder = builder.withSecond(new On(new IntegerFieldValue(0)));
-        }
-        if(definition.containsFieldDefinition(MINUTE)){
-            builder = builder.withMinute(new On(new IntegerFieldValue(0)));
-        }
-        if(definition.containsFieldDefinition(HOUR)){
-            builder = builder.withHour(new On(new IntegerFieldValue(0)));
-        }
-        if(definition.containsFieldDefinition(DAY_OF_MONTH)){
-            builder = builder.withDoM(FieldExpression.always());
-        }
-        if(definition.containsFieldDefinition(MONTH)){
-            builder = builder.withMonth(FieldExpression.always());
-        }
-        if(definition.containsFieldDefinition(DAY_OF_WEEK)){
-            builder = builder.withDoW(new On(new IntegerFieldValue(0)));
-        }
-        return builder.instance();
-    }
-
-    public static Cron daily(final CronDefinition definition){
-        CronBuilder builder = new CronBuilder(definition);
-        if(definition.containsFieldDefinition(SECOND)){
-            builder = builder.withSecond(new On(new IntegerFieldValue(0)));
-        }
-        if(definition.containsFieldDefinition(MINUTE)){
-            builder = builder.withMinute(new On(new IntegerFieldValue(0)));
-        }
-        if(definition.containsFieldDefinition(HOUR)){
-            builder = builder.withHour(new On(new IntegerFieldValue(0)));
-        }
-        if(definition.containsFieldDefinition(DAY_OF_MONTH)){
-            builder = builder.withDoM(FieldExpression.always());
-        }
-        if(definition.containsFieldDefinition(MONTH)){
-            builder = builder.withMonth(FieldExpression.always());
-        }
-        if(definition.containsFieldDefinition(DAY_OF_WEEK)){
-            builder = builder.withDoW(FieldExpression.always());
-        }
-        return builder.instance();
+    public static Cron daily(final CronDefinition definition) {
+        return new CronBuilder(definition)
+                .applyIfPresent(SECOND,       new On(new IntegerFieldValue(0)))
+                .applyIfPresent(MINUTE,       new On(new IntegerFieldValue(0)))
+                .applyIfPresent(HOUR,         new On(new IntegerFieldValue(0)))
+                .applyIfPresent(DAY_OF_MONTH, FieldExpression.always())
+                .applyIfPresent(MONTH,        FieldExpression.always())
+                .applyIfPresent(DAY_OF_WEEK,  FieldExpression.always())
+                .instance();
     }
 
     public static Cron midnight(final CronDefinition definition){
         return daily(definition);
     }
 
-    public static Cron hourly(final CronDefinition definition){
-        CronBuilder builder = new CronBuilder(definition);
-        if(definition.containsFieldDefinition(SECOND)){
-            builder = builder.withSecond(new On(new IntegerFieldValue(0)));
-        }
-        if(definition.containsFieldDefinition(MINUTE)){
-            builder = builder.withMinute(new On(new IntegerFieldValue(0)));
-        }
-        if(definition.containsFieldDefinition(HOUR)){
-            builder = builder.withHour(FieldExpression.always());
-        }
-        if(definition.containsFieldDefinition(DAY_OF_MONTH)){
-            builder = builder.withDoM(FieldExpression.always());
-        }
-        if(definition.containsFieldDefinition(MONTH)){
-            builder = builder.withMonth(FieldExpression.always());
-        }
-        if(definition.containsFieldDefinition(DAY_OF_WEEK)){
-            builder = builder.withDoW(FieldExpression.always());
-        }
-        return builder.instance();
+    public static Cron hourly(final CronDefinition definition) {
+        return new CronBuilder(definition)
+                .applyIfPresent(SECOND,       new On(new IntegerFieldValue(0)))
+                .applyIfPresent(MINUTE,       new On(new IntegerFieldValue(0)))
+                .applyIfPresent(HOUR,         FieldExpression.always())
+                .applyIfPresent(DAY_OF_MONTH, FieldExpression.always())
+                .applyIfPresent(MONTH,        FieldExpression.always())
+                .applyIfPresent(DAY_OF_WEEK,  FieldExpression.always())
+                .instance();
     }
 
     public static Cron reboot(final CronDefinition definition){

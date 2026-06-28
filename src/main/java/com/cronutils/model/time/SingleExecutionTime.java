@@ -56,6 +56,11 @@ public class SingleExecutionTime implements ExecutionTime {
 
     private static final LocalTime MAX_SECONDS = LocalTime.MAX.truncatedTo(SECONDS);
 
+    private enum Direction {
+        NEXT,
+        PREVIOUS
+    }
+
     private final CronDefinition cronDefinition;
     private final FieldValueGenerator yearsValueGenerator;
     private final CronField daysOfWeekCronField;
@@ -262,10 +267,13 @@ public class SingleExecutionTime implements ExecutionTime {
         return getNextPotentialValue(date, seconds, ChronoField.SECOND_OF_MINUTE);
     }
 
-    private static ExecutionTimeResult getNextPotentialValue(
+    private static ExecutionTimeResult getPotentialValue(
             final ZonedDateTime date,
             final TimeNode node,
-            final TemporalField field) throws NoSuchValueException {
+            final TemporalField field,
+            final Direction direction)
+            throws NoSuchValueException {
+
         Set<Integer> values = new HashSet<>(node.values);
 
         TemporalUnit unit = field.getBaseUnit();
@@ -275,19 +283,33 @@ public class SingleExecutionTime implements ExecutionTime {
         long range = maximum - minimum;
 
         ZonedDateTime newDate = date;
+
         for (long i = 0; i < 2 * range; i++) {
-            newDate = newDate.plus(1, unit);
+
+            newDate = direction == Direction.NEXT
+                    ? newDate.plus(1, unit)
+                    : newDate.minus(1, unit);
 
             if (values.contains(newDate.get(field))) {
-                newDate = newDate
-                        .truncatedTo(unit);
+
+                if (direction == Direction.NEXT) {
+                    newDate = newDate.truncatedTo(unit);
+                } else {
+                    newDate = newDate.truncatedTo(unit)
+                            .plus(1, unit)
+                            .minusSeconds(1);
+                }
+
                 return new ExecutionTimeResult(newDate, false);
             }
         }
 
         throw new NoSuchValueException();
     }
+    private static ExecutionTimeResult getNextPotentialValue(final ZonedDateTime date, final TimeNode node, final TemporalField field) throws NoSuchValueException {
 
+        return getPotentialValue(date, node, field, Direction.NEXT);
+    }
     private ZonedDateTime toBeginOfNextMonth(final ZonedDateTime datetime) {
         return datetime.truncatedTo(DAYS).plusMonths(1).withDayOfMonth(1);
     }
@@ -313,53 +335,22 @@ public class SingleExecutionTime implements ExecutionTime {
     }
 
     private ExecutionTimeResult potentialPreviousClosestMatch(final ZonedDateTime date) throws NoSuchValueException {
-        // Get all valid years up to the current year
-        final List<Integer> year;
-        if (cronDefinition.containsFieldDefinition(CronFieldName.YEAR)) {
-            year = yearsValueGenerator.generateCandidates(
-                cronDefinition.getFieldDefinition(CronFieldName.YEAR).getConstraints().getStartRange(),
-                date.getYear()
-            ).stream().filter(y -> y <= date.getYear()).collect(Collectors.toList());
-        } else {
-            // For cron expressions without a YEAR field (e.g. Unix crons), we use the current year
-            year = Collections.singletonList(date.getYear());
-        }
-
+        final List<Integer> validYears = getValidYears(date);
         // For the current date, get the valid days
         final Optional<TimeNode> optionalDays = generateDays(cronDefinition, date);
         
         // Get the highest values for each field
-        final int highestMonth = months.getValues().get(months.getValues().size() - 1);
-        final int highestHour = hours.getValues().get(hours.getValues().size() - 1);
-        final int highestMinute = minutes.getValues().get(minutes.getValues().size() - 1);
-        final int highestSecond = seconds.getValues().get(seconds.getValues().size() - 1);
+        final int highestMonth  = getHighest(months);
+        final int highestHour   = getHighest(hours);
+        final int highestMinute = getHighest(minutes);
+        final int highestSecond = getHighest(seconds);
 
         // Check each field from largest to smallest
-        if (!year.contains(date.getYear())) {
-            Optional<Integer> validPrevYear = year.stream().filter(y -> y < date.getYear()).max(Integer::compareTo);
-            if (validPrevYear.isPresent()) {
-                // When moving to a previous year, we need to check the last valid day in the highest month
-                ZonedDateTime lastDateOfYear = ZonedDateTime.of(
-                    validPrevYear.get(), highestMonth,
-                    1, // We'll adjust the day after checking the month's length
-                    highestHour, highestMinute, highestSecond, 0,
-                    date.getZone()
-                );
-                // Get valid days for this date
-                Optional<TimeNode> yearEndDays = generateDays(cronDefinition, lastDateOfYear);
-                if (yearEndDays.isPresent()) {
-                    int lastValidDay = yearEndDays.get().getValues().get(yearEndDays.get().getValues().size() - 1);
-                    ZonedDateTime result = lastDateOfYear.withDayOfMonth(Math.min(lastValidDay, lastDateOfYear.toLocalDate().lengthOfMonth()));
-                    // If seconds are not part of the cron definition, truncate to minutes
-                    if (!cronDefinition.containsFieldDefinition(CronFieldName.SECOND)) {
-                        result = result.truncatedTo(ChronoUnit.MINUTES);
-                    }
-                    return new ExecutionTimeResult(result, false);
-                }
-            }
-            return getPreviousPotentialYear(date, optionalDays.orElse(null), highestMonth, optionalDays.map(d -> d.getValues().get(d.getValues().size() - 1)).orElse(1), highestHour, highestMinute, highestSecond);
+        if (!validYears.contains(date.getYear())) {
+            return handleInvalidYear(date, validYears, optionalDays, highestMonth, highestHour, highestMinute, highestSecond
+            );
         }
-        
+
         if (!months.getValues().contains(date.getMonthValue())) {
             return getPreviousPotentialMonth(date, optionalDays.map(d -> d.getValues().get(d.getValues().size() - 1)).orElse(1), highestHour, highestMinute, highestSecond);
         }
@@ -382,13 +373,59 @@ public class SingleExecutionTime implements ExecutionTime {
             return getPreviousPotentialSecond(date);
         }
         // If seconds are not part of the cron definition, truncate to minutes
-        ZonedDateTime result;
-        if (!cronDefinition.containsFieldDefinition(CronFieldName.SECOND)) {
-            result = date.truncatedTo(ChronoUnit.MINUTES);
-        } else {
-            result = date.truncatedTo(ChronoUnit.SECONDS);
+        return new ExecutionTimeResult(truncateToGranularity(date), true);
+    }
+
+    private List<Integer> getValidYears(final ZonedDateTime date) {
+        if (cronDefinition.containsFieldDefinition(CronFieldName.YEAR)) {
+            return yearsValueGenerator.generateCandidates(
+                            cronDefinition.getFieldDefinition(CronFieldName.YEAR)
+                                    .getConstraints().getStartRange(),
+                            date.getYear()
+                    ).stream()
+                    .filter(y -> y <= date.getYear())
+                    .collect(Collectors.toList());
         }
-        return new ExecutionTimeResult(result, true);
+        return Collections.singletonList(date.getYear());
+    }
+
+    private int getHighest(final TimeNode node) {
+        List<Integer> values = node.getValues();
+        return values.get(values.size() - 1);
+    }
+
+    private ZonedDateTime truncateToGranularity(final ZonedDateTime date) {
+        if (!cronDefinition.containsFieldDefinition(CronFieldName.SECOND)) {
+            return date.truncatedTo(ChronoUnit.MINUTES);
+        }
+        return date.truncatedTo(ChronoUnit.SECONDS);
+    }
+
+    private ExecutionTimeResult handleInvalidYear(
+            final ZonedDateTime date,
+            final List<Integer> validYears,
+            final Optional<TimeNode> optionalDays,
+            final int highestMonth,
+            final int highestHour,
+            final int highestMinute,
+            final int highestSecond) throws NoSuchValueException {
+
+        Optional<Integer> validPrevYear = validYears.stream()
+                .filter(y -> y < date.getYear())
+                .max(Integer::compareTo);
+
+        if (validPrevYear.isPresent()) {ZonedDateTime lastDateOfYear = ZonedDateTime.of(validPrevYear.get(), highestMonth, 1, highestHour, highestMinute, highestSecond, 0, date.getZone()
+            );
+            Optional<TimeNode> yearEndDays = generateDays(cronDefinition, lastDateOfYear);
+            if (yearEndDays.isPresent()) {
+                int lastValidDay = getHighest(yearEndDays.get());
+                ZonedDateTime result = lastDateOfYear.withDayOfMonth(
+                        Math.min(lastValidDay, lastDateOfYear.toLocalDate().lengthOfMonth()));
+                return new ExecutionTimeResult(truncateToGranularity(result), false);
+            }
+        }
+        return getPreviousPotentialYear(date, optionalDays.orElse(null), highestMonth, optionalDays.map(d -> getHighest(d)).orElse(1), highestHour, highestMinute, highestSecond
+        );
     }
 
     private ExecutionTimeResult getPreviousPotentialYear(final ZonedDateTime date, final TimeNode days, final int highestMonth, int highestDay,
@@ -467,32 +504,9 @@ public class SingleExecutionTime implements ExecutionTime {
         return getPreviousPotentialValue(date, seconds, ChronoField.SECOND_OF_MINUTE);
     }
 
-    private static ExecutionTimeResult getPreviousPotentialValue(
-            final ZonedDateTime date,
-            final TimeNode node,
-            final TemporalField field) throws NoSuchValueException {
-        Set<Integer> values = new HashSet<>(node.values);
+    private static ExecutionTimeResult getPreviousPotentialValue(final ZonedDateTime date, final TimeNode node, final TemporalField field) throws NoSuchValueException {
 
-        TemporalUnit unit = field.getBaseUnit();
-
-        long maximum = field.range().getMaximum();
-        long minimum = field.range().getMinimum();
-        long range = maximum - minimum;
-
-        ZonedDateTime newDate = date;
-        for (long i = 0; i < 2 * range; i++) {
-            newDate = newDate.minus(1, unit);
-
-            if (values.contains(newDate.get(field))) {
-                newDate = newDate
-                        .truncatedTo(unit)
-                        .plus(1, unit)
-                        .minusSeconds(1);
-                return new ExecutionTimeResult(newDate, false);
-            }
-        }
-
-        throw new NoSuchValueException();
+        return getPotentialValue(date, node, field, Direction.PREVIOUS);
     }
 
     private ZonedDateTime toEndOfPreviousMonth(final ZonedDateTime datetime) {
@@ -619,65 +633,79 @@ public class SingleExecutionTime implements ExecutionTime {
      * @return true if date matches cron expression requirements, false otherwise.
      */
     public boolean isMatch(ZonedDateTime date) {
-        // Issue #200: Truncating the date to the least granular precision supported by different cron systems.
-        // For Quartz, it's seconds while for Unix & Cron4J it's minutes.
-        final boolean isSecondGranularity = cronDefinition.containsFieldDefinition(SECOND);
-        // For Quartz-like crons (those with seconds, year, and day of week), we allow nanoseconds
-        final boolean isQuartzLike = isSecondGranularity && 
-            cronDefinition.containsFieldDefinition(YEAR) && 
-            cronDefinition.containsFieldDefinition(DAY_OF_WEEK);
-        if (isSecondGranularity) {
-            if (!isQuartzLike && date.getNano() > 0) {
-                return false;
-            }
-            date = date.truncatedTo(SECONDS);
-        } else {
-            // For non-second crons, we require seconds to be 0
-            if (date.getSecond() != 0) {
-                return false;
-            }
-            // Check if the minute matches one of our values before checking nanoseconds
-            ZonedDateTime truncated = date.truncatedTo(ChronoUnit.MINUTES);
-            boolean matches = dateValuesInExpectedRanges(truncated, truncated);
-            if (!matches) {
-                return false;
-            }
-            // If we match the minute, then we require nanoseconds to be 0
-            if (date.getNano() != 0) {
-                return false;
-            }
-            date = truncated;
+        date = normalizeDateForMatching(date);
+        if (date == null) {
+            return false;
         }
-
-        final Optional<ZonedDateTime> last = lastExecution(date);
-        if (last.isPresent()) {
-            final Optional<ZonedDateTime> next = nextExecution(last.get());
-            if (next.isPresent()) {
-                return next.get().equals(date);
-            } else {
-                boolean everythingInRange = false;
-                try {
-                    everythingInRange = dateValuesInExpectedRanges(nextClosestMatch(date), date);
-                } catch (final NoSuchValueException ignored) {
-                    // Why is this ignored?
-                }
-                try {
-                    everythingInRange = dateValuesInExpectedRanges(previousClosestMatch(date), date);
-                } catch (final NoSuchValueException ignored) {
-                    // Why is this ignored?
-                }
-                return everythingInRange;
-            }
-        } else {
-            try {
-                return dateValuesInExpectedRanges(nextClosestMatch(date.minusSeconds(1)), date);
-            } catch (final NoSuchValueException ignored) {
-                // Why is this ignored?
-            }
-        }
-        return false;
+        return matchesExecutionTime(date);
     }
 
+    private ZonedDateTime normalizeDateForMatching(ZonedDateTime date) {
+        final boolean isSecondGranularity = cronDefinition.containsFieldDefinition(SECOND);
+        final boolean isQuartzLike = isSecondGranularity
+                && cronDefinition.containsFieldDefinition(YEAR)
+                && cronDefinition.containsFieldDefinition(DAY_OF_WEEK);
+
+        if (isSecondGranularity) {
+            if (!isQuartzLike && date.getNano() > 0) {
+                return null;
+            }
+            return date.truncatedTo(SECONDS);
+        }
+
+        if (date.getSecond() != 0) {
+            return null;
+        }
+
+        ZonedDateTime truncated = date.truncatedTo(ChronoUnit.MINUTES);
+
+        if (!dateValuesInExpectedRanges(truncated, truncated)) {
+            return null;
+        }
+
+        if (date.getNano() != 0) {
+            return null;
+        }
+
+        return truncated;
+    }
+
+    private boolean matchesExecutionTime(ZonedDateTime date) {
+        final Optional<ZonedDateTime> last = lastExecution(date);
+
+        if (last.isPresent()) {
+            final Optional<ZonedDateTime> next = nextExecution(last.get());
+
+            if (next.isPresent()) {
+                return next.get().equals(date);
+            }
+
+            boolean everythingInRange = false;
+
+            try {
+                everythingInRange =
+                        dateValuesInExpectedRanges(nextClosestMatch(date), date);
+            } catch (final NoSuchValueException ignored) {
+            }
+
+            try {
+                everythingInRange =
+                        dateValuesInExpectedRanges(previousClosestMatch(date), date);
+            } catch (final NoSuchValueException ignored) {
+            }
+
+            return everythingInRange;
+        }
+
+        try {
+            return dateValuesInExpectedRanges(
+                    nextClosestMatch(date.minusSeconds(1)),
+                    date
+            );
+        } catch (final NoSuchValueException ignored) {
+            return false;
+        }
+    }
     private boolean dateValuesInExpectedRanges(final ZonedDateTime validCronDate, final ZonedDateTime date) {
         boolean everythingInRange = true;
         if (cronDefinition.getFieldDefinition(YEAR) != null) {
@@ -706,24 +734,28 @@ public class SingleExecutionTime implements ExecutionTime {
         return everythingInRange;
     }
 
+    private List<Integer> generateSortedDistinctCandidates(List<Integer> candidates) {
+        return candidates.stream().distinct().sorted().collect(Collectors.toList());
+    }
+
     private List<Integer> generateDayCandidatesQuestionMarkNotSupportedUsingDoWAndDoM(final int year, final int month, final WeekDay mondayDoWValue) {
         final LocalDate date = LocalDate.of(year, month, 1);
         final int lengthOfMonth = date.lengthOfMonth();
         if (daysOfMonthCronField.getExpression() instanceof Always && daysOfWeekCronField.getExpression() instanceof Always) {
-            return createDayOfMonthValueGeneratorInstance(daysOfMonthCronField, year, month)
-                    .generateCandidates(1, lengthOfMonth)
-                    .stream().distinct().sorted()
-                    .collect(Collectors.toList());
+            return generateSortedDistinctCandidates(
+                    createDayOfWeekValueGeneratorInstance(daysOfWeekCronField, year, month, mondayDoWValue)
+                            .generateCandidates(1, lengthOfMonth)
+            );
         } else if (daysOfMonthCronField.getExpression() instanceof Always) {
-            return createDayOfWeekValueGeneratorInstance(daysOfWeekCronField, year, month, mondayDoWValue)
-                    .generateCandidates(1, lengthOfMonth)
-                    .stream().distinct().sorted()
-                    .collect(Collectors.toList());
+            return generateSortedDistinctCandidates(
+                    createDayOfWeekValueGeneratorInstance(daysOfWeekCronField, year, month, mondayDoWValue)
+                            .generateCandidates(1, lengthOfMonth)
+            );
         } else if (daysOfWeekCronField.getExpression() instanceof Always) {
-            return createDayOfMonthValueGeneratorInstance(daysOfMonthCronField, year, month)
-                    .generateCandidates(1, lengthOfMonth)
-                    .stream().distinct().sorted()
-                    .collect(Collectors.toList());
+            return generateSortedDistinctCandidates(
+                    createDayOfMonthValueGeneratorInstance(daysOfMonthCronField, year, month)
+                            .generateCandidates(1, lengthOfMonth)
+            );
         } else {
             final List<Integer> dayOfWeekCandidates = createDayOfWeekValueGeneratorInstance(daysOfWeekCronField,
                     year, month, mondayDoWValue).generateCandidates(1, lengthOfMonth);
@@ -745,22 +777,22 @@ public class SingleExecutionTime implements ExecutionTime {
 
     private List<Integer> generateDayCandidatesQuestionMarkSupportedUsingDoWAndDoM(final int year, final int month, final WeekDay mondayDoWValue) {
         final LocalDate date = LocalDate.of(year, month, 1);
-        final int lengthOfMonth = date.lengthOfMonth();
+        final int lengthOfMonth = getLengthOfMonth(year, month);
         if (daysOfMonthCronField.getExpression() instanceof Always && daysOfWeekCronField.getExpression() instanceof Always) {
-            return createDayOfMonthValueGeneratorInstance(daysOfMonthCronField, year, month)
-                    .generateCandidates(1, lengthOfMonth)
-                    .stream().distinct().sorted()
-                    .collect(Collectors.toList());
+            return generateSortedDistinctCandidates(
+                    createDayOfMonthValueGeneratorInstance(daysOfMonthCronField, year, month)
+                            .generateCandidates(1, lengthOfMonth)
+            );
         } else if (daysOfMonthCronField.getExpression() instanceof QuestionMark) {
-            return createDayOfWeekValueGeneratorInstance(daysOfWeekCronField, year, month, mondayDoWValue)
-                    .generateCandidates(1, lengthOfMonth)
-                    .stream().distinct().sorted()
-                    .collect(Collectors.toList());
+            return generateSortedDistinctCandidates(
+                    createDayOfWeekValueGeneratorInstance(daysOfWeekCronField, year, month, mondayDoWValue)
+                            .generateCandidates(1, lengthOfMonth)
+            );
         } else if (daysOfWeekCronField.getExpression() instanceof QuestionMark) {
-            return createDayOfMonthValueGeneratorInstance(daysOfMonthCronField, year, month)
-                    .generateCandidates(1, lengthOfMonth)
-                    .stream().distinct().sorted()
-                    .collect(Collectors.toList());
+            return generateSortedDistinctCandidates(
+                    createDayOfMonthValueGeneratorInstance(daysOfMonthCronField, year, month)
+                            .generateCandidates(1, lengthOfMonth)
+            );
         } else {
             Set<Integer> candidates = new HashSet<>(createDayOfMonthValueGeneratorInstance(daysOfMonthCronField, year, month).generateCandidates(1, lengthOfMonth));
             Set<Integer> daysOfWeek = new HashSet<>(createDayOfWeekValueGeneratorInstance(daysOfWeekCronField, year, month, mondayDoWValue).generateCandidates(1, lengthOfMonth));
@@ -768,6 +800,10 @@ public class SingleExecutionTime implements ExecutionTime {
             candidates.retainAll(daysOfWeek);
             return candidates.stream().sorted().collect(Collectors.toList());
         }
+    }
+
+    private int getLengthOfMonth(int year, int month) {
+        return LocalDate.of(year, month, 1).lengthOfMonth();
     }
 
     private Optional<TimeNode> generateDayCandidatesUsingDoM(final ZonedDateTime reference) {

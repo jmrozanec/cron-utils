@@ -36,68 +36,59 @@ public interface ExecutionTime {
      * @return ExecutionTime instance
      */
     public static ExecutionTime forCron(final Cron cron) {
-        if (cron instanceof SingleCron) {
-            final Map<CronFieldName, CronField> fields = cron.retrieveFieldsAsMap();
-            final ExecutionTimeBuilder executionTimeBuilder = new ExecutionTimeBuilder(cron);
-            for (final CronFieldName name : CronFieldName.values()) {
-                if (fields.get(name) != null) {
-                    switch (name) {
-                        case SECOND:
-                            executionTimeBuilder.forSecondsMatching(fields.get(name));
-                            break;
-                        case MINUTE:
-                            executionTimeBuilder.forMinutesMatching(fields.get(name));
-                            break;
-                        case HOUR:
-                            executionTimeBuilder.forHoursMatching(fields.get(name));
-                            break;
-                        case DAY_OF_WEEK:
-                            executionTimeBuilder.forDaysOfWeekMatching(fields.get(name));
-                            break;
-                        case DAY_OF_MONTH:
-                            executionTimeBuilder.forDaysOfMonthMatching(fields.get(name));
-                            break;
-                        case MONTH:
-                            executionTimeBuilder.forMonthsMatching(fields.get(name));
-                            break;
-                        case YEAR:
-                            executionTimeBuilder.forYearsMatching(fields.get(name));
-                            break;
-                        case DAY_OF_YEAR:
-                            executionTimeBuilder.forDaysOfYearMatching(fields.get(name));
-                            break;
-                        default:
-                            break;
-                    }
+        if (cron instanceof SingleCron)    return forSingleCron((SingleCron) cron);
+        if (cron instanceof CompositeCron) return forCompositeCron((CompositeCron) cron);
+        return emptyExecutionTime();
+    }
+    private static ExecutionTime forSingleCron(final SingleCron cron) {
+        final Map<CronFieldName, CronField> fields = cron.retrieveFieldsAsMap();
+        final ExecutionTimeBuilder executionTimeBuilder = new ExecutionTimeBuilder(cron);
+        for (final CronFieldName name : CronFieldName.values()) {
+            final CronField field = fields.get(name);
+            if (field != null) {
+                switch (name) {
+                    case SECOND:        executionTimeBuilder.forSecondsMatching(field);    break;
+                    case MINUTE:        executionTimeBuilder.forMinutesMatching(field);    break;
+                    case HOUR:          executionTimeBuilder.forHoursMatching(field);      break;
+                    case DAY_OF_WEEK:   executionTimeBuilder.forDaysOfWeekMatching(field); break;
+                    case DAY_OF_MONTH:  executionTimeBuilder.forDaysOfMonthMatching(field);break;
+                    case MONTH:         executionTimeBuilder.forMonthsMatching(field);     break;
+                    case YEAR:          executionTimeBuilder.forYearsMatching(field);      break;
+                    case DAY_OF_YEAR:   executionTimeBuilder.forDaysOfYearMatching(field); break;
+                    default: break;
                 }
             }
-            return executionTimeBuilder.build();
         }
-        if (cron instanceof CompositeCron) {
-            return new CompositeExecutionTime(((CompositeCron) cron).getCrons().parallelStream().map(ExecutionTime::forCron).collect(Collectors.toList()));
-        }
+        return executionTimeBuilder.build();
+    }
 
+    private static ExecutionTime forCompositeCron(final CompositeCron cron) {
+        return new CompositeExecutionTime(
+                cron.getCrons()
+                        .parallelStream()
+                        .map(ExecutionTime::forCron)
+                        .collect(Collectors.toList())
+        );
+    }
+
+    private static ExecutionTime emptyExecutionTime() {
         return new ExecutionTime() {
             @Override
             public Optional<ZonedDateTime> nextExecution(ZonedDateTime date) {
                 return Optional.empty();
             }
-
             @Override
             public Optional<Duration> timeToNextExecution(ZonedDateTime date) {
                 return Optional.empty();
             }
-
             @Override
             public Optional<ZonedDateTime> lastExecution(ZonedDateTime date) {
                 return Optional.empty();
             }
-
             @Override
             public Optional<Duration> timeFromLastExecution(ZonedDateTime date) {
                 return Optional.empty();
             }
-
             @Override
             public boolean isMatch(ZonedDateTime date) {
                 return false;
@@ -176,10 +167,16 @@ public interface ExecutionTime {
      * @param endDate - End date. If null, a NullPointerException will be raised.
      * @return list of date times
      */
-    default List<ZonedDateTime> getExecutionDates(ZonedDateTime startDate, ZonedDateTime endDate) {
+
+    private void validateDateRange(ZonedDateTime startDate, ZonedDateTime endDate) {
         if (endDate.equals(startDate) || endDate.isBefore(startDate)) {
-            throw new IllegalArgumentException("endDate should take place later in time than startDate");
+            throw new IllegalArgumentException(
+                    "endDate should take place later in time than startDate");
         }
+    }
+
+    default List<ZonedDateTime> getExecutionDates(ZonedDateTime startDate, ZonedDateTime endDate) {
+        validateDateRange(startDate, endDate);
         List<ZonedDateTime> executions = new ArrayList<>();
         ZonedDateTime nextExecutionDate = nextExecution(startDate).orElse(null);
 
