@@ -28,7 +28,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
-public class Issue143Test {
+class Issue143Test {
 
     private static final String LAST_EXECUTION_NOT_PRESENT_ERROR = "last execution was not present";
     private CronParser parser;
@@ -44,7 +44,7 @@ public class Issue143Test {
     }
 
     @Test
-    public void testCase1() {
+    void testCase1() {
         ExecutionTime et = ExecutionTime.forCron(parser.parse("0 0 12 31 12 ? *"));
         Optional<ZonedDateTime> olast = et.lastExecution(currentDateTime);
         ZonedDateTime last = olast.orElse(null);
@@ -55,7 +55,7 @@ public class Issue143Test {
     }
 
     @Test
-    public void testCase2() {
+    void testCase2() {
         final ExecutionTime et = ExecutionTime.forCron(parser.parse("0 0 12 ? 12 SAT#5 *"));
         final Optional<ZonedDateTime> lastExecution = et.lastExecution(currentDateTime);
         if (lastExecution.isPresent()) {
@@ -67,7 +67,7 @@ public class Issue143Test {
     }
 
     @Test
-    public void testCase3() {
+    void testCase3() {
         final ExecutionTime et = ExecutionTime.forCron(parser.parse("0 0 12 31 1/1 ? *"));
         final Optional<ZonedDateTime> lastExecution = et.lastExecution(currentDateTime);
         if (lastExecution.isPresent()) {
@@ -79,7 +79,7 @@ public class Issue143Test {
     }
 
     @Test
-    public void testCase4() {
+    void testCase4() {
         final ExecutionTime et = ExecutionTime.forCron(parser.parse("0 0 12 ? 1/1 SAT#5 *"));
         final Optional<ZonedDateTime> lastExecution = et.lastExecution(currentDateTime);
         if (lastExecution.isPresent()) {
