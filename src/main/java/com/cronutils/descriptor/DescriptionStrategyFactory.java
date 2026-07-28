@@ -32,6 +32,15 @@ class DescriptionStrategyFactory {
     }
 
     /**
+     * Names the position an nth day of week occupies, falling back to the plain number for
+     * positions no bundle spells out.
+     */
+    private static String ordinal(final int nth, final ResourceBundle bundle) {
+        final String key = "nth_" + nth;
+        return bundle.containsKey(key) ? bundle.getString(key) : String.valueOf(nth);
+    }
+
+    /**
      * Creates description strategy for days of week.
      *
      * @param bundle     - locale
@@ -54,9 +63,10 @@ class DescriptionStrategyFactory {
                 final On on = (On) fieldExpression;
                 switch (on.getSpecialChar().getValue()) {
                     case HASH:
-                        return String.format("%s %s %s ", nominal.apply(on.getTime().getValue()), on.getNth(), bundle.getString("of_every_month"));
+                        return MessageFormat.format(bundle.getString("on_nth_day_of_week_x"),
+                                ordinal(on.getNth().getValue(), bundle), nominal.apply(on.getTime().getValue()));
                     case L:
-                        return String.format("%s %s %s ", bundle.getString("last"), nominal.apply(on.getTime().getValue()), bundle.getString("of_every_month"));
+                        return MessageFormat.format(bundle.getString("on_last_day_of_week_x"), nominal.apply(on.getTime().getValue()));
                     default:
                         return "";
                 }

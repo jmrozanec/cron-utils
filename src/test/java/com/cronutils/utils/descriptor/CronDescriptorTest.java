@@ -148,7 +148,7 @@ public class CronDescriptorTest {
         results.add(new CronField(CronFieldName.MINUTE, new On(new IntegerFieldValue(minute)), nullFieldConstraints));
         results.add(new CronField(CronFieldName.DAY_OF_WEEK, new On(new IntegerFieldValue(dayOfWeek), new SpecialCharFieldValue(SpecialChar.L)),
                 nullFieldConstraints));
-        assertEquals(String.format("at %s:%s last Tuesday of every month", hour, minute), descriptor.describe(new SingleCron(mockDefinition, results)));
+        assertEquals(String.format("at %s:%s on the last Tuesday of the month", hour, minute), descriptor.describe(new SingleCron(mockDefinition, results)));
     }
 
     @Test
@@ -161,7 +161,7 @@ public class CronDescriptorTest {
         results.add(new CronField(CronFieldName.MINUTE, new On(new IntegerFieldValue(minute)), nullFieldConstraints));
         results.add(new CronField(CronFieldName.DAY_OF_WEEK,
                 new On(new IntegerFieldValue(dayOfWeek), new SpecialCharFieldValue(SpecialChar.HASH), new IntegerFieldValue(dayOfWeek)), nullFieldConstraints));
-        assertEquals(String.format("at %s:%s Tuesday %s of every month", hour, minute, dayOfWeek), descriptor.describe(new SingleCron(mockDefinition, results)));
+        assertEquals(String.format("at %s:%s on the second Tuesday of the month", hour, minute), descriptor.describe(new SingleCron(mockDefinition, results)));
     }
 
     @Test
