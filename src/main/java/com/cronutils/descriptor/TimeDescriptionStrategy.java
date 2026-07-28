@@ -19,7 +19,7 @@ import com.cronutils.model.field.value.IntegerFieldValue;
 import com.cronutils.utils.Preconditions;
 import com.cronutils.utils.StringUtils;
 
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.ResourceBundle;
 import java.util.Set;
 
@@ -59,7 +59,7 @@ class TimeDescriptionStrategy extends DescriptionStrategy {
 		this.hours = ensureInstance(hours, always());
 		this.minutes = ensureInstance(minutes, always());
 		this.seconds = ensureInstance(seconds, new On(new IntegerFieldValue(DEFAULTSECONDS)));
-		descriptions = new HashSet<>();
+		descriptions = new LinkedHashSet<>();
 		registerFunctions();
 	}
 
@@ -85,20 +85,23 @@ class TimeDescriptionStrategy extends DescriptionStrategy {
 	public String describe() {
 		final TimeFields fields = new TimeFields(hours, minutes, seconds);
 		for (final Function<TimeFields, String> function : descriptions) {
-			if (!"".equals(function.apply(fields))) {
-				return function.apply(fields);
+			final String description = function.apply(fields);
+			if (!"".equals(description)) {
+				return description;
 			}
 		}
 		String secondsDesc = "";
 		String minutesDesc = "";
 		String hoursDesc = "";
+		// minute 0 may only stay implicit while seconds are too, else we claim an unbounded sub-minute frequency
+		final boolean defaultSeconds = seconds instanceof On && isDefault((On) seconds);
 		if (!(hours instanceof Always)) {
 			hoursDesc = addTimeExpressions(describe(hours), bundle.getString(HOUR), bundle.getString("hours"));
 		}
-		if (!(minutes instanceof On && isDefault((On) minutes)) && !((minutes instanceof Always) && (hours instanceof Always))) {
+		if (!(minutes instanceof On && isDefault((On) minutes) && defaultSeconds) && !((minutes instanceof Always) && (hours instanceof Always))) {
 			minutesDesc = addTimeExpressions(describe(minutes), bundle.getString(MINUTE), bundle.getString("minutes"));
 		}
-		if (!(seconds instanceof On && isDefault((On) seconds))) {
+		if (!defaultSeconds) {
 			secondsDesc = addTimeExpressions(describe(seconds), bundle.getString(SECOND), bundle.getString("seconds"));
 		}
 		return String.format("%s %s %s", secondsDesc, minutesDesc, hoursDesc);

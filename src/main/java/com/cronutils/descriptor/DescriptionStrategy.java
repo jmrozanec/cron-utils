@@ -34,6 +34,8 @@ abstract class DescriptionStrategy {
 	private static final String WHITE_SPACE = " ";
 	protected Function<Integer, String> nominalValueFunction;
 	protected ResourceBundle bundle;
+	// true when a value already names its own unit ("October", "Tuesday"), so the unit word is redundant
+	protected boolean selfDescribingValues;
 
 	public DescriptionStrategy(final ResourceBundle bundle) {
 		this.bundle = bundle;
@@ -169,7 +171,11 @@ abstract class DescriptionStrategy {
 		}
 		if (every.getExpression() instanceof On) {
 			final On on = (On) every.getExpression();
-			description += bundle.getString("from") + " %s " + nominalValue(on.getTime());
+			// "every 1 unit starting at 0" is just "every unit"; 0 is out of range for the 1-based fields
+			if (every.getPeriod().getValue() == 1 && on.getTime().getValue() == 0) {
+				return description;
+			}
+			description += bundle.getString("from") + (selfDescribingValues ? WHITE_SPACE : " %s ") + nominalValue(on.getTime());
 		}
 		return description;
 	}

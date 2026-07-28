@@ -162,7 +162,7 @@ public class CronDescriptor {
      */
     public String describeYear(final Map<CronFieldName, CronField> fields) {
         final String description =
-                DescriptionStrategyFactory.plainInstance(
+                DescriptionStrategyFactory.yearsInstance(
                         resourceBundle,
                         fields.containsKey(CronFieldName.YEAR) ? fields.get(CronFieldName.YEAR).getExpression() : null
                 ).describe();

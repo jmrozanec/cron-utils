@@ -571,7 +571,7 @@ public class ExecutionTimeQuartzIntegrationTest {
     public void descriptionForExpressionTellsWrongDoW() {
         final CronDescriptor descriptor = CronDescriptor.instance();
         final Cron quartzCron = parser.parse("0 0 8 ? * SUN *");
-        assertEquals("at 08:00 at Sunday day", descriptor.describe(quartzCron));
+        assertEquals("at 08:00 on Sunday", descriptor.describe(quartzCron));
     }
 
     /**

@@ -16,7 +16,7 @@ package com.cronutils.descriptor;
 import com.cronutils.Function;
 import com.cronutils.model.field.expression.FieldExpression;
 
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.ResourceBundle;
 import java.util.Set;
 
@@ -41,7 +41,7 @@ class NominalDescriptionStrategy extends DescriptionStrategy {
      */
     public NominalDescriptionStrategy(final ResourceBundle bundle, final Function<Integer, String> nominalValueFunction, final FieldExpression expression) {
         super(bundle);
-        descriptions = new HashSet<>();
+        descriptions = new LinkedHashSet<>();
         if (nominalValueFunction != null) {
             this.nominalValueFunction = nominalValueFunction;
         }
@@ -72,6 +72,16 @@ class NominalDescriptionStrategy extends DescriptionStrategy {
      */
     public NominalDescriptionStrategy addDescription(final Function<FieldExpression, String> desc) {
         descriptions.add(desc);
+        return this;
+    }
+
+    /**
+     * Marks the described values as naming their own unit, so the unit word is left out.
+     *
+     * @return NominalDescriptionStrategy, this instance
+     */
+    public NominalDescriptionStrategy withSelfDescribingValues() {
+        selfDescribingValues = true;
         return this;
     }
 }
