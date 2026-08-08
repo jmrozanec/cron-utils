@@ -77,11 +77,13 @@ class OnDayOfWeekValueGenerator extends OnDayOfCalendarValueGenerator {
             case HASH:
                 return generateHashValues(on, year, month);
             case L:
-                return on.getTime().getValue() == -1 ? /* L by itself simply means “7” or “SAT” */
-                        generateNoneValues(ON_SATURDAY, year, month, reference) :
-                        generateLValues(on, year, month);
+                // Bare L means “7” or “SAT” in Quartz/Spring numbering (always Saturday),
+                // independent of how the current definition numbers days of week (#716).
+                return on.getTime().getValue() == -1
+                        ? generateNoneValues(ON_SATURDAY, ConstantsMapper.QUARTZ_WEEK_DAY, year, month, reference)
+                        : generateLValues(on, year, month);
             case NONE:
-                return generateNoneValues(on, year, month, reference);
+                return generateNoneValues(on, mondayDoWValue, year, month, reference);
             default:
                 throw new NoSuchValueException();
         }
@@ -126,18 +128,19 @@ class OnDayOfWeekValueGenerator extends OnDayOfCalendarValueGenerator {
      * pass it a -1 for the reference value when starting to generate a sequence of day values. That allows
      * it to handle the special case of which day of the month is the initial matching value.
      *
-     * @param on        The expression object giving us the particular day of week we need.
-     * @param year      The year for the calculation.
-     * @param month     The month for the calculation.
-     * @param reference This value must either be -1 indicating you are starting the sequence generation or an actual
-     *                  day of month that meets the day of week criteria. So a value previously returned by this method.
-     * @return
+     * @param on              The expression object giving us the particular day of week we need.
+     * @param sourceWeekDay   Weekday numbering used by {@code on.getTime()} (definition scheme, or Quartz for bare L).
+     * @param year            The year for the calculation.
+     * @param month           The month for the calculation.
+     * @param reference       This value must either be -1 indicating you are starting the sequence generation or an actual
+     *                        day of month that meets the day of week criteria. So a value previously returned by this method.
+     * @return day of month matching the requested day of week
      */
-    private int generateNoneValues(final On on, final int year, final int month, final int reference) {
+    private int generateNoneValues(final On on, final WeekDay sourceWeekDay, final int year, final int month, final int reference) {
         // the day of week the first of the month is on
         final int dowForFirstDoM = LocalDate.of(year, month, 1).getDayOfWeek().getValue();// 1-7
-        // the day of week we need, normalize to jdk8time
-        final int requiredDoW = ConstantsMapper.weekDayMapping(mondayDoWValue, ConstantsMapper.JAVA8, on.getTime().getValue());
+        // the day of week we need, normalize to jdk8time using the source numbering of {@code on}
+        final int requiredDoW = ConstantsMapper.weekDayMapping(sourceWeekDay, ConstantsMapper.JAVA8, on.getTime().getValue());
         // the first day of the month
         int baseDay = 1;// day 1 from given month
         // the difference between the days of week

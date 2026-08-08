@@ -56,6 +56,12 @@ class DescriptionStrategyFactory {
                     case HASH:
                         return String.format("%s %s %s ", nominal.apply(on.getTime().getValue()), on.getNth(), bundle.getString("of_every_month"));
                     case L:
+                        // Bare L means every Saturday ("7"/"SAT"), not the last occurrence of a weekday (#716).
+                        // nL (e.g. 6L) still means the last matching weekday of every month.
+                        if (on.getTime().getValue() == -1) {
+                            return String.format("%s %s ", bundle.getString("every"),
+                                    DayOfWeek.SATURDAY.getDisplayName(TextStyle.FULL, bundle.getLocale()));
+                        }
                         return String.format("%s %s %s ", bundle.getString("last"), nominal.apply(on.getTime().getValue()), bundle.getString("of_every_month"));
                     default:
                         return "";
