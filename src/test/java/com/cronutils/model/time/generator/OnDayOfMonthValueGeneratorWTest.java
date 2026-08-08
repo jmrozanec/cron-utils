@@ -111,6 +111,55 @@ public class OnDayOfMonthValueGeneratorWTest {
         testIsMatch(FIRST_DAY_SATURDAY_VALUE_MONTH, FIRST_DAY_SATURDAY_VALUE_DAY, FIRST_DAY_SATURDAY_VALUE_WEEKDAY);
     }
 
+    /**
+     * Issue #715: nW must not throw DateTimeException when the month has fewer than n days.
+     * Generator should report no value so execution moves to a longer month.
+     */
+    @Test
+    public void testGenerateNextValueWhenDayExceedsMonthLength() {
+        // June 2015 has 30 days; 31W has no valid day in that month
+        fieldValueGenerator = createFieldValueGeneratorInstance(6, 31);
+        assertThrows(NoSuchValueException.class, () -> fieldValueGenerator.generateNextValue(1));
+    }
+
+    /**
+     * When n is the last day of a long month and falls on Sunday, W uses Friday (Quartz).
+     * 2025-08-31 is Sunday → 31W resolves to 2025-08-29.
+     */
+    @Test
+    public void testGenerateNextValueLastDaySundayUsesFriday() throws NoSuchValueException {
+        fieldValueGenerator = new OnDayOfMonthValueGenerator(
+                new CronField(
+                        CronFieldName.DAY_OF_MONTH,
+                        new On(
+                                new IntegerFieldValue(31),
+                                new SpecialCharFieldValue(SpecialChar.W), new IntegerFieldValue(-1)
+                        ),
+                        constraints
+                ), 2025, 8);
+        assertEquals(29, fieldValueGenerator.generateNextValue(1));
+    }
+
+    @Test
+    public void testGeneratePreviousValueWhenDayExceedsMonthLength() {
+        fieldValueGenerator = createFieldValueGeneratorInstance(6, 31);
+        assertThrows(NoSuchValueException.class, () -> fieldValueGenerator.generatePreviousValue(OUT_OF_SCOPE_VALUE));
+    }
+
+    @Test
+    public void testGenerateCandidatesWhenDayExceedsMonthLength() {
+        fieldValueGenerator = createFieldValueGeneratorInstance(6, 31);
+        final List<Integer> candidates = fieldValueGenerator.generateCandidatesNotIncludingIntervalExtremes(1, 32);
+        assertTrue(candidates.isEmpty());
+    }
+
+    @Test
+    public void testIsMatchWhenDayExceedsMonthLength() {
+        fieldValueGenerator = createFieldValueGeneratorInstance(6, 31);
+        assertFalse(fieldValueGenerator.isMatch(30));
+        assertFalse(fieldValueGenerator.isMatch(31));
+    }
+
     private void testGenerateNextValue(final int month, final int day, final int weekday) throws NoSuchValueException {
         fieldValueGenerator = createFieldValueGeneratorInstance(month, day);
         assertEquals(weekday, fieldValueGenerator.generateNextValue(1));
