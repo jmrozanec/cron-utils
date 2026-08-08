@@ -72,7 +72,12 @@ class OnDayOfMonthValueGenerator extends OnDayOfCalendarValueGenerator {
             case L:
                 final int daysBefore = on.getNth().getValue();
                 return LocalDate.of(year, month, 1).lengthOfMonth() - (daysBefore > 0 ? daysBefore : 0);
-            case W: // First work day of the week
+            case W: // nearest weekday to day-of-month
+                // Skip months shorter than the requested day (e.g. 31W in June) — matches Quartz (#715).
+                final int lengthOfMonth = LocalDate.of(year, month, 1).lengthOfMonth();
+                if (dayOfMonth > lengthOfMonth) {
+                    throw new NoSuchValueException();
+                }
                 final LocalDate doM = LocalDate.of(year, month, dayOfMonth);
                 if (doM.getDayOfWeek() == DayOfWeek.SATURDAY) { //dayOfWeek is Saturday!
                     if (dayOfMonth == 1) { //first day in month is Saturday! We execute on Monday
@@ -80,10 +85,14 @@ class OnDayOfMonthValueGenerator extends OnDayOfCalendarValueGenerator {
                     }
                     return dayOfMonth - 1;
                 }
-                if (doM.getDayOfWeek() == DayOfWeek.SUNDAY && (dayOfMonth + 1) <= doM.lengthOfMonth()) {
-                    return dayOfMonth + 1;
+                if (doM.getDayOfWeek() == DayOfWeek.SUNDAY) {
+                    // Prefer Monday; if that would leave the month (last day is Sunday), use Friday.
+                    if ((dayOfMonth + 1) <= lengthOfMonth) {
+                        return dayOfMonth + 1;
+                    }
+                    return dayOfMonth - 2;
                 }
-                return dayOfMonth;  // first day of week is a weekday
+                return dayOfMonth;  // day is already a weekday
             case LW:
                 final LocalDate lastDayOfMonth = LocalDate.of(year, month, LocalDate.of(year, month, 1).lengthOfMonth());
                 final int dow = lastDayOfMonth.getDayOfWeek().getValue();
