@@ -19,10 +19,13 @@ import com.cronutils.model.field.constraint.FieldConstraints;
 import com.cronutils.model.field.constraint.FieldConstraintsBuilder;
 import com.cronutils.model.field.expression.Every;
 import com.cronutils.model.field.expression.FieldExpression;
+import com.cronutils.model.field.expression.On;
 import com.cronutils.model.field.value.IntegerFieldValue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
@@ -81,5 +84,60 @@ public class EveryFieldValueGeneratorTest {
     @Test
     public void testConstructorNotMatchesEvery() {
         assertThrows(IllegalArgumentException.class, () -> new EveryFieldValueGenerator(new CronField(CronFieldName.HOUR, mock(FieldExpression.class), constraints)));
+    }
+
+    @Test
+    public void testMonthIntervalWrapsYearForStartSlashPeriod() {
+        // 10/3 → months Oct, Jan, Apr, Jul (issue #692)
+        final FieldConstraints monthConstraints = FieldConstraintsBuilder.instance()
+                .forField(CronFieldName.MONTH)
+                .createConstraintsInstance();
+        final Every every = new Every(new On(new IntegerFieldValue(10)), new IntegerFieldValue(3));
+        final EveryFieldValueGenerator months = new EveryFieldValueGenerator(
+                new CronField(CronFieldName.MONTH, every, monthConstraints));
+
+        assertEquals(Arrays.asList(1, 4, 7, 10), months.generateCandidates(1, 12));
+        assertTrue(months.isMatch(1));
+        assertTrue(months.isMatch(4));
+        assertTrue(months.isMatch(7));
+        assertTrue(months.isMatch(10));
+        assertFalse(months.isMatch(2));
+        assertFalse(months.isMatch(11));
+    }
+
+    @Test
+    public void testMonthIntervalNextAndPreviousWrap() throws NoSuchValueException {
+        final FieldConstraints monthConstraints = FieldConstraintsBuilder.instance()
+                .forField(CronFieldName.MONTH)
+                .createConstraintsInstance();
+        final Every every = new Every(new On(new IntegerFieldValue(10)), new IntegerFieldValue(3));
+        final EveryFieldValueGenerator months = new EveryFieldValueGenerator(
+                new CronField(CronFieldName.MONTH, every, monthConstraints));
+
+        assertEquals(1, months.generateNextValue(0));
+        assertEquals(4, months.generateNextValue(1));
+        assertEquals(4, months.generateNextValue(2));
+        assertEquals(10, months.generateNextValue(7));
+        assertThrows(NoSuchValueException.class, () -> months.generateNextValue(10));
+
+        assertEquals(10, months.generatePreviousValue(11));
+        assertEquals(7, months.generatePreviousValue(10));
+        assertEquals(1, months.generatePreviousValue(4));
+        assertThrows(NoSuchValueException.class, () -> months.generatePreviousValue(1));
+    }
+
+    @Test
+    public void testNonMonthOnIntervalDoesNotWrap() {
+        // hours 22/3 must remain 22 only (no wrap into early hours)
+        final FieldConstraints hourConstraints = FieldConstraintsBuilder.instance()
+                .forField(CronFieldName.HOUR)
+                .createConstraintsInstance();
+        final Every every = new Every(new On(new IntegerFieldValue(22)), new IntegerFieldValue(3));
+        final EveryFieldValueGenerator hours = new EveryFieldValueGenerator(
+                new CronField(CronFieldName.HOUR, every, hourConstraints));
+
+        assertEquals(Collections.singletonList(22), hours.generateCandidates(0, 23));
+        assertTrue(hours.isMatch(22));
+        assertFalse(hours.isMatch(1));
     }
 }
