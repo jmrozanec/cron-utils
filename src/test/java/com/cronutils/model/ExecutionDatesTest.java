@@ -5,6 +5,8 @@ import com.cronutils.model.time.ExecutionTime;
 import com.cronutils.parser.CronParser;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -65,6 +67,30 @@ public class ExecutionDatesTest {
 
         ExecutionTime executionTime = ExecutionTime.forCron(cron4jCronParser.parse("0 * * * *"));
         assertThrows(IllegalArgumentException.class, () -> executionTime.getExecutionDates(startDate, endDate));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"Europe/Paris", "Asia/Kolkata", "UTC"})
+    public void includeEndInstantInDifferentZone(String endZone) {
+        ZonedDateTime startDate = ZonedDateTime.parse("2026-01-01T00:00:00Z");
+        ZonedDateTime expectedExecution = startDate.plusHours(9);
+        ZonedDateTime endDate = expectedExecution.withZoneSameInstant(ZoneId.of(endZone));
+        ExecutionTime executionTime = ExecutionTime.forCron(cron4jCronParser.parse("0 9 * * *"));
+
+        assertEquals(List.of(expectedExecution), executionTime.getExecutionDates(startDate, endDate));
+        assertEquals(1, executionTime.countExecutions(startDate, endDate));
+        assertEquals(List.of(), executionTime.getExecutionDates(startDate, endDate.minusNanos(1)));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"Europe/Paris", "Asia/Kolkata", "UTC"})
+    public void rejectEqualInstantsInDifferentZones(String endZone) {
+        ZonedDateTime startDate = ZonedDateTime.parse("2026-01-01T00:00:00Z");
+        ZonedDateTime endDate = startDate.withZoneSameInstant(ZoneId.of(endZone));
+        ExecutionTime executionTime = ExecutionTime.forCron(cron4jCronParser.parse("0 * * * *"));
+
+        assertThrows(IllegalArgumentException.class, () -> executionTime.getExecutionDates(startDate, endDate));
+        assertThrows(IllegalArgumentException.class, () -> executionTime.countExecutions(startDate, endDate));
     }
 
     @Test
