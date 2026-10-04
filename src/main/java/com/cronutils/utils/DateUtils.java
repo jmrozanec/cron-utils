@@ -14,6 +14,7 @@ package com.cronutils.utils;
 
 import java.time.Duration;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -39,27 +40,12 @@ public class DateUtils {
     }
 
     private static List<ZonedDateTime> holidaysInRange(ZonedDateTime startDate, ZonedDateTime endDate, List<ZonedDateTime> holidays){
-        if(holidays.isEmpty()){
-            return holidays;
+        List<ZonedDateTime> inRange = new ArrayList<>();
+        for(ZonedDateTime holiday : holidays){
+            if(!holiday.isBefore(startDate) && !holiday.isAfter(endDate)){
+                inRange.add(holiday);
+            }
         }
-        int idxstart = findIdx(0, holidays.size()-1, startDate, holidays);
-        int idxend = findIdx(0, holidays.size()-1, endDate, holidays);
-        return holidays.subList(idxstart, idxend+1);
-    }
-
-    private static int findIdx(int startidx, int endidx, ZonedDateTime endDate, List<ZonedDateTime> holidays){
-        if(startidx==endidx){
-            return startidx;
-        }
-        int pivot = (endidx-startidx)/2;
-
-        if(holidays.get(pivot).equals(endDate)){
-            return pivot;
-        }
-        if(holidays.get(pivot).isBefore(endDate)){
-            return findIdx(++pivot, endidx, endDate, holidays);
-        }else{
-            return findIdx(startidx, pivot, endDate, holidays);
-        }
+        return inRange;
     }
 }

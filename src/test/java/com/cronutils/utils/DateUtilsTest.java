@@ -15,6 +15,42 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class DateUtilsTest {
 
     @Test
+    public void workdaysCountIgnoresHolidayBeforeRange() {
+        ZonedDateTime start = ZonedDateTime.parse("2026-10-05T00:00:00Z");
+        List<ZonedDateTime> holidays = new ArrayList<>(Arrays.asList(start.minusDays(7)));
+
+        assertEquals(5, DateUtils.workdaysCount(start, start.plusDays(4), holidays,
+                WeekendPolicy.SATURDAY_SUNDAY));
+    }
+
+    @Test
+    public void workdaysCountIgnoresHolidayAfterRange() {
+        ZonedDateTime start = ZonedDateTime.parse("2026-10-05T00:00:00Z");
+        List<ZonedDateTime> holidays = new ArrayList<>(Arrays.asList(start.plusDays(7)));
+
+        assertEquals(5, DateUtils.workdaysCount(start, start.plusDays(4), holidays,
+                WeekendPolicy.SATURDAY_SUNDAY));
+    }
+
+    @Test
+    public void workdaysCountIgnoresHolidaysSurroundingRange() {
+        ZonedDateTime start = ZonedDateTime.parse("2026-10-05T00:00:00Z");
+        List<ZonedDateTime> holidays = Arrays.asList(start.minusDays(7), start.plusDays(7));
+
+        assertEquals(5, DateUtils.workdaysCount(start, start.plusDays(4), holidays,
+                WeekendPolicy.SATURDAY_SUNDAY));
+    }
+
+    @Test
+    public void workdaysCountIncludesHolidaysAtRangeBoundaries() {
+        ZonedDateTime start = ZonedDateTime.parse("2026-10-05T00:00:00Z");
+        ZonedDateTime end = start.plusDays(4);
+        List<ZonedDateTime> holidays = Arrays.asList(start, end);
+
+        assertEquals(3, DateUtils.workdaysCount(start, end, holidays, WeekendPolicy.SATURDAY_SUNDAY));
+    }
+
+    @Test
     public void workdaysCountPolicyThursday() throws Exception {
         LocalDate date = LocalDate.of(2018, 1, 6);//this is a saturday
         int daysToEndDate = 1;//sunday
