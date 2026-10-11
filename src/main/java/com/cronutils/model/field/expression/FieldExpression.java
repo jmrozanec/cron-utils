@@ -27,6 +27,31 @@ public abstract class FieldExpression implements Serializable {
 	}
 
 	/**
+	 * Whether this expression is an {@link Always} expression.
+	 * This checks the expression type, not its string representation or the
+	 * frequency of the complete cron. For example, an {@link Every} with period
+	 * one may render as {@code *}, but is not an {@code Always} expression.
+	 * The parser normalizes <code>*&#47;1</code> to {@code Always}.
+	 *
+	 * @return true if this expression is an Always expression.
+	 */
+	public boolean isAlways() {
+		return this instanceof Always;
+	}
+
+	/**
+	 * Whether this expression is an {@link Every} expression.
+	 * This checks only the top-level expression type; it does not inspect
+	 * expressions nested in an {@link And} or infer the frequency of the
+	 * complete cron. Use {@link Every#getPeriod()} to inspect the step value.
+	 *
+	 * @return true if this expression is an Every expression.
+	 */
+	public boolean isEvery() {
+		return this instanceof Every;
+	}
+
+	/**
 	 * Represents FieldExpression as string.
 	 *
 	 * @return String representation, never null.
