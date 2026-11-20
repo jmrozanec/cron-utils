@@ -6,7 +6,6 @@ import com.cronutils.model.CronType;
 import com.cronutils.model.definition.CronDefinitionBuilder;
 import com.cronutils.model.time.ExecutionTime;
 import com.cronutils.parser.CronParser;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
@@ -17,8 +16,8 @@ import java.util.Arrays;
 import java.util.Locale;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-@Disabled
 public class Issue423Test {
     private static final LocalDate saturday = LocalDate.of(2020, 4, 25);
     private static ZonedDateTime shortZDT(int h, int m) {
@@ -66,5 +65,8 @@ public class Issue423Test {
                 "All these should be on the same Saturday"
             );
         });
+        assertEquals(shortZDT(18, 0), et.lastExecution(shortZDT(18, 30)).get());
+        assertTrue(et.isMatch(shortZDT(18, 0)));
+        assertFalse(et.isMatch(shortZDT(12, 0)));
     }
 }
