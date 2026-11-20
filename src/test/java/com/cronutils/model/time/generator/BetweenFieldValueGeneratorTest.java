@@ -22,6 +22,8 @@ import com.cronutils.model.field.expression.FieldExpression;
 import com.cronutils.model.field.value.IntegerFieldValue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 import java.util.List;
 
@@ -86,5 +88,61 @@ public class BetweenFieldValueGeneratorTest {
     @Test
     public void testConstructorNotMatchesBetween() {
         assertThrows(IllegalArgumentException.class, () -> new BetweenFieldValueGenerator(new CronField(CronFieldName.HOUR, mock(FieldExpression.class), constraints)));
+    }
+
+    @ParameterizedTest
+    @CsvSource({"HOUR, 22, 2, 0, 23", "MONTH, 11, 2, 1, 12"})
+    public void testGenerateValuesForOverflowingRange(CronFieldName field, int from, int to, int minimum, int maximum)
+            throws NoSuchValueException {
+        final BetweenFieldValueGenerator generator = rangeGenerator(field, from, to);
+
+        assertEquals(minimum, generator.generateNextValue(minimum - 1));
+        assertEquals(to, generator.generateNextValue(to - 1));
+        assertEquals(from, generator.generateNextValue(to));
+        assertEquals(maximum, generator.generateNextValue(maximum - 1));
+        assertThrows(NoSuchValueException.class, () -> generator.generateNextValue(maximum));
+
+        assertEquals(maximum, generator.generatePreviousValue(maximum + 1));
+        assertEquals(from, generator.generatePreviousValue(from + 1));
+        assertEquals(to, generator.generatePreviousValue(from));
+        assertEquals(minimum, generator.generatePreviousValue(minimum + 1));
+        assertThrows(NoSuchValueException.class, () -> generator.generatePreviousValue(minimum));
+    }
+
+    @ParameterizedTest
+    @CsvSource({"HOUR, 22, 2, 0, 23", "MONTH, 11, 2, 1, 12"})
+    public void testIsMatchForOverflowingRange(CronFieldName field, int from, int to, int minimum, int maximum) {
+        final BetweenFieldValueGenerator generator = rangeGenerator(field, from, to);
+
+        assertTrue(generator.isMatch(minimum));
+        assertTrue(generator.isMatch(maximum));
+        assertTrue(generator.isMatch(from));
+        assertTrue(generator.isMatch(to));
+        assertFalse(generator.isMatch(from - 1));
+        assertFalse(generator.isMatch(to + 1));
+        assertFalse(generator.isMatch(minimum - 1));
+        assertFalse(generator.isMatch(maximum + 1));
+    }
+
+    @Test
+    public void testGenerateCandidatesForOverflowingHourRange() {
+        final BetweenFieldValueGenerator generator = rangeGenerator(CronFieldName.HOUR, 22, 2);
+
+        assertEquals(List.of(0, 1, 2, 22, 23), generator.generateCandidates(0, 23));
+        assertEquals(List.of(1, 2, 22), generator.generateCandidates(1, 22));
+        assertTrue(generator.generateCandidates(3, 21).isEmpty());
+    }
+
+    @Test
+    public void testGenerateCandidatesForOverflowingMonthRange() {
+        final BetweenFieldValueGenerator generator = rangeGenerator(CronFieldName.MONTH, 11, 2);
+
+        assertEquals(List.of(1, 2, 11, 12), generator.generateCandidates(0, 13));
+    }
+
+    private BetweenFieldValueGenerator rangeGenerator(CronFieldName field, int from, int to) {
+        return new BetweenFieldValueGenerator(new CronField(field,
+                new Between(new IntegerFieldValue(from), new IntegerFieldValue(to)),
+                FieldConstraintsBuilder.instance().forField(field).createConstraintsInstance()));
     }
 }
