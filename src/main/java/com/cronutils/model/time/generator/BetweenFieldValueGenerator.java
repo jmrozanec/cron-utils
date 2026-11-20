@@ -31,64 +31,42 @@ class BetweenFieldValueGenerator extends FieldValueGenerator {
     @Override
     public int generateNextValue(final int reference) throws NoSuchValueException {
         final Between between = (Between) cronField.getExpression();
-        //TODO validate from/to logic
-        int candidate = reference;
-        do {
-            ++candidate;
-        } while (candidate < map(between.getFrom()));
-
-        if (candidate > map(between.getTo())) {
+        final int from = map(between.getFrom());
+        final int to = map(between.getTo());
+        final int rangeStart = from > to ? cronField.getConstraints().getStartRange() : from;
+        final int rangeEnd = from > to ? cronField.getConstraints().getEndRange() : to;
+        if (reference >= rangeEnd) {
             throw new NoSuchValueException();
         }
-        return candidate;
+        final int candidate = Math.max(reference + 1, rangeStart);
+        return from > to && candidate > to && candidate < from ? from : candidate;
     }
 
     @Override
     public int generatePreviousValue(final int reference) throws NoSuchValueException {
         final Between between = (Between) cronField.getExpression();
-        //TODO deal with from/to logic, to ensure correct values are assumed
-        int candidate = reference;
-        do {
-            --candidate;
-        } while (candidate > map(between.getTo()));
-
-        if (candidate < map(between.getFrom())) {
+        final int from = map(between.getFrom());
+        final int to = map(between.getTo());
+        final int rangeStart = from > to ? cronField.getConstraints().getStartRange() : from;
+        final int rangeEnd = from > to ? cronField.getConstraints().getEndRange() : to;
+        if (reference <= rangeStart) {
             throw new NoSuchValueException();
         }
-        return candidate;
+        final int candidate = Math.min(reference - 1, rangeEnd);
+        return from > to && candidate > to && candidate < from ? to : candidate;
     }
 
     @Override
     protected List<Integer> generateCandidatesNotIncludingIntervalExtremes(final int start, final int end) {
         final List<Integer> values = new ArrayList<>();
-        //check overlapping ranges: x1 <= y2 && y1 <= x2
-        final Between between = (Between) cronField.getExpression();
-        final int expressionStart = map(between.getFrom());
-        final int expressionEnd = map(between.getTo());
-        int rangestart = start;
-        int rangeend = end;
-        if (start <= expressionEnd && expressionStart <= end) { //ranges overlap
-            if (expressionEnd < end) {
-                rangeend = expressionEnd;
+        try {
+            int reference = generateNextValue(start);
+            while (reference < end) {
+                values.add(reference);
+                reference = generateNextValue(reference);
             }
-            if (map(between.getFrom()) > start) {
-                rangestart = expressionStart;
-            }
-            try {
-                if (rangestart != start) {
-                    values.add(rangestart);
-                }
-                int reference = generateNextValue(rangestart);
-                while (reference < rangeend) {
-                    values.add(reference);
-                    reference = generateNextValue(reference);
-                }
-                if (rangeend != end) {
-                    values.add(reference);
-                }
-            } catch (final NoSuchValueException e) {
-                // TODO: Explain why this exception is ignored
-            }
+        } catch (final NoSuchValueException ignored) {
+            // No more values remain in this field's range.
         }
         return values;
     }
@@ -96,7 +74,14 @@ class BetweenFieldValueGenerator extends FieldValueGenerator {
     @Override
     public boolean isMatch(final int value) {
         final Between between = (Between) cronField.getExpression();
-        return value >= map(between.getFrom()) && value <= map(between.getTo());
+        final int from = map(between.getFrom());
+        final int to = map(between.getTo());
+        if (from > to) {
+            return value >= cronField.getConstraints().getStartRange()
+                    && value <= cronField.getConstraints().getEndRange()
+                    && (value >= from || value <= to);
+        }
+        return value >= from && value <= to;
     }
 
     @Override
